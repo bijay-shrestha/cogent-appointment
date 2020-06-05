@@ -9,6 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -16,8 +17,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
         "com.cogent.cogentappointment.persistence.history"})
-//@ComponentScan(basePackages = {"com.cogent.cogentappointment.scheduler.scheduler"})
-//@EnableScheduling
 @EnableJpaRepositories
 @PropertySource(
         factory = YamlPropertySourceFactory.class,
@@ -25,6 +24,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
                 {
                         "file:${catalina.home}/conf/client/application-${spring.profiles.active}.yml"
                 })
+@ComponentScan({"com.cogent.cogentappointment.commons"})
 public class CogentAppointmentClientApplication extends SpringBootServletInitializer {
 
     @Override

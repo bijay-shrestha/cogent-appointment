@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cogent-appointment-commons</name>
 	<description>consists of common utils</description>
+	<packaging>jar</packaging>
 
 	<properties>
 		<java.version>1.8</java.version>

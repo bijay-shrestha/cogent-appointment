@@ -52,10 +52,6 @@ public class CogentAppointmentCommonsApplication extends SpringBootServletInitia
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
     }
 
-//    @Bean
-//    public BeanUtil beanUtil() {
-//        return new BeanUtil();
-//    }
 
 
 }

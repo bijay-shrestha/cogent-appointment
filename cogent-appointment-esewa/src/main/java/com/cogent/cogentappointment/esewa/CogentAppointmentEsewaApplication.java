@@ -9,6 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -24,6 +25,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
                 {
                         "file:${catalina.home}/conf/eSewa/application-${spring.profiles.active}.yml"
                 })
+@ComponentScan({"com.cogent.cogentappointment.commons"})
 public class CogentAppointmentEsewaApplication extends SpringBootServletInitializer {
 
     @Override

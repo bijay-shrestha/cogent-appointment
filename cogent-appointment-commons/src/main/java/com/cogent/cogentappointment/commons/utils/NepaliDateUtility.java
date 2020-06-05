@@ -6,6 +6,8 @@ import com.cogent.cogentappointment.commons.repository.YearMonthDayRepository;
 import com.cogent.cogentappointment.commons.service.YearMonthDayService;
 import com.cogent.cogentappointment.persistence.model.YearMonthDay;
 import org.joda.time.DateTime;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,7 +18,7 @@ import static com.cogent.cogentappointment.commons.constants.DateConstants.MONTH
 /**
  * @author Nikesh Maharjan(ERP)
  */
-@Service
+@Component
 public class NepaliDateUtility {
 
 //    private final YearMonthDayService yearMonthDayService;

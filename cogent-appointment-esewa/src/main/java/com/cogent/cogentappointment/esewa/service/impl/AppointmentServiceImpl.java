@@ -934,4 +934,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Double fetchRefundAmount(Long appointmentId) {
         return appointmentRepository.calculateRefundAmount(appointmentId);
     }
+
+
 }

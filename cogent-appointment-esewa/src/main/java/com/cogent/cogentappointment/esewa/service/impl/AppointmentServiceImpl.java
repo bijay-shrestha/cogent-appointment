@@ -1089,7 +1089,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         save(appointment);
 
-
         saveAppointmentStatistics(appointmentInfo, appointment, hospital);
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
@@ -1130,5 +1129,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentFollowUpCharge(
                 hospitalDepartmentBillingModeId, hospitalDepartmentId);
+    }
+
+    private void saveAppointmentHospitalDepartmentInfo(Appointment appointment){
+
     }
 }

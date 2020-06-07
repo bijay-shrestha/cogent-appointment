@@ -7,12 +7,14 @@ public class QueryConstants {
 
     //A
     public static final String APPOINTMENT_ID = "appointmentId";
-    public static final String APPOINTMENT_MODE_ID="appointmentModeId";
+    public static final String APPOINTMENT_MODE_ID = "appointmentModeId";
     public static final String APPOINTMENT_TRANSFER_ID = "appointmentTransferId";
     public static final String ALIAS = "alias";
 
-    //B
+    public static final String APPOINTMENT_SERVICE_TYPE_ID = "appointmentServiceTypeId";
 
+    //B
+    public static final String BILLING_MODE_ID = "billingModeId";
 
     //C
     public static final String CODE = "code";
@@ -32,6 +34,7 @@ public class QueryConstants {
 
 
     //E
+    public static final String ESEWA_MERCHANT_CODE = "esewaMerchantCode";
     public static final String EMAIL = "email";
 
     //F

@@ -24,4 +24,6 @@ public class HospitalDepartmentSearchRequestDTO implements Serializable {
     private Long roomId;
 
     private Character status;
+
+    private Long billingModeId;
 }

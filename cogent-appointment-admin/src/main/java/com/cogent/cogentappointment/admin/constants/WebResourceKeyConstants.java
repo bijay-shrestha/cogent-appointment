@@ -48,15 +48,20 @@ public class WebResourceKeyConstants {
     }
 
     public interface BillingModeConstants {
-        String BASE_Billing_MODE = "/billingMode";
+        String BASE_BILLING_MODE = "/billingMode";
+
     }
 
-    public interface AppointmentTransferConstants{
+    public interface AppointmentTransferConstants {
         String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
         String APPOINTMENT_TIME = "/time";
         String APPOINTMENT_CHARGE = "/charge";
         String APPOINTMENT_DATE = "/date";
         String APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE = "/{appointmentTransferId}";
+    }
+
+    public interface AppointmentServiceTypeConstants {
+        String BASE_APPOINTMENT_SERVICE_TYPE = "/appointmentServiceType";
     }
 
     //B
@@ -162,6 +167,8 @@ public class WebResourceKeyConstants {
         String AVAILABLE = "/available";
         String ROOM = "/room";
         String HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{hospitalDepartmentId}";
+        String CHARGE = "/charge";
+        String BILLING_MODE_WISE = "/billingModeWise";
     }
 
     //I

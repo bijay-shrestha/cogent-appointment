@@ -1,8 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
-import com.cogent.cogentappointment.persistence.model.HospitalDepartmentCharge;
+import com.cogent.cogentappointment.persistence.model.HospitalAppointmentServiceType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,27 +17,28 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 /**
- * @author Sauravi Thapa ON 5/19/20
+ * @author smriti on 26/05/20
  */
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "hospital_department_charge_history")
-public class HospitalDepartmentChargeHistory implements Serializable {
+@Table(name = "admin_appointment_service_type_history")
+public class HospitalAppointmentServiceTypeHistory implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "hospital_department_charge_id")
-    private HospitalDepartmentCharge hospitalDepartmentCharge;
+    @JoinColumn(name = "hospital_appointment_service_type_id",
+            foreignKey = @ForeignKey(name = "FK_hospital_appointment_service_type"))
+    private HospitalAppointmentServiceType hospitalAppointmentServiceType;
 
-    @Column(name = "hospital_department_charge_content")
+    @Column(name = "hospital_appointment_service_type_content")
     @Lob
-    private String hospitalDepartmentChargeContent;
+    private String hospitalAppointmentServiceTypeContent;
 
     @CreatedBy
     private String modifiedBy;
@@ -50,10 +50,10 @@ public class HospitalDepartmentChargeHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public HospitalDepartmentChargeHistory(HospitalDepartmentCharge hospitalDepartmentCharge,
-                                           Action action) {
-        this.hospitalDepartmentCharge = hospitalDepartmentCharge;
-        this.hospitalDepartmentChargeContent = hospitalDepartmentCharge.toString();
+    public HospitalAppointmentServiceTypeHistory(HospitalAppointmentServiceType hospitalAppointmentServiceType,
+                                                 Action action) {
+        this.hospitalAppointmentServiceType = hospitalAppointmentServiceType;
+        this.hospitalAppointmentServiceTypeContent = hospitalAppointmentServiceType.toString();
         this.action = action;
     }
 }

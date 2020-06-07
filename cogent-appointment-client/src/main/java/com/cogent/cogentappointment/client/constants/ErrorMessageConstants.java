@@ -168,7 +168,7 @@ public class ErrorMessageConstants {
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s' ";
 
-    public static String NO_CONTENT_FOUND = "No %s(s) found.";
+    public static String NO_RECORD_FOUND = "No %s(s) found.";
 
 
     //O

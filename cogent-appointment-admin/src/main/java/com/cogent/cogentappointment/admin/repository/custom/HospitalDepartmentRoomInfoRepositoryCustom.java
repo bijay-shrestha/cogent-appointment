@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentRoomInfo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ public interface HospitalDepartmentRoomInfoRepositoryCustom {
 
     List<Object[]> validateRoomDuplicity(Long roomId, Long hospitalId);
 
+    HospitalDepartmentRoomInfo fetchHospitalDepartmentRoomInfo(Long hospitalDepartmentRoomInfoId,
+                                                               Long hospitalDepartmentId);
 }

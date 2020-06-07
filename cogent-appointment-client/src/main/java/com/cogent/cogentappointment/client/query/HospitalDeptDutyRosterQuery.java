@@ -38,7 +38,8 @@ public class HospitalDeptDutyRosterQuery {
                 " dr.rosterGapDuration as rosterGapDuration," +                        //[2]
                 " dr.fromDate as fromDate," +                                          //[3]
                 " dr.toDate as toDate," +                                              //[4]
-                " dr.status as status" +                                              //[5]
+                " dr.status as status," +                                              //[5]
+                " dr.isRoomEnabled as isRoomEnabled"+                                 //[6]
                 " FROM HospitalDepartmentDutyRoster dr" +
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
                 " WHERE" +

@@ -15,6 +15,8 @@ import java.io.Serializable;
 @Builder
 public class BillingModeResponseDTO extends AuditableResponseDTO implements Serializable {
 
+    private Long id;
+
     private String name;
 
     private String code;

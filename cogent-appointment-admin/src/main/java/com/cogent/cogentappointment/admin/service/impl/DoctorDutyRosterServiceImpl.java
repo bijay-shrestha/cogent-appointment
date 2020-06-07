@@ -78,7 +78,6 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.appointmentRepository = appointmentRepository;
         this.hospitalService = hospitalService;
-//        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     @Override

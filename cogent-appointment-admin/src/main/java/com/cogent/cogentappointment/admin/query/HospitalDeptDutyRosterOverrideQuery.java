@@ -124,7 +124,7 @@ public class HospitalDeptDutyRosterOverrideQuery {
                 " hddr.hospitalDepartment.name as hospitatDepartmentName," +                                //[7]
                 " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[8]
                 " THEN 'N/A'" +
-                " ELSE hdri.room.id END as roomId," +
+                " ELSE hddro.hospitalDepartmentRoomInfo.id END as roomId," +
                 " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[9]
                 " THEN 'N/A'" +
                 " ELSE hddro.hospitalDepartmentRoomInfo.room.roomNumber END as roomNumber" +
@@ -133,8 +133,8 @@ public class HospitalDeptDutyRosterOverrideQuery {
                 " WHERE" +
                 " hddro.status = 'Y'" +
                 " AND hddr.status = 'Y'" +
-                " AND hddro.to_date >=:fromDate" +
-                " AND hddro.from_date <=:toDate";
+                " AND hddro.toDate >=:fromDate" +
+                " AND hddro.fromDate <=:toDate";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND hddr.hospitalDepartment.id = :hospitalDepartmentId";

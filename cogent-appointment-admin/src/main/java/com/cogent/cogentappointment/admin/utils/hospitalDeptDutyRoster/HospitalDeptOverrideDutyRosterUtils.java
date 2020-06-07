@@ -114,7 +114,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
                                             .dayOffStatus(result[DAY_OFF_STATUS_INDEX].toString().charAt(0))
                                             .hospitalDepartmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
                                             .hospitalDepartmentName(result[HOSPITAL_DEPARTMENT_NAME_INDEX].toString())
-                                            .roomId(Long.parseLong(result[ROOM_ID_INDEX].toString()))
+                                            .roomId(result[ROOM_ID_INDEX].toString())
                                             .roomNumber(result[ROOM_NUMBER_INDEX].toString())
                                             .build();
 

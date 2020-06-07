@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentSta
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.DeptAppointmentStatusDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
@@ -96,7 +96,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     @Override
-    public DeptAppointmentStatusDTO fetchDeptAppointmentStatusResponseDTO(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public HospitalDeptAppointmentStatusDTO fetchHospitalDeptAppointmentStatusResponseDTO(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

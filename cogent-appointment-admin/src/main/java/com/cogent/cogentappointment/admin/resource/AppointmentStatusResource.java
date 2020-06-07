@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,9 +15,12 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_STATUS;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_DEPARTMENT_APPOINTMENT_STATUS;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.STATUS;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -37,5 +41,11 @@ public class AppointmentStatusResource {
     @ApiOperation(FETCH_APPOINTMENT_STATUS)
     public ResponseEntity<?> fetchAppointmentStatus(@Valid @RequestBody AppointmentStatusRequestDTO requestDTO) {
         return ok(appointmentStatusService.fetchAppointmentStatusResponseDTO(requestDTO));
+    }
+
+    @PutMapping(BASE_HOSPITAL_DEPARTMENT + STATUS)
+    @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS)
+    public ResponseEntity<?> fetchHospitalDeptAppointmentStatus(@Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+        return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusResponseDTO(requestDTO));
     }
 }

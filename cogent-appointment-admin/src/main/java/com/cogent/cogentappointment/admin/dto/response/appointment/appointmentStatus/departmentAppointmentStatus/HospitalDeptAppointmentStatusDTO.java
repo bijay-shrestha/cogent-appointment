@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class DeptAppointmentStatusDTO implements Serializable {
+public class HospitalDeptAppointmentStatusDTO implements Serializable {
 
     private List<HospitalDeptDutyRosterStatusResponseDTO> doctorDutyRosterInfo;
 

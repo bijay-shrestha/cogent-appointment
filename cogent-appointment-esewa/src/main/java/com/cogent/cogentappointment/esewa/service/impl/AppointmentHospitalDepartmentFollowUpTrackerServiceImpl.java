@@ -4,12 +4,12 @@ import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartm
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalFollowUpResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
-import com.cogent.cogentappointment.esewa.repository.AppointmentHospitalDeptFollowUpTrackerRepository;
+import com.cogent.cogentappointment.esewa.repository.AppointmentHospitalDepartmentFollowUpTrackerRepository;
 import com.cogent.cogentappointment.esewa.repository.HospitalDepartmentBillingModeInfoRepository;
 import com.cogent.cogentappointment.esewa.repository.HospitalRepository;
-import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDeptFollowUpRequestLogService;
-import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDeptFollowUpTrackerService;
-import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDeptReservationLogService;
+import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentFollowUpTrackerService;
+import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentFollowUpRequestLogService;
+import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentReservationLogService;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.Hospital;
@@ -24,8 +24,8 @@ import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentFollowUpTrackerLog.APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER;
-import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDeptFollowUpTrackerUtils.parseAppointmentHospitalDeptFollowUpResponseDTO;
-import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDeptFollowUpTrackerUtils.parseResponseStatus;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentFollowUpTrackerUtils.parseAppointmentHospitalDeptFollowUpResponseDTO;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentFollowUpTrackerUtils.parseResponseStatus;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
 /**
@@ -34,28 +34,28 @@ import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 @Service
 @Transactional
 @Slf4j
-public class AppointmentHospitalDeptFollowUpTrackerServiceImpl implements AppointmentHospitalDeptFollowUpTrackerService {
+public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements AppointmentHospitalDepartmentFollowUpTrackerService {
 
-    private final AppointmentHospitalDeptFollowUpTrackerRepository appointmentHospitalDeptFollowUpTrackerRepository;
+    private final AppointmentHospitalDepartmentFollowUpTrackerRepository appointmentHospitalDepartmentFollowUpTrackerRepository;
 
     private final HospitalRepository hospitalRepository;
 
     private final HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository;
 
-    private final AppointmentHospitalDeptReservationLogService appointmentHospitalDeptReservationLogService;
+    private final AppointmentHospitalDepartmentReservationLogService appointmentHospitalDepartmentReservationLogService;
 
-    private final AppointmentHospitalDeptFollowUpRequestLogService appointmentFollowUpRequestLogService;
+    private final AppointmentHospitalDepartmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
 
-    public AppointmentHospitalDeptFollowUpTrackerServiceImpl(
-            AppointmentHospitalDeptFollowUpTrackerRepository appointmentHospitalDeptFollowUpTrackerRepository,
+    public AppointmentHospitalDepartmentFollowUpTrackerServiceImpl(
+            AppointmentHospitalDepartmentFollowUpTrackerRepository appointmentHospitalDepartmentFollowUpTrackerRepository,
             HospitalRepository hospitalRepository,
             HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
-            AppointmentHospitalDeptReservationLogService appointmentHospitalDeptReservationLogService,
-            AppointmentHospitalDeptFollowUpRequestLogService appointmentFollowUpRequestLogService) {
-        this.appointmentHospitalDeptFollowUpTrackerRepository = appointmentHospitalDeptFollowUpTrackerRepository;
+            AppointmentHospitalDepartmentReservationLogService appointmentHospitalDepartmentReservationLogService,
+            AppointmentHospitalDepartmentFollowUpRequestLogService appointmentFollowUpRequestLogService) {
+        this.appointmentHospitalDepartmentFollowUpTrackerRepository = appointmentHospitalDepartmentFollowUpTrackerRepository;
         this.hospitalRepository = hospitalRepository;
         this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
-        this.appointmentHospitalDeptReservationLogService = appointmentHospitalDeptReservationLogService;
+        this.appointmentHospitalDepartmentReservationLogService = appointmentHospitalDepartmentReservationLogService;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
     }
 
@@ -71,10 +71,10 @@ public class AppointmentHospitalDeptFollowUpTrackerServiceImpl implements Appoin
         * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOUSLY RESERVED FOR
         * SELECTED HOSPITAL DEPARTMENT, ROOM(IF APPLICABLE), DATE AND TIME */
         Long savedAppointmentReservationId =
-                appointmentHospitalDeptReservationLogService.saveAppointmentHospitalDeptReservationLog(requestDTO);
+                appointmentHospitalDepartmentReservationLogService.saveAppointmentHospitalDeptReservationLog(requestDTO);
 
         AppointmentHospitalDepartmentFollowUpTracker appointmentHospitalDeptFollowUpTracker =
-                appointmentHospitalDeptFollowUpTrackerRepository.fetchAppointmentHospitalDeptFollowUpTracker(
+                appointmentHospitalDepartmentFollowUpTrackerRepository.fetchAppointmentHospitalDeptFollowUpTracker(
                         requestDTO.getHospitalId(),
                         requestDTO.getHospitalDepartmentId(),
                         requestDTO.getPatientId()
@@ -112,7 +112,7 @@ public class AppointmentHospitalDeptFollowUpTrackerServiceImpl implements Appoin
 
     @Override
     public Long fetchByParentAppointmentId(Long parentAppointmentId) {
-        return appointmentHospitalDeptFollowUpTrackerRepository.fetchByParentAppointmentId(parentAppointmentId)
+        return appointmentHospitalDepartmentFollowUpTrackerRepository.fetchByParentAppointmentId(parentAppointmentId)
                 .orElseThrow(() -> new NoContentFoundException(AppointmentFollowUpTracker.class));
     }
 

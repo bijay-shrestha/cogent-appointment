@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartm
 /**
  * @author smriti on 29/03/20
  */
-public class AppointmentHospitalDeptFollowUpRequestLogUtils {
+public class AppointmentHospitalDepartmentFollowUpRequestLogUtils {
 
     public static void updateAppointmentHospitalDeptFollowUpRequestLog(
             AppointmentHospitalDepartmentFollowUpRequestLog appointmentFollowUpRequestLog) {

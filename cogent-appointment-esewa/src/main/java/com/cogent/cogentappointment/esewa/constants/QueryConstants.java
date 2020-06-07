@@ -12,6 +12,8 @@ public class QueryConstants {
         String TRANSACTION_NUMBER = "transactionNumber";
     }
 
+    public static final String APPOINTMENT_SERVICE_TYPE_ID = "appointmentServiceTypeId";
+
     public static final String API_KEY = "apiKey";
 
     //B

@@ -1,32 +1,23 @@
 package com.cogent.cogentappointment.persistence.model;
 
-import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.AppointmentFollowUpLogEntityListener;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- * @author smriti ON 12/02/2020
- *
- * THIS TABLE REFLECTS THE RELATION BETWEEN APPOINTMENT AND ITS CORRESPONDING FOLLOW UP APPOINTMENTS
+/*
+ * @author smriti on 07/06/20
+  * THIS TABLE REFLECTS THE RELATION BETWEEN APPOINTMENT AND ITS CORRESPONDING FOLLOW UP APPOINTMENTS
  * ONE APPOINTMENT (parentAppointmentId) CAN HAVE ITS MULTIPLE FOLLOW UP APPOINTMENTS (followUpAppointmentId)
  *
  * SAVED WHILE TAKING AN APPOINTMENT ONLY IF IT IS A FOLLOW UP APPOINTMENT
  */
 @Entity
-@Table(name = "appointment_follow_up_log")
+@Table(name = "appointment_hospital_department_follow_up_log")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EntityListeners(AppointmentFollowUpLogEntityListener.class)
-public class AppointmentFollowUpLog extends Auditable<String> implements Serializable {
-
+public class AppointmentHospitalDepartmentFollowUpLog implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

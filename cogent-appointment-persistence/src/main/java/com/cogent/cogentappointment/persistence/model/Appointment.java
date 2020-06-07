@@ -15,9 +15,23 @@ import java.util.Date;
  * @author smriti on 2019-10-14
  * <p>
  *
- * Appointment Service Type can be
- * a. Doctor Consultation (AppointmentDoctorInfo)
- * b. Department Consulatation (AppointmentHospitalDepartmentInfo)
+ * Connected Table
+ * 1. AppointmentService Type
+ *   Appointment Service Type can be
+ *      a. Doctor Consultation (AppointmentDoctorInfo)
+ *          i. Doctor
+ *          ii. Specialization
+ *
+ *      b. Department Consulatation (AppointmentHospitalDepartmentInfo)
+ *          i. HospitalDepartment
+ *          ii. HospitalDepartmentRoomInfo
+ *          iii. HospitalDepartmentBillingModeInfo
+ * 2. AppointmentMode
+ * 3. AppointmentTransactionDetail
+ * 4. AppointmentFollowUpTracker/AppointmentHospitalDepartmentFollowUpTracker
+ * 5. AppointmentFollowUpRequestLog/AppointmentHospitalDepartmentFollowUpRequestLog
+ * 6. AppointmentFollowUpLog/AppointmentHospitalDepartmentFollowUpLog
+ *
  */
 @Entity
 @Table(name = "appointment")

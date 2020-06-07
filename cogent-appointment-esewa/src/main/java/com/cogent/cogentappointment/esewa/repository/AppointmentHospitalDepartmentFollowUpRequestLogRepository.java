@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author smriti on 29/03/20
  */
 @Repository
-public interface AppointmentHospitalDeptFollowUpRequestLogRepository
+public interface AppointmentHospitalDepartmentFollowUpRequestLogRepository
         extends JpaRepository<AppointmentHospitalDepartmentFollowUpRequestLog, Long> {
 
     @Query("SELECT a.followUpRequestedCount FROM AppointmentHospitalDepartmentFollowUpRequestLog a WHERE" +

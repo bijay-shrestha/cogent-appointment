@@ -13,7 +13,7 @@ import java.util.List;
  * @author smriti on 02/06/20
  */
 @Repository
-public interface AppointmentHospitalDeptReservationLogRepository extends
+public interface AppointmentHospitalDepartmentReservationLogRepository extends
         JpaRepository<AppointmentHospitalDepartmentReservationLog, Long>, AppointmentHospitalDeptReservationLogRepositoryCustom {
 
     @Query("SELECT a FROM AppointmentHospitalDepartmentReservationLog a WHERE a.id=:id")

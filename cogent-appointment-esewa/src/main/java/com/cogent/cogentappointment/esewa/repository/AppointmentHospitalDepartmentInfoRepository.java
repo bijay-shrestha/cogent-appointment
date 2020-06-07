@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @author smriti on 05/06/20
  */
 @Repository
-public interface AppointmentHospitalDeptInfoRepository extends JpaRepository<AppointmentHospitalDepartmentInfo, Long> {
+public interface AppointmentHospitalDepartmentInfoRepository extends JpaRepository<AppointmentHospitalDepartmentInfo, Long> {
 }

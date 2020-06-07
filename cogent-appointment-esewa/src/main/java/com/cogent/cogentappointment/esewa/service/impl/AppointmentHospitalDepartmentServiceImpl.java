@@ -26,7 +26,7 @@ import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentLog.CHECK_AVAILABILITY_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentLog.CHECK_AVAILABILITY_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentDutyRosterLog.HOSPITAL_DEPARTMENT_DUTY_ROSTER;
-import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDeptUtils.*;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.validateIfRequestIsPastDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 

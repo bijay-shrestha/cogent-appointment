@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.esewa.resource;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpRequestDTO;
-import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDeptFollowUpTrackerService;
+import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentFollowUpTrackerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +28,10 @@ import static org.springframework.http.ResponseEntity.ok;
 @Api(BASE_API_VALUE)
 public class AppointmentHospitalDepartmentFollowUpTrackerResource {
 
-    private final AppointmentHospitalDeptFollowUpTrackerService appointmentHospitalDeptFollowUpTrackerService;
+    private final AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDeptFollowUpTrackerService;
 
     public AppointmentHospitalDepartmentFollowUpTrackerResource(
-            AppointmentHospitalDeptFollowUpTrackerService appointmentHospitalDeptFollowUpTrackerService) {
+            AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDeptFollowUpTrackerService) {
         this.appointmentHospitalDeptFollowUpTrackerService = appointmentHospitalDeptFollowUpTrackerService;
     }
 

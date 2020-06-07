@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartm
 /**
  * @author smriti on 18/02/20
  */
-public interface AppointmentHospitalDeptReservationLogService {
+public interface AppointmentHospitalDepartmentReservationLogService {
 
     Long saveAppointmentHospitalDeptReservationLog(AppointmentHospitalDeptFollowUpRequestDTO requestDTO);
 

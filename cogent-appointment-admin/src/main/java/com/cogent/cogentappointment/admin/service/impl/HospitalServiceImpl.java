@@ -70,7 +70,6 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
 
-
     private final AppointmentServiceTypeService appointmentServiceTypeService;
 
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
@@ -96,7 +95,6 @@ public class HospitalServiceImpl implements HospitalService {
         this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
         this.appointmentServiceTypeService = appointmentServiceTypeService;
     }
-
 
     @Override
     public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner)

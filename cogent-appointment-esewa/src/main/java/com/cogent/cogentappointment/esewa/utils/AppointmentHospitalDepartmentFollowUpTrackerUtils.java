@@ -7,7 +7,7 @@ import static org.springframework.http.HttpStatus.OK;
 /**
  * @author smriti on 04/06/20
  */
-public class AppointmentHospitalDeptFollowUpTrackerUtils {
+public class AppointmentHospitalDepartmentFollowUpTrackerUtils {
 
     public static AppointmentHospitalDeptFollowUpResponseDTO parseAppointmentHospitalDeptFollowUpResponseDTO(
             Character isFollowUp,

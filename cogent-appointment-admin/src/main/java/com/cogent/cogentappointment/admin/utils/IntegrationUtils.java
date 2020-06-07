@@ -60,7 +60,7 @@ public class IntegrationUtils {
 
         ApiFeatureIntegration apiFeatureIntegration = new ApiFeatureIntegration();
         apiFeatureIntegration.setApiIntegrationFormatId(apiIntegrationFormatId);
-        apiFeatureIntegration.setClientFeatureIntegrationId(apiIntegrationFormatId);
+        apiFeatureIntegration.setClientFeatureIntegrationId(clientFeatureIntegrationId);
         apiFeatureIntegration.setStatus(ACTIVE);
 
         return apiFeatureIntegration;

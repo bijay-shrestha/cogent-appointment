@@ -15,7 +15,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan({"com.cogent.cogentappointment.commons"})
 @EntityScan(basePackages =
         {"com.cogent.cogentappointment.persistence.model",
                 "com.cogent.cogentappointment.persistence.history"})
@@ -26,6 +25,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
                 {
                         "file:${catalina.home}/conf/admin/application-${spring.profiles.active}.yml"
                 })
+@ComponentScan({"com.cogent.cogentappointment.commons"})
 public class CogentAppointmentAdminApplication extends SpringBootServletInitializer {
 
     @Override

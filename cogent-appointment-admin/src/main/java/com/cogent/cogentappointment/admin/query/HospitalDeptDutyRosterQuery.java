@@ -122,7 +122,7 @@ public class HospitalDeptDutyRosterQuery {
                 " hd.id as hospitalDepartmentId," +
                 " hd.name as hospitalDepartmentName," +
                 " CASE WHEN hddr.is_room_enabled='N' " +
-                " THEN 'N/A'" +
+                " THEN null" +
                 " ELSE hdri.id END as roomId," +
                 " CASE WHEN hddr.is_room_enabled='N' " +
                 " THEN 'N/A'" +

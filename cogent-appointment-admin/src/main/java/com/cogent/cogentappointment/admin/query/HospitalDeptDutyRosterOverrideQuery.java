@@ -123,7 +123,7 @@ public class HospitalDeptDutyRosterOverrideQuery {
                 " hddr.hospitalDepartment.id as hospitalDepartmentId," +                                     //[6]
                 " hddr.hospitalDepartment.name as hospitatDepartmentName," +                                //[7]
                 " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[8]
-                " THEN 'N/A'" +
+                " THEN null" +
                 " ELSE hddro.hospitalDepartmentRoomInfo.id END as roomId," +
                 " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[9]
                 " THEN 'N/A'" +

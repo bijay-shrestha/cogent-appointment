@@ -31,7 +31,7 @@ public class HospitalDeptDutyRosterStatusResponseDTO implements Serializable {
 
     private String hospitalDepartmentName;
 
-    private String roomId;
+    private Long roomId;
 
     private String roomNumber;
 
@@ -40,5 +40,5 @@ public class HospitalDeptDutyRosterStatusResponseDTO implements Serializable {
     /*FOR FRONT-END CONVENIENCE TO SHOW DETAIL MODAL*/
     private String patientDetails;
 
-    private List<AppointmentTimeSlotResponseDTO> doctorTimeSlots;
+    private List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots;
 }

@@ -5,8 +5,9 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentSta
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.AppointmentTimeSlotResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
@@ -31,10 +32,10 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.Appoi
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_STATUS;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.DEPARTMENT_APPOINTMENT_STATUS;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.*;
+import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.parseToAppointmentStatusDTO;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.mergeOverrideAndActualHospitalDeptDutyRoster;
@@ -59,18 +60,21 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private final AppointmentService appointmentService;
 
+    private final AppointmentRepository appointmentRepository;
+
     public AppointmentStatusServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                         HospitalDeptDutyRosterOverrideRepository deptDutyRosterOverrideRepository,
                                         HospitalDeptDutyRosterRepository deptDutyRosterRepository,
                                         DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
                                         DoctorRepository doctorRepository,
-                                        AppointmentService appointmentService) {
+                                        AppointmentService appointmentService, AppointmentRepository appointmentRepository) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.deptDutyRosterOverrideRepository = deptDutyRosterOverrideRepository;
         this.deptDutyRosterRepository = deptDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.doctorRepository = doctorRepository;
         this.appointmentService = appointmentService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
@@ -105,11 +109,16 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus = fetchHospitalDepartmentStatus(requestDTO);
 
-//        List<HospitalDeptAppointmentStatusResponseDTO> appointments=
+        List<HospitalDeptAppointmentStatusResponseDTO> appointments=fetchAppointmentStatus(requestDTO);
+
+        hospitalDeptDutyRosterStatus=setDepartmentAppointmentTimeSlot(requestDTO.getStatus(),
+                hospitalDeptDutyRosterStatus,appointments);
+
+        HospitalDeptAppointmentStatusDTO appointmentStatusDTO=parseToHospitalDeptAppointmentStatusDTO(hospitalDeptDutyRosterStatus);
 
         log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_APPOINTMENT_STATUS, getDifferenceBetweenTwoTime(startTime));
 
-        return null;
+        return appointmentStatusDTO;
     }
 
     /*IN CASE OF PAST DATE ->
@@ -365,6 +374,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 && (appointment.getSpecializationId().equals(doctorDutyRosterStatus.getSpecializationId()));
     }
 
+    private boolean hasDepartmentAppointment(HospitalDeptAppointmentStatusResponseDTO appointment,
+                                             HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
+
+        return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
+                && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()))
+                || (appointment.getRoomId().equals(rosterStatusResponseDTO.getRoomId()));
+    }
+
     /*FETCH DOCTOR DUTY ROSTER FROM DOCTOR_DUTY_ROSTER_OVERRIDE FIRST
      AND THEN DOCTOR_DUTY ROSTER. THEN MERGE BOTH ROSTERS BASED ON THE REQUESTED SEARCH DATE, DOCTOR AND SPECIALIZATION*/
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
@@ -378,8 +395,222 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(DoctorDutyRoster.class);
 
-        return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus,hospitalDeptDutyRosterStatus);
+        return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
     }
+
+    /*FETCH APPOINTMENT DETAILS WITHIN SELECTED DATE RANGE*/
+    private List<HospitalDeptAppointmentStatusResponseDTO> fetchAppointmentStatus(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
+        return appointmentRepository.fetchHospitalDeptAppointmentForAppointmentStatus(requestDTO);
+
+    }
+
+    private List<HospitalDeptDutyRosterStatusResponseDTO> setDepartmentAppointmentTimeSlot(String status,
+                                                                      List<HospitalDeptDutyRosterStatusResponseDTO> dutyRosterStatusResponseDTOS,
+                                                                      List<HospitalDeptAppointmentStatusResponseDTO> appointmentStatusResponseDTOS) {
+
+        switch (status) {
+            case ALL:
+                setDoctorTimeSlotForAllDepartmentAppointmentStatus(dutyRosterStatusResponseDTOS, appointmentStatusResponseDTOS);
+                break;
+            case VACANT:
+                setDoctorTimeSlotForVacantDepartmentAppointmentStatus(dutyRosterStatusResponseDTOS, appointmentStatusResponseDTOS);
+                break;
+            default:
+                dutyRosterStatusResponseDTOS = setDoctorTimeSlotForSelectedDepartmentAppointmentStatus(dutyRosterStatusResponseDTOS,
+                        appointmentStatusResponseDTOS);
+                break;
+        }
+
+        return dutyRosterStatusResponseDTOS;
+    }
+
+    /*IF DOCTOR DAY OFF STATUS= 'Y', THEN THERE ARE NO ANY TIME SLOTS
+  * IF DAY OFF STATUS = 'N' :
+  * IF APPOINTMENT EXISTS WITHIN SELECTED DOCTOR DUTY ROSTER RANGE, THEN FILTER APPOINTMENT STATUS ACCORDINGLY
+  * ELSE APPOINTMENT STATUS IS VACANT FOR ALL TIME SLOTS*/
+    private void setDoctorTimeSlotForAllDepartmentAppointmentStatus(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS,
+                                                          List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
+
+        for (HospitalDeptDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO : rosterStatusResponseDTOS) {
+
+            doctorDutyRosterStatusResponseDTO.setWeekDayName(
+                    doctorDutyRosterStatusResponseDTO.getDate().getDayOfWeek().toString());
+
+            List<AppointmentTimeSlotResponseDTO> timeSlotResponseDTOS = new ArrayList<>();
+
+            boolean isDateBefore = convertLocalDateToDate(doctorDutyRosterStatusResponseDTO.getDate())
+                    .before(new Date());
+
+            if (isDateBefore) {
+                setTimeSlotForAllDepartmentAppointmentStatus(doctorDutyRosterStatusResponseDTO, timeSlotResponseDTOS, appointments);
+            } else {
+                if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO))
+                    setTimeSlotForAllDepartmentAppointmentStatus(doctorDutyRosterStatusResponseDTO, timeSlotResponseDTOS, appointments);
+            }
+        }
+    }
+
+    private void setTimeSlotForAllDepartmentAppointmentStatus
+            (HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO,
+             List<AppointmentTimeSlotResponseDTO> doctorTimeSlots,
+             List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
+
+        List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster =
+                appointments.stream()
+                        .filter(appointment -> hasDepartmentAppointment(appointment, rosterStatusResponseDTO))
+                        .collect(Collectors.toList());
+
+        if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
+
+            setTimeSlotHavingDepartmentAppointments(appointmentMatchedWithRoster, doctorTimeSlots);
+
+            doctorTimeSlots = calculateTimeSlotsForAll(rosterStatusResponseDTO, doctorTimeSlots);
+        } else {
+            if (rosterStatusResponseDTO.getDayOffStatus().equals(NO))
+                doctorTimeSlots = calculateTimeSlotsForAll(rosterStatusResponseDTO, doctorTimeSlots);
+        }
+
+        rosterStatusResponseDTO.setAppointmentTimeSlots(doctorTimeSlots);
+    }
+
+    private void setTimeSlotHavingDepartmentAppointments(List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster,
+                                               List<AppointmentTimeSlotResponseDTO> doctorTimeSlots) {
+
+        for (HospitalDeptAppointmentStatusResponseDTO appointment : appointmentMatchedWithRoster) {
+            parseDepartmentAppointmentDetails(appointment, doctorTimeSlots);
+        }
+    }
+
+    private List<AppointmentTimeSlotResponseDTO> calculateTimeSlotsForAll(
+            HospitalDeptDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
+            List<AppointmentTimeSlotResponseDTO> doctorTimeSlots) {
+
+        return calculateTimeSlotsForAllDepartmentAppointmentStatus(
+                doctorDutyRosterStatusResponseDTO.getDate(),
+                doctorDutyRosterStatusResponseDTO.getStartTime(),
+                doctorDutyRosterStatusResponseDTO.getEndTime(),
+                doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
+                doctorTimeSlots);
+    }
+
+    private void setDoctorTimeSlotForVacantDepartmentAppointmentStatus(
+            List<HospitalDeptDutyRosterStatusResponseDTO> departmentDutyRosterStatusResponseDTOS,
+            List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
+
+        for (HospitalDeptDutyRosterStatusResponseDTO departmentDutyRosterStatusResponseDTO : departmentDutyRosterStatusResponseDTOS) {
+
+            departmentDutyRosterStatusResponseDTO.setWeekDayName(
+                    departmentDutyRosterStatusResponseDTO.getDate().getDayOfWeek().toString());
+
+            List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots = new ArrayList<>();
+
+            boolean isDateBefore = convertLocalDateToDate(departmentDutyRosterStatusResponseDTO.getDate())
+                    .before(new Date());
+
+            if (isDateBefore) {
+                setTimeSlotForVacantDepartmentAppointmentStatus
+                        (departmentDutyRosterStatusResponseDTO, appointments, appointmentTimeSlots);
+
+            } else {
+                if (departmentDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO))
+                    setTimeSlotForVacantDepartmentAppointmentStatus
+                            (departmentDutyRosterStatusResponseDTO, appointments, appointmentTimeSlots);
+            }
+        }
+    }
+
+    private void setTimeSlotForVacantDepartmentAppointmentStatus
+            (HospitalDeptDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
+             List<HospitalDeptAppointmentStatusResponseDTO> appointments,
+             List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots) {
+
+         /*FILTER APPOINTMENT THAT MATCHES WITH DOCTOR DUTY ROSTER INFO*/
+        List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster =
+                appointments.stream()
+                        .filter(appointment -> hasDepartmentAppointment(appointment, doctorDutyRosterStatusResponseDTO))
+                        .collect(Collectors.toList());
+
+        if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
+
+            /*JOIN MATCHED APPOINTMENTS INTO COMMA SEPARATED STRING eg. 10:00-PA, 10:20-PA*/
+            String matchedAppointmentWithStatus =
+                    appointmentMatchedWithRoster.stream()
+                            .map(HospitalDeptAppointmentStatusResponseDTO::getAppointmentTimeDetails)
+                            .collect(Collectors.joining(COMMA_SEPARATED));
+
+            appointmentTimeSlots = calculateTimeSlotsForVacantDepartmentAppointmentStatus(
+                    doctorDutyRosterStatusResponseDTO.getDate(),
+                    doctorDutyRosterStatusResponseDTO.getStartTime(),
+                    doctorDutyRosterStatusResponseDTO.getEndTime(),
+                    doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
+                    matchedAppointmentWithStatus,
+                    appointmentTimeSlots
+            );
+        } else {
+
+            if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO)) {
+
+                appointmentTimeSlots = calculateTimeSlotsForVacantDepartmentAppointmentStatus(
+                        doctorDutyRosterStatusResponseDTO.getDate(),
+                        doctorDutyRosterStatusResponseDTO.getStartTime(),
+                        doctorDutyRosterStatusResponseDTO.getEndTime(),
+                        doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
+                        null,
+                        appointmentTimeSlots
+                );
+            }
+        }
+
+        doctorDutyRosterStatusResponseDTO.setAppointmentTimeSlots(appointmentTimeSlots);
+    }
+
+    private List<HospitalDeptDutyRosterStatusResponseDTO> setDoctorTimeSlotForSelectedDepartmentAppointmentStatus(
+            List<HospitalDeptDutyRosterStatusResponseDTO> departmentDutyRosterStatus,
+            List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
+
+        /*THROW EXCEPTION IF NO APPOINTMENT EXISTS FOR THE SELECTED STATUS*/
+        if (appointments.isEmpty()) {
+            log.error(CONTENT_NOT_FOUND, APPOINTMENT);
+            throw new NoContentFoundException(Appointment.class);
+        }
+
+        /*FILTER OUT FROM DOCTOR DUTY ROSTERS SUCH THAT IT CONTAINS ONLY THOSE ROSTERS HAVING
+         * APPOINTMENT*/
+        List<HospitalDeptDutyRosterStatusResponseDTO> rostersWithAppointment = departmentDutyRosterStatus.stream()
+                .filter(doctorDutyRoster -> (appointments.stream()
+                        .anyMatch(appointment -> hasDepartmentAppointment(appointment, doctorDutyRoster)))
+                )
+                .collect(Collectors.toList());
+
+         /*ADD TO LIST ONLY IF DOCTOR DAY OFF STATUS IS 'N'
+         * AND APPOINTMENT CONDITION MATCHES*/
+        rostersWithAppointment.forEach(doctorDutyRoster -> {
+            List<AppointmentTimeSlotResponseDTO> appointmentTimeSlotResponseDTOS = new ArrayList<>();
+            appointments
+                    .stream()
+                    .filter(appointment -> hasDepartmentAppointment(appointment, doctorDutyRoster))
+                    .forEach(appointment -> {
+
+                        doctorDutyRoster.setWeekDayName(appointment.getDate().getDayOfWeek().toString());
+
+                        boolean isDateBefore = convertLocalDateToDate(appointment.getDate()).before(new Date());
+
+                        if (isDateBefore) {
+                            parseDepartmentAppointmentDetails(appointment, appointmentTimeSlotResponseDTOS);
+                        } else {
+                            if (doctorDutyRoster.getDayOffStatus().equals(NO))
+                                parseDepartmentAppointmentDetails(appointment, appointmentTimeSlotResponseDTOS);
+                        }
+
+                        doctorDutyRoster.setAppointmentTimeSlots(appointmentTimeSlotResponseDTOS);
+                    });
+        });
+
+        return rostersWithAppointment;
+    }
+
 
 
 }

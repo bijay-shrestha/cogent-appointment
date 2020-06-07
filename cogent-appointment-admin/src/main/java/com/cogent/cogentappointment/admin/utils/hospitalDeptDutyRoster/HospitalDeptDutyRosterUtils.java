@@ -135,7 +135,8 @@ public class HospitalDeptDutyRosterUtils {
                                         .dayOffStatus(weekMatchedSplit[2].charAt(0))
                                         .hospitalDepartmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
                                         .hospitalDepartmentName(result[HOSPITAL_DEPARTMENT_NAME_INDEX].toString())
-                                        .roomId(result[ROOM_ID_INDEX].toString())
+                                        .roomId(Objects.isNull(result[ROOM_ID_INDEX]) ?
+                                                null : Long.parseLong(result[ROOM_ID_INDEX].toString()))
                                         .roomNumber(result[ROOM_NUMBER_INDEX].toString())
                                         .rosterGapDuration(Integer.parseInt(result[ROSTER_GAP_DURATION_INDEX].toString()))
                                         .build();

@@ -31,8 +31,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.*;
 import static com.cogent.cogentappointment.admin.query.IntegrationQuery.*;
 import static com.cogent.cogentappointment.admin.query.RequestBodyAttributesQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID;
@@ -231,17 +235,22 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     private Supplier<NoContentFoundException> CLIENT_API_INTEGRATION_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, CLIENT_FEATURE_INTEGRATION);
-        throw new NoContentFoundException(ClientFeatureIntegration.class);
+        throw new NoContentFoundException(NO_RECORD_FOUND, CLIENT_FEATURE_INTEGRATION);
     };
 
-    private Supplier<NoContentFoundException> CLIENT_API_REQUEST_HEADER_NOT_FOUND = () -> {
+    private Function<Long, NoContentFoundException> CLIENT_API_REQUEST_HEADER_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND, API_REQUEST_HEADER);
-        throw new NoContentFoundException(ApiRequestHeader.class);
+        throw new NoContentFoundException(ApiRequestHeader.class, "id", id.toString());
     };
 
-    private Supplier<NoContentFoundException> CLIENT_API_QUERY_PARAMETERS_NOT_FOUND = () -> {
+    private Function<Long, NoContentFoundException> CLIENT_API_QUERY_PARAMETERS_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND, API_QUERY_PARAMETER);
-        throw new NoContentFoundException(ApiQueryParameters.class);
+        throw new NoContentFoundException(ApiQueryParameters.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "id", id.toString());
     };
 
 

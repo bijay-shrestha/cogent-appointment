@@ -15,7 +15,6 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
-import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -314,23 +313,26 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         apiFeatureIntegrationList.forEach(apiFeatureIntegration -> {
             List<ApiRequestHeader> apiRequestHeaderList = apiRequestHeaderRepository.
-                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getId())
-                    .orElseThrow(() -> API_REQUEST_HEADER_NOT_FOUND.apply(apiFeatureIntegration.getId()));
+                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getId()).get();
 
             apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
 
             List<ApiQueryParameters> apiQueryParametersList = apiQueryParametersRepository.
-                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getId())
-                    .orElseThrow(() -> API_QUERY_PARAMETER_NOT_FOUND.apply(apiFeatureIntegration.getId()));
+                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getId()).get();
 
             apiQueryParameterToDelete.addAll(apiQueryParametersList);
 
 
         });
 
-        parseToDeletedApiRequestHeaders(apiRequestHeaderListToDelete);
+        if (apiRequestHeaderListToDelete.size() > 0) {
+            parseToDeletedApiRequestHeaders(apiRequestHeaderListToDelete);
+        }
 
-        parseToDeletedApiQueryParameters(apiQueryParameterToDelete);
+        if (apiQueryParameterToDelete.size() > 0) {
+            parseToDeletedApiQueryParameters(apiQueryParameterToDelete);
+
+        }
 
         parseToDeletedApiFeatureIntegration(apiFeatureIntegrationList);
 

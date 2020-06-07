@@ -454,7 +454,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private void setTimeSlotForAllDepartmentAppointmentStatus
             (HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO,
-             List<AppointmentTimeSlotResponseDTO> doctorTimeSlots,
+             List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots,
              List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
 
         List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster =
@@ -464,15 +464,15 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
 
-            setTimeSlotHavingDepartmentAppointments(appointmentMatchedWithRoster, doctorTimeSlots);
+            setTimeSlotHavingDepartmentAppointments(appointmentMatchedWithRoster, appointmentTimeSlots);
 
-            doctorTimeSlots = calculateTimeSlotsForAll(rosterStatusResponseDTO, doctorTimeSlots);
+            appointmentTimeSlots = calculateTimeSlotsForAll(rosterStatusResponseDTO, appointmentTimeSlots);
         } else {
             if (rosterStatusResponseDTO.getDayOffStatus().equals(NO))
-                doctorTimeSlots = calculateTimeSlotsForAll(rosterStatusResponseDTO, doctorTimeSlots);
+                appointmentTimeSlots = calculateTimeSlotsForAll(rosterStatusResponseDTO, appointmentTimeSlots);
         }
 
-        rosterStatusResponseDTO.setAppointmentTimeSlots(doctorTimeSlots);
+        rosterStatusResponseDTO.setAppointmentTimeSlots(appointmentTimeSlots);
     }
 
     private void setTimeSlotHavingDepartmentAppointments(List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster,

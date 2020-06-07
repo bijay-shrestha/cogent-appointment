@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.thirdparty.configuration;
 
+import com.cogent.cogentappointment.thirdparty.constants.SwaggerConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ParameterBuilder;
@@ -22,8 +23,8 @@ public class SwaggerConfiguration {
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.cogent.cogentappointment.resource"))
-                .paths(PathSelectors.regex("/api.*"))
+                .apis(RequestHandlerSelectors.basePackage(SwaggerConstants.BASE_PACKAGE))
+                .paths(PathSelectors.regex(SwaggerConstants.PATH_REGEX))
                 .build()
                 .apiInfo(metaData())
                 .globalOperationParameters(

@@ -8,6 +8,6 @@ public class ObjectMapperUtils {
 
     public static ThirdPartyInfo convertToEntity(ModelMapper modalMapper,
                                                  CheckInRequestDTO checkInRequestDTO) {
-        return modalMapper.map(checkInRequestDTO, ThirdPartyInfo.class);
+    return modalMapper.map(checkInRequestDTO, ThirdPartyInfo.class);
     }
 }

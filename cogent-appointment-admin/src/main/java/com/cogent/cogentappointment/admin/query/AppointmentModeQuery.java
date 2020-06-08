@@ -13,7 +13,7 @@ public class AppointmentModeQuery {
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
             " SELECT am.name," +
                     " am.code" +
-                    " FROM AppointmentMode bm" +
+                    " FROM AppointmentMode am" +
                     " WHERE" +
                     " am.status !='D'" +
                     " AND (am.name=:name OR am.code=:code)";

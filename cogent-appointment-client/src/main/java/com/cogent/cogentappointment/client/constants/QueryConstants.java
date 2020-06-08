@@ -55,6 +55,8 @@ public class QueryConstants {
 
     //I
     public static final String ID = "id";
+    public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
+    public static final String API_FEATURE__ID = "featureId";
 
     //J
 

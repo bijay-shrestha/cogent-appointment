@@ -85,11 +85,11 @@ public class IntegrationAdminModeQuery {
             " SELECT" +
                     " COUNT(amfi.id)" +
                     " FROM AdminModeFeatureIntegration amfi" +
-                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " AND amfi.status='Y'" +
+                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
+                    " WHERE amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND hrm.status='Y'" +
                     " AND aif.status='Y'" +
@@ -102,7 +102,7 @@ public class IntegrationAdminModeQuery {
                     " SELECT" +
                             " amfi.id as id," +
                             " am.name as appointmentMode," +
-                            " ic.name as integrationChannel" +
+                            " ic.name as integrationChannel," +
                             " f.name as featureName," +
                             " f.code as featureCode," +
                             " hrm.name as requestMethod," +

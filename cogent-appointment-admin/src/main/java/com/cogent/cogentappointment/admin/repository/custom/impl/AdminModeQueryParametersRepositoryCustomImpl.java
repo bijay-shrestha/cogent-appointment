@@ -32,19 +32,15 @@ public class AdminModeQueryParametersRepositoryCustomImpl implements AdminModeQu
 
 
     @Override
-    public Map<String, String> findAdminModeApiQueryParameters(Long featureId) {
+    public List<ApiQueryParametersResponseDTO> findAdminModeApiQueryParameters(Long featureId) {
         Query query = createQuery.apply(entityManager, ADMIN_MODE_QUERY_PARAMETERS_QUERY)
                 .setParameter(API_FEATURE_ID, featureId);
 
         List<ApiQueryParametersResponseDTO> parametersResponseDTO =
                 transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);
 
-        Map<String, String> map = new HashMap<>();
-        parametersResponseDTO.forEach(response -> {
-            map.put(response.getKeyParam(), response.getValueParam());
-        });
 
-        return map;
+        return parametersResponseDTO;
     }
 
     @Override

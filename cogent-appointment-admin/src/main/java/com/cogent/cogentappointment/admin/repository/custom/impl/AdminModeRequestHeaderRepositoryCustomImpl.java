@@ -32,19 +32,20 @@ public class AdminModeRequestHeaderRepositoryCustomImpl implements AdminModeRequ
 
 
     @Override
-    public Map<String, String> findAdminModeApiRequestHeaders(Long featureId) {
+    public List<ApiRequestHeaderResponseDTO> findAdminModeApiRequestHeaders(Long featureId) {
         Query query = createQuery.apply(entityManager, ADMIN_MODE_FEATURES_HEADERS_QUERY)
                 .setParameter(API_FEATURE_ID, featureId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
                 transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
 
-        Map<String, String> map = new HashMap<>();
-        requestHeaderResponseDTO.forEach(response -> {
-            map.put(response.getKeyParam(), response.getValueParam());
-        });
+        if (requestHeaderResponseDTO.isEmpty())
+            return null;
 
-        return map;
+        else {
+            return requestHeaderResponseDTO;
+        }
+        
     }
 
     @Override
@@ -56,7 +57,6 @@ public class AdminModeRequestHeaderRepositoryCustomImpl implements AdminModeRequ
                 transformQueryToResultList(query, ApiRequestHeaderUpdateResponseDTO.class);
 
         if (apiRequestHeaderUpdateResponseDTOS.isEmpty())
-//            throw CLIENT_API_REQUEST_HEADER_NOT_FOUND.get();
             return null;
 
         else {

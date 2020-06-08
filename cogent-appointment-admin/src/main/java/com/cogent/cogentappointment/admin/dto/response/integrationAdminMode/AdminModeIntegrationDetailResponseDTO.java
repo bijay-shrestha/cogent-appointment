@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,9 +34,9 @@ public class AdminModeIntegrationDetailResponseDTO implements Serializable {
 
     private String url;
 
-    private Map<String,String> headers;
+    private List<ApiRequestHeaderResponseDTO> headers;
 
-    private Map<String,String> queryParameters;
+    private List<ApiQueryParametersResponseDTO> queryParameters;
 
     private String createdBy;
 

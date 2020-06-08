@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
@@ -21,6 +23,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -38,8 +41,10 @@ import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterRo
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseHDDRosterDetails;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToExistingRosterDetails;
 
 /**
@@ -158,6 +163,26 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
                         : new ArrayList<>();
 
         return parseToExistingRosterDetails(weekDaysDetail, overrideDetail);
+    }
+
+    @Override
+    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
+
+
+        List<Object[]> results = query.getResultList();
+
+        return parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+                results, requestDTO.getFromDate(), requestDTO.getToDate());
     }
 
     private String fetchRoomNumber(Long hddRosterId) {

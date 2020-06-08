@@ -220,10 +220,10 @@ public class AppointmentStatusUtils {
     }
 
     public static HospitalDeptAppointmentStatusDTO parseToHospitalDeptAppointmentStatusDTO(
-            List<HospitalDeptDutyRosterStatusResponseDTO> doctorDutyRostersInfo) {
+            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRostersInfo) {
 
         return HospitalDeptAppointmentStatusDTO.builder()
-                .doctorDutyRosterInfo(doctorDutyRostersInfo)
+                .doctorDutyRosterInfo(hospitalDeptDutyRostersInfo)
                 .build();
     }
 

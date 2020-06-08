@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.log.Appointme
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
@@ -24,6 +25,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -108,4 +110,7 @@ public interface AppointmentRepositoryCustom {
             AppointmentQueueRequestDTO appointmentQueueRequestDTO,
             Long hospitalId,
             Pageable pageable);
+
+    List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatus(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO);
 }

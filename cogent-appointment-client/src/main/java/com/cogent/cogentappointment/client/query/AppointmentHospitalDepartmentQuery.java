@@ -1,12 +1,12 @@
-package com.cogent.cogentappointment.admin.query;
+package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
-import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
 
 /**
  * @author Sauravi Thapa on 06/07/20
@@ -39,10 +39,8 @@ public class AppointmentHospitalDepartmentQuery {
                 "LEFT JOIN hospital h ON h.id=a.hospital_id  " +
                 " WHERE " +
                 " a.appointment_date BETWEEN :fromDate AND :toDate " +
-                " AND a.status IN ('PA', 'A', 'C') ";
-
-        if (!Objects.isNull(requestDTO.getHospitalId()))
-            SQL += " AND h.id =:hospitalId";
+                " AND a.status IN ('PA', 'A', 'C') " +
+                " AND h.id =:hospitalId";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND ahdi.hospital_department_id =:hospitalDepartmentId";

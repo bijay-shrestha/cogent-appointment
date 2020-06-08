@@ -68,11 +68,11 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code, String alias) {
+    public List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String esewaMerchantCode, String alias) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
                 .setParameter(NAME, name)
-                .setParameter(CODE, code)
+                .setParameter(ESEWA_MERCHANT_CODE, esewaMerchantCode)
                 .setParameter(ALIAS, alias);
 
         return query.getResultList();

@@ -506,16 +506,19 @@ public class HospitalServiceImpl implements HospitalService {
                 updateRequestDTOS.stream()
                         .map(updateRequestDTO -> {
 
-                            if (Objects.isNull(updateRequestDTO.getAppointmentServiceTypeId())) {
+                            if (Objects.isNull(updateRequestDTO.getHospitalAppointmentServiceTypeId())) {
 
                                 AppointmentServiceType appointmentServiceType =
                                         appointmentServiceTypeService.fetchActiveById(
                                                 updateRequestDTO.getAppointmentServiceTypeId());
 
                                 return parseToHospitalAppointmentServiceType(hospital, appointmentServiceType, NO);
+
                             } else {
                                 HospitalAppointmentServiceType hospitalAppointmentServiceType =
-                                        findHospitalAppointmentServiceTypeById(updateRequestDTO.getAppointmentServiceTypeId());
+                                        findHospitalAppointmentServiceTypeById(
+                                                updateRequestDTO.getHospitalAppointmentServiceTypeId());
+
                                 return updateHospitalAppointmentServiceTypeStatus(hospitalAppointmentServiceType,
                                         updateRequestDTO.getStatus(), NO);
                             }

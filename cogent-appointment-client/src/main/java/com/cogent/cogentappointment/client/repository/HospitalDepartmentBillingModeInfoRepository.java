@@ -18,11 +18,6 @@ public interface HospitalDepartmentBillingModeInfoRepository extends JpaReposito
         HospitalDepartmentBillingModeInfoRepositoryCustom {
 
 
-    @Query(value = "SELECT hdc FROM HospitalDepartmentBillingModeInfo hdc WHERE" +
-            " hdc.hospitalDepartment.id = :hospitalDepartmentId AND hdc.status != 'D'")
-    Optional<HospitalDepartmentBillingModeInfo> fetchByHospitalDepartmentId(@Param("hospitalDepartmentId")
-                                                                                    Long hospitalDepartmentId);
-
     @Query(value = "SELECT hdc FROM HospitalDepartmentBillingModeInfo hdc WHERE hdc.id=:id AND hdc.status != 'D'")
     HospitalDepartmentBillingModeInfo fetchById(@Param("id") Long id);
 

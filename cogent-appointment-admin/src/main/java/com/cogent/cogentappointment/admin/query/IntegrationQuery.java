@@ -289,7 +289,8 @@ public class IntegrationQuery {
             whereClause += " AND ait.id=" + requestSearchDTO.getApiIntegrationTypeId();
 
         if (!ObjectUtils.isEmpty(requestSearchDTO.getUrl()))
-            whereClause += " AND aif.url like %'" + requestSearchDTO.getUrl() + "'%";
+            whereClause += " AND aif.url LIKE '%" + requestSearchDTO.getUrl() + "%'";
+
 
 
         return whereClause;

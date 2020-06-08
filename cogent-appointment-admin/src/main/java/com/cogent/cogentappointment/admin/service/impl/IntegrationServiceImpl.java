@@ -248,6 +248,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 queryParameters.setApiIntegrationFormatId(integrationFormatId);
                 queryParameters.setParam(requestDTO.getKeyParam());
                 queryParameters.setValue(requestDTO.getValueParam());
+                queryParameters.setDescription(requestDTO.getDescription());
                 queryParameters.setStatus(ACTIVE);
 
                 apiQueryParametersRepository.save(queryParameters);
@@ -258,6 +259,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 apiQueryParameters.setParam(requestDTO.getKeyParam());
                 apiQueryParameters.setValue(requestDTO.getValueParam());
                 apiQueryParameters.setStatus(requestDTO.getStatus());
+                apiQueryParameters.setDescription(requestDTO.getDescription());
                 apiQueryParameters.setApiIntegrationFormatId(integrationFormatId);
 
             }

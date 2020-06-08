@@ -106,6 +106,8 @@ public class SwaggerConstants {
         String BASE_HOSPITAL_DEPARTMENT_API_VALUE = "This is Hospital Department Resource";
         String FETCH_ACTIVE_MIN_HOSPITAL_DEPARTMENT_INFO = "Fetch minimal active hospital department" +
                 " details (id and name) for dropdown by hospital id";
+        String FETCH_COMBINED_HOSPITAL_DEPARTMENT_INFO = "Fetch combined hospital department" +
+                " details (id and name) and billing mode info by hospital id";
     }
 
     //I

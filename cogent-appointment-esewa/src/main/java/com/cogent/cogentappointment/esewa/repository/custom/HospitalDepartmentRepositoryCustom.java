@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,7 @@ import java.util.List;
 public interface HospitalDepartmentRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveHospitalDepartment(Long hospitalId);
+
+    List<HospitalDepartmentResponseDTO> fetchHospitalDepartmentInfo(Long hospitalId);
 
 }

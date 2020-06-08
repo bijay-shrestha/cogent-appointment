@@ -12,6 +12,8 @@ import java.io.Serializable;
 
 /**
  * @author Sauravi Thapa ON 5/19/20
+ * Consists Department Charges as per Billing Mode
+ *
  */
 @Entity
 @Table(name = "hospital_department_billing_mode_info")

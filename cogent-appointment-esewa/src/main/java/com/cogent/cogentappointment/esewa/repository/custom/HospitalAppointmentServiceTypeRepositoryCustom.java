@@ -11,6 +11,5 @@ import org.springframework.stereotype.Repository;
 @Qualifier("hospitalAppointmentServiceTypeRepositoryCustom")
 public interface HospitalAppointmentServiceTypeRepositoryCustom {
 
-    HospitalAppointmentServiceType fetchHospitalAppointmentServiceType(Long appointmentServiceTypeId,
-                                                                       Long hospitalId);
+    HospitalAppointmentServiceType fetchHospitalAppointmentServiceType(Long hospitalAppointmentServiceTypeId);
 }

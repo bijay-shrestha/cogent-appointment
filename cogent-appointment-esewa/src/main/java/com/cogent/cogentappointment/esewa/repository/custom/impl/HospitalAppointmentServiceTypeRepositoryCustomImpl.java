@@ -13,8 +13,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.APPOINTMENT_SERVICE_TYPE_ID;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_APPOINTMENT_SERVICE_TYPE_ID;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentServiceTypeLog.APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.esewa.query.HospitalAppointmentServiceTypeQuery.QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE;
@@ -31,17 +30,15 @@ public class HospitalAppointmentServiceTypeRepositoryCustomImpl implements Hospi
     private EntityManager entityManager;
 
     @Override
-    public HospitalAppointmentServiceType fetchHospitalAppointmentServiceType(Long appointmentServiceTypeId,
-                                                                              Long hospitalId) {
+    public HospitalAppointmentServiceType fetchHospitalAppointmentServiceType(Long hospitalAppointmentServiceTypeId) {
 
         try {
             return entityManager.createQuery(QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE,
                     HospitalAppointmentServiceType.class)
-                    .setParameter(APPOINTMENT_SERVICE_TYPE_ID, appointmentServiceTypeId)
-                    .setParameter(HOSPITAL_ID, hospitalId)
+                    .setParameter(HOSPITAL_APPOINTMENT_SERVICE_TYPE_ID, hospitalAppointmentServiceTypeId)
                     .getSingleResult();
         } catch (NoResultException e) {
-            throw APPOINTMENT_SERVICE_TYPE_NOT_FOUND.apply(appointmentServiceTypeId);
+            throw APPOINTMENT_SERVICE_TYPE_NOT_FOUND.apply(hospitalAppointmentServiceTypeId);
         }
     }
 

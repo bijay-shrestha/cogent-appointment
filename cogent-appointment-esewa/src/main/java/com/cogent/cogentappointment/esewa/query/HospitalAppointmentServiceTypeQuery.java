@@ -9,6 +9,5 @@ public class HospitalAppointmentServiceTypeQuery {
             " SELECT h" +
                     " FROM HospitalAppointmentServiceType h " +
                     " WHERE h.status = 'Y'" +
-                    " AND h.hospital.id =:hospitalId" +
-                    " AND h.appointmentServiceType.id=:appointmentServiceTypeId";
+                    " AND h.id=:hospitalAppointmentServiceTypeId";
 }

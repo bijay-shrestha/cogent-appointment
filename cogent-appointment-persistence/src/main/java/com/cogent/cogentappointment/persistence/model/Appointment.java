@@ -16,13 +16,13 @@ import java.util.Date;
  * <p>
  *
  * Connected Table
- * 1. AppointmentService Type
+ * 1. HospitalAppointmentService Type
  *   Appointment Service Type can be
  *      a. Doctor Consultation (AppointmentDoctorInfo)
  *          i. Doctor
  *          ii. Specialization
  *
- *      b. Department Consulatation (AppointmentHospitalDepartmentInfo)
+ *      b. Department Consultation (AppointmentHospitalDepartmentInfo)
  *          i. HospitalDepartment
  *          ii. HospitalDepartmentRoomInfo
  *          iii. HospitalDepartmentBillingModeInfo
@@ -47,8 +47,8 @@ public class Appointment extends Auditable<String> implements Serializable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "appointment_service_type_id")
-    private AppointmentServiceType appointmentServiceType;
+    @JoinColumn(name = "hospital_appointment_service_type_id")
+    private HospitalAppointmentServiceType hospitalAppointmentServiceType;
 
     //todo : remove doctor and specialization from here
     /*eg.Specialization name like Surgeon, Physician,etc*/
@@ -124,8 +124,8 @@ public class Appointment extends Auditable<String> implements Serializable {
     public String toString() {
         return "Appointment{" +
                 "id=" + id +
-                ", specializationId=" + specializationId.getName() +
-                ", doctorId=" + doctorId.getName() +
+//                ", specializationId=" + specializationId.getName() +
+//                ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
                 ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +

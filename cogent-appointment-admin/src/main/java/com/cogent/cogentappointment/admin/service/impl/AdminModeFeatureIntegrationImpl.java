@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
@@ -375,7 +376,8 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 requestHeader.setKeyName(requestDTO.getKeyParam());
                 requestHeader.setValue(requestDTO.getValueParam());
                 requestHeader.setDescription(requestDTO.getDescription());
-                requestHeader.setStatus(requestDTO.getStatus());
+                requestHeader.setStatus(StatusConstants.ACTIVE);
+
 
                 adminModeRequestHeaderRepository.save(requestHeader);
 
@@ -408,7 +410,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 queryParameters.setApiIntegrationFormatId(apiIntegrationFormatId.getId());
                 queryParameters.setParam(requestDTO.getKeyParam());
                 queryParameters.setValue(requestDTO.getValueParam());
-                queryParameters.setStatus(requestDTO.getStatus());
+                queryParameters.setStatus(StatusConstants.ACTIVE);
 
                 adminModeQueryParametersRepository.save(queryParameters);
 

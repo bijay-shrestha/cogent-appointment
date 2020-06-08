@@ -167,8 +167,26 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     }
 
     @Override
-    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS(requestDTO))
+    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatus
+            (HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+        List<HospitalDeptDutyRosterStatusResponseDTO> responseDTOS=new ArrayList<>();
+
+        List<Object[]> resultsWithRoom = queryToGetRosterWithRoom(requestDTO).getResultList();
+
+        List<Object[]> resultWithoutRoom= queryToGetRosterWithoutRoom(requestDTO).getResultList();
+
+        responseDTOS.addAll(parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+                resultsWithRoom, requestDTO.getFromDate(), requestDTO.getToDate()));
+
+        responseDTOS.addAll(parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+                resultWithoutRoom, requestDTO.getFromDate(), requestDTO.getToDate()));
+
+        return responseDTOS;
+    }
+
+    private Query queryToGetRosterWithRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_WITH_ROOM(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
@@ -179,11 +197,23 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
 
+        return query;
 
-        List<Object[]> results = query.getResultList();
+    }
 
-        return parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
-                results, requestDTO.getFromDate(), requestDTO.getToDate());
+    private Query queryToGetRosterWithoutRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_WITHOUT_ROOM(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        return query;
+
     }
 
     private String fetchRoomNumber(Long hddRosterId) {

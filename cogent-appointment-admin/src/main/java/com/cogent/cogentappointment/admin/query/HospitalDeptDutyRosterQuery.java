@@ -142,7 +142,16 @@ public class HospitalDeptDutyRosterQuery {
                 " hddr.status = 'Y'" +
                 " AND hd.status = 'Y'" +
                 " AND hddr.to_date >=:fromDate" +
-                " AND hddr.from_date <=:toDate";
+                " AND hddr.from_date <=:toDate" +
+                " AND hdri.last_modified_date IN (" +
+                " SELECT MIN(hdri.last_modified_date) FROM hospital_department_room_info hdri  " +
+                " LEFT JOIN hospital_department hd ON hd.id=hdri.hospital_department_id  " +
+                " WHERE hdri.status!='D' " +
+                " AND hd.status!='D' " +
+                " AND hd.id IN (" +
+                " SELECT DISTINCT(hdri.hospital_department_id) " +
+                " from hospital_department_room_info hdri ) " +
+                " GROUP  BY hd.id )";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND hd.id = :hospitalDepartmentId";

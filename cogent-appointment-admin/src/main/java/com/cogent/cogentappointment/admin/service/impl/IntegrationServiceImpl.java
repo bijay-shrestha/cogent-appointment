@@ -368,7 +368,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         ClientApiIntegrationDetailResponseDTO responseDTO = new ClientApiIntegrationDetailResponseDTO();
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
-        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
         responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
@@ -413,7 +413,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 findApiQueryParametersForUpdate(featureIntegrationResponse.getFeatureId());
 
         ClientApiIntegrationUpdateResponseDTO responseDTO = new ClientApiIntegrationUpdateResponseDTO();
-        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());

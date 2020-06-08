@@ -137,7 +137,7 @@ public class IntegrationQuery {
             "SELECT" +
                     " f.id as featureId," +
                     " h.name as hospitalName," +
-                    " f.code as featureCode," +
+                    " f.name as featureName," +
                     " hrm.id as requestMethodId," +
                     " hrm.name as requestMethodName," +
                     " aif.url as url," +

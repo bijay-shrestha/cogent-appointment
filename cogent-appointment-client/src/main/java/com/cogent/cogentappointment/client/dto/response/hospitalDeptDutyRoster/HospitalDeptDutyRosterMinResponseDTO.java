@@ -30,5 +30,8 @@ public class HospitalDeptDutyRosterMinResponseDTO implements Serializable {
 
     private Character status;
 
+    private Character isRoomEnabled;
+
     private int totalItems;
+
 }

@@ -38,6 +38,7 @@ import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOv
 import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterQuery.*;
 import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL;
 import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER;
+import static com.cogent.cogentappointment.client.query.HospitalDeptWeekDaysDutyRosterDoctorInfoQuery.QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -224,7 +225,17 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_WEEK_DAYS_DETAIL)
                 .setParameter(ID, hddRosterId);
 
-        return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterResponseDTO.class);
+        List<HospitalDeptWeekDaysDutyRosterResponseDTO> weekDaysRosters =
+                transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterResponseDTO.class);
+
+        weekDaysRosters.forEach(weekDaysRoster -> {
+            List<HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO> weekDaysDoctorInfo
+                    = fetchWeekDaysDoctorInfo(weekDaysRoster.getRosterWeekDaysId());
+
+            weekDaysRoster.setWeekDaysDoctorInfo(weekDaysDoctorInfo);
+        });
+
+        return weekDaysRosters;
     }
 
     private List<HospitalDeptDutyRosterOverrideResponseDTO> fetchHDDRosterOverrideDetail(Long hddRosterId) {
@@ -247,4 +258,13 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
                 splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())),
                 "hddRosterId", hddRosterId.toString());
     };
+
+    private List<HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO> fetchWeekDaysDoctorInfo(
+            Long hospitalDepartmentWeekDaysDutyRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO)
+                .setParameter(ID, hospitalDepartmentWeekDaysDutyRosterId);
+
+        return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO.class);
+    }
 }

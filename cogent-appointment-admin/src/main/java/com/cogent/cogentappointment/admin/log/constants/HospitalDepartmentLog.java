@@ -12,4 +12,6 @@ public class HospitalDepartmentLog {
             "{} NOT FOUND ::::";
 
     public final static String HOSPITAL_DEPARTMENT_ROOM_INFO = "HOSPITAL DEPARTMENT ROOM INFO";
+
+    public final static String HOSPITAL_DEPARTMENT_DOCTOR_INFO = "HOSPITAL DEPARTMENT DOCTOR INFO";
 }

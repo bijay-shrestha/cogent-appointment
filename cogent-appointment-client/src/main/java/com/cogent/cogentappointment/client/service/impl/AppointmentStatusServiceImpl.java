@@ -491,7 +491,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
                 && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()))
-                || (appointment.getRoomId().equals(rosterStatusResponseDTO.getRoomId()));
+                || (appointment.getRoomId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
     }
 
     private void setTimeSlotHavingDepartmentAppointments(

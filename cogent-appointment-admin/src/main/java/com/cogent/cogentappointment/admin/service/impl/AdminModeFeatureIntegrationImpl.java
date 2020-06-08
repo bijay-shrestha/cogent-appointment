@@ -33,6 +33,8 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.*;
+import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.parseToDeletedApiQueryParameters;
+import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.parseToDeletedApiRequestHeaders;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -167,8 +169,8 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 .orElseThrow(() -> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND.apply(adminModeFeatureIntegration.getId()));
 
 
-        List<ApiRequestHeader> apiRequestHeaderListToDelete = new ArrayList<>();
-        List<ApiQueryParameters> apiQueryParameterToDelete = new ArrayList<>();
+        List<AdminModeRequestHeader> apiRequestHeaderListToDelete = new ArrayList<>();
+        List<AdminModeQueryParameters> apiQueryParameterToDelete = new ArrayList<>();
 
         adminModeApiFeatureIntegrationList.forEach(adminModeApiFeatureIntegration -> {
 
@@ -177,24 +179,21 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                     .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(adminModeApiFeatureIntegration.getId()));
 
 
-            List<ApiRequestHeader> apiRequestHeaderList = apiRequestHeaderRepository.
-                    findApiRequestHeaderByApiFeatureIntegrationId(adminModeApiFeatureIntegration.getId())
+            List<AdminModeRequestHeader> apiRequestHeaderList = adminModeRequestHeaderRepository.
+                    findAdminModeApiRequestHeaderByApiFeatureIntegrationId(adminModeApiFeatureIntegration.getApiIntegrationFormatId().getId())
                     .orElse(null);
 
             if (apiRequestHeaderList != null) {
                 apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
             }
 
-            List<ApiQueryParameters> apiQueryParametersList = apiQueryParametersRepository.
-                    findApiRequestHeaderByApiFeatureIntegrationId(adminModeApiFeatureIntegration.getId())
+            List<AdminModeQueryParameters> apiQueryParametersList = adminModeQueryParametersRepository.
+                    findApiRequestHeaderByApiIntegrationFormatId(adminModeApiFeatureIntegration.getApiIntegrationFormatId().getId())
                     .orElse(null);
 
             if (apiQueryParametersList != null) {
                 apiQueryParameterToDelete.addAll(apiQueryParametersList);
             }
-
-
-            apiQueryParameterToDelete.addAll(apiQueryParametersList);
 
             parseToDeletedApiIntegrationFormat(apiIntegrationFormat);
 

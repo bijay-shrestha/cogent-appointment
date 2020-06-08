@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,7 @@ public interface AdminModeRequestHeaderRepository extends JpaRepository<AdminMod
 
     @Query("SELECT amrf FROM AdminModeRequestHeader amrf WHERE amrf.id=:id AND amrf.status!='D'")
     Optional<AdminModeRequestHeader> findAdminModeRequestHeaderById(@Param("id") Long id);
+
+    @Query("SELECT amrf FROM AdminModeRequestHeader amrf WHERE amrf.apiIntegrationFormatId=:id AND amrf.status!='D'")
+    Optional<List<AdminModeRequestHeader>> findAdminModeApiRequestHeaderByApiFeatureIntegrationId(@Param("id") Long id);
 }

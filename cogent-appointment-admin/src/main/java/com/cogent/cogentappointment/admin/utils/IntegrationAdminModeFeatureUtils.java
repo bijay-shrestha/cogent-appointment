@@ -113,4 +113,18 @@ public class IntegrationAdminModeFeatureUtils {
 
 
     }
+
+    public static void parseToDeletedApiRequestHeaders(List<AdminModeRequestHeader> apiRequestHeaderListToDelete) {
+
+        apiRequestHeaderListToDelete.forEach(apiRequestHeader -> {
+            apiRequestHeader.setStatus(DELETED);
+        });
+    }
+
+    public static void parseToDeletedApiQueryParameters(List<AdminModeQueryParameters> apiQueryParameterToDelete) {
+
+        apiQueryParameterToDelete.forEach(apiQueryParamters -> {
+            apiQueryParamters.setStatus(DELETED);
+        });
+    }
 }

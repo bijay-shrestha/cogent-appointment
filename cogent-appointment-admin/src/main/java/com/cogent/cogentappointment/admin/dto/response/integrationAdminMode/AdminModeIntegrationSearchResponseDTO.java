@@ -24,6 +24,8 @@ public class AdminModeIntegrationSearchResponseDTO implements Serializable {
 
     private String requestMethod;
 
+    private String integrationChannel;
+
     private String url;
 
     private String companyName;

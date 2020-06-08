@@ -23,4 +23,8 @@ public interface AdminModeFeatureIntegrationRepositoryCustom {
     List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO();
 
     AdminModeApiIntegrationResponseDTO findAdminModeFeatureIntegration(Long id);
+
+    Long findAppointmentModeWiseFeatureAndRequestMethod(Long appointmentModeId,
+                                                        Long featureTypeId,
+                                                        Long requestMethodId);
 }

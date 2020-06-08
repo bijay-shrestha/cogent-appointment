@@ -20,6 +20,8 @@ public class ClientApiIntegrationSearchResponseDTO {
 
     private String requestMethod;
 
+    private String integrationChannel;
+
     private String url;
 
     private String hospitalName;

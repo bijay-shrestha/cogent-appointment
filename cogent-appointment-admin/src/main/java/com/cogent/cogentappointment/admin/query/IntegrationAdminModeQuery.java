@@ -14,7 +14,7 @@ public class IntegrationAdminModeQuery {
     public static final String ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
-                    " am.id as appointmentModeId,"+
+                    " am.id as appointmentModeId," +
                     " am.name as appointmentModeName," +
                     " f.name as featureName," +
                     " hrm.id as requestMethodId," +
@@ -80,31 +80,29 @@ public class IntegrationAdminModeQuery {
                     " AND amqp.status='Y'" +
                     " AND f.status='Y'";
 
-//    public static final String ADMIN_MODE_INTEGRATION_FEATURES_REQUEST_HEADERS_QUERY =
-//            " SELECT " +
-//                    " amrh.id as id," +
-//                    " amrh.keyName as keyParam," +
-//                    " amrh.value as valueParam," +
-//                    " amrh.description as description," +
-//                    " amrh.status as status" +
-//                    " FROM AdminModeFeatureIntegration amfi" +
-//                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-//                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
-//                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
-//                    " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
-//                    " WHERE f.id=:featureId" +
-//                    " AND aif.status='Y'" +
-//                    " AND amrh.status='Y'" +
-//                    " AND amfi.status='Y'" +
-//                    " AND amafi.status='Y'" +
-//                    " AND f.status='Y'";
 
+    public static final String VALIDATE_ADMIN_MODE_REQUEST_METHOD_AND_FEATURE =
+            " SELECT" +
+                    " COUNT(amfi.id)" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                    " AND amfi.status='Y'" +
+                    " AND amafi.status='Y'" +
+                    " AND hrm.status='Y'" +
+                    " AND aif.status='Y'" +
+                    " AND f.id=:featureId" +
+                    " AND hrm.id=:requestMethodId" +
+                    " AND amfi.appointmentModeId.id=:appointmentModeId";
 
     public static Function<AdminModeApiIntegrationSearchRequestDTO, String> ADMIN_MODE_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
                             " amfi.id as id," +
                             " am.name as appointmentMode," +
+                            " ic.name as integrationChannel" +
                             " f.name as featureName," +
                             " f.code as featureCode," +
                             " hrm.name as requestMethod," +
@@ -115,7 +113,8 @@ public class IntegrationAdminModeQuery {
                             " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                             " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
-                            " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId"
+                            " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(

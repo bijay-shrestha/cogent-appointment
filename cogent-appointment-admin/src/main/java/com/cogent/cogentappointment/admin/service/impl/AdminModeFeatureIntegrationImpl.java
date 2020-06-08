@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.Admi
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
@@ -97,6 +98,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
                 requestDTO.getRequestMethodId());
 
+        checkAdminModeFeatureIntegrationDuplicity(requestDTO.getAppointmentModeId(),
+                requestDTO.getFeatureTypeId(),
+                requestDTO.getRequestMethodId());
+
         AppointmentMode appointmentMode = findAppointmentMode(requestDTO.getAppointmentModeId());
 
         IntegrationChannel integrationChannel = integrationChannelRepository.
@@ -133,6 +138,20 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         saveAdminModeRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat.getId());
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+
+    }
+
+    private void checkAdminModeFeatureIntegrationDuplicity(Long appointmentModeId, Long featureTypeId, Long requestMethodId) {
+
+
+        Long count = adminModeFeatureIntegrationRepository.findAppointmentModeWiseFeatureAndRequestMethod(appointmentModeId,
+                featureTypeId, requestMethodId);
+
+        if (count > 0) {
+
+            throw new DataDuplicationException("Admin Mode Feature Integration Already Exist");
+        }
+
 
     }
 

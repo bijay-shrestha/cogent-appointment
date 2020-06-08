@@ -218,6 +218,7 @@ public class IntegrationQuery {
             (searchRequestDTO) ->
                     " SELECT" +
                             " cfi.id as id," +
+                            " ic.name as integrationChannel"+
                             " h.name as hospitalName," +
                             " f.name as featureName," +
                             " f.code as featureCode," +
@@ -229,7 +230,8 @@ public class IntegrationQuery {
                             " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
-                            " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId"
+                            " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId"+
+                            " LEFT JOIN IntegrationChannel ic ON ic.id=cfi.integrationChannelId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_CLIENT_API_INTEGRATION(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_CLIENT_API_INTEGRATION(

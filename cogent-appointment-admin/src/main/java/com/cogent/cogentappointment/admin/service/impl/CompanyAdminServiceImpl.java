@@ -8,19 +8,24 @@ import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminS
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.AdminModeFeatureIntegrationResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponse;
-import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.FeatureIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
+import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
 import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
@@ -41,6 +46,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
+import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -51,7 +57,6 @@ import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.par
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 import static java.lang.reflect.Array.get;
 
 /**
@@ -87,7 +92,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     private final AdminFeatureService adminFeatureService;
 
     private final IntegrationRepository integrationRepository;
+    private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
     private final AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository;
+    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
+    private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
 
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
@@ -100,7 +108,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    DashboardFeatureRepository dashboardFeatureRepository,
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                                    AdminFeatureService adminFeatureService,
-                                   IntegrationRepository integrationRepository, AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository) {
+                                   IntegrationRepository integrationRepository,
+                                   IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
+                                   AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository,
+                                   AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
+                                   AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -114,7 +126,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
+        this.requestBodyParametersRepository = requestBodyParametersRepository;
         this.appointmentModeHospitalInfoRepository = appointmentModeHospitalInfoRepository;
+        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
+        this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
     }
 
     @Override
@@ -405,66 +420,199 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
+        responseDTO.setApiIntegration(getApiIntegrations());
 
-        Long companyId = getLoggedInCompanyId();
-        List<AppointmentModeHospitalInfo> appointmentModeHospitalInfos =
-                appointmentModeHospitalInfoRepository.
-                        findAppointmentModeHospitalInfoByHospitalId(companyId)
-                        .orElseThrow(() -> APPOINTMENT_MODE_HOSPITAL_INFO.apply(companyId));
-
-        if (appointmentModeHospitalInfos.size() > 0) {
-
-            List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList = new ArrayList<>();
-            appointmentModeHospitalInfos.forEach(appointmentModeHospitalInfo -> {
-
-                AdminModeFeatureIntegrationResponseDTO integrationResponseDTO =
-                        getAdminModeApiIntegration(appointmentModeHospitalInfo.getAppointmentModeId().getId());
-
-                featureIntegrationResponseDTOList.add(integrationResponseDTO);
-            });
-
-            responseDTO.setEAIntegrate(featureIntegrationResponseDTOList);
-
-        }
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
 
-    private AdminModeFeatureIntegrationResponseDTO getAdminModeApiIntegration(Long appointmentModeId) {
+    private Map<String, List<?>> getApiIntegrations() {
 
-        List<FeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
-                fetchAdminModeIntegrationResponseDTO(appointmentModeId);
+        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList =
+                getAdminModeApiIntegration();
 
-        List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
-        integrationResponseDTOList.forEach(responseDTO -> {
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOList =
+                getHospitalApiIntegration();
 
-            Map<String, String> requestHeaderResponseDTO = integrationRepository.
-                    findAdminModeApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+        Map<String, List<?>> map = new HashMap();
 
-            Map<String, String> queryParametersResponseDTO = integrationRepository.
-                    findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+        if (featureIntegrationResponseDTOList.size() != 0 || featureIntegrationResponseDTOList != null) {
+            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTOList);
+        }
 
-            FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
-                    FeatureIntegrationResponseDTO.builder()
-                            .featureCode(responseDTO.getFeatureCode())
-                            .requestBody(responseDTO.getRequestBody())
-                            .requestMethod(responseDTO.getRequestMethod())
-                            .url(responseDTO.getUrl())
-                            .headers(requestHeaderResponseDTO)
-                            .queryParameters(queryParametersResponseDTO)
-                            .build();
+        if (clientIntegrationResponseDTOList.size() != 0 || clientIntegrationResponseDTOList != null) {
+            map.put(KEY_ADMIN_INTEGRATION, featureIntegrationResponseDTOList);
+        }
 
-            features.add(featureIntegrationResponseDTO);
+        return map;
+
+
+    }
+
+    private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
+
+        Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.
+                fetchAdminModeIntegrationResponseDTO().stream()
+                .collect(Collectors.groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
+
+        List<AdminModeFeatureIntegrationResponseDTO> adminModeFeatureIntegrationResponseDTOS = new ArrayList<>();
+
+        integrationResponseMap.entrySet().stream().forEach(responseMap -> {
+
+            List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+
+            responseMap.getValue().forEach(responseDTO -> {
+
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                        findAdminModeApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+
+                Map<String, String> queryParametersResponseDTO = integrationRepository.
+                        findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+
+                FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
+                        convertToAdminApiResponseDTO(responseDTO, requestBody, requestHeaderResponseDTO, queryParametersResponseDTO);
+
+                features.add(featureIntegrationResponseDTO);
+
+            });
+
+            AdminModeFeatureIntegrationResponseDTO adminModeFeatureIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
+            adminModeFeatureIntegrationResponseDTO.setFeatures(features);
+            adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(responseMap.getKey());
+
+            adminModeFeatureIntegrationResponseDTOS.add(adminModeFeatureIntegrationResponseDTO);
+
 
         });
 
-        AdminModeFeatureIntegrationResponseDTO clientIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
-        clientIntegrationResponseDTO.setFeatures(features);
-        clientIntegrationResponseDTO.setAppointmentModeId(appointmentModeId);
 
-        return clientIntegrationResponseDTO;
+        return adminModeFeatureIntegrationResponseDTOS;
+
+    }
+
+    private List<ClientIntegrationResponseDTO> getHospitalApiIntegration() {
+
+        List<ClientFeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
+                fetchClientIntegrationResponseDTO();
+
+        Map<Long, List<ClientFeatureIntegrationResponse>> integrationResponseMap = integrationResponseDTOList.stream()
+                .collect(Collectors.groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
+
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS = new ArrayList<>();
+
+        integrationResponseMap.entrySet().stream().forEach(responseMap -> {
+
+            List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+
+            integrationResponseDTOList.forEach(responseDTO -> {
+
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                        findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+
+                Map<String, String> queryParametersResponseDTO = integrationRepository.
+                        findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+
+                FeatureIntegrationResponseDTO featureIntegrationResponseDTO = convertToClientApiResponseDTO(responseDTO,
+                        requestBody,
+                        requestHeaderResponseDTO,
+                        queryParametersResponseDTO);
+
+
+                features.add(featureIntegrationResponseDTO);
+
+            });
+
+            ClientIntegrationResponseDTO clientIntegrationResponseDTO = new ClientIntegrationResponseDTO();
+            clientIntegrationResponseDTO.setFeatures(features);
+            clientIntegrationResponseDTO.setClientId(responseMap.getKey());
+
+            clientIntegrationResponseDTOS.add(clientIntegrationResponseDTO);
+
+        });
+
+
+        return clientIntegrationResponseDTOS;
+
+    }
+
+    private Object[] getRequestBodyByFeature(Long featureId, String requestMethod) {
+
+        Object[] requestBody = new Object[0];
+        if (requestMethod.equalsIgnoreCase("POST")) {
+            List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.
+                    fetchRequestBodyAttributeByFeatureId(featureId);
+
+            if (responses != null) {
+                requestBody = responses.stream()
+                        .map(request -> request.getName())
+                        .collect(Collectors.toList()).toArray();
+            }
+
+        }
+
+        return requestBody;
+    }
+
+
+    private FeatureIntegrationResponseDTO convertToAdminApiResponseDTO(AdminFeatureIntegrationResponse responseDTO,
+                                                                       Object[] requestBody,
+                                                                       Map<String, String> requestHeaderResponseDTO,
+                                                                       Map<String, String> queryParametersResponseDTO) {
+
+        FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
+                FeatureIntegrationResponseDTO.builder()
+                        .featureCode(responseDTO.getFeatureCode())
+                        .integrationChannelCode(responseDTO.getIntegrationChannelCode())
+                        .build();
+
+        if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+
+            ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+
+            apiInfoResponseDTO.setUrl(responseDTO.getUrl());
+            apiInfoResponseDTO.setRequestBody(requestBody);
+            apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+            apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+            apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+            featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+        }
+
+
+        return featureIntegrationResponseDTO;
+
+    }
+
+    private FeatureIntegrationResponseDTO convertToClientApiResponseDTO(ClientFeatureIntegrationResponse responseDTO,
+                                                                        Object[] requestBody,
+                                                                        Map<String, String> requestHeaderResponseDTO,
+                                                                        Map<String, String> queryParametersResponseDTO) {
+
+        FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
+        featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
+        featureIntegrationResponseDTO.setIntegrationChannelCode(responseDTO.getIntegrationChannelCode());
+
+        if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+            ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+            apiInfoResponseDTO.setUrl(responseDTO.getUrl());
+            apiInfoResponseDTO.setRequestBody(requestBody);
+            apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+            apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+            apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+            featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+        }
+
+
+        return featureIntegrationResponseDTO;
 
     }
 

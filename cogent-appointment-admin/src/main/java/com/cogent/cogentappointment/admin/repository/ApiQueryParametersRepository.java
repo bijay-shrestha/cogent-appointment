@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +17,7 @@ public interface ApiQueryParametersRepository extends JpaRepository<ApiQueryPara
 
     @Query("SELECT aqp FROM ApiQueryParameters aqp WHERE aqp.id=:id and aqp.status!='D'")
     Optional<ApiQueryParameters> findApiQueryParameterById(@Param("id") Long id);
+
+    @Query("SELECT aqp FROM ApiQueryParameters aqp WHERE aqp.apiIntegrationFormatId=:id and aqp.status!='D'")
+    Optional<List<ApiQueryParameters>> findApiRequestHeaderByApiFeatureIntegrationId(@Param("id") Long id);
 }

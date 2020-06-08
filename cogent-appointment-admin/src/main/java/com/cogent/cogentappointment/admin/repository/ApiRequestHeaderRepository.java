@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +17,7 @@ public interface ApiRequestHeaderRepository extends JpaRepository<ApiRequestHead
 
     @Query("SELECT arf FROM ApiRequestHeader arf WHERE arf.id=:id AND arf.status!='D'")
     Optional<ApiRequestHeader> findApiRequestHeaderById(@Param("id") Long id);
+
+    @Query("SELECT arf FROM ApiRequestHeader arf WHERE arf.apiIntegrationFormatId=:id AND arf.status!='D'")
+    Optional<List<ApiRequestHeader>> findApiRequestHeaderByApiFeatureIntegrationId(@Param("id") Long id);
 }

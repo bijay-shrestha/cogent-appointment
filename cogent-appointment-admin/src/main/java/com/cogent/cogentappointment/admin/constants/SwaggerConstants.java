@@ -66,13 +66,13 @@ public class SwaggerConstants {
 
     public interface AppointmentTransferConstant {
         String BASE_API_VALUE = "Resource used for Appointment Transfer Scenario.";
-        String FETCH_AVAILABLE_DATES="Fetch available dates by doctor id and specialization id";
-        String FETCH_AVAILABLE_TIME="Fetch available time by available date and doctor id";
-        String FETCH_DOCTOR_CHARGE="Fetch selected doctor charge by  doctor id";
-        String APPOINTMENT_TRANSFER="Transfer current appointment details(i.e. doctorId,specializationId," +
+        String FETCH_AVAILABLE_DATES = "Fetch available dates by doctor id and specialization id";
+        String FETCH_AVAILABLE_TIME = "Fetch available time by available date and doctor id";
+        String FETCH_DOCTOR_CHARGE = "Fetch selected doctor charge by  doctor id";
+        String APPOINTMENT_TRANSFER = "Transfer current appointment details(i.e. doctorId,specializationId," +
                 "appointmentDate,appointmentTime,Charge)";
-        String FETCH_TRANSFERRED_APPOINTMENT_LIST="Fetch list of transferred appointments";
-        String FETCH_TRANSFERRED_APPOINTMENT_DETAIL="Fetch transferred appointment detail by id";
+        String FETCH_TRANSFERRED_APPOINTMENT_LIST = "Fetch list of transferred appointments";
+        String FETCH_TRANSFERRED_APPOINTMENT_DETAIL = "Fetch transferred appointment detail by id";
     }
 
     public interface AuthenticateConstant {
@@ -301,17 +301,28 @@ public class SwaggerConstants {
         String UPDATE_CLIENT_OPERATION = "Update Client API Integration";
         String SEARCH_CLIENT_API_INTEGRATION_OPERATION = "Search Client API Integration";
         String FETCH_CLIENT_API_INTEGRATION_DETAIL = "Fetch Client Api Integration detail by client integration id";
-        String DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION="Delete client integration feature by client integration id";
+        String DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION = "Delete client integration feature by client integration id";
         String DETAILS_FOR_UPDATE_CLIENT_INTEGRATION_MODAL_OPERATION = "Fetch Client Integration details for update modal by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
+    }
+
+    public interface IntegrationAdminModeConstant {
+        String BASE_API_VALUE = "This is Admin Mode API Integration Resource.";
+        String SAVE_ADMIN_MODE_INTEGRATION_OPERATION = "Save new Admin Mode API Integration";
+        String UPDATE_ADMIN_MODE_INTEGRATION_OPERATION = "Update Admin Mode API Integration";
+        String SEARCH_ADMIN_MODE_INTEGRATION_OPERATION = "Search Admin Mode API Integration";
+        String FETCH_ADMIN_MODE_INTEGRATION_DETAIL = "Fetch Admin Mode API Integration detail by admin mode integration id";
+        String DELETE_ADMIN_MODE_INTEGRATION_OPERATION = "Delete Admin Mode API Integration feature by admin mode api integration id";
+        String DETAILS_FOR_UPDATE_ADMIN_MODE_INTEGRATION_MODAL_OPERATION = "Fetch Admin Mode API Integration details for update modal by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
     }
 
     public interface IntegrationRequestBodyConstant {
         String BASE_API_VALUE = "This is Integration Request Body Resource.";
-        String DELETE_API_REQUEST_HEADER_ATTRIBUTE_OPERATION="Delete API Request Body Attributes by request body attribute id";
+        String DELETE_API_REQUEST_HEADER_ATTRIBUTE_OPERATION = "Delete API Request Body Attributes by request body attribute id";
         String SAVE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION = "Save new Integration Request Body Attributes";
         String UPDATE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION = "Update Request Body Attributes";
-        String FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION= "Fetch Request Body Attributes by feature id";
+        String FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION = "Fetch Request Body Attributes by feature id";
         String SEARCH_API_REQUEST_BODY_ATTRIBUTE_OPERATION = "Search API Request Body Attributes";
     }
 

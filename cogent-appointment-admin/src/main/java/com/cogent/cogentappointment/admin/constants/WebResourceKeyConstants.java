@@ -24,10 +24,6 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN_FEATURE = "/adminFeature";
     }
 
-    public interface AdminModeIntegrationConstants {
-        String BASE_ADMIN_MODE_INTEGRATION = "/admin-mode-integration";
-    }
-
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
@@ -68,13 +64,6 @@ public class WebResourceKeyConstants {
     public static final String BASE_PASSWORD = "/password";
 
     //C
-
-    public interface ClientIntegrationConstants {
-        String BASE_CLIENT_INTEGRATION = "/client-integration";
-        String CLIENT_INTEGRATION = "/client-api-integration";
-        String CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
-        String CLIENT_INTEGRATION_UPDATE_DETAILS = "/update-details";
-    }
 
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
@@ -186,6 +175,20 @@ public class WebResourceKeyConstants {
         String API_INTEGRATION_TYPE="/api-integration-type";
         String INTEGRATION_CHANNEL="/integration-channel";
         String REQUEST_BODY_PARAMETERS="/request-body-parameters";
+    }
+
+    public interface IntegrationAdminModeConstants {
+        String BASE_ADMIN_MODE_INTEGRATION = "/admin-mode-integration";
+        String ADMIN_MODE_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
+        String ADMIN_MODE_INTEGRATION = "/admin-mode-api-integration";
+        String ADMIN_MODE_UPDATE_DETAILS = "/update-details";
+    }
+
+    public interface IntegrationClientConstants {
+        String BASE_CLIENT_INTEGRATION = "/client-integration";
+        String CLIENT_INTEGRATION = "/client-api-integration";
+        String CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
+        String CLIENT_INTEGRATION_UPDATE_DETAILS = "/update-details";
     }
 
     public interface IntegrationRequestBodyAttributeConstants {

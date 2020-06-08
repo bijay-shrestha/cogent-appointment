@@ -33,15 +33,24 @@ public class AdminModeFeatureIntegration extends Auditable<String> implements Se
     @Column(name = "feature_id")
     private Long featureId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "integration_channel_id")
+    private IntegrationChannel integrationChannelId;
+
     @Column(name = "status")
     private Character status;
+
+    @Column(name = "remarks")
+    private String remarks;
 
     @Override
     public String toString() {
         return "AdminModeFeatureIntegration{" +
                 "id=" + id +
                 ", appointmentModeId=" + appointmentModeId.getId() +
+                ", integrationChannelId=" + integrationChannelId.getId() +
                 ", featureId=" + featureId +
+                ", remarks='" + remarks + '\'' +
                 ", status=" + status +
                 '}';
     }

@@ -1,11 +1,12 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponse;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -20,11 +21,9 @@ import java.util.Map;
 @Qualifier("integrationRepositoryCustom")
 public interface IntegrationRepositoryCustom {
 
-    Map<String,String> findApiRequestHeaders(Long featureId);
+    Map<String, String> findApiRequestHeaders(Long featureId);
 
-    Map<String,String> findApiQueryParameters(Long featureId);
-
-    List<FeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO(Long hospitalId);
+    Map<String, String> findApiQueryParameters(Long featureId);
 
     Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId);
 
@@ -37,4 +36,8 @@ public interface IntegrationRepositoryCustom {
     List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long featureId);
 
     List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long featureId);
+
+    List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTO();
+
+    List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId);
 }

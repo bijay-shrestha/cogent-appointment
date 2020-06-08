@@ -108,7 +108,8 @@ public class AppointmentUtils {
                                                  Character isSelf,
                                                  Patient patient,
                                                  Hospital hospital,
-                                                 AppointmentMode appointmentMode) {
+                                                 AppointmentMode appointmentMode,
+                                                 HospitalAppointmentServiceType hospitalAppointmentServiceType) {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(appointmentDate);
@@ -120,6 +121,7 @@ public class AppointmentUtils {
         appointment.setAppointmentModeId(appointmentMode);
         appointment.setHospitalId(hospital);
         appointment.setPatientId(patient);
+        appointment.setHospitalAppointmentServiceType(hospitalAppointmentServiceType);
         appointment.setStatus(PENDING_APPROVAL);
         appointment.setSerialNumber(generateRandomNumber(6));
         return appointment;

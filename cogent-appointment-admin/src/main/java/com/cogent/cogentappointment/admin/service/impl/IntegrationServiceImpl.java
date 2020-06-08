@@ -162,9 +162,9 @@ public class IntegrationServiceImpl implements IntegrationService {
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
 
-
         clientFeatureIntegration.setFeatureId(requestDTO.getFeatureId());
         clientFeatureIntegration.setIntegrationChannelId(integrationChannel);
+        clientFeatureIntegration.setRemarks(requestDTO.getRemarks());
 
         List<ApiFeatureIntegration> apiFeatureIntegration =
                 apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())

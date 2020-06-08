@@ -33,4 +33,6 @@ public class ClientApiIntegrationUpdateRequestDTO implements Serializable {
 
     private String requestBodyAttrribute;
 
+    private String remarks;
+
 }

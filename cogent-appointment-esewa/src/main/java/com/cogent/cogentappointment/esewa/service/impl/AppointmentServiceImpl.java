@@ -911,8 +911,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                    Double appointmentAmount) {
 
         Double actualAppointmentCharge = isFollowUp.equals(YES)
-                ? fetchHospitalDeptAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId)
-                : fetchHospitalDeptAppointmentFollowUpCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId);
+                ? fetchHospitalDeptAppointmentFollowUpCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId)
+                : fetchHospitalDeptAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId);
 
         if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
             log.error(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE, appointmentAmount);

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Setter
 public class HospitalAppointmentServiceTypeResponseDTO implements Serializable {
 
-    private Long hospitalAppointmentServiceTypeId;
+    private Long appointmentServiceTypeId;
 
     private String appointmentServiceTypeName;
 

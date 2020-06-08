@@ -160,9 +160,6 @@ public class IntegrationAdminModeQuery {
                 " AND f.status='Y'" +
                 " AND amfi.status='Y'";
 
-//        if (!Objects.isNull(requestSearchDTO.getCompanyId()))
-//            whereClause += " AND cfi.hospitalId=" + requestSearchDTO.getCompanyId();
-
         if (!Objects.isNull(requestSearchDTO.getAppointmentModeId()))
             whereClause += " AND amfi.appointmentModeId.id=" + requestSearchDTO.getAppointmentModeId();
 

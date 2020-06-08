@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminModeApiFeatureIntegration;
+import com.cogent.cogentappointment.persistence.model.AdminModeFeatureIntegration;
 import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
@@ -97,19 +97,19 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
 
     @Override
     public Long findAppointmentModeWiseFeatureAndRequestMethod(Long appointmentModeId, Long featureTypeId, Long requestMethodId) {
-            Query query = createQuery.apply(entityManager,
-                    IntegrationAdminModeQuery.VALIDATE_ADMIN_MODE_REQUEST_METHOD_AND_FEATURE)
-                    .setParameter(API_FEATURE_ID, featureTypeId)
-                    .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
-                    .setParameter(API_REQUEST_METHOD_ID, requestMethodId);
+        Query query = createQuery.apply(entityManager,
+                IntegrationAdminModeQuery.VALIDATE_ADMIN_MODE_REQUEST_METHOD_AND_FEATURE)
+                .setParameter(API_FEATURE_ID, featureTypeId)
+                .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
+                .setParameter(API_REQUEST_METHOD_ID, requestMethodId);
 
 
-            return (Long) query.getSingleResult();
+        return (Long) query.getSingleResult();
     }
 
     private Supplier<NoContentFoundException> ADMIN_MODE_API_INTEGRATIONS_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, ADMIN_MODE_FEATURE_INTEGRATION);
-        throw new NoContentFoundException(NO_RECORD_FOUND, ADMIN_MODE_FEATURE_INTEGRATION);
+        throw new NoContentFoundException(AdminModeFeatureIntegration.class);
     };
 
     private Function<Long, NoContentFoundException> ADMIN_MODE_API_INTEGRATION_NOT_FOUND = (id) -> {

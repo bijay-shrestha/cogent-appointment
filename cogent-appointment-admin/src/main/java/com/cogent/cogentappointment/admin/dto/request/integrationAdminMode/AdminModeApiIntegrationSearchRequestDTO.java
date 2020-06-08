@@ -22,8 +22,6 @@ public class AdminModeApiIntegrationSearchRequestDTO implements Serializable {
 
     private Long appointmentModeId;
 
-    private Long companyId;
-
     private Long featureTypeId;
 
     private String url;

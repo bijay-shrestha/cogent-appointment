@@ -90,7 +90,8 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO,
+                                                                    Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, CLIENT_API_INTEGRATION_SEARCH_QUERY.apply(searchRequestDTO));
 
@@ -259,7 +260,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     private Supplier<NoContentFoundException> CLIENT_API_INTEGRATION_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, CLIENT_FEATURE_INTEGRATION);
-        throw new NoContentFoundException(NO_RECORD_FOUND, CLIENT_FEATURE_INTEGRATION);
+        throw new NoContentFoundException(ClientFeatureIntegration.class);
     };
 
     private Function<Long, NoContentFoundException> CLIENT_API_REQUEST_HEADER_NOT_FOUND = (id) -> {

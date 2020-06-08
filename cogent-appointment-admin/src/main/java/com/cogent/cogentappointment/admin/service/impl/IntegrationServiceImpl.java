@@ -268,7 +268,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     }
 
-
     @Override
     public ClientApiIntegrationSearchDTO search(ClientApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable) {
 

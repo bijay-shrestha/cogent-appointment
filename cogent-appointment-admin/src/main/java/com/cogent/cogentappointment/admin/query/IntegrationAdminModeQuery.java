@@ -62,6 +62,23 @@ public class IntegrationAdminModeQuery {
                     " AND amrh.status='Y'" +
                     " AND f.status='Y'";
 
+    public static final String ADMIN_MODE_FEATURES_HEADERS_DETAILS_QUERY =
+            " SELECT " +
+                    " amrh.keyName as keyParam," +
+                    " amrh.value as valueParam," +
+                    " amrh.description as description" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
+                    " WHERE f.id=:featureId" +
+                    " AND amfi.status='Y'" +
+                    " AND amafi.status='Y'" +
+                    " AND aif.status='Y'" +
+                    " AND amrh.status='Y'" +
+                    " AND f.status='Y'";
+
     public static final String ADMIN_MODE_QUERY_PARAMETERS_QUERY =
             " SELECT " +
                     " amqp.id as id," +
@@ -69,6 +86,22 @@ public class IntegrationAdminModeQuery {
                     " amqp.value as valueParam," +
                     " amqp.status as status," +
                     " amqp.description as description" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN AdminModeQueryParameters amqp ON amqp.apiIntegrationFormatId =aif.id" +
+                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
+                    " WHERE f.id=:featureId" +
+                    " AND amfi.status='Y'" +
+                    " AND amafi.status='Y'" +
+                    " AND amqp.status='Y'" +
+                    " AND f.status='Y'";
+
+    public static final String ADMIN_MODE_QUERY_PARAMETERS_DETAILS_QUERY =
+            " SELECT " +
+                    " amqp.param as keyParam," +
+                    " amqp.value as valueParam," +
+                    " amqp.status as status" +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +

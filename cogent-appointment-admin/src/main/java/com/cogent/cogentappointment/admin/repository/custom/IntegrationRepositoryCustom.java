@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
@@ -21,9 +23,13 @@ import java.util.Map;
 @Qualifier("integrationRepositoryCustom")
 public interface IntegrationRepositoryCustom {
 
-    Map<String, String> findApiRequestHeaders(Long featureId);
+    List<ApiRequestHeaderDetailResponse> findApiRequestHeaders(Long featureId);
 
-    Map<String, String> findApiQueryParameters(Long featureId);
+    List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long featureId);
+
+    Map<String,String> findApiRequestHeadersResponse(Long featureId);
+
+    Map<String,String> findApiQueryParametersResponse(Long featureId);
 
     Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId);
 

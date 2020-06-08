@@ -10,6 +10,8 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientAp
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.*;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
@@ -430,10 +432,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         AdminModeApiIntegrationResponseDTO featureIntegrationResponse = adminModeFeatureIntegrationRepository.
                 findAdminModeFeatureIntegration(id);
 
-        List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
+        List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
                 findAdminModeApiRequestHeaders(featureIntegrationResponse.getFeatureId());
 
-        List<ApiQueryParametersResponseDTO> queryParametersResponseDTO = adminModeQueryParametersRepository.
+        List<ApiQueryParametersDetailResponse> queryParametersResponseDTO = adminModeQueryParametersRepository.
                 findAdminModeApiQueryParameters(featureIntegrationResponse.getFeatureId());
 
         AdminModeIntegrationDetailResponseDTO responseDTO = new AdminModeIntegrationDetailResponseDTO();

@@ -69,6 +69,24 @@ public class IntegrationQuery {
                     " AND ic.status='Y'";
 
 
+    public static final String CLIENT_API_FEATURES_HEADERS_DETAILS_QUERY =
+            " SELECT " +
+                    " arh.keyName as keyParam," +
+                    " arh.value as valueParam," +
+                    " arh.description as description," +
+                    " FROM ClientFeatureIntegration cfi" +
+                    " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                    " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
+                    " LEFT JOIN ApiRequestHeader arh ON arh.apiIntegrationFormatId=aif.id" +
+                    " WHERE f.id=:featureId" +
+                    " AND aif.status='Y'" +
+                    " AND arh.status='Y'" +
+                    " AND afi.status='Y'" +
+                    " AND cfi.status='Y'";
+
+
+
     public static final String CLIENT_API_FEATURES_HEADERS_QUERY =
             " SELECT " +
                     " arh.id as id," +
@@ -94,6 +112,22 @@ public class IntegrationQuery {
                     " aqp.value as valueParam," +
                     " aqp.status as status," +
                     " aqp.description as description" +
+                    " FROM ClientFeatureIntegration cfi" +
+                    " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
+                    " LEFT JOIN ApiQueryParameters aqp ON aqp.apiIntegrationFormatId =aif.id" +
+                    " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                    " WHERE f.id=:featureId" +
+                    " AND aif.status='Y'" +
+                    " AND afi.status='Y'" +
+                    " AND aqp.status='Y'" +
+                    " AND cfi.status='Y'";
+
+    public static final String CLIENT_API_PARAMETERS_DETAILS_QUERY =
+            " SELECT " +
+                    " aqp.param as keyParam," +
+                    " aqp.value as valueParam," +
+                    " aqp.status as status," +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +

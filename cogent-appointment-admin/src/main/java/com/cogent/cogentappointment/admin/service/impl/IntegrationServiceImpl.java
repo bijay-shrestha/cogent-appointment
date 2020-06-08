@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.*;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATION;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.CLIENT_API_INTEGRATION;
@@ -212,7 +214,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 requestHeader.setKeyName(requestDTO.getKeyParam());
                 requestHeader.setValue(requestDTO.getValueParam());
                 requestHeader.setDescription(requestDTO.getDescription());
-                requestHeader.setStatus(requestDTO.getStatus());
+                requestHeader.setStatus(ACTIVE);
 
                 apiRequestHeaderRepository.save(requestHeader);
 
@@ -245,7 +247,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 queryParameters.setApiIntegrationFormatId(integrationFormatId);
                 queryParameters.setParam(requestDTO.getKeyParam());
                 queryParameters.setValue(requestDTO.getValueParam());
-                queryParameters.setStatus(requestDTO.getStatus());
+                queryParameters.setStatus(ACTIVE);
 
                 apiQueryParametersRepository.save(queryParameters);
 

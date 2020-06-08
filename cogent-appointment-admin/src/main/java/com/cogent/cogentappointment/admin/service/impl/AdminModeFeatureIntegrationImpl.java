@@ -307,7 +307,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 findAdminModeApiQueryParameterForUpdate(featureIntegrationResponse.getFeatureId());
 
         AdminModeIntegrationUpdateResponseDTO responseDTO = new AdminModeIntegrationUpdateResponseDTO();
-        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
@@ -421,7 +421,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         AdminModeIntegrationDetailResponseDTO responseDTO = new AdminModeIntegrationDetailResponseDTO();
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
-        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
         responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());

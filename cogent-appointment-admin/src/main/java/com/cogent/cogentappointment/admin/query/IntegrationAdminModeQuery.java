@@ -16,7 +16,7 @@ public class IntegrationAdminModeQuery {
                     " f.id as featureId," +
                     " am.id as appointmentModeId,"+
                     " am.name as appointmentModeName," +
-                    " f.code as featureCode," +
+                    " f.code as featureName," +
                     " hrm.id as requestMethodId," +
                     " hrm.name as requestMethodName," +
                     " aif.url as url," +

@@ -21,7 +21,7 @@ public class AdminModeIntegrationDetailResponseDTO implements Serializable {
 
     private Long featureId;
 
-    private String featureCode;
+    private String featureName;
 
     private Long requestMethodId;
 

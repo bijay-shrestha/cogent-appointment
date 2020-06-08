@@ -75,7 +75,7 @@ public class IntegrationAdminModeResource {
 
     @GetMapping(ADMIN_MODE_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ADMIN_MODE_INTEGRATION_DETAIL)
-    public ResponseEntity<?> fetchClientApiIntegrationById(@PathVariable("id") Long id) {
+    public ResponseEntity<?> fetchAdminModeIntegrationById(@PathVariable("id") Long id) {
         return ok(adminModeIntegrationService.fetchAdminModeIntegrationById(id));
     }
 

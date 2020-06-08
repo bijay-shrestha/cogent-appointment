@@ -60,7 +60,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
     private final HospitalService hospitalService;
 
-    private final NepaliDateUtility nepaliDateUtility;
+//    private final NepaliDateUtility nepaliDateUtility;
 
     public DoctorDutyRosterServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                        DoctorService doctorService,
@@ -98,9 +98,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 findSpecializationById(requestDTO.getSpecializationId()),
                 findHospitalById(requestDTO.getHospitalId()));
 
-        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
-
-        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
+//        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
+//
+//        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
 
         save(doctorDutyRoster);
 

@@ -1,7 +1,7 @@
 
 catalina:
-  home: /Users/bijayshrestha/Dropbox/Workspaces/Backend/tomcat
+  home: /home/f1soft/Softwares/tomcat
 
 spring:
   profiles:
-    active: dev
+    active: uat

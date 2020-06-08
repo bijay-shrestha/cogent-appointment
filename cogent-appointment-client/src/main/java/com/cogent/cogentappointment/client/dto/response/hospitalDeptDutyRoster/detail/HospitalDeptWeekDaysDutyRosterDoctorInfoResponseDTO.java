@@ -16,9 +16,12 @@ public class HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO implements Seri
 
     private Long hospitalDepartmentWeekDaysDutyRosterDoctorInfoId;
 
-    private Long hospitalDepartmentDoctorInfoId;
+    /*FOR FRONT-END CONVENIENCE*/
+    //hospitalDepartmentDoctorInfoId
+    private Long value;
 
-    private String doctorName;
+    //doctorName
+    private String label;
 
     private String fileUri;
 }

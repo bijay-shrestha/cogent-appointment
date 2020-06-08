@@ -120,4 +120,8 @@ public class IntegrationUtils {
             apiQueryParameters.setStatus(DELETED);
         });
     }
+
+    public static void parseToDeletedApiIntegrationFormat(ApiIntegrationFormat apiIntegrationFormat) {
+        apiIntegrationFormat.setStatus(DELETED);
+    }
 }

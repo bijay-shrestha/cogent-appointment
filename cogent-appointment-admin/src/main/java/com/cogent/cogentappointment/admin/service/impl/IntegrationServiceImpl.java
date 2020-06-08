@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
+import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -312,15 +313,29 @@ public class IntegrationServiceImpl implements IntegrationService {
         List<ApiQueryParameters> apiQueryParameterToDelete = new ArrayList<>();
 
         apiFeatureIntegrationList.forEach(apiFeatureIntegration -> {
-            List<ApiRequestHeader> apiRequestHeaderList = apiRequestHeaderRepository.
-                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getId()).get();
 
-            apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
+            ApiIntegrationFormat apiIntegrationFormat = apiIntegrationFormatRespository.
+                    findByIntegrationFormatId(apiFeatureIntegration.getApiIntegrationFormatId())
+                    .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(apiFeatureIntegration.getId()));
+
+
+            List<ApiRequestHeader> apiRequestHeaderList = apiRequestHeaderRepository.
+                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getApiIntegrationFormatId()).
+                    orElse(null);
+            if (apiRequestHeaderList != null) {
+                apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
+
+            }
 
             List<ApiQueryParameters> apiQueryParametersList = apiQueryParametersRepository.
-                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getId()).get();
+                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getApiIntegrationFormatId())
+                    .orElse(null);
 
-            apiQueryParameterToDelete.addAll(apiQueryParametersList);
+            if (apiQueryParametersList != null) {
+                apiQueryParameterToDelete.addAll(apiQueryParametersList);
+            }
+
+            IntegrationUtils.parseToDeletedApiIntegrationFormat(apiIntegrationFormat);
 
 
         });

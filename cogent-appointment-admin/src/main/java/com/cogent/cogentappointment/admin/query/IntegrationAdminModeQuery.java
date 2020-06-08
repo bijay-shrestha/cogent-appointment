@@ -101,7 +101,7 @@ public class IntegrationAdminModeQuery {
             " SELECT " +
                     " amqp.param as keyParam," +
                     " amqp.value as valueParam," +
-                    " amqp.status as status" +
+                    " amqp.description as description" +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +

@@ -127,7 +127,7 @@ public class IntegrationQuery {
             " SELECT " +
                     " aqp.param as keyParam," +
                     " aqp.value as valueParam," +
-                    " aqp.status as status" +
+                    " aqp.description as description" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +

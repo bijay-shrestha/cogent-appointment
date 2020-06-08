@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDoctorInfo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ import java.util.List;
 public interface HospitalDepartmentDoctorInfoRepositoryCustom {
 
     List<DoctorDropdownDTO> fetchAssignedHospitalDepartmentDoctor(Long hospitalDepartmentId);
+
+    List<HospitalDepartmentDoctorInfo> fetchActiveHospitalDepartmentDoctorInfo(List<Long> hospitalDepartmentDoctorInfoIds);
 }

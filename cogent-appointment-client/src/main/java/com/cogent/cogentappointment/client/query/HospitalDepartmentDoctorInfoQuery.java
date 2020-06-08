@@ -24,4 +24,11 @@ public class HospitalDepartmentDoctorInfoQuery {
                     " AND hd.status = 'Y'" +
                     " AND d.status = 'Y'" +
                     " AND h.id =:hospitalDepartmentId";
+
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_DOCTOR_INFO(String hospitalDepartmentDoctorInfoId) {
+        return " SELECT h FROM HospitalDepartmentDoctorInfo h " +
+                " WHERE" +
+                " h.id IN (" + hospitalDepartmentDoctorInfoId + ")" +
+                " AND h.status = 'Y'";
+    }
 }

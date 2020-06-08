@@ -133,6 +133,8 @@ public class ErrorMessageConstants {
         String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITH_ROOM =
                 "Department Duty Roster Override already exists within '%s' to '%s' for selected room";
 
+        String HOSPITAL_DEPARTMENT_DOCTOR_NOT_ASSIGNED = "Sorry, Requested doctor of '%s' are not assigned to " +
+                "the selected hospital department";
     }
 
     //I

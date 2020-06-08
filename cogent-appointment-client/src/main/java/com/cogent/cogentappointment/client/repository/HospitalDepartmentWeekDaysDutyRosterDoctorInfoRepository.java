@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.repository;
+package com.cogent.cogentappointment.client.repository;
 
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentWeekDaysDutyRosterDoctorInfo;
 import org.springframework.data.jpa.repository.JpaRepository;

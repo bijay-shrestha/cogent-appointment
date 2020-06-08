@@ -335,7 +335,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 apiQueryParameterToDelete.addAll(apiQueryParametersList);
             }
 
-            IntegrationUtils.parseToDeletedApiIntegrationFormat(apiIntegrationFormat);
+            parseToDeletedApiIntegrationFormat(apiIntegrationFormat);
 
 
         });

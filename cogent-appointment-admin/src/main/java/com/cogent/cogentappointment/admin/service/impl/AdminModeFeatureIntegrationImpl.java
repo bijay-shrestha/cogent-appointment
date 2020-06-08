@@ -161,6 +161,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         parseToDeletedAdminModeFeatureIntegration(adminModeFeatureIntegration, deleteRequestDTO);
 
+
         List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList = adminModeApiFeatureIntegrationRepository
                 .findAdminModeApiFeatureIntegrationbyAdminModeFeatureId(adminModeFeatureIntegration.getId())
                 .orElseThrow(() -> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND.apply(adminModeFeatureIntegration.getId()));
@@ -170,24 +171,45 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         List<ApiQueryParameters> apiQueryParameterToDelete = new ArrayList<>();
 
         adminModeApiFeatureIntegrationList.forEach(adminModeApiFeatureIntegration -> {
+
+            ApiIntegrationFormat apiIntegrationFormat = apiIntegrationFormatRespository.
+                    findByIntegrationFormatId(adminModeApiFeatureIntegration.getApiIntegrationFormatId().getId())
+                    .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(adminModeApiFeatureIntegration.getId()));
+
+
             List<ApiRequestHeader> apiRequestHeaderList = apiRequestHeaderRepository.
                     findApiRequestHeaderByApiFeatureIntegrationId(adminModeApiFeatureIntegration.getId())
-                    .orElseThrow(() -> API_REQUEST_HEADER_NOT_FOUND.apply(adminModeApiFeatureIntegration.getId()));
+                    .orElse(null);
 
-            apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
+            if (apiRequestHeaderList != null) {
+                apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
+            }
 
             List<ApiQueryParameters> apiQueryParametersList = apiQueryParametersRepository.
                     findApiRequestHeaderByApiFeatureIntegrationId(adminModeApiFeatureIntegration.getId())
-                    .orElseThrow(() -> API_QUERY_PARAMETER_NOT_FOUND.apply(adminModeApiFeatureIntegration.getId()));
+                    .orElse(null);
+
+            if (apiQueryParametersList != null) {
+                apiQueryParameterToDelete.addAll(apiQueryParametersList);
+            }
+
 
             apiQueryParameterToDelete.addAll(apiQueryParametersList);
+
+            parseToDeletedApiIntegrationFormat(apiIntegrationFormat);
 
 
         });
 
-        parseToDeletedApiRequestHeaders(apiRequestHeaderListToDelete);
+        if (apiRequestHeaderListToDelete.size() > 0) {
+            parseToDeletedApiRequestHeaders(apiRequestHeaderListToDelete);
 
-        parseToDeletedApiQueryParameters(apiQueryParameterToDelete);
+        }
+
+        if (apiQueryParameterToDelete.size() > 0) {
+            parseToDeletedApiQueryParameters(apiQueryParameterToDelete);
+
+        }
 
         parseToDeletedAdminModeApiFeatureIntegration(adminModeApiFeatureIntegrationList);
 

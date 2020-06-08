@@ -7,7 +7,7 @@ import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.Admi
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.AdminModeFeatureIntegration;
+import com.cogent.cogentappointment.persistence.model.AdminModeApiFeatureIntegration;
 import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +19,10 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ADMIN_MODE_FEATURE_INTEGRATION_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
@@ -55,7 +57,7 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
 
         AdminModeIntegrationSearchDTO adminModeIntegrationSearchDTO = new AdminModeIntegrationSearchDTO();
         if (apiIntegrationSearchResponseDTOList.isEmpty())
-            throw ADMIN_MODE_API_INTEGRATION_NOT_FOUND.get();
+            throw ADMIN_MODE_API_INTEGRATIONS_NOT_FOUND.get();
 
         else {
             adminModeIntegrationSearchDTO.setSearchResponseDTOS(apiIntegrationSearchResponseDTOList);
@@ -67,7 +69,6 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
     @Override
     public List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO() {
         Query query = createQuery.apply(entityManager, ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY);
-//                .setParameter(APPOINTMENT_MODE_ID, appointmentModeId);
 
         List<AdminFeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, AdminFeatureIntegrationResponse.class);
@@ -89,14 +90,18 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
         try {
             return transformQueryToSingleResult(query, AdminModeApiIntegrationResponseDTO.class);
         } catch (NoResultException e) {
-            throw ADMIN_MODE_API_INTEGRATION_NOT_FOUND.get();
+            throw ADMIN_MODE_API_INTEGRATION_NOT_FOUND.apply(id);
         }
     }
 
-    private Supplier<NoContentFoundException> ADMIN_MODE_API_INTEGRATION_NOT_FOUND = () -> {
+    private Supplier<NoContentFoundException> ADMIN_MODE_API_INTEGRATIONS_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, ADMIN_MODE_FEATURE_INTEGRATION);
-        throw new NoContentFoundException
-                (AdminModeFeatureIntegration.class);
+        throw new NoContentFoundException(NO_RECORD_FOUND, ADMIN_MODE_FEATURE_INTEGRATION);
+    };
+
+    private Function<Long, NoContentFoundException> ADMIN_MODE_API_INTEGRATION_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND, ADMIN_MODE_FEATURE_INTEGRATION);
+        throw new NoContentFoundException(AdminModeApiFeatureIntegration.class, "id", id.toString());
     };
 
     private Supplier<NoContentFoundException> CLIENT_API_INTEGRATION_NOT_FOUND = () -> {

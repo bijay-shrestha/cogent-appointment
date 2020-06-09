@@ -32,8 +32,7 @@ public class ProfileHistory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "profile_id",
-            foreignKey = @ForeignKey(name = "FK_profile_history_profile"))
+    @JoinColumn(name = "profile_id")
     private Profile profile;
 
     @Column(name = "profile_content")

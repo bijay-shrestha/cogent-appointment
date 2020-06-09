@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.commons.utils.DateUtils;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import com.cogent.cogentappointment.thirdparty.configuration.YamlPropertySourceFactory;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -11,6 +12,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -18,10 +20,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.util.Date;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {
+        "com.cogent.cogentappointment.thirdparty",
+        "com.cogent.cogentappointment.commons.service"})
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
         "com.cogent.cogentappointment.persistence.history"})
-
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages =
+        {"com.cogent.cogentappointment.commons.repository",
+                "com.cogent.cogentappointment.thirdparty.repository"})
 @PropertySource(
         factory = YamlPropertySourceFactory.class,
         value =

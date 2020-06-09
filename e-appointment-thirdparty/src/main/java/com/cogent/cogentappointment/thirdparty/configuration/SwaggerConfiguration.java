@@ -22,7 +22,7 @@ public class SwaggerConfiguration {
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.cogent.cogentappointment.resource"))
+                .apis(RequestHandlerSelectors.basePackage("com.cogent.cogentappointment.thirdparty.resource"))
                 .paths(PathSelectors.regex("/api.*"))
                 .build()
                 .apiInfo(metaData())

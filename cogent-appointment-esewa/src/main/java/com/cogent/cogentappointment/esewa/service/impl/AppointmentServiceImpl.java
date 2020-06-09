@@ -131,6 +131,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
 
+    private final AppointmentServiceTypeRepository appointmentServiceTypeRepository;
+
     public AppointmentServiceImpl(
             PatientService patientService,
             DoctorService doctorService,
@@ -161,7 +163,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository,
             AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository,
             AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService,
-            HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository) {
+            HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
+            AppointmentServiceTypeRepository appointmentServiceTypeRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -192,6 +195,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentHospitalDepartmentFollowUpLogRepository = appointmentHospitalDepartmentFollowUpLogRepository;
         this.appointmentHospitalDepartmentFollowUpRequestLogService = appointmentHospitalDepartmentFollowUpRequestLogService;
         this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
+        this.appointmentServiceTypeRepository = appointmentServiceTypeRepository;
     }
 
     @Override
@@ -437,9 +441,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
 
+        AppointmentServiceType appointmentServiceType =
+                fetchAppointmentServiceType(searchDTO.getAppointmentServiceTypeId());
+
         AppointmentResponseWithStatusDTO appointments = searchDTO.getIsSelf().equals(YES)
-                ? appointmentRepository.searchAppointmentsForSelf(searchDTO)
-                : appointmentRepository.searchAppointmentsForOthers(searchDTO);
+                ? appointmentRepository.searchAppointmentsForSelf(searchDTO, appointmentServiceType.getCode())
+                : appointmentRepository.searchAppointmentsForOthers(searchDTO, appointmentServiceType.getCode());
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -1263,5 +1270,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentSuccessResponseDTO(appointment.getAppointmentNumber(),
                 transactionRequestLog.getTransactionStatus(), appointment.getHospitalId().getRefundPercentage()
         );
+    }
+
+    private AppointmentServiceType fetchAppointmentServiceType(Long appointmentServiceTypeId) {
+        return appointmentServiceTypeRepository.fetchActiveById(appointmentServiceTypeId)
+                .orElseThrow(() -> new NoContentFoundException(AppointmentServiceType.class));
     }
 }

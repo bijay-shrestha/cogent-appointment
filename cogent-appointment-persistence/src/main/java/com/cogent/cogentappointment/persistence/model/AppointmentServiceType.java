@@ -33,7 +33,7 @@ public class AppointmentServiceType extends Auditable<String> implements Seriali
     @Column(name = "description")
     private String description;
 
-    @Column(name = "code")
+    @Column(name = "code", updatable = false)
     private String code;
 
     @Column(name = "is_default")

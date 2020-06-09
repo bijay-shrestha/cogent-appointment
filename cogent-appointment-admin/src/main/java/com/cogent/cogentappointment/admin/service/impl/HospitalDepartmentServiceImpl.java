@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.*;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.ChargeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
@@ -239,8 +240,25 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         return chargeResponseDTO;
     }
 
+    @Override
+    public List<DoctorDropdownDTO> fetchAssignedHospitalDepartmentDoctor(
+            Long hospitalDepartmentId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DOCTOR_INFO);
+
+        List<DoctorDropdownDTO> assignedDoctors =
+                hospitalDepartmentDoctorInfoRepository.fetchAssignedHospitalDepartmentDoctor(hospitalDepartmentId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DOCTOR_INFO,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return assignedDoctors;
+    }
+
     private void saveBillingModeWithCharge(HospitalDepartmentRequestDTO hospitalRequestDTO,
-                                          HospitalDepartment hospitalDepartment) {
+                                           HospitalDepartment hospitalDepartment) {
 
         Long hospitalId = hospitalRequestDTO.getHospitalId();
 
@@ -257,7 +275,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     }
 
     private void saveBillingModeWithCharge(BillingModeChargeUpdateDTO requestDTO,
-                                          HospitalDepartment hospitalDepartment) {
+                                           HospitalDepartment hospitalDepartment) {
 
         BillingMode billingMode = fetchBillingMode(requestDTO.getBillingModeId(),
                 hospitalDepartment.getHospital().getId());
@@ -451,7 +469,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
 
     private static void validateRoomDuplicity(List<Object[]> objects,
-                                             Long requestedRoomId) {
+                                              Long requestedRoomId) {
         final int ID = 0;
         final int ROOM_NUMBER = 1;
 

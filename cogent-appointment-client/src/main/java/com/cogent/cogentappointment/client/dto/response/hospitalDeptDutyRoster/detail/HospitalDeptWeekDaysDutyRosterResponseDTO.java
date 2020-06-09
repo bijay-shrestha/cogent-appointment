@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smriti on 20/05/20
@@ -26,4 +27,6 @@ public class HospitalDeptWeekDaysDutyRosterResponseDTO implements Serializable {
     private Long weekDaysId;
 
     private String weekDaysName;
+
+    private List<HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO> weekDaysDoctorInfo;
 }

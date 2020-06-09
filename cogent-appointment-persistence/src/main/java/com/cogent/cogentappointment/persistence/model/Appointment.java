@@ -26,11 +26,18 @@ import java.util.Date;
  *          i. HospitalDepartment
  *          ii. HospitalDepartmentRoomInfo
  *          iii. HospitalDepartmentBillingModeInfo
+ *
  * 2. AppointmentMode
  * 3. AppointmentTransactionDetail
  * 4. AppointmentFollowUpTracker/AppointmentHospitalDepartmentFollowUpTracker
  * 5. AppointmentFollowUpRequestLog/AppointmentHospitalDepartmentFollowUpRequestLog
  * 6. AppointmentFollowUpLog/AppointmentHospitalDepartmentFollowUpLog
+ * 7. AppointmentReservationLog/AppointmentHospitalDepartmentReservationLog
+ * 8. AppointmentStatistics
+ *
+ * RESCHEDULE -> AppointmentRescheduleLog
+ * REFUND -> AppointmentRefundDetail
+ *
  *
  */
 @Entity
@@ -124,8 +131,6 @@ public class Appointment extends Auditable<String> implements Serializable {
     public String toString() {
         return "Appointment{" +
                 "id=" + id +
-//                ", specializationId=" + specializationId.getName() +
-//                ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
                 ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +

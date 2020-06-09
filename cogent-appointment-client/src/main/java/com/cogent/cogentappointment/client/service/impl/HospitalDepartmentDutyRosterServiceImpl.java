@@ -123,7 +123,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         if (dutyRoster.getIsRoomEnabled().equals(YES))
             saveDutyRosterRoomInfo(dutyRoster, requestDTO.getHospitalDepartmentRoomInfoId());
 
-        saveWeekDaysDutyRoster(dutyRoster, requestDTO.getWeekDaysDetail());
+        if (requestDTO.getWeekDaysDetail().size() > 0)
+            saveWeekDaysDutyRoster(dutyRoster, requestDTO.getWeekDaysDetail());
 
         if (dutyRoster.getHasOverrideDutyRoster().equals(YES))
             saveDutyRosterOverride(dutyRoster, requestDTO.getOverrideDetail(),
@@ -194,7 +195,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         saveOrUpdateRosterRoomInfo(dutyRoster, updateRequestDTO.getRoomDetail());
 
-        updateWeekDaysDutyRoster(updateRequestDTO.getWeekDaysDetail());
+        if (updateRequestDTO.getWeekDaysDetail().size() > 0)
+            updateWeekDaysDutyRoster(updateRequestDTO.getWeekDaysDetail());
 
         updateDutyRosterOverrideStatus(dutyRoster);
 
@@ -397,8 +399,9 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                     parseToHospitalDeptWeekDaysDutyRoster(requestDTO, hospitalDepartmentDutyRoster, weekDays)
             );
 
-            saveHospitalDepartmentWeekDaysDutyRosterDoctorInfo(weekDaysDutyRoster,
-                    requestDTO.getHospitalDepartmentDoctorInfoIds());
+            if (requestDTO.getHospitalDepartmentDoctorInfoIds().size() > 0)
+                saveHospitalDepartmentWeekDaysDutyRosterDoctorInfo(weekDaysDutyRoster,
+                        requestDTO.getHospitalDepartmentDoctorInfoIds());
         });
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_WEEK_DAYS_DUTY_ROSTER,
@@ -584,8 +587,9 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
             saveWeekDaysDutyRoster(parseUpdatedWeekDaysDetails(requestDTO, weekDaysDutyRoster));
 
-            updateHospitalDepartmentWeekDaysDutyRosterDoctorInfo(weekDaysDutyRoster,
-                    requestDTO.getWeekDaysDoctorInfo());
+            if (requestDTO.getWeekDaysDoctorInfo().size() > 0)
+                updateHospitalDepartmentWeekDaysDutyRosterDoctorInfo(weekDaysDutyRoster,
+                        requestDTO.getWeekDaysDoctorInfo());
         });
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_WEEK_DAYS_DUTY_ROSTER,

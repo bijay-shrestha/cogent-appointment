@@ -30,6 +30,7 @@ import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpLog;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
+import com.cogent.cogentthirdpartyconnector.service.ThirdPartyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,8 +44,8 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseAppointmentRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
@@ -72,18 +73,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
 
+    private final ThirdPartyService thirdPartyService;
+
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                   AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
                                   PatientService patientService,
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
-                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService) {
+                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService, ThirdPartyService thirdPartyService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
         this.patientService = patientService;
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
+        this.thirdPartyService = thirdPartyService;
     }
 
     @Override
@@ -208,6 +212,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
 
+        apiIntegrationCheckpoint();
+
         Appointment appointment = appointmentRepository.fetchPendingAppointmentById(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
@@ -216,6 +222,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveAppointmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void apiIntegrationCheckpoint() {
+
+        thirdPartyService.getHospitalService();
+
+
     }
 
     @Override

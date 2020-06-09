@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
+import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterTimeResponseTO;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,11 @@ public interface HospitalDeptDutyRosterRepositoryCustom {
     HospitalDepartmentDutyRoster fetchHospitalDeptDutyRosterWithoutRoom(Date date, Long hospitalDepartmentId);
 
     HospitalDepartmentDutyRoster fetchHospitalDeptDutyRosterWithRoom(Date date, Long hospitalDepartmentId,
-                                                                   Long hospitalDepartmentRoomInfoId);
+                                                                     Long hospitalDepartmentRoomInfoId);
+
+    HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRoster(Date appointmentDate,
+                                                                     Long hospitalDepartmentId,
+                                                                     Long hospitalDepartmentRoomInfoId);
 
 
 }

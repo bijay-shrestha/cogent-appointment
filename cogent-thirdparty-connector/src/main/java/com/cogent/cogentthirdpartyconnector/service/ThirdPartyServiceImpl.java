@@ -1,12 +1,12 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
-import com.cogent.cogentthirdpartyconnector.utils.resttempalte.RestTemplateUtils;
+import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import static com.cogent.cogentthirdpartyconnector.utils.resttempalte.IntegrationRequestHeaders.getEsewaAPIHeaders;
-import static com.cogent.cogentthirdpartyconnector.utils.resttempalte.IntegrationRequestURI.ESEWA_API_AUTHENTICATE;
+import static com.cogent.cogentthirdpartyconnector.api.IntegrationRequestHeaders.getEsewaAPIHeaders;
+import static com.cogent.cogentthirdpartyconnector.api.IntegrationRequestURI.ESEWA_API_AUTHENTICATE;
 
 /**
  * @author rupak ON 2020/06/09-11:41 AM

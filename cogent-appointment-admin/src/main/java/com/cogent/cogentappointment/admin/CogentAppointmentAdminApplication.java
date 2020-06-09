@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.admin;
 
 import com.cogent.cogentappointment.admin.configuration.YamlPropertySourceFactory;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
-import com.cogent.cogentthirdpartyconnector.utils.resttempalte.RestTemplateUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -17,7 +16,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@ComponentScan({"com.cogent.cogentthirdpartyconnector.service"})
+//@ComponentScan(basePackages={"com.cogent.cogentthirdpartyconnector.service.utils.resttempalte",
+//"com.cogent.cogentthirdpartyconnector.service"})
+@ComponentScan(basePackages={"com.cogent.cogentappointment.admin",
+        "com.cogent.cogentthirdpartyconnector.service"})
 @EntityScan(basePackages =
         {"com.cogent.cogentappointment.persistence.model",
                 "com.cogent.cogentappointment.persistence.history"})
@@ -29,13 +31,6 @@ import org.springframework.web.client.RestTemplate;
                         "file:${catalina.home}/conf/admin/application-${spring.profiles.active}.yml"
                 })
 public class CogentAppointmentAdminApplication extends SpringBootServletInitializer {
-
-    private final RestTemplate restTemplate;
-
-    public CogentAppointmentAdminApplication(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -68,8 +63,8 @@ public class CogentAppointmentAdminApplication extends SpringBootServletInitiali
     }
 
     @Bean
-    public RestTemplateUtils restTemplateConfig() {
-        return new RestTemplateUtils(restTemplate);
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 }

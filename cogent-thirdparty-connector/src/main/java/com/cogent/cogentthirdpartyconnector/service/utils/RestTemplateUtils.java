@@ -1,9 +1,9 @@
-package com.cogent.cogentthirdpartyconnector.utils.resttempalte;
+package com.cogent.cogentthirdpartyconnector.service.utils;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 

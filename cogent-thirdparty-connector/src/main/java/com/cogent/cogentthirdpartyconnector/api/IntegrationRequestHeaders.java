@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.utils.resttempalte;
+package com.cogent.cogentthirdpartyconnector.api;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

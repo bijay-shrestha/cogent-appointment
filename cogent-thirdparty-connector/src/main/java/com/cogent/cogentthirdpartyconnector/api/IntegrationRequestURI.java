@@ -1,4 +1,4 @@
-package com.cogent.cogentthirdpartyconnector.utils.resttempalte;
+package com.cogent.cogentthirdpartyconnector.api;
 
 /**
  * @author rupak on 2020-05-24

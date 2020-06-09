@@ -16,6 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Date;
 
@@ -56,6 +57,7 @@ public class EAppointmentThirdPartyApplication extends SpringBootServletInitiali
         System.out.println("Value of `spring.profiles.active` = " + env.getProperty("spring.profiles.active"));
         System.out.println("Value of `application-${spring.profiles.active}.yml`");
         System.out.println("Value of `spring.datasource.url` = " + env.getProperty("spring.datasource.url"));
+        System.out.println("Value of `server.port` = " + env.getProperty("server.port"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
     }
 

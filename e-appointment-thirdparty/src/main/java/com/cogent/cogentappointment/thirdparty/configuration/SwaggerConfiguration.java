@@ -27,10 +27,10 @@ public class SwaggerConfiguration {
                 .build()
                 .apiInfo(metaData())
                 .globalOperationParameters(
-                        Collections.singletonList(new ParameterBuilder ()
+                        Collections.singletonList(new ParameterBuilder()
                                 .name("Authorization")
                                 .description("HMAC Authentication Code")
-                                .modelRef(new ModelRef ("string"))
+                                .modelRef(new ModelRef("string"))
                                 .parameterType("header")
                                 .required(false)
                                 .build()));

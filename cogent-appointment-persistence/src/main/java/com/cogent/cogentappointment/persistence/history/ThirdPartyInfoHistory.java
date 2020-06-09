@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
+import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.AdminAvatar;
+import com.cogent.cogentappointment.persistence.model.ApiFeatureIntegration;
 import com.cogent.cogentappointment.persistence.model.ThirdPartyInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,10 +31,6 @@ public class ThirdPartyInfoHistory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "third_party_info_id",foreignKey = @ForeignKey(name = "FK_tpi_history_third_party_info"))
-    private ThirdPartyInfo thirdPartyInfo;
-
     @Column(name = "third_party_info_content")
     @Lob
     private String thirdPartyInfoContent;
@@ -48,7 +46,6 @@ public class ThirdPartyInfoHistory implements Serializable {
     private Action action;
 
     public ThirdPartyInfoHistory(ThirdPartyInfo thirdPartyInfo,Action action) {
-        this.thirdPartyInfo=thirdPartyInfo;
         this.thirdPartyInfoContent=thirdPartyInfo.toString();
         this.action=action;
     }

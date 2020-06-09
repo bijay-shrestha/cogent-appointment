@@ -58,7 +58,7 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
     public List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId) {
         Query query = createQuery.apply(entityManager,
                 RequestBodyAttributesQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID)
-                .setParameter(QueryConstants.API_FEATURE__ID, featureId);
+                .setParameter(QueryConstants.API_FEATURE_ID, featureId);
 
         int totalItems = query.getResultList().size();
 
@@ -116,7 +116,7 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
 
         Query query = createNativeQuery.apply(entityManager,
                 RequestBodyAttributesQuery.FETCH_REQUEST_BODY_ATTRIBUTE_DETAILS_BY_FEATURE_ID)
-                .setParameter(QueryConstants.API_FEATURE__ID, featureId);
+                .setParameter(QueryConstants.API_FEATURE_ID, featureId);
 
         try {
             return transformQueryToSingleResult(query, IntegrationRequestBodyDetailResponseDTO.class);

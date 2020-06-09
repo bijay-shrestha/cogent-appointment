@@ -1,12 +1,13 @@
 package com.cogent.cogentappointment.admin.exception.utils;
 
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
+
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 
 /**
  * @author smriti on 7/2/19
@@ -18,15 +19,15 @@ public class ExceptionUtils {
     }
 
     public static String generateMessage(Class clazz) {
-        return "No " + StringUtil.splitByCharacterTypeCamelCase(clazz.getSimpleName()) + "(s) found.";
+        return "No " + splitByCharacterTypeCamelCase(clazz.getSimpleName()) + "(s) found.";
     }
 
     public static String generateMessage(Class clazz, String errorMessage) {
-        return StringUtil.splitByCharacterTypeCamelCase(clazz.getSimpleName()) + errorMessage;
+        return splitByCharacterTypeCamelCase(clazz.getSimpleName()) + errorMessage;
     }
 
     public static String generateDebugMessage(Class clazz, String debugMessage) {
-        return StringUtil.splitByCharacterTypeCamelCase(clazz.getSimpleName()) + debugMessage;
+        return splitByCharacterTypeCamelCase(clazz.getSimpleName()) + debugMessage;
     }
 
     public static String generateMessage(String entity, Map<String, String> searchParams) {
@@ -34,7 +35,7 @@ public class ExceptionUtils {
     }
 
     public static String generateDebugMessage(Class clazz) {
-        return StringUtil.splitByCharacterTypeCamelCase(clazz.getSimpleName()) + "(s) is empty.";
+        return splitByCharacterTypeCamelCase(clazz.getSimpleName()) + "(s) is empty.";
     }
 
     public static <K, V> Map<K, V> toMap(Class<K> keyType,

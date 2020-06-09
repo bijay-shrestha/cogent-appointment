@@ -134,6 +134,8 @@ public class ErrorMessageConstants {
         String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITH_ROOM =
                 "Department Duty Roster Override already exists within '%s' to '%s' for selected room";
 
+        String HOSPITAL_DEPARTMENT_DOCTOR_NOT_ASSIGNED = "Sorry, Requested doctor of '%s' are not assigned to " +
+                "the selected hospital department";
     }
 
     //I
@@ -168,7 +170,7 @@ public class ErrorMessageConstants {
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s' ";
 
-    public static String NO_CONTENT_FOUND = "No %s(s) found.";
+    public static String NO_RECORD_FOUND = "No %s(s) found.";
 
 
     //O

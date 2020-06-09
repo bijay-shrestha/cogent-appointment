@@ -9,11 +9,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_FEATURE__ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_FEATURE_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_REQUEST_METHOD_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.query.IntegrationQuery.VALIDATE_HOSPITAL_REQUEST_METHOD_AND_FEATURE;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createNativeQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 
 /**
@@ -34,7 +33,7 @@ public class ClientFeatureIntegrationRepositoryCustomImpl implements
                                                     Long requestMethodId) {
         Query query = createQuery.apply(entityManager,
                 VALIDATE_HOSPITAL_REQUEST_METHOD_AND_FEATURE)
-                .setParameter(API_FEATURE__ID, featureTypeId)
+                .setParameter(API_FEATURE_ID, featureTypeId)
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(API_REQUEST_METHOD_ID, requestMethodId);
 

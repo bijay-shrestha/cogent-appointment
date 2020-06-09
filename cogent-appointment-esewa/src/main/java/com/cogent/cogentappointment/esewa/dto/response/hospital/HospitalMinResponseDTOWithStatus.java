@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HospitalMinResponseDTOWithStatus implements Serializable {
-    List<HospitalMinResponseDTO> hospitalMinResponseDTOS;
+    private List<HospitalMinResponseDTO> hospitalMinResponseDTOS;
 
     private int responseCode;
 

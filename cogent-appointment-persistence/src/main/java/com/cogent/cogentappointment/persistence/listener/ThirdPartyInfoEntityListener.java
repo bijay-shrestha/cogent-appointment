@@ -37,6 +37,6 @@ public class ThirdPartyInfoEntityListener {
     @Transactional(MANDATORY)
     public void perform(ThirdPartyInfo target, Action action) {
         EntityManager entityManager = BeanUtil.getBean(EntityManager.class);
-        entityManager.persist(new ThirdPartyInfoHistory (target, action));
+        entityManager.persist(new ThirdPartyInfoHistory(target, action));
     }
 }

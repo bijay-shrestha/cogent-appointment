@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDeptDutyRosterOverrideRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRosterOverride;
@@ -13,11 +15,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOverrideQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.parseQueryResultToHospitalDeptDutyRosterStatusResponseDTO;
 
 /**
  * @author smriti on 20/05/20
@@ -33,6 +38,7 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
 
     @Override
     public Long fetchOverrideCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITHOUT_ROOM)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
@@ -43,10 +49,11 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
 
     @Override
     public Long fetchOverrideCountWithRoom(Long hospitalDepartmentId, Date fromDate,
-                                           Date toDate, Long roomId) {
+                                           Date toDate, Long hospitalDepartmentRoomInfoId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITH_ROOM)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
-                .setParameter(ROOM_ID, roomId)
+                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 
@@ -68,11 +75,11 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
 
     @Override
     public Long fetchOverrideCountWithRoomExceptCurrentId(Long hospitalDepartmentId, Date fromDate,
-                                                          Date toDate, Long roomId, Long rosterOverrideId) {
+                                                          Date toDate, Long hospitalDepartmentRoomInfoId, Long rosterOverrideId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITH_ROOM_EXCEPT_CURRENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
-                .setParameter(ROOM_ID, roomId)
+                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(ID, rosterOverrideId);
@@ -88,8 +95,8 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
     }
 
     @Override
-    public void updateOverrideRoomInfo(Long hddRosterId, Long roomId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_UPDATE_OVERRIDE_ROOM(roomId))
+    public void updateOverrideRoomInfo(Long hddRosterId, Long hospitalDepartmentRoomInfoId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_UPDATE_OVERRIDE_ROOM(hospitalDepartmentRoomInfoId))
                 .setParameter(ID, hddRosterId);
 
         query.executeUpdate();
@@ -97,7 +104,7 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
 
     @Override
     public List<HospitalDepartmentDutyRosterOverride> fetchOverrideList(List<HospitalDeptDutyRosterOverrideUpdateRequestDTO>
-                                                                                    updateRequestDTOS) {
+                                                                                updateRequestDTOS) {
         List<HospitalDepartmentDutyRosterOverride> overrides =
                 entityManager.createQuery(QUERY_TO_FETCH_HDD_ROSTER_OVERRIDE(updateRequestDTOS),
                         HospitalDepartmentDutyRosterOverride.class)
@@ -107,5 +114,30 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
             throw new NoContentFoundException(HospitalDepartmentDutyRosterOverride.class);
 
         return overrides;
+    }
+
+    @Override
+    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterOverrideStatus(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO, List<Long> rosterIdList) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO,rosterIdList))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        if (rosterIdList.size() > 0)
+            query.setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID, rosterIdList);
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
+
+        List<Object[]> results = query.getResultList();
+
+        return parseQueryResultToHospitalDeptDutyRosterStatusResponseDTO(
+                results, requestDTO.getFromDate(), requestDTO.getToDate());
     }
 }

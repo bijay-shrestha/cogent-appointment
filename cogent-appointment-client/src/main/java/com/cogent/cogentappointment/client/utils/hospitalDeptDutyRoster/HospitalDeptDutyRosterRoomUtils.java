@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster;
 
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRosterRoomInfo;
-import com.cogent.cogentappointment.persistence.model.Room;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentRoomInfo;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 
@@ -11,21 +11,22 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTI
  */
 public class HospitalDeptDutyRosterRoomUtils {
 
-    public static HospitalDepartmentDutyRosterRoomInfo parseRoomDetails(HospitalDepartmentDutyRoster dutyRoster,
-                                                                        Room room) {
+    public static HospitalDepartmentDutyRosterRoomInfo parseHospitalDepartmentDutyRosterRoomDetails(
+            HospitalDepartmentDutyRoster dutyRoster,
+            HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo) {
 
         HospitalDepartmentDutyRosterRoomInfo roomInfo = new HospitalDepartmentDutyRosterRoomInfo();
         roomInfo.setHospitalDepartmentDutyRoster(dutyRoster);
-        roomInfo.setRoom(room);
+        roomInfo.setHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfo);
         roomInfo.setStatus(ACTIVE);
         return roomInfo;
     }
 
-    public static void updateRoomDetails(Room room,
-                                         Character status,
-                                         HospitalDepartmentDutyRosterRoomInfo rosterRoomInfo) {
+    public static void updateRoomDetails(HospitalDepartmentDutyRosterRoomInfo rosterRoomInfo,
+                                         HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo,
+                                         Character status) {
 
-        rosterRoomInfo.setRoom(room);
+        rosterRoomInfo.setHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfo);
         rosterRoomInfo.setStatus(status);
     }
 }

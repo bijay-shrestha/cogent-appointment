@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.ChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
@@ -17,6 +18,7 @@ import java.net.URI;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorConstants.BASE_DOCTOR;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.*;
 import static org.springframework.http.ResponseEntity.created;
@@ -88,6 +90,19 @@ public class HospitalDepartmentResource {
     @GetMapping(AVAILABLE + ROOM + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION)
     public ResponseEntity<?> fetchAvailableRoom(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(hospitalDepartmentService.fetchAvailableHospitalDepartment(hospitalId));
+        return ok(hospitalDepartmentService.fetchAvailableRoom(hospitalId));
     }
+
+    @PutMapping(BILLING_MODE_WISE + CHARGE)
+    @ApiOperation(FETCH_APPOINTMENT_CHARGE)
+    public ResponseEntity<?> fetchAppointmentCharge(@Valid @RequestBody ChargeRequestDTO requestDTO) {
+        return ok().body(hospitalDepartmentService.fetchAppointmentCharge(requestDTO));
+    }
+
+    @GetMapping(BASE_DOCTOR + HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ASSIGNED_DOCTOR)
+    public ResponseEntity<?> fetchAppointmentCharge(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId) {
+        return ok().body(hospitalDepartmentService.fetchAssignedHospitalDepartmentDoctor(hospitalDepartmentId));
+    }
+
 }

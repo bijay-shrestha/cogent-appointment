@@ -31,10 +31,13 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentQuery.QUERY_TO_VALIDATE_IF_APPOINTMENT_EXISTS_DEPT_WISE;
 import static com.cogent.cogentappointment.esewa.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.parseToAppointmentHistory;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
@@ -127,6 +130,33 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         } catch (NoResultException e) {
             throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
         }
+    }
+
+    @Override
+    public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
+            Date appointmentDate, Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE(hospitalDepartmentRoomInfoId))
+                .setParameter(DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        return transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
+    }
+
+    @Override
+    public Long validateIfAppointmentExistsDeptWise(Date appointmentDate,
+                                                    String appointmentTime,
+                                                    Long hospitalDepartmentId,
+                                                    Long hospitalDepartmentRoomInfoId) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_VALIDATE_IF_APPOINTMENT_EXISTS_DEPT_WISE(hospitalDepartmentRoomInfoId))
+                .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(APPOINTMENT_TIME, appointmentTime)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        return (Long) query.getSingleResult();
     }
 
     @Override

@@ -66,6 +66,8 @@ public class SwaggerConstants {
     public interface AppointmentStatusConstant {
         String BASE_API_VALUE = "This is Appointment Status Resource";
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS = "Fetch department appointment status.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "Fetch department appointment status by specific roomId.";
     }
 
     public interface AppointmentTransferConstant {
@@ -98,6 +100,10 @@ public class SwaggerConstants {
     };
 
     //B
+    public interface BillingModeConstant {
+        String BASE_API_VALUE = "This is Billing Mode Resource.";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Billing Mode details for dropdown by hospitalId";
+    }
 
     //C
     public interface CountryConstant {
@@ -229,6 +235,8 @@ public class SwaggerConstants {
                 " details (id and name) for dropdown";
         String FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION = "Fetch available room " +
                 " details (id and name) for dropdown by hospitalId";
+        String FETCH_APPOINTMENT_CHARGE = "Fetch appointment charge by hospital department and billing mode id";
+        String FETCH_ASSIGNED_DOCTOR = "Fetch assigned doctor in selected hospital department";
     }
 
     public interface HospitalDeptDutyRosterConstant {

@@ -24,10 +24,6 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN_FEATURE = "/adminFeature";
     }
 
-    public interface AdminModeIntegrationConstants {
-        String BASE_ADMIN_MODE_INTEGRATION = "/admin-mode-integration";
-    }
-
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
@@ -48,10 +44,11 @@ public class WebResourceKeyConstants {
     }
 
     public interface BillingModeConstants {
-        String BASE_Billing_MODE = "/billingMode";
+        String BASE_BILLING_MODE = "/billingMode";
+
     }
 
-    public interface AppointmentTransferConstants{
+    public interface AppointmentTransferConstants {
         String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
         String APPOINTMENT_TIME = "/time";
         String APPOINTMENT_CHARGE = "/charge";
@@ -59,17 +56,14 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE = "/{appointmentTransferId}";
     }
 
+    public interface AppointmentServiceTypeConstants {
+        String BASE_APPOINTMENT_SERVICE_TYPE = "/appointmentServiceType";
+    }
+
     //B
     public static final String BASE_PASSWORD = "/password";
 
     //C
-
-    public interface ClientIntegrationConstants {
-        String BASE_CLIENT_INTEGRATION = "/client-integration";
-        String CLIENT_INTEGRATION = "/client-api-integration";
-        String CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
-        String CLIENT_INTEGRATION_UPDATE_DETAILS = "/update-details";
-    }
 
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
@@ -162,6 +156,8 @@ public class WebResourceKeyConstants {
         String AVAILABLE = "/available";
         String ROOM = "/room";
         String HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{hospitalDepartmentId}";
+        String CHARGE = "/charge";
+        String BILLING_MODE_WISE = "/billingModeWise";
     }
 
     //I
@@ -179,6 +175,20 @@ public class WebResourceKeyConstants {
         String API_INTEGRATION_TYPE="/api-integration-type";
         String INTEGRATION_CHANNEL="/integration-channel";
         String REQUEST_BODY_PARAMETERS="/request-body-parameters";
+    }
+
+    public interface IntegrationAdminModeConstants {
+        String BASE_ADMIN_MODE_INTEGRATION = "/admin-mode-integration";
+        String ADMIN_MODE_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
+        String ADMIN_MODE_INTEGRATION = "/admin-mode-api-integration";
+        String ADMIN_MODE_UPDATE_DETAILS = "/update-details";
+    }
+
+    public interface IntegrationClientConstants {
+        String BASE_CLIENT_INTEGRATION = "/client-integration";
+        String CLIENT_INTEGRATION = "/client-api-integration";
+        String CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
+        String CLIENT_INTEGRATION_UPDATE_DETAILS = "/update-details";
     }
 
     public interface IntegrationRequestBodyAttributeConstants {

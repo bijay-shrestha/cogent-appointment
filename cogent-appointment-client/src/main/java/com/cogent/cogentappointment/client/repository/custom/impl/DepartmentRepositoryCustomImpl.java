@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_CONTENT_FOUND;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -96,7 +96,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
             return transformQueryToSingleResult(query, DepartmentResponseDTO.class);
         } catch (NoResultException e) {
             log.error(CONTENT_NOT_FOUND_BY_ID, UNIT, id);
-            throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, UNIT), "id", id.toString());
+            throw new NoContentFoundException(String.format(NO_RECORD_FOUND, UNIT), "id", id.toString());
         }
     }
 
@@ -124,7 +124,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
 
     private Supplier<NoContentFoundException> DEPARTMENT_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, UNIT);
-        throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, UNIT));
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, UNIT));
     };
 }
 

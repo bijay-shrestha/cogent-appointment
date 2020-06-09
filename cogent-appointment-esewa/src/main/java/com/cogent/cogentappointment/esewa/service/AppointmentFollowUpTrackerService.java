@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.esewa.dto.response.appointment.followup.Appo
  */
 public interface AppointmentFollowUpTrackerService {
 
-    /*esewa*/
     AppointmentFollowUpResponseDTOWithStatus fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO);
 
     Long fetchByParentAppointmentId(Long parentAppointmentId);

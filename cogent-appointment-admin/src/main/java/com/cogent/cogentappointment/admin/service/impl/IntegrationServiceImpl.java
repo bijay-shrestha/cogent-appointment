@@ -5,22 +5,24 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.*;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
+import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -41,7 +43,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
 public class IntegrationServiceImpl implements IntegrationService {
 
     private final ClientFeatureIntegrationRepository clientFeatureIntegrationRepository;
-    private final ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository;
+    private final ApiIntegrationFormatRespository apiIntegrationFormatRespository;
     private final HttpRequestMethodRepository httpRequestMethodRepository;
     private final ApiQueryParametersRepository apiQueryParametersRepository;
     private final ApiRequestHeaderRepository apiRequestHeaderRepository;
@@ -54,7 +56,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     private final ApiIntegrationTypeRepository apiIntegrationTypeRepository;
 
     public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository,
-                                  ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository,
+                                  ApiIntegrationFormatRespository apiIntegrationFormatRespository,
                                   HttpRequestMethodRepository httpRequestMethodRepository,
                                   ApiQueryParametersRepository apiQueryParametersRepository,
                                   ApiRequestHeaderRepository apiRequestHeaderRepository,
@@ -67,7 +69,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                                   ApiIntegrationTypeRepository apiIntegrationTypeRepository) {
 
         this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
-        this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
+        this.apiIntegrationFormatRespository = apiIntegrationFormatRespository;
         this.httpRequestMethodRepository = httpRequestMethodRepository;
         this.apiQueryParametersRepository = apiQueryParametersRepository;
         this.apiRequestHeaderRepository = apiRequestHeaderRepository;
@@ -133,9 +135,9 @@ public class IntegrationServiceImpl implements IntegrationService {
                                                         Long requestMethodId) {
 
         Long count = clientFeatureIntegrationRepository.
-                findHospitalFeatureAndRequestMethod(hospitalId,featureTypeId,requestMethodId);
+                findHospitalFeatureAndRequestMethod(hospitalId, featureTypeId, requestMethodId);
 
-        if (count>0) {
+        if (count > 0) {
 
             throw new DataDuplicationException("Client Feature Integration Already Exist");
         }
@@ -160,9 +162,9 @@ public class IntegrationServiceImpl implements IntegrationService {
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
 
-
         clientFeatureIntegration.setFeatureId(requestDTO.getFeatureId());
         clientFeatureIntegration.setIntegrationChannelId(integrationChannel);
+        clientFeatureIntegration.setRemarks(requestDTO.getRemarks());
 
         List<ApiFeatureIntegration> apiFeatureIntegration =
                 apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
@@ -184,14 +186,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private void updateApiIntegrationFormat(ClientApiIntegrationUpdateRequestDTO requestDTO, Long apiIntegrationFormatId) {
 
-        ApiIntegrationFormat apiIntegrationFormat = clientApiIntegrationFormatRespository.
+        ApiIntegrationFormat apiIntegrationFormat = apiIntegrationFormatRespository.
                 findByIntegrationFormatId(apiIntegrationFormatId)
                 .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(apiIntegrationFormatId));
 
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
         apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
 
-        clientApiIntegrationFormatRespository.save(apiIntegrationFormat);
+        apiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
 
     private void updateApiRequestHeaders(List<ClientApiRequestHeadersUpdateRequestDTO> queryParametersRequestDTOS,
@@ -307,6 +309,46 @@ public class IntegrationServiceImpl implements IntegrationService {
                 .findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
                 .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(clientFeatureIntegration.getId()));
 
+        List<ApiRequestHeader> apiRequestHeaderListToDelete = new ArrayList<>();
+        List<ApiQueryParameters> apiQueryParameterToDelete = new ArrayList<>();
+
+        apiFeatureIntegrationList.forEach(apiFeatureIntegration -> {
+
+            ApiIntegrationFormat apiIntegrationFormat = apiIntegrationFormatRespository.
+                    findByIntegrationFormatId(apiFeatureIntegration.getApiIntegrationFormatId())
+                    .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(apiFeatureIntegration.getId()));
+
+
+            List<ApiRequestHeader> apiRequestHeaderList = apiRequestHeaderRepository.
+                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getApiIntegrationFormatId()).
+                    orElse(null);
+            if (apiRequestHeaderList != null) {
+                apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
+
+            }
+
+            List<ApiQueryParameters> apiQueryParametersList = apiQueryParametersRepository.
+                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getApiIntegrationFormatId())
+                    .orElse(null);
+
+            if (apiQueryParametersList != null) {
+                apiQueryParameterToDelete.addAll(apiQueryParametersList);
+            }
+
+            parseToDeletedApiIntegrationFormat(apiIntegrationFormat);
+
+
+        });
+
+        if (apiRequestHeaderListToDelete.size() > 0) {
+            parseToDeletedApiRequestHeaders(apiRequestHeaderListToDelete);
+        }
+
+        if (apiQueryParameterToDelete.size() > 0) {
+            parseToDeletedApiQueryParameters(apiQueryParameterToDelete);
+
+        }
+
         parseToDeletedApiFeatureIntegration(apiFeatureIntegrationList);
 
         log.info(DELETING_PROCESS_COMPLETED, API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
@@ -326,7 +368,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         ClientApiIntegrationDetailResponseDTO responseDTO = new ClientApiIntegrationDetailResponseDTO();
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
-        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
         responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
@@ -371,7 +413,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 findApiQueryParametersForUpdate(featureIntegrationResponse.getFeatureId());
 
         ClientApiIntegrationUpdateResponseDTO responseDTO = new ClientApiIntegrationUpdateResponseDTO();
-        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
@@ -419,13 +461,13 @@ public class IntegrationServiceImpl implements IntegrationService {
                                            Long integrationChannelId) {
 
         apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
-                apiIntegrationFormatId, integrationChannelId));
+                apiIntegrationFormatId));
 
     }
 
     private void saveApiIntegrationFormat(ApiIntegrationFormat apiIntegrationFormat) {
 
-        clientApiIntegrationFormatRespository.save(apiIntegrationFormat);
+        apiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
 
     private void saveClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration) {
@@ -443,6 +485,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private Function<Long, NoContentFoundException> API_INTEGRATION_FORMAT_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(ApiIntegrationFormat.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> API_QUERY_PARAMETER_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiQueryParameters.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> CLIENT_FEATURE_NOT_FOUND = (id) -> {

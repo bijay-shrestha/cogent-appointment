@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.hospital;
 
-import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -39,13 +39,13 @@ public class HospitalResponseDTO implements Serializable {
 
     private Character isCompany;
 
-    private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
-
     private Integer numberOfFollowUps;
 
     private Integer followUpIntervalDays;
 
     private String alias;
+
+    private List<DropDownResponseDTO> billingMode;
 
     private String createdBy;
 
@@ -56,4 +56,8 @@ public class HospitalResponseDTO implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY 'at' hh:mm a", timezone = "Asia/Kathmandu")
     private Date lastModifiedDate;
+
+    private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
+
+    private List<HospitalAppointmentServiceTypeResponseDTO> hospitalAppointmentServiceTypeDetail;
 }

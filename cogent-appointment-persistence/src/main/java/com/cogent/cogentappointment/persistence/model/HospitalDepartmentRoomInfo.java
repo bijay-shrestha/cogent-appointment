@@ -13,6 +13,7 @@ import java.io.Serializable;
 
 /**
  * @author Sauravi Thapa ON 5/19/20
+ * Consists Room list as assigned in Department
  */
 @Entity
 @Table(name = "hospital_department_room_info")

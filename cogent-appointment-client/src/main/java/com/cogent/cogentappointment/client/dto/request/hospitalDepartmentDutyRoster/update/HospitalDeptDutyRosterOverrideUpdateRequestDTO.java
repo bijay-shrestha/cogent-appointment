@@ -34,7 +34,7 @@ public class HospitalDeptDutyRosterOverrideUpdateRequestDTO implements Serializa
     @NotNull
     private Character status;
 
-    private Long roomId;
+    private Long hospitalDepartmentRoomInfoId;
 
     @NotEmpty
     @NotBlank

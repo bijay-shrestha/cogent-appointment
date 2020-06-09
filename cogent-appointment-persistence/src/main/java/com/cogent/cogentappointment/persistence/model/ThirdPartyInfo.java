@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.listener.ThirdPartyInfoEntityListener;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
@@ -13,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "third_party_info")
 @Getter
+@Setter
 @Service
 @NoArgsConstructor
 @ToString

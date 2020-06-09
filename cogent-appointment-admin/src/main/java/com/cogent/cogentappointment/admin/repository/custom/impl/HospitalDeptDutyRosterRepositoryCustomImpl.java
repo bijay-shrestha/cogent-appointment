@@ -1,13 +1,16 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -20,6 +23,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -34,10 +38,13 @@ import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterOve
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER;
+import static com.cogent.cogentappointment.admin.query.HospitalDeptWeekDaysDutyRosterDoctorInfoQuery.QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseHDDRosterDetails;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToExistingRosterDetails;
 
 /**
@@ -69,6 +76,7 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     @Override
     public Character fetchRoomStatusIfExistsExceptCurrentId(Long hospitalDepartmentId,
                                                             Date fromDate, Date toDate, Long hddRosterId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_STATUS_EXCEPT_CURRENT_ID)
                 .setParameter(ID, hddRosterId)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
@@ -155,6 +163,87 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         return parseToExistingRosterDetails(weekDaysDetail, overrideDetail);
     }
 
+    @Override
+    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatus
+            (HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
+        List<HospitalDeptDutyRosterStatusResponseDTO> responseDTOS=new ArrayList<>();
+
+        List<Object[]> resultsWithRoom = queryToGetRosterWithRoom(requestDTO).getResultList();
+
+        List<Object[]> resultWithoutRoom= queryToGetRosterWithoutRoom(requestDTO).getResultList();
+
+        responseDTOS.addAll(parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+                resultsWithRoom, requestDTO.getFromDate(), requestDTO.getToDate()));
+
+        responseDTOS.addAll(parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+                resultWithoutRoom, requestDTO.getFromDate(), requestDTO.getToDate()));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatusRoomWise(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
+        Query query = createNativeQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_ROOM_WISE(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            query.setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+
+        List<Object[]> results = query.getResultList();
+
+
+        return (parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+                results, requestDTO.getFromDate(), requestDTO.getToDate()));
+    }
+
+    private Query queryToGetRosterWithRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){
+
+        Query query = createNativeQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_WITH_ROOM(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            query.setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+
+        return query;
+
+    }
+
+    private Query queryToGetRosterWithoutRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){
+
+        Query query = createNativeQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_WITHOUT_ROOM(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            query.setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+
+        return query;
+
+    }
+
     private String fetchRoomNumber(Long hddRosterId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER)
                 .setParameter(ID, hddRosterId);
@@ -193,7 +282,17 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_WEEK_DAYS_DETAIL)
                 .setParameter(ID, hddRosterId);
 
-        return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterResponseDTO.class);
+        List<HospitalDeptWeekDaysDutyRosterResponseDTO> weekDaysRosters =
+                transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterResponseDTO.class);
+
+        weekDaysRosters.forEach(weekDaysRoster -> {
+            List<HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO> weekDaysDoctorInfo
+                    = fetchWeekDaysDoctorInfo(weekDaysRoster.getRosterWeekDaysId());
+
+            weekDaysRoster.setWeekDaysDoctorInfo(weekDaysDoctorInfo);
+        });
+
+        return weekDaysRosters;
     }
 
     private List<HospitalDeptDutyRosterOverrideResponseDTO> fetchHDDRosterOverrideDetail(Long hddRosterId) {
@@ -206,12 +305,23 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     private Supplier<NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER));
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND,
+                splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())));
     };
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_WITH_ID_NOT_FOUND = (hddRosterId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER),
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND,
+                splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())),
                 "hddRosterId", hddRosterId.toString());
     };
+
+    private List<HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO> fetchWeekDaysDoctorInfo(
+            Long hospitalDepartmentWeekDaysDutyRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO)
+                .setParameter(ID, hospitalDepartmentWeekDaysDutyRosterId);
+
+        return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO.class);
+    }
 }

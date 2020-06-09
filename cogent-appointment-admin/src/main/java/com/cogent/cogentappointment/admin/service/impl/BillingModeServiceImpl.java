@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.admin.dto.request.billingMode.BillingModeUpd
 import com.cogent.cogentappointment.admin.dto.response.billingMode.BillingModeMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.billingMode.BillingModeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.custom.BillingModeRepository;
+import com.cogent.cogentappointment.admin.repository.BillingModeRepository;
 import com.cogent.cogentappointment.admin.service.BillingModeService;
 import com.cogent.cogentappointment.persistence.model.BillingMode;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +84,7 @@ public class BillingModeServiceImpl implements BillingModeService {
 
         BillingMode billingMode = fetchBillingModeById(deleteRequestDTO.getId());
 
-        save(parseToDeletedBillingMode.apply(deleteRequestDTO,billingMode));
+        save(parseToDeletedBillingMode.apply(deleteRequestDTO, billingMode));
 
         log.info(DELETING_PROCESS_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
     }
@@ -129,6 +129,19 @@ public class BillingModeServiceImpl implements BillingModeService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchActiveMinBillingModeByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, BILLING_MODE);
+
+        List<DropDownResponseDTO> minInfo = billingModeRepository.fetchActiveMinBillingModeByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchMinBillingMode() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -141,7 +154,20 @@ public class BillingModeServiceImpl implements BillingModeService {
         return minInfo;
     }
 
-    private void save(BillingMode billingMode){
+    @Override
+    public List<DropDownResponseDTO> fetchMinBillingModeByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, BILLING_MODE);
+
+        List<DropDownResponseDTO> minInfo = billingModeRepository.fetchMinBillingModeByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    private void save(BillingMode billingMode) {
         billingModeRepository.save(billingMode);
     }
 

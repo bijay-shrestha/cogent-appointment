@@ -38,4 +38,4 @@ build/
 *.yml
 **/*.yml
 
-
+/src/main/resources/application.yml

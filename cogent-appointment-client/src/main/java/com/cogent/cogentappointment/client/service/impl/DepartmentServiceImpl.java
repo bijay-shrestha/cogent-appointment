@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_CONTENT_FOUND;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.client.log.constants.DepartmentLog.UNIT;
@@ -190,11 +190,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private Supplier<NoContentFoundException> DEPARTMENT_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, UNIT);
-        throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, UNIT));
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, UNIT));
     };
 
     private Function<Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, UNIT, id);
-        throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, UNIT), "id", id.toString());
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, UNIT), "id", id.toString());
     };
 }

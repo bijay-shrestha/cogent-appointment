@@ -16,4 +16,6 @@ public class HospitalSearchRequestDTO implements Serializable {
     private String esewaMerchantCode;
 
     private Character status;
+
+    private Long billingModeId;
 }

@@ -23,7 +23,14 @@ public class ErrorMessageConstants {
         String INVALID_TRANSACTION_NUMBER = "Transaction number '%s' and patient '%s' not found";
     }
 
+    public interface AppointmentHospitalDepartmentMessage {
+        String INVALID_ROOM_CHECK_AVAILABILITY_REQUEST = "Sorry, Requested room is not assigned to department duty roster";
 
+        String HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
+                "actual hospital department appointment charge";
+        String HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
+                "Hospital Department actual appointment charge/ follow-up appointment charge";
+    }
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
@@ -53,6 +60,14 @@ public class ErrorMessageConstants {
 
     //H
     public static final String HOSPITAL_NULL_MESSAGE = " Hospital id must not be null";
+
+    public interface HospitalDepartmentDutyRosterMessages {
+        String HOSPITAL_DEPARTMENT_NOT_AVAILABLE_MESSAGE = "Sorry, Selected Hospital Department is not available" +
+                " on date '%s'.";
+
+        String HOSPITAL_DEPARTMENT_NOT_AVAILABLE_DEBUG_MESSAGE = "Sorry, Selected Hospital Department has day off" +
+                " on date '%s'.";
+    }
 
 
     //I

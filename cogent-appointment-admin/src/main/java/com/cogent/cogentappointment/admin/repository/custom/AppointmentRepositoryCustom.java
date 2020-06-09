@@ -78,4 +78,7 @@ public interface AppointmentRepositoryCustom {
 
     List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatus(
             HospitalDeptAppointmentStatusRequestDTO requestDTO);
+
+    List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatusRoomwise(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO);
 }

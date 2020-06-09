@@ -143,7 +143,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus = fetchHospitalDepartmentStatusRoomWise
                 (requestDTO);
 
-        List<HospitalDeptAppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO);
+        List<HospitalDeptAppointmentStatusResponseDTO> appointments = fetchAppointmentStatusRoomwise(requestDTO);
 
         hospitalDeptDutyRosterStatus = setDepartmentAppointmentTimeSlot(requestDTO.getStatus(),
                 hospitalDeptDutyRosterStatus, appointments);
@@ -485,6 +485,13 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
             HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         return appointmentRepository.fetchHospitalDeptAppointmentForAppointmentStatus(requestDTO);
+
+    }
+
+    private List<HospitalDeptAppointmentStatusResponseDTO> fetchAppointmentStatusRoomwise(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
+        return appointmentRepository.fetchHospitalDeptAppointmentForAppointmentStatusRoomwise(requestDTO);
 
     }
 

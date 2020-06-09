@@ -61,6 +61,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS;
+import static com.cogent.cogentappointment.client.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS_ROOM_WISE;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_REFUND_AMOUNT;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
@@ -546,6 +547,23 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
+
+        List<Object[]> results = query.getResultList();
+
+        return parseQueryResultToHospitalDeptAppointmentStatusResponseDTOS(results);
+    }
+
+    @Override
+    public List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatusRoomWise(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+        Query query = createNativeQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS_ROOM_WISE(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId())
+                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
 
         List<Object[]> results = query.getResultList();
 

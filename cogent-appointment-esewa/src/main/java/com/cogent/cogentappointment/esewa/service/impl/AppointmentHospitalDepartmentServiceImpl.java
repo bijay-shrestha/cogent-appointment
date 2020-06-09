@@ -48,17 +48,21 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     private final HospitalDeptDutyRosterRoomInfoRepository hospitalDeptDutyRosterRoomInfoRepository;
 
+    private final AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository;
+
     public AppointmentHospitalDepartmentServiceImpl(
             HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
             HospitalDeptDutyRosterOverrideRepository hospitalDeptDutyRosterOverrideRepository,
             HospitalDeptWeekDaysDutyRosterRepository hospitalDeptWeekDaysDutyRosterRepository,
             AppointmentRepository appointmentRepository,
-            HospitalDeptDutyRosterRoomInfoRepository hospitalDeptDutyRosterRoomInfoRepository) {
+            HospitalDeptDutyRosterRoomInfoRepository hospitalDeptDutyRosterRoomInfoRepository,
+            AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository) {
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.hospitalDeptDutyRosterOverrideRepository = hospitalDeptDutyRosterOverrideRepository;
         this.hospitalDeptWeekDaysDutyRosterRepository = hospitalDeptWeekDaysDutyRosterRepository;
         this.appointmentRepository = appointmentRepository;
         this.hospitalDeptDutyRosterRoomInfoRepository = hospitalDeptDutyRosterRoomInfoRepository;
+        this.appointmentHospitalDepartmentReservationLogRepository = appointmentHospitalDepartmentReservationLogRepository;
     }
 
     @Override
@@ -159,6 +163,11 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 requestDTO.getHospitalDepartmentId()
         );
 
+        filterHospitalDeptTimeWithAppointmentReservation(availableTimeSlots,
+                requestDTO.getAppointmentDate(),
+                requestDTO.getHospitalDepartmentId(), null
+        );
+
         return parseToAvailabilityResponseWithoutRoom(date, startTime, endTime, availableTimeSlots);
     }
 
@@ -234,7 +243,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         HospitalDeptDutyRosterTimeResponseTO dutyRosterTimeResponseTO = fetchHospitalDeptDutyRoster(
                 dutyRoster,
-                availableRoomInfo.get(0).getHospitalDepartmentRoomInfoId(),
+                roomInfo.getHospitalDepartmentRoomInfoId(),
                 requestDTO.getAppointmentDate(),
                 requestDTO.getHospitalDepartmentId()
         );
@@ -253,6 +262,12 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 dutyRosterTimeResponseTO.getRosterGapDuration(), roomInfo.getHospitalDepartmentRoomInfoId(),
                 requestDTO.getAppointmentDate(),
                 requestDTO.getHospitalDepartmentId()
+        );
+
+        filterHospitalDeptTimeWithAppointmentReservation(availableTimeSlots,
+                requestDTO.getAppointmentDate(),
+                requestDTO.getHospitalDepartmentId(),
+                roomInfo.getHospitalDepartmentRoomInfoId()
         );
 
         return parseToAvailabilityResponseWithRoom(
@@ -285,10 +300,30 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 requestDTO.getHospitalDepartmentId()
         );
 
+        filterHospitalDeptTimeWithAppointmentReservation(availableTimeSlots,
+                requestDTO.getAppointmentDate(),
+                requestDTO.getHospitalDepartmentId(),
+                requestDTO.getHospitalDepartmentRoomInfoId()
+        );
+
         return parseToAvailabilityResponseRoomWise(date, roomNumber, startTime, endTime, availableTimeSlots);
     }
 
     private String fetchRoomNumber(Long hddRosterId, Long hospitalDepartmentRoomInfoId) {
         return hospitalDeptDutyRosterRoomInfoRepository.fetchRoomNumber(hddRosterId, hospitalDepartmentRoomInfoId);
     }
+
+    private void filterHospitalDeptTimeWithAppointmentReservation(List<String> availableTimeSlots,
+                                                                  Date appointmentDate,
+                                                                  Long hospitalDepartmentId,
+                                                                  Long hospitalDepartmentRoomInfoId) {
+
+        List<String> bookedAppointmentReservations =
+                appointmentHospitalDepartmentReservationLogRepository.fetchBookedAppointmentReservations(
+                        appointmentDate, hospitalDepartmentId, hospitalDepartmentRoomInfoId );
+
+        availableTimeSlots.removeAll(bookedAppointmentReservations);
+    }
+
+
 }

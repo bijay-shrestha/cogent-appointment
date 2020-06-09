@@ -110,7 +110,7 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " WHERE dd.status !='D'" +
                     " AND dd.id = :id";
 
-    public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(HospitalDeptAppointmentStatusRequestDTO requestDTO,List<Long> rosterIdList) {
 
         String SQL =
                 "SELECT" +
@@ -134,8 +134,10 @@ public class HospitalDeptDutyRosterOverrideQuery {
                         " hddro.status = 'Y'" +
                         " AND hddr.status = 'Y'" +
                         " AND hddro.toDate >=:fromDate" +
-                        " AND hddro.fromDate <=:toDate" +
-                        " AND hddr.id IN (:hospitalDepartmentDutyRosterId) ";
+                        " AND hddro.fromDate <=:toDate";
+
+        if (rosterIdList.size() > 0)
+            SQL += " AND hddr.id IN (:hospitalDepartmentDutyRosterId) ";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND hddr.hospitalDepartment.id = :hospitalDepartmentId";

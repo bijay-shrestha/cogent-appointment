@@ -39,4 +39,7 @@ public interface HospitalDeptDutyRosterRepositoryCustom {
 
     List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatus(
             HospitalDeptAppointmentStatusRequestDTO requestDTO);
+
+    List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatusRoomWise(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO);
 }

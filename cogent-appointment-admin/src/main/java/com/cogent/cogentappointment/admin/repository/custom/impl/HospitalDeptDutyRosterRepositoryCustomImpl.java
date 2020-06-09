@@ -182,6 +182,30 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         return responseDTOS;
     }
 
+    @Override
+    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatusRoomWise(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
+        Query query = createNativeQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_ROOM_WISE(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            query.setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+
+        List<Object[]> results = query.getResultList();
+
+
+        return (parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+                results, requestDTO.getFromDate(), requestDTO.getToDate()));
+    }
+
     private Query queryToGetRosterWithRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){
 
         Query query = createNativeQuery.apply(entityManager,

@@ -110,7 +110,8 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " WHERE dd.status !='D'" +
                     " AND dd.id = :id";
 
-    public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(HospitalDeptAppointmentStatusRequestDTO requestDTO,List<Long> rosterIdList) {
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO,List<Long> rosterIdList) {
 
         String SQL =
                 "SELECT" +

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
 
 import java.util.List;
@@ -111,7 +111,7 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " AND dd.id = :id";
 
     public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusRequestDTO requestDTO,List<Long> rosterIdList) {
 
         String SQL =
                 "SELECT" +
@@ -137,6 +137,9 @@ public class HospitalDeptDutyRosterOverrideQuery {
                         " AND hddro.toDate >=:fromDate" +
                         " AND hddro.fromDate <=:toDate" +
                         " AND hddr.hospital.id = :hospitalId";
+
+        if (rosterIdList.size() > 0)
+            SQL += " AND hddr.id IN (:hospitalDepartmentDutyRosterId) ";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND hddr.hospitalDepartment.id = :hospitalDepartmentId";

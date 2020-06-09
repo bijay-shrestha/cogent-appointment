@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -117,12 +117,17 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
     }
 
     @Override
-    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterOverrideStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
+    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterOverrideStatus(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO, List<Long> rosterIdList) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO,rosterIdList))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
+        if (rosterIdList.size() > 0)
+            query.setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID, rosterIdList);
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());

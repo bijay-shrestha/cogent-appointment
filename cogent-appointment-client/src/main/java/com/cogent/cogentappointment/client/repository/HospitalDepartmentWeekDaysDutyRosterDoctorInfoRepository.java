@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository;
 
+import com.cogent.cogentappointment.client.repository.custom.HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentWeekDaysDutyRosterDoctorInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +14,8 @@ import java.util.Optional;
  */
 @Repository
 public interface HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository extends
-        JpaRepository<HospitalDepartmentWeekDaysDutyRosterDoctorInfo, Long> {
+        JpaRepository<HospitalDepartmentWeekDaysDutyRosterDoctorInfo, Long>,
+        HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepositoryCustom {
 
     @Query("SELECT h FROM HospitalDepartmentWeekDaysDutyRosterDoctorInfo h WHERE h.status = 'Y' AND h.id =:id")
     Optional<HospitalDepartmentWeekDaysDutyRosterDoctorInfo> fetchById(@Param("id") Long id);

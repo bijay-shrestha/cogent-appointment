@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;

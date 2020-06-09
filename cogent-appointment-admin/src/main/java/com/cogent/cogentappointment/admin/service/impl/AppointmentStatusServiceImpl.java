@@ -449,7 +449,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 deptDutyRosterRepository.fetchHospitalDeptDutyRosterStatus(requestDTO);
 
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus =
-                deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO,getRosterIdList(hospitalDeptDutyRosterStatus));
+                deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(
+                        requestDTO,getRosterIdList(hospitalDeptDutyRosterStatus));
 
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(DoctorDutyRoster.class);

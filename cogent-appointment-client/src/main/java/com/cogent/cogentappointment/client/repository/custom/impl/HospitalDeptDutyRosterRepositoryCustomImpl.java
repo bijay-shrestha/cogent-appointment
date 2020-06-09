@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
@@ -182,6 +182,28 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
                 resultWithoutRoom, requestDTO.getFromDate(), requestDTO.getToDate()));
 
         return responseDTOS;
+    }
+
+    @Override
+    public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatusRoomWise(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+        Query query = createNativeQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_ROOM_WISE(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
+
+        List<Object[]> results = query.getResultList();
+
+
+        return (parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+                results, requestDTO.getFromDate(), requestDTO.getToDate()));
     }
 
     private Query queryToGetRosterWithRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){

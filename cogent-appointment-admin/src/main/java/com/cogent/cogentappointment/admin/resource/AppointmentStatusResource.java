@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_STATUS;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_DEPARTMENT_APPOINTMENT_STATUS;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.STATUS;
@@ -50,7 +51,7 @@ public class AppointmentStatusResource {
     }
 
     @PutMapping(BASE_HOSPITAL_DEPARTMENT +ROOM+ STATUS)
-    @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS)
+    @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE)
     public ResponseEntity<?> fetchHospitalDeptAppointmentStatusRoomwise(@Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
         return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusRoomwise(requestDTO));
     }

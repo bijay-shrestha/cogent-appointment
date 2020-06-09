@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentStatusService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +18,7 @@ import static com.cogent.cogentappointment.client.constants.WebResourceKeyConsta
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.STATUS;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.ROOM;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -45,5 +46,11 @@ public class AppointmentStatusResource {
     public ResponseEntity<?> fetchHospitalDeptAppointmentStatus(
             @Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
         return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusResponseDTO(requestDTO));
+    }
+
+    @PutMapping(BASE_HOSPITAL_DEPARTMENT +ROOM+ STATUS)
+    @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE)
+    public ResponseEntity<?> fetchHospitalDeptAppointmentStatusRoomwise(@Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+        return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusRoomwise(requestDTO));
     }
 }

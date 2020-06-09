@@ -9,7 +9,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.log.Appointme
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;

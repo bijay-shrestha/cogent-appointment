@@ -16,4 +16,7 @@ public class HospitalDepartmentDutyRosterLog {
     public final static String REVERTING_PROCESS_STARTED = " REVERTING {} PROCESS STARTED";
 
     public final static String REVERTING_PROCESS_COMPLETED = " REVERTING {} PROCESS COMPLETED IN {} ms";
+
+    public final static String HOSPITAL_DEPARTMENT_DUTY_ROSTER_DOCTOR_INFO = "HOSPITAL DEPARTMENT WEEK DAYS DUTY ROSTER" +
+            " DOCTOR INFO";
 }

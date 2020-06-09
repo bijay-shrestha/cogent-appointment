@@ -132,7 +132,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         HospitalDeptAppointmentStatusDTO appointmentStatusDTO = parseToHospitalDeptAppointmentStatusDTO
                 (hospitalDeptDutyRosterStatus,hospitalDeptAndDoctorDTOS);
 
-
         log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_APPOINTMENT_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentStatusDTO;

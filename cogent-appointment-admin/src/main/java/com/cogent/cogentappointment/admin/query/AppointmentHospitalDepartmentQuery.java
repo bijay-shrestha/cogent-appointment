@@ -53,7 +53,7 @@ public class AppointmentHospitalDepartmentQuery {
         if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
             SQL += " AND a.status='" + requestDTO.getStatus() + "'";
 
-        SQL += " GROUP BY a.appointment_date, ahdi.hospital_department_id , ahdi.hospital_department_room_info_id  " +
+        SQL += " GROUP BY a.id  " +
                 " ORDER BY a.appointment_date";
 
         return SQL;

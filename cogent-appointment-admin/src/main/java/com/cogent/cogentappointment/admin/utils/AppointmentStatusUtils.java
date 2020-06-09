@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.admin.utils;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.AppointmentTimeSlotResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.*;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import org.joda.time.DateTime;
@@ -220,10 +217,12 @@ public class AppointmentStatusUtils {
     }
 
     public static HospitalDeptAppointmentStatusDTO parseToHospitalDeptAppointmentStatusDTO(
-            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRostersInfo) {
+            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRostersInfo,
+            List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorDTOS) {
 
         return HospitalDeptAppointmentStatusDTO.builder()
                 .hospitalDeptDutyRosterInfo(hospitalDeptDutyRostersInfo)
+                .hospitalDeptAndDoctorInfo(hospitalDeptAndDoctorDTOS)
                 .build();
     }
 

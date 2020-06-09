@@ -108,6 +108,7 @@ public class QueryConstants {
     //V
 
     //W
+    public static final String WEEK_DAY_NAME = "weekDayName";
 
 
     //X

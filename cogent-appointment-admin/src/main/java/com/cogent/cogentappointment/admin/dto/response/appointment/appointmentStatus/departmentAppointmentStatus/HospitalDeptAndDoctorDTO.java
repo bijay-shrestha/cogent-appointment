@@ -14,10 +14,10 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class HospitalDeptAppointmentStatusDTO implements Serializable {
+public class HospitalDeptAndDoctorDTO implements Serializable {
 
-    private List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterInfo;
+    private Long hospitalDepartmentId;
 
-    private List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorInfo;
+    private List<DoctorDropdownDTO> doctorInfo;
 
 }

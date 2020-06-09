@@ -117,11 +117,13 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
 
     @Override
     public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterOverrideStatus(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusRequestDTO requestDTO, List<Long> rosterIdList) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID,rosterIdList);
+
 
         if (!Objects.isNull(requestDTO.getHospitalId()))
             query.setParameter(HOSPITAL_ID, requestDTO.getHospitalId());

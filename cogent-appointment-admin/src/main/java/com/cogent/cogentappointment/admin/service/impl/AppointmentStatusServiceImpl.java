@@ -114,12 +114,21 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         hospitalDeptDutyRosterStatus = setDepartmentAppointmentTimeSlot(requestDTO.getStatus(),
                 hospitalDeptDutyRosterStatus, appointments);
 
+        List<Long> hospitalDepartmentIdList=getHospitalDepartmentId(hospitalDeptDutyRosterStatus);
+
         HospitalDeptAppointmentStatusDTO appointmentStatusDTO = parseToHospitalDeptAppointmentStatusDTO
                 (hospitalDeptDutyRosterStatus);
 
         log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_APPOINTMENT_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentStatusDTO;
+    }
+
+    private List<Long> getHospitalDepartmentId(List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus){
+        return hospitalDeptDutyRosterStatus
+                .stream()
+                .map(HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentId)
+                .collect(Collectors.toList());
     }
 
     /*IN CASE OF PAST DATE ->
@@ -386,16 +395,23 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatus
             (HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
-        List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus =
-                deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO);
-
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus =
                 deptDutyRosterRepository.fetchHospitalDeptDutyRosterStatus(requestDTO);
+
+        List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus =
+                deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO,getRosterIdList(hospitalDeptDutyRosterStatus));
 
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(DoctorDutyRoster.class);
 
         return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
+    }
+
+    private List<Long> getRosterIdList(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS){
+        return rosterStatusResponseDTOS
+                .stream()
+                .map(HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentRoomInfoId)
+                .collect(Collectors.toList());
     }
 
     /*FETCH APPOINTMENT DETAILS WITHIN SELECTED DATE RANGE*/

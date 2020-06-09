@@ -114,27 +114,28 @@ public class HospitalDeptDutyRosterOverrideQuery {
 
         String SQL =
                 "SELECT" +
-                " hddro.fromDate as fromDate," +                                                             //[0]
-                " hddro.toDate as toDate," +                                                                 //[1]
-                " DATE_FORMAT(hddro.startTime, '%H:%i') as startTime," +                                     //[2]
-                " DATE_FORMAT(hddro.endTime, '%H:%i') as endTime," +                                         //[3]
-                " hddro.dayOffStatus as dayOffStatus ," +                                                    //[4]
-                " hddr.rosterGapDuration as gapDuration," +                                                  //[5]
-                " hddr.hospitalDepartment.id as hospitalDepartmentId," +                                     //[6]
-                " hddr.hospitalDepartment.name as hospitatDepartmentName," +                                //[7]
-                " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[8]
-                " THEN null" +
-                " ELSE hddro.hospitalDepartmentRoomInfo.id END as roomId," +
-                " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[9]
-                " THEN 'N/A'" +
-                " ELSE hddro.hospitalDepartmentRoomInfo.room.roomNumber END as roomNumber" +
-                " FROM HospitalDepartmentDutyRosterOverride hddro" +
-                " LEFT JOIN HospitalDepartmentDutyRoster hddr ON hddr.id = hddro .hospitalDepartmentDutyRoster.id" +
-                " WHERE" +
-                " hddro.status = 'Y'" +
-                " AND hddr.status = 'Y'" +
-                " AND hddro.toDate >=:fromDate" +
-                " AND hddro.fromDate <=:toDate";
+                        " hddro.fromDate as fromDate," +                                                             //[0]
+                        " hddro.toDate as toDate," +                                                                 //[1]
+                        " DATE_FORMAT(hddro.startTime, '%H:%i') as startTime," +                                     //[2]
+                        " DATE_FORMAT(hddro.endTime, '%H:%i') as endTime," +                                         //[3]
+                        " hddro.dayOffStatus as dayOffStatus ," +                                                    //[4]
+                        " hddr.rosterGapDuration as gapDuration," +                                                  //[5]
+                        " hddr.hospitalDepartment.id as hospitalDepartmentId," +                                     //[6]
+                        " hddr.hospitalDepartment.name as hospitatDepartmentName," +                                //[7]
+                        " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[8]
+                        " THEN null" +
+                        " ELSE hddro.hospitalDepartmentRoomInfo.id END as roomId," +
+                        " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[9]
+                        " THEN 'N/A'" +
+                        " ELSE hddro.hospitalDepartmentRoomInfo.room.roomNumber END as roomNumber" +
+                        " FROM HospitalDepartmentDutyRosterOverride hddro" +
+                        " LEFT JOIN HospitalDepartmentDutyRoster hddr ON hddr.id = hddro .hospitalDepartmentDutyRoster.id" +
+                        " WHERE" +
+                        " hddro.status = 'Y'" +
+                        " AND hddr.status = 'Y'" +
+                        " AND hddro.toDate >=:fromDate" +
+                        " AND hddro.fromDate <=:toDate" +
+                        " AND hddr.id IN (:hospitalDepartmentDutyRosterId) ";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND hddr.hospitalDepartment.id = :hospitalDepartmentId";

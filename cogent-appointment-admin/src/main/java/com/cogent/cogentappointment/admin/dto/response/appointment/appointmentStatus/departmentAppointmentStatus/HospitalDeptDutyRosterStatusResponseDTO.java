@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import lombok.*;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HospitalDeptDutyRosterStatusResponseDTO implements Serializable {
+
+    private Long hospitalDepartmentDutyRosterId;
 
     private LocalDate date;
 

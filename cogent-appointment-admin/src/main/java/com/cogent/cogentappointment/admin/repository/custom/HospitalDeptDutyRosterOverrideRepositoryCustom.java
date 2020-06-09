@@ -36,6 +36,6 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
             List<HospitalDeptDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS);
 
     List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterOverrideStatus
-            (HospitalDeptAppointmentStatusRequestDTO requestDTO);
+            (HospitalDeptAppointmentStatusRequestDTO requestDTO, List<Long> rosterIdList);
 
 }

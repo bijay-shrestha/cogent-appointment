@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -103,6 +104,7 @@ public class HospitalDeptDutyRosterUtils {
             final int ROOM_ID_INDEX = 5;
             final int ROOM_NUMBER_INDEX = 6;
             final int DEPARTMENT_TIME_DETAILS_INDEX = 7;
+            final int DUTY_ROSTER_ID_INDEX = 8;
 
 
             LocalDate startLocalDate = convertDateToLocalDate((Date) result[START_DATE_INDEX]);
@@ -139,6 +141,7 @@ public class HospitalDeptDutyRosterUtils {
                                                 null : Long.parseLong(result[ROOM_ID_INDEX].toString()))
                                         .roomNumber(result[ROOM_NUMBER_INDEX].toString())
                                         .rosterGapDuration(Integer.parseInt(result[ROSTER_GAP_DURATION_INDEX].toString()))
+                                        .hospitalDepartmentDutyRosterId(Long.parseLong(result[DUTY_ROSTER_ID_INDEX].toString()))
                                         .build();
 
                                 hospitalDeptDutyRosterStatusResponseDTOS.add(responseDTO);

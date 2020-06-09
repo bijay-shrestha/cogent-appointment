@@ -223,7 +223,7 @@ public class AppointmentStatusUtils {
             List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRostersInfo) {
 
         return HospitalDeptAppointmentStatusDTO.builder()
-                .doctorDutyRosterInfo(hospitalDeptDutyRostersInfo)
+                .hospitalDeptDutyRosterInfo(hospitalDeptDutyRostersInfo)
                 .build();
     }
 

@@ -130,7 +130,8 @@ public class HospitalDeptDutyRosterQuery {
                 " CASE WHEN hddr.is_room_enabled='N' " +
                 " THEN 'N/A'" +
                 " ELSE r.room_number END as roomNumber," +
-                " GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i'), '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails" +
+                " GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i'), '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails," +
+                " hddr.id as rosterId" +
                 " FROM" +
                 " hospital_department_duty_roster hddr" +
                 " LEFT JOIN hospital_department_week_days_duty_roster dw ON dw.hospital_department_duty_roster_id = hddr.id" +
@@ -185,7 +186,9 @@ public class HospitalDeptDutyRosterQuery {
                 " CASE WHEN hddr.is_room_enabled='N' " +
                 " THEN 'N/A'" +
                 " ELSE r.room_number END as roomNumber," +
-                " GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i'), '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails" +
+                " GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i')," +
+                " '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails," +
+                " hddr.id as rosterId" +
                 " FROM" +
                 " hospital_department_duty_roster hddr" +
                 " LEFT JOIN hospital_department_week_days_duty_roster dw ON dw.hospital_department_duty_roster_id = hddr.id" +

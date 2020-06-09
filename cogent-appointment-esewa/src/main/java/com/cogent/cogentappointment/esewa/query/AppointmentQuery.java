@@ -16,9 +16,10 @@ public class AppointmentQuery {
     public static String QUERY_TO_VALIDATE_APPOINTMENT_EXISTS =
             "SELECT COUNT(a.id)" +
                     " FROM  Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " WHERE a.appointmentDate =:appointmentDate" +
-                    " AND a.doctorId.id =:doctorId" +
-                    " AND a.specializationId.id =:specializationId" +
+                    " AND ad.doctor.id = :doctorId" +
+                    " AND ad.specialization.id = :specializationId" +
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
                     " AND a.status='PA'";
 
@@ -36,12 +37,12 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =
             "SELECT DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime" +               //[0]
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " WHERE" +
                     " a.appointmentDate = :date" +
-                    " AND a.doctorId.id = :doctorId" +
-                    " AND a.specializationId.id = :specializationId" +
+                    " AND ad.doctor.id = :doctorId" +
+                    " AND ad.specialization.id = :specializationId" +
                     " AND a.status = 'PA'";
-
 
     /*%H - hour (e.g., 00,01,02,…12) IN 24 HOUR FORMAT
     * %h - hour (e.g., 00,01,02,…12) IN 12 HOUR FORMAT
@@ -189,7 +190,6 @@ public class AppointmentQuery {
 
         return query + " ORDER BY a.appointmentDate DESC";
     }
-
 
 
 }

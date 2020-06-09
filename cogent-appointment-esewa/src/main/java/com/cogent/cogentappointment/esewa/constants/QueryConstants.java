@@ -12,6 +12,8 @@ public class QueryConstants {
         String TRANSACTION_NUMBER = "transactionNumber";
     }
 
+
+
     public static final String API_KEY = "apiKey";
 
     //B
@@ -42,6 +44,8 @@ public class QueryConstants {
     public static final String HOSPITAL_ID = "hospitalId";
 
     public static final String HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID = "hddRosterId";
+
+    public static final String HOSPITAL_APPOINTMENT_SERVICE_TYPE_ID = "hospitalAppointmentServiceTypeId";
 
     public interface HospitalDepartmentConstants {
         String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";

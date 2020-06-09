@@ -17,5 +17,6 @@ public interface HospitalDepartmentBillingModeInfoRepositoryCustom {
 
     Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId, Long hospitalDepartmentId);
 
-    Double fetchHospitalDeptAppointmentFollowUpCharge(Long hospitalDepartmentBillingModeId, Long hospitalDepartmentId);
+    Double fetchHospitalDeptAppointmentFollowUpCharge(Long hospitalDepartmentBillingModeId,
+                                                      Long hospitalDepartmentId);
 }

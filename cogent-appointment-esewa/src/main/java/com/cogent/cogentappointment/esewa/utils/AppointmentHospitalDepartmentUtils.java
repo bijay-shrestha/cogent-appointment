@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.OK;
 /**
  * @author smriti on 29/05/20
  */
-public class AppointmentHospitalDeptUtils {
+public class AppointmentHospitalDepartmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 

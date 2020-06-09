@@ -10,12 +10,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.Date;
+import java.util.List;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
 import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentReservationLogQuery.QUERY_TO_FETCH_APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG_ID;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentReservationLogQuery.QUERY_TO_FETCH_APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
 
@@ -47,5 +50,18 @@ public class AppointmentHospitalDeptReservationLogRepositoryCustomImpl
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    @Override
+    public List<String> fetchBookedAppointmentReservations(Date appointmentDate,
+                                                           Long hospitalDepartmentId,
+                                                           Long hospitalDepartmentRoomInfoId) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_APPOINTMENT_RESERVATION_LOG(hospitalDepartmentRoomInfoId))
+                .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        return query.getResultList();
     }
 }

@@ -58,9 +58,9 @@ public class HospitalQuery {
                     " AND h.status = 'Y'" +
                     " AND h.isCompany = 'N'";
 
-    public static final String QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE =
+    public static final String QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE_MIN_INFO =
             " SELECT " +
-                    " h.appointmentServiceType.id as appointmentServiceTypeId," +           //[0]
+                    " h.id as hospitalAppointmentServiceTypeId," +                           //[0]
                     " h.appointmentServiceType.name as appointmentServiceTypeName," +       //[1]
                     " h.isPrimary as isPrimary" +                                           //[2]
                     " FROM HospitalAppointmentServiceType h " +

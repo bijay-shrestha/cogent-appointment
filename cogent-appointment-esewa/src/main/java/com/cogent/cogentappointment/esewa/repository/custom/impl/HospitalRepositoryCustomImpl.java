@@ -68,7 +68,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public List<HospitalAppointmentServiceTypeResponseDTO> fetchHospitalAppointmentServiceType(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE_MIN_INFO)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         List<HospitalAppointmentServiceTypeResponseDTO> hospitalAppointmentServiceType =

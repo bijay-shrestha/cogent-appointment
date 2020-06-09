@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
+import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentHospitalDepartmentMessage.HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentHospitalDepartmentMessage.HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
@@ -54,6 +56,7 @@ import static com.cogent.cogentappointment.esewa.log.constants.AppointmentModeLo
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpLogUtils.parseToAppointmentFollowUpLog;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentFollowUpLogUtils.parseToAppointmentHospitalDepartmentFollowUpLog;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentTransactionRequestLogUtils.parseToAppointmentTransactionStatusResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentTransactionRequestLogUtils.updateAppointmentTransactionRequestLog;
@@ -112,37 +115,53 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
-    private final AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository;
+    private final AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository;
 
     private final HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository;
 
     private final Validator validator;
 
-    public AppointmentServiceImpl(PatientService patientService,
-                                  DoctorService doctorService,
-                                  SpecializationService specializationService,
-                                  AppointmentRepository appointmentRepository,
-                                  DoctorDutyRosterRepository doctorDutyRosterRepository,
-                                  DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-                                  AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
-                                  HospitalService hospitalService,
-                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository,
-                                  AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
-                                  AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
-                                  AppointmentReservationLogRepository appointmentReservationLogRepository,
-                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
-                                  HospitalPatientInfoService hospitalPatientInfoService,
-                                  PatientMetaInfoService patientMetaInfoService,
-                                  PatientRelationInfoService patientRelationInfoService,
-                                  PatientRelationInfoRepository patientRelationInfoRepository,
-                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
-                                  AppointmentTransactionRequestLogService appointmentTransactionRequestLogService,
-                                  AppointmentModeRepository appointmentModeRepository,
-                                  AppointmentStatisticsRepository appointmentStatisticsRepository,
-                                  HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                  AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository,
-                                  HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
-                                  Validator validator) {
+    private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
+
+    private final AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository;
+
+    private final AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository;
+
+    private final AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService;
+
+    private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
+
+    public AppointmentServiceImpl(
+            PatientService patientService,
+            DoctorService doctorService,
+            SpecializationService specializationService,
+            AppointmentRepository appointmentRepository,
+            DoctorDutyRosterRepository doctorDutyRosterRepository,
+            DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
+            AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
+            HospitalService hospitalService,
+            AppointmentRefundDetailRepository appointmentRefundDetailRepository,
+            AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
+            AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
+            AppointmentReservationLogRepository appointmentReservationLogRepository,
+            AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
+            HospitalPatientInfoService hospitalPatientInfoService,
+            PatientMetaInfoService patientMetaInfoService,
+            PatientRelationInfoService patientRelationInfoService,
+            PatientRelationInfoRepository patientRelationInfoRepository,
+            AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
+            AppointmentTransactionRequestLogService appointmentTransactionRequestLogService,
+            AppointmentModeRepository appointmentModeRepository,
+            AppointmentStatisticsRepository appointmentStatisticsRepository,
+            HospitalPatientInfoRepository hospitalPatientInfoRepository,
+            AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository,
+            HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
+            Validator validator,
+            AppointmentDoctorInfoRepository appointmentDoctorInfoRepository,
+            AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository,
+            AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository,
+            AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService,
+            HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -165,9 +184,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentModeRepository = appointmentModeRepository;
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
-        this.appointmentHospitalDeptReservationLogRepository = appointmentHospitalDeptReservationLogRepository;
+        this.appointmentHospitalDepartmentReservationLogRepository = appointmentHospitalDepartmentReservationLogRepository;
         this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
         this.validator = validator;
+        this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
+        this.appointmentHospitalDepartmentInfoRepository = appointmentHospitalDepartmentInfoRepository;
+        this.appointmentHospitalDepartmentFollowUpLogRepository = appointmentHospitalDepartmentFollowUpLogRepository;
+        this.appointmentHospitalDepartmentFollowUpRequestLogService = appointmentHospitalDepartmentFollowUpRequestLogService;
+        this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
     }
 
     @Override
@@ -245,8 +269,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         validateConstraintViolation(validator.validate(requestDTO));
 
-        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
-
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
                         requestDTO.getTransactionInfo().getTransactionDate(),
@@ -257,57 +279,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentMode appointmentMode = fetchActiveAppointmentModeIdByCode
                 (requestDTO.getTransactionInfo().getAppointmentModeCode());
 
-        AppointmentReservationLog appointmentReservationLog =
-                validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
-
-        validateIfParentAppointmentExistsDoctorWise(appointmentReservationLog);
-
-        validateAppointmentAmountDoctorWise(appointmentReservationLog.getDoctorId(),
-                appointmentReservationLog.getHospitalId(),
-                appointmentInfo.getIsFollowUp(),
-                requestDTO.getTransactionInfo().getAppointmentAmount()
+        HospitalAppointmentServiceType hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(
+                requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId()
         );
 
-        Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
+        AppointmentSuccessResponseDTO responseDTO = new AppointmentSuccessResponseDTO();
+        switch (hospitalAppointmentServiceType.getAppointmentServiceType().getCode()) {
 
-        Patient patient = fetchPatientForSelf(
-                appointmentInfo.getIsNewRegistration(),
-                appointmentInfo.getPatientId(),
-                hospital,
-                requestDTO.getPatientInfo()
-        );
+            case DOCTOR_CONSULTATION_CODE:
+                responseDTO = saveAppointmentForSelfDoctorWise(
+                        requestDTO, appointmentMode, transactionRequestLog, hospitalAppointmentServiceType);
+                break;
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
-                appointmentInfo.getCreatedDateNepali(),
-                appointmentReservationLog.getHospitalId()
-        );
-
-        Appointment appointment = parseToAppointment(
-                requestDTO.getAppointmentInfo(),
-                appointmentReservationLog.getAppointmentDate(),
-                appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
-                YES,
-                patient,
-                hospital,
-                appointmentMode
-        );
-
-        save(appointment);
-
-        saveAppointmentStatistics(appointmentInfo, appointment, hospital);
-
-        saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
-
-        if (appointmentInfo.getIsFollowUp().equals(YES))
-            saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
-
-        updateAppointmentTransactionRequestLog(transactionRequestLog);
-
-        AppointmentSuccessResponseDTO responseDTO =
-                parseToAppointmentSuccessResponseDTO(appointmentNumber,
-                        transactionRequestLog.getTransactionStatus(),
-                        hospital.getRefundPercentage());
+            case DEPARTMENT_CONSULTATION_CODE:
+                responseDTO = saveAppointmentForSelfDepartmentWise(
+                        requestDTO, appointmentMode, transactionRequestLog, hospitalAppointmentServiceType);
+                break;
+        }
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -323,11 +311,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         validateConstraintViolation(validator.validate(requestDTO));
 
-        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
-
-        AppointmentMode appointmentMode = fetchActiveAppointmentModeIdByCode
-                (requestDTO.getTransactionInfo().getAppointmentModeCode());
-
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
                         requestDTO.getTransactionInfo().getTransactionDate(),
@@ -335,56 +318,26 @@ public class AppointmentServiceImpl implements AppointmentService {
                         requestDTO.getRequestFor().getName()
                 );
 
-        AppointmentReservationLog appointmentReservationLog =
-                validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
+        AppointmentMode appointmentMode = fetchActiveAppointmentModeIdByCode
+                (requestDTO.getTransactionInfo().getAppointmentModeCode());
 
-        validateIfParentAppointmentExistsDoctorWise(appointmentReservationLog);
-
-        validateAppointmentAmountDoctorWise(appointmentReservationLog.getDoctorId(),
-                appointmentReservationLog.getHospitalId(),
-                appointmentInfo.getIsFollowUp(),
-                requestDTO.getTransactionInfo().getAppointmentAmount()
+        HospitalAppointmentServiceType hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(
+                requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId()
         );
 
-        Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
+        AppointmentSuccessResponseDTO responseDTO = new AppointmentSuccessResponseDTO();
+        switch (hospitalAppointmentServiceType.getAppointmentServiceType().getCode()) {
 
-        Patient patient = fetchPatientForOthers(
-                appointmentInfo.getIsNewRegistration(),
-                appointmentInfo.getPatientId(),
-                hospital,
-                requestDTO.getRequestBy(),
-                requestDTO.getRequestFor()
-        );
+            case DOCTOR_CONSULTATION_CODE:
+                responseDTO = saveAppointmentForOthersDoctorWise(
+                        requestDTO, appointmentMode, transactionRequestLog, hospitalAppointmentServiceType);
+                break;
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
-                appointmentInfo.getCreatedDateNepali(),
-                appointmentReservationLog.getHospitalId()
-        );
-
-        Appointment appointment = parseToAppointment(
-                appointmentInfo,
-                appointmentReservationLog.getAppointmentDate(),
-                appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
-                NO,
-                patient,
-                hospital,
-                appointmentMode
-        );
-
-        save(appointment);
-
-        saveAppointmentStatistics(appointmentInfo, appointment, hospital);
-
-        saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
-
-        if (appointmentInfo.getIsFollowUp().equals(YES))
-            saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
-
-        updateAppointmentTransactionRequestLog(transactionRequestLog);
-
-        AppointmentSuccessResponseDTO responseDTO =
-                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus(), hospital.getRefundPercentage());
+            case DEPARTMENT_CONSULTATION_CODE:
+                responseDTO = saveAppointmentForOthersDepartmentWise(
+                        requestDTO, appointmentMode, transactionRequestLog, hospitalAppointmentServiceType);
+                break;
+        }
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -770,18 +723,33 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRescheduleLogRepository.save(appointmentRescheduleLog);
     }
 
-    private void saveAppointmentFollowUpDetails(Long parentAppointmentId, Long followUpAppointmentId) {
-
-        saveAppointmentFollowUpLog(parentAppointmentId, followUpAppointmentId);
+    private void saveAppointmentFollowUpDetailsDoctorWise(Long parentAppointmentId, Long followUpAppointmentId) {
 
         updateAppointmentFollowUpRequestLog(parentAppointmentId);
+
+        saveAppointmentFollowUpLogDoctorWise(parentAppointmentId, followUpAppointmentId);
+    }
+
+    private void saveAppointmentFollowUpDetailsDepartmentWise(Long parentAppointmentId, Long followUpAppointmentId) {
+
+        updateAppointmentHospitalDepartmentFollowUpRequestLog(parentAppointmentId);
+
+        saveAppointmentFollowUpLogDepartmentWise(parentAppointmentId, followUpAppointmentId);
     }
 
     /*RELATION BETWEEN APPOINTMENT AND ITS CONSECUTIVE APPOINTMENT LOG*/
-    private void saveAppointmentFollowUpLog(Long parentAppointmentId, Long followUpAppointmentId) {
+    private void saveAppointmentFollowUpLogDoctorWise(Long parentAppointmentId, Long followUpAppointmentId) {
 
         appointmentFollowUpLogRepository.save(
                 parseToAppointmentFollowUpLog(parentAppointmentId, followUpAppointmentId)
+        );
+    }
+
+    /*RELATION BETWEEN APPOINTMENT AND ITS CONSECUTIVE APPOINTMENT LOG*/
+    private void saveAppointmentFollowUpLogDepartmentWise(Long parentAppointmentId, Long followUpAppointmentId) {
+
+        appointmentHospitalDepartmentFollowUpLogRepository.save(
+                parseToAppointmentHospitalDepartmentFollowUpLog(parentAppointmentId, followUpAppointmentId)
         );
     }
 
@@ -792,6 +760,15 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentFollowUpTrackerService.fetchByParentAppointmentId(parentAppointmentId);
 
         appointmentFollowUpRequestLogService.update(appointmentFollowUpTrackerId);
+    }
+
+    /*INCREMENT APPOINTMENT FOLLOW UP REQUEST COUNT BY 1*/
+    private void updateAppointmentHospitalDepartmentFollowUpRequestLog(Long parentAppointmentId) {
+
+        Long appointmentFollowUpTrackerId =
+                appointmentFollowUpTrackerService.fetchByParentAppointmentId(parentAppointmentId);
+
+        appointmentHospitalDepartmentFollowUpRequestLogService.update(appointmentFollowUpTrackerId);
     }
 
     private void validatePatientDuplicity(Patient parentPatient,
@@ -902,8 +879,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                    Double appointmentAmount) {
 
         Double actualAppointmentCharge = isFollowUp.equals(YES)
-                ? fetchHospitalDeptAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId)
-                : fetchHospitalDeptAppointmentFollowUpCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId);
+                ? fetchHospitalDeptAppointmentFollowUpCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId)
+                : fetchHospitalDeptAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId);
 
         if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
             log.error(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE, appointmentAmount);
@@ -913,12 +890,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void saveAppointmentStatistics(AppointmentRequestDTO appointmentInfo,
-                                           Appointment appointment,
-                                           Hospital hospital) {
+                                           Appointment appointment) {
+
         if (Objects.isNull(appointmentInfo.getPatientId())) {
             saveAppointmentStatistics(parseAppointmentStatisticsForNew(appointment));
         } else {
-            checkForRegisteredPatient(appointmentInfo, appointment, hospital);
+            checkForRegisteredPatient(appointmentInfo, appointment, appointment.getHospitalId());
         }
     }
 
@@ -948,7 +925,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private AppointmentHospitalDepartmentReservationLog fetchAppointmentHospitalDeptReservationLogById(
             Long appointmentReservationId) {
-        return appointmentHospitalDeptReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId);
+        return appointmentHospitalDepartmentReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId);
     }
 
     private void validateRequestedRescheduleInfo(AppointmentRescheduleRequestDTO rescheduleRequestDTO,
@@ -991,22 +968,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.calculateRefundAmount(appointmentId);
     }
 
-    private AppointmentSuccessResponseDTO saveAppointmentForSelfDoctorWise(AppointmentRequestDTOForSelf requestDTO,
-                                                                           AppointmentMode appointmentMode,
-                                                                           AppointmentTransactionRequestLog transactionRequestLog) {
+    private AppointmentSuccessResponseDTO saveAppointmentForSelfDoctorWise(
+            AppointmentRequestDTOForSelf requestDTO,
+            AppointmentMode appointmentMode,
+            AppointmentTransactionRequestLog transactionRequestLog,
+            HospitalAppointmentServiceType hospitalAppointmentServiceType) {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
         AppointmentReservationLog appointmentReservationLog =
-                validateAppointmentReservationIsActive(requestDTO.getAppointmentInfo().getAppointmentReservationId());
-
-        validateIfParentAppointmentExistsDoctorWise(appointmentReservationLog);
-
-        validateAppointmentAmountDoctorWise(appointmentReservationLog.getDoctorId(),
-                appointmentReservationLog.getHospitalId(),
-                appointmentInfo.getIsFollowUp(),
-                requestDTO.getTransactionInfo().getAppointmentAmount()
-        );
+                validateAppointmentRequestInfoDoctorWise(appointmentInfo, requestDTO.getTransactionInfo());
 
         Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
 
@@ -1030,37 +1001,32 @@ public class AppointmentServiceImpl implements AppointmentService {
                 YES,
                 patient,
                 hospital,
-                appointmentMode
+                appointmentMode,
+                hospitalAppointmentServiceType
         );
 
         save(appointment);
 
-        saveAppointmentStatistics(appointmentInfo, appointment, hospital);
-
-        saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
+        saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
 
         if (appointmentInfo.getIsFollowUp().equals(YES))
-            saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
+            saveAppointmentFollowUpDetailsDoctorWise(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
-        updateAppointmentTransactionRequestLog(transactionRequestLog);
-
-        return parseToAppointmentSuccessResponseDTO(appointmentNumber,
-                transactionRequestLog.getTransactionStatus(),
-                hospital.getRefundPercentage());
+        return parseAppointmentResponseDetails(
+                appointment, appointmentInfo, requestDTO.getTransactionInfo(), transactionRequestLog
+        );
     }
 
-    private void saveAppointmentForSelfDepartmentWise(AppointmentRequestDTOForSelf requestDTO,
-                                                      AppointmentMode appointmentMode,
-                                                      AppointmentTransactionRequestLog transactionRequestLog) {
+    private AppointmentSuccessResponseDTO saveAppointmentForSelfDepartmentWise(
+            AppointmentRequestDTOForSelf requestDTO,
+            AppointmentMode appointmentMode,
+            AppointmentTransactionRequestLog transactionRequestLog,
+            HospitalAppointmentServiceType hospitalAppointmentServiceType) {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
         AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
-                validateAppointmentHospitalDeptReservationIsActive(
-                        requestDTO.getAppointmentInfo().getAppointmentReservationId()
-                );
-
-        validateAppointmentDeptWiseRequestInfo(requestDTO, appointmentReservationLog);
+                validateAppointmentDeptWiseRequestInfo(appointmentInfo, requestDTO.getTransactionInfo());
 
         Hospital hospital = fetchHospital(appointmentReservationLog.getHospital().getId());
 
@@ -1084,38 +1050,57 @@ public class AppointmentServiceImpl implements AppointmentService {
                 YES,
                 patient,
                 hospital,
-                appointmentMode
+                appointmentMode,
+                hospitalAppointmentServiceType
         );
 
         save(appointment);
 
-
-        saveAppointmentStatistics(appointmentInfo, appointment, hospital);
-
-        saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
+        saveAppointmentHospitalDepartmentInfo(appointment, appointmentReservationLog);
 
         if (appointmentInfo.getIsFollowUp().equals(YES))
-            saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
+            saveAppointmentFollowUpDetailsDepartmentWise(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
-        updateAppointmentTransactionRequestLog(transactionRequestLog);
-
-        AppointmentSuccessResponseDTO responseDTO =
-                parseToAppointmentSuccessResponseDTO(appointmentNumber,
-                        transactionRequestLog.getTransactionStatus(),
-                        hospital.getRefundPercentage());
+        return parseAppointmentResponseDetails(
+                appointment, appointmentInfo, requestDTO.getTransactionInfo(), transactionRequestLog
+        );
     }
 
-    private void validateAppointmentDeptWiseRequestInfo(
-            AppointmentRequestDTOForSelf requestDTO,
-            AppointmentHospitalDepartmentReservationLog appointmentReservationLog) {
+
+    private AppointmentReservationLog validateAppointmentRequestInfoDoctorWise(
+            AppointmentRequestDTO appointmentInfo,
+            AppointmentTransactionRequestDTO transactionInfo) {
+
+        AppointmentReservationLog appointmentReservationLog =
+                validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
+
+        validateIfParentAppointmentExistsDoctorWise(appointmentReservationLog);
+
+        validateAppointmentAmountDoctorWise(appointmentReservationLog.getDoctorId(),
+                appointmentReservationLog.getHospitalId(),
+                appointmentInfo.getIsFollowUp(),
+                transactionInfo.getAppointmentAmount()
+        );
+
+        return appointmentReservationLog;
+    }
+
+    private AppointmentHospitalDepartmentReservationLog validateAppointmentDeptWiseRequestInfo(
+            AppointmentRequestDTO appointmentInfo,
+            AppointmentTransactionRequestDTO transactionInfo) {
+
+        AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
+                validateAppointmentHospitalDeptReservationIsActive(appointmentInfo.getAppointmentReservationId());
 
         validateIfParentAppointmentExistsDeptWise(appointmentReservationLog);
 
         validateAppointmentAmountDeptWise(appointmentReservationLog.getHospitalDepartment().getId(),
                 appointmentReservationLog.getHospitalDepartmentBillingModeInfo().getId(),
-                requestDTO.getAppointmentInfo().getIsFollowUp(),
-                requestDTO.getTransactionInfo().getAppointmentAmount()
+                appointmentInfo.getIsFollowUp(),
+                transactionInfo.getAppointmentAmount()
         );
+
+        return appointmentReservationLog;
     }
 
     private Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId,
@@ -1130,5 +1115,153 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentFollowUpCharge(
                 hospitalDepartmentBillingModeId, hospitalDepartmentId);
+    }
+
+    private void saveAppointmentDoctorInfo(Appointment appointment,
+                                           AppointmentReservationLog appointmentReservationLog) {
+
+        AppointmentDoctorInfo appointmentDoctorInfo = parseAppointmentDoctorInfo(
+                appointment,
+                fetchDoctor(appointmentReservationLog.getDoctorId(), appointmentReservationLog.getHospitalId()),
+                fetchSpecialization(appointmentReservationLog.getSpecializationId(),
+                        appointmentReservationLog.getHospitalId())
+        );
+
+        appointmentDoctorInfoRepository.save(appointmentDoctorInfo);
+    }
+
+    private void saveAppointmentHospitalDepartmentInfo(Appointment appointment,
+                                                       AppointmentHospitalDepartmentReservationLog reservationLog) {
+
+        AppointmentHospitalDepartmentInfo appointmentHospitalDepartmentInfo = parseAppointmentHospitalDepartmentInfo(
+                appointment,
+                reservationLog.getHospitalDepartment(),
+                reservationLog.getHospitalDepartmentRoomInfo(),
+                reservationLog.getHospitalDepartmentBillingModeInfo()
+        );
+
+        appointmentHospitalDepartmentInfoRepository.save(appointmentHospitalDepartmentInfo);
+    }
+
+    private HospitalAppointmentServiceType fetchHospitalAppointmentServiceType(Long hospitalAppointmentServiceTypeId) {
+        return hospitalAppointmentServiceTypeRepository.fetchHospitalAppointmentServiceType(
+                hospitalAppointmentServiceTypeId);
+    }
+
+    private AppointmentSuccessResponseDTO saveAppointmentForOthersDoctorWise(
+            AppointmentRequestDTOForOthers requestDTO,
+            AppointmentMode appointmentMode,
+            AppointmentTransactionRequestLog transactionRequestLog,
+            HospitalAppointmentServiceType hospitalAppointmentServiceType) {
+
+        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
+        AppointmentReservationLog appointmentReservationLog =
+                validateAppointmentRequestInfoDoctorWise(appointmentInfo, requestDTO.getTransactionInfo());
+
+        Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
+
+        Patient patient = fetchPatientForOthers(
+                appointmentInfo.getIsNewRegistration(),
+                appointmentInfo.getPatientId(),
+                hospital,
+                requestDTO.getRequestBy(),
+                requestDTO.getRequestFor()
+        );
+
+        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+                appointmentInfo.getCreatedDateNepali(),
+                appointmentReservationLog.getHospitalId()
+        );
+
+        Appointment appointment = parseToAppointment(
+                appointmentInfo,
+                appointmentReservationLog.getAppointmentDate(),
+                appointmentReservationLog.getAppointmentTime(),
+                appointmentNumber,
+                NO,
+                patient,
+                hospital,
+                appointmentMode,
+                hospitalAppointmentServiceType
+        );
+
+        save(appointment);
+
+        saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
+
+        if (appointmentInfo.getIsFollowUp().equals(YES))
+            saveAppointmentFollowUpDetailsDoctorWise(appointmentInfo.getParentAppointmentId(), appointment.getId());
+
+        return parseAppointmentResponseDetails(
+                appointment, appointmentInfo, requestDTO.getTransactionInfo(), transactionRequestLog
+        );
+    }
+
+    private AppointmentSuccessResponseDTO saveAppointmentForOthersDepartmentWise(
+            AppointmentRequestDTOForOthers requestDTO,
+            AppointmentMode appointmentMode,
+            AppointmentTransactionRequestLog transactionRequestLog,
+            HospitalAppointmentServiceType hospitalAppointmentServiceType) {
+
+        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
+        AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
+                validateAppointmentDeptWiseRequestInfo(appointmentInfo, requestDTO.getTransactionInfo());
+
+        Hospital hospital = appointmentReservationLog.getHospital();
+
+        Patient patient = fetchPatientForOthers(
+                appointmentInfo.getIsNewRegistration(),
+                appointmentInfo.getPatientId(),
+                hospital,
+                requestDTO.getRequestBy(),
+                requestDTO.getRequestFor()
+        );
+
+        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+                appointmentInfo.getCreatedDateNepali(),
+                hospital.getId()
+        );
+
+        Appointment appointment = parseToAppointment(
+                appointmentInfo,
+                appointmentReservationLog.getAppointmentDate(),
+                appointmentReservationLog.getAppointmentTime(),
+                appointmentNumber,
+                NO,
+                patient,
+                hospital,
+                appointmentMode,
+                hospitalAppointmentServiceType
+        );
+
+        save(appointment);
+
+        saveAppointmentHospitalDepartmentInfo(appointment, appointmentReservationLog);
+
+        if (appointmentInfo.getIsFollowUp().equals(YES))
+            saveAppointmentFollowUpDetailsDepartmentWise(appointmentInfo.getParentAppointmentId(), appointment.getId());
+
+        return parseAppointmentResponseDetails(
+                appointment, appointmentInfo, requestDTO.getTransactionInfo(), transactionRequestLog
+        );
+    }
+
+    private AppointmentSuccessResponseDTO parseAppointmentResponseDetails(
+            Appointment appointment,
+            AppointmentRequestDTO appointmentInfo,
+            AppointmentTransactionRequestDTO transactionInfo,
+            AppointmentTransactionRequestLog transactionRequestLog) {
+
+        saveAppointmentStatistics(appointmentInfo, appointment);
+
+        saveAppointmentTransactionDetail(transactionInfo, appointment);
+
+        updateAppointmentTransactionRequestLog(transactionRequestLog);
+
+        return parseToAppointmentSuccessResponseDTO(appointment.getAppointmentNumber(),
+                transactionRequestLog.getTransactionStatus(), appointment.getHospitalId().getRefundPercentage()
+        );
     }
 }

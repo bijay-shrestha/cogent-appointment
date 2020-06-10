@@ -55,8 +55,9 @@ public class AppointmentResource {
 
     @GetMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId) {
-        appointmentService.approveRefundAppointment(appointmentId);
+    public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId,
+                                                      IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+        appointmentService.approveRefundAppointment(appointmentId,integrationBackendRequestDTO);
         return ok().build();
     }
 

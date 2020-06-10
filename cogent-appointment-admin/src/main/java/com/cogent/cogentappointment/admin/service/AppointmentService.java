@@ -34,7 +34,7 @@ public interface AppointmentService {
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId);
 
-    void approveRefundAppointment(Long appointmentId);
+    void approveRefundAppointment(Long appointmentId,IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO);
 

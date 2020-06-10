@@ -43,7 +43,7 @@ import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
-import com.cogent.cogentthirdpartyconnector.service.ThirdPartyService;
+import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -137,7 +137,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final IntegrationRepository integrationRepository;
 
-    private final ThirdPartyService thirdPartyService;
+    private final ThirdPartyConnectorService thirdPartyConnectorService;
 
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
@@ -163,7 +163,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   Validator validator,
                                   IntegrationRepository integrationRepository,
-                                  ThirdPartyService thirdPartyService) {
+                                  ThirdPartyConnectorService thirdPartyConnectorService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -188,7 +188,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
         this.integrationRepository = integrationRepository;
-        this.thirdPartyService = thirdPartyService;
+        this.thirdPartyConnectorService = thirdPartyConnectorService;
     }
 
     @Override
@@ -604,7 +604,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
         integrationHospitalApiInfo.forEach(apiInfo -> {
-            ResponseEntity<?> responseEntity = thirdPartyService.getHospitalService(apiInfo);
+            ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(apiInfo);
         });
 
     }

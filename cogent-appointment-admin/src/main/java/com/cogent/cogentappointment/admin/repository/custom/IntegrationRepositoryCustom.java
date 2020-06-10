@@ -46,7 +46,7 @@ public interface IntegrationRepositoryCustom {
 
     List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTO();
 
-    List<ClientFeatureIntegrationResponse>
+    ClientFeatureIntegrationResponse
     fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId);

@@ -175,16 +175,16 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
+    public ClientFeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY)
                 .setParameter(HOSPITAL_ID,requestDTO.getHospitalId())
                 .setParameter(INTEGRATION_CHANNEL_CODE,requestDTO.getIntegrationChannelCode())
                 .setParameter(FEATURE_CODE,requestDTO.getFeatureCode());
 
-        List<ClientFeatureIntegrationResponse> responseDTOList =
-                transformQueryToResultList(query, ClientFeatureIntegrationResponse.class);
+        ClientFeatureIntegrationResponse responseDTOList =
+                transformQueryToSingleResult(query, ClientFeatureIntegrationResponse.class);
 
-        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
+//        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
 
         return responseDTOList;
     }

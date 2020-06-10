@@ -2,6 +2,8 @@ package com.cogent.cogentthirdpartyconnector.utils;
 
 import org.springframework.http.HttpMethod;
 
+import static org.springframework.http.HttpMethod.*;
+
 /**
  * @author rupak ON 2020/06/10-1:02 PM
  */
@@ -13,19 +15,19 @@ public class HttpMethodUtils {
 
         switch (methodName) {
             case "GET":
-                httpMethod = HttpMethod.GET;
+                httpMethod = GET;
                 break;
             case "POST":
-                httpMethod = HttpMethod.POST;
+                httpMethod = POST;
                 break;
             case "PUT":
-                httpMethod = HttpMethod.PUT;
+                httpMethod = PUT;
                 break;
             case "DELETE":
-                httpMethod = HttpMethod.DELETE;
+                httpMethod = DELETE;
                 break;
             case "PATCH":
-                httpMethod = HttpMethod.PATCH;
+                httpMethod = PATCH;
                 break;
         }
 

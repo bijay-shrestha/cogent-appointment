@@ -19,11 +19,11 @@ import static org.springframework.http.HttpMethod.POST;
  * @author rupak ON 2020/06/09-11:41 AM
  */
 @Service
-public class ThirdPartyServiceImpl implements ThirdPartyService {
+public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorService {
 
     private final RestTemplateUtils restTemplateUtils;
 
-    public ThirdPartyServiceImpl(RestTemplateUtils restTemplateUtils) {
+    public ThirdPartyConnectorServiceImpl(RestTemplateUtils restTemplateUtils) {
         this.restTemplateUtils = restTemplateUtils;
     }
 

@@ -34,7 +34,7 @@ import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpLog;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
-import com.cogent.cogentthirdpartyconnector.service.ThirdPartyService;
+import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -43,7 +43,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
@@ -78,7 +81,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
 
-    private final ThirdPartyService thirdPartyService;
+    private final ThirdPartyConnectorService thirdPartyConnectorService;
 
     private final IntegrationRepository integrationRepository;
 
@@ -87,14 +90,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
                                   PatientService patientService,
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
-                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService, ThirdPartyService thirdPartyService, IntegrationRepository integrationRepository) {
+                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService, ThirdPartyConnectorService thirdPartyConnectorService, IntegrationRepository integrationRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
         this.patientService = patientService;
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
-        this.thirdPartyService = thirdPartyService;
+        this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.integrationRepository = integrationRepository;
     }
 
@@ -127,7 +130,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveRefundAppointment(Long appointmentId) {
+    public void approveRefundAppointment(Long appointmentId, IntegrationBackendRequestDTO backendRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
@@ -138,6 +141,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = appointmentRepository.fetchRefundAppointmentById(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        ResponseEntity<?> responseEntity = null;
+        if (backendRequestDTO != null) {
+            responseEntity = apiIntegrationCheckpoint(backendRequestDTO);
+        }
 
         appointment.setStatus(REFUNDED);
 
@@ -220,8 +228,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
 
+        ResponseEntity<?> integrationResponse = null;
         if (backendRequestDTO != null) {
-            apiIntegrationCheckpoint(backendRequestDTO);
+            integrationResponse = apiIntegrationCheckpoint(backendRequestDTO);
         }
 
         Appointment appointment = appointmentRepository.fetchPendingAppointmentById(appointmentId)
@@ -234,55 +243,57 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    private ResponseEntity<?> apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
-        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
+        BackendIntegrationHospitalApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
-        integrationHospitalApiInfo.forEach(apiInfo -> {
-            ResponseEntity<?> responseEntity = thirdPartyService.getHospitalService(apiInfo);
-        });
+//        integrationHospitalApiInfo.forEach(apiInfo -> {
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
+//        });
+
+        return responseEntity;
 
     }
 
-    private List<BackendIntegrationHospitalApiInfo> getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    private BackendIntegrationHospitalApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
-        List<ClientFeatureIntegrationResponse> featureIntegrationResponse = integrationRepository.
+        ClientFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
                 fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
 
-        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfos = new ArrayList<>();
+//        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfos = new ArrayList<>();
 
-        featureIntegrationResponse.forEach(integrationResponse -> {
+//        featureIntegrationResponse.forEach(integrationResponse -> {
 
-            Map<String, String> requestHeaderResponse = integrationRepository.
-                    findApiRequestHeadersResponse(integrationResponse.getApiIntegrationFormatId());
+        Map<String, String> requestHeaderResponse = integrationRepository.
+                findApiRequestHeadersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
 
-            Map<String, String> queryParametersResponse = integrationRepository.
-                    findApiQueryParametersResponse(integrationResponse.getApiIntegrationFormatId());
+        Map<String, String> queryParametersResponse = integrationRepository.
+                findApiQueryParametersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
 
-            //headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-            headers.add("user-agent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        //headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
-            requestHeaderResponse.forEach((key, value) -> {
-                headers.add(key, value);
-            });
-
-            BackendIntegrationHospitalApiInfo hospitalApiInfo = new BackendIntegrationHospitalApiInfo();
-            hospitalApiInfo.setApiUri(integrationResponse.getUrl());
-            hospitalApiInfo.setHttpHeaders(headers);
-
-            if (!queryParametersResponse.isEmpty()) {
-                hospitalApiInfo.setQueryParameters(queryParametersResponse);
-            }
-            hospitalApiInfo.setHttpMethod(integrationResponse.getRequestMethod());
-
-            integrationHospitalApiInfos.add(hospitalApiInfo);
-
+        requestHeaderResponse.forEach((key, value) -> {
+            headers.add(key, value);
         });
 
-        return integrationHospitalApiInfos;
+        BackendIntegrationHospitalApiInfo hospitalApiInfo = new BackendIntegrationHospitalApiInfo();
+        hospitalApiInfo.setApiUri(featureIntegrationResponse.getUrl());
+        hospitalApiInfo.setHttpHeaders(headers);
+
+        if (!queryParametersResponse.isEmpty()) {
+            hospitalApiInfo.setQueryParameters(queryParametersResponse);
+        }
+        hospitalApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
+
+//            integrationHospitalApiInfos.add(hospitalApiInfo);
+
+//        });
+
+        return hospitalApiInfo;
 
     }
 

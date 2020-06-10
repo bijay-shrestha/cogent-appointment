@@ -12,6 +12,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @SpringBootApplication
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
         "com.cogent.cogentappointment.persistence.history"})
@@ -44,5 +49,7 @@ public class CogentThirdpartyConnectorApplication extends SpringBootServletIniti
         System.out.println("Value of `server.port` = " + env.getProperty("server.port"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
     }
+
+
 
 }

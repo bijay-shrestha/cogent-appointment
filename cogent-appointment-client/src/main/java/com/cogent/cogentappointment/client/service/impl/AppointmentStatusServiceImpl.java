@@ -13,7 +13,6 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.AppointmentStatusService;
-import com.cogent.cogentappointment.client.service.RoomService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private final HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
             hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
 
-    private final RoomService roomService;
+    private final RoomRepository roomRepository;
 
     public AppointmentStatusServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                         DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
@@ -74,7 +73,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                                         AppointmentRepository appointmentRepository,
                                         HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
                                                 hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository,
-                                        RoomService roomService) {
+                                        RoomRepository roomRepository) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.deptDutyRosterOverrideRepository = deptDutyRosterOverrideRepository;
@@ -83,7 +82,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         this.appointmentService = appointmentService;
         this.appointmentRepository = appointmentRepository;
         this.hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository = hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
-        this.roomService = roomService;
+        this.roomRepository = roomRepository;
     }
 
 
@@ -125,6 +124,9 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         List<HospitalDeptAppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO);
 
+
+        fetchRoomByDepartmentId(hospitalDeptDutyRosterStatus);
+
         hospitalDeptDutyRosterStatus = setDepartmentAppointmentTimeSlot(requestDTO.getStatus(),
                 hospitalDeptDutyRosterStatus, appointments);
 
@@ -164,6 +166,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     private void fetchRoomByDepartmentId(List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus){
+
+        hospitalDeptDutyRosterStatus.forEach(object -> {
+            object.setRoomList(roomRepository.fetchActiveMinRoomForAppointmentStatus(object.getHospitalDepartmentId()));
+        });
 
     }
 

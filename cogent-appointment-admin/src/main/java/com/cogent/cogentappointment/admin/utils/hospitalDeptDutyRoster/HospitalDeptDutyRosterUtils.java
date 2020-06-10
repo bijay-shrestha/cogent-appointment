@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRost
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
@@ -26,6 +27,8 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocal
  */
 public class HospitalDeptDutyRosterUtils {
 
+    public static NepaliDateUtility nepaliDateUtility;
+
     public static HospitalDepartmentDutyRoster parseToHospitalDepartmentDutyRoster(
             HospitalDepartmentDutyRosterRequestDTO requestDTO,
             HospitalDepartment hospitalDepartment,
@@ -40,6 +43,10 @@ public class HospitalDeptDutyRosterUtils {
         hospitalDepartmentDutyRoster.setStatus(requestDTO.getStatus());
         hospitalDepartmentDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
         hospitalDepartmentDutyRoster.setIsRoomEnabled(requestDTO.getIsRoomEnabled());
+        hospitalDepartmentDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                (requestDTO.getFromDate()));
+        hospitalDepartmentDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                (requestDTO.getToDate()));
         return hospitalDepartmentDutyRoster;
     }
 

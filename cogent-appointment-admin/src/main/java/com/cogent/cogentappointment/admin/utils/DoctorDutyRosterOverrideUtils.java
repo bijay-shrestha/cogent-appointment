@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDut
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorRosterOverrideUpdateResponseDTO;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 
@@ -24,6 +25,12 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocal
 
 public class DoctorDutyRosterOverrideUtils {
 
+    private static NepaliDateUtility nepaliDateUtility;
+
+    public DoctorDutyRosterOverrideUtils(NepaliDateUtility nepaliDateUtility) {
+        this.nepaliDateUtility = nepaliDateUtility;
+    }
+
     public static DoctorDutyRosterOverride parseToDoctorDutyRosterOverride(
             DoctorDutyRosterOverrideRequestDTO requestDTO,
             DoctorDutyRoster doctorDutyRoster) {
@@ -37,7 +44,8 @@ public class DoctorDutyRosterOverrideUtils {
         doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
         doctorDutyRosterOverride.setStartTime(requestDTO.getStartTime());
         doctorDutyRosterOverride.setEndTime(requestDTO.getEndTime());
-
+        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
+        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
         return doctorDutyRosterOverride;
     }
 
@@ -52,6 +60,10 @@ public class DoctorDutyRosterOverrideUtils {
         doctorDutyRosterOverride.setDayOffStatus(updateRequestDTO.getDayOffStatus());
         doctorDutyRosterOverride.setStatus(updateRequestDTO.getStatus());
         doctorDutyRosterOverride.setRemarks(updateRequestDTO.getRemarks());
+        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(
+                updateRequestDTO.getOverrideFromDate()));
+        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(
+                updateRequestDTO.getOverrideToDate()));
         return doctorDutyRosterOverride;
     }
 

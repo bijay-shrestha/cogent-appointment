@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorWee
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.time.LocalDate;
@@ -26,6 +27,12 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocal
  */
 public class DoctorDutyRosterUtils {
 
+    private static NepaliDateUtility nepaliDateUtility;
+
+    public DoctorDutyRosterUtils(NepaliDateUtility nepaliDateUtility) {
+        this.nepaliDateUtility = nepaliDateUtility;
+    }
+
     public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
                                                            Doctor doctor,
                                                            Specialization specialization,
@@ -40,6 +47,8 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setHospitalId(hospital);
         doctorDutyRoster.setDoctorId(doctor);
         doctorDutyRoster.setSpecializationId(specialization);
+        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
+        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
         return doctorDutyRoster;
     }
 
@@ -72,13 +81,15 @@ public class DoctorDutyRosterUtils {
                         }));
     }
 
-    public static void parseToUpdatedDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
+    public static DoctorDutyRoster parseToUpdatedDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
                                                       DoctorDutyRosterUpdateRequestDTO updateRequestDTO) {
 
         doctorDutyRoster.setRosterGapDuration(updateRequestDTO.getRosterGapDuration());
         doctorDutyRoster.setStatus(updateRequestDTO.getStatus());
         doctorDutyRoster.setRemarks(updateRequestDTO.getRemarks());
         doctorDutyRoster.setHasOverrideDutyRoster(updateRequestDTO.getHasOverrideDutyRoster());
+
+        return doctorDutyRoster;
     }
 
     public static DoctorWeekDaysDutyRoster parseToUpdatedDoctorWeekDaysDutyRoster(

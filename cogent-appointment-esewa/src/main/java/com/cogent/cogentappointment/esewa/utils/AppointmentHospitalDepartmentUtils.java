@@ -35,7 +35,8 @@ public class AppointmentHospitalDepartmentUtils {
             HospitalDeptDutyRosterRoomInfoResponseDTO roomInfo,
             String startTime,
             String endTime,
-            List<String> availableTimeSlots) {
+            List<String> availableTimeSlots,
+            List<String> availableDoctors) {
 
         AppointmentHospitalDeptCheckAvailabilityResponseDTO responseDTO =
                 AppointmentHospitalDeptCheckAvailabilityResponseDTO.builder()
@@ -46,6 +47,7 @@ public class AppointmentHospitalDepartmentUtils {
                         .roomNumber(roomInfo.getRoomNumber())
                         .hospitalDepartmentAvailableTime(startTime + HYPHEN + endTime)
                         .availableTimeSlots(availableTimeSlots)
+                        .availableDoctors(availableDoctors)
                         .build();
 
         responseDTO.setResponseCode(OK.value());
@@ -57,7 +59,8 @@ public class AppointmentHospitalDepartmentUtils {
             Date queryDate,
             String startTime,
             String endTime,
-            List<String> availableTimeSlots) {
+            List<String> availableTimeSlots,
+            List<String> availableDoctors) {
 
         AppointmentHospitalDeptCheckAvailabilityResponseDTO responseDTO =
                 AppointmentHospitalDeptCheckAvailabilityResponseDTO.builder()
@@ -66,6 +69,7 @@ public class AppointmentHospitalDepartmentUtils {
                         .roomInfo(new ArrayList<>())
                         .hospitalDepartmentAvailableTime(startTime + HYPHEN + endTime)
                         .availableTimeSlots(availableTimeSlots)
+                        .availableDoctors(availableDoctors)
                         .build();
 
         responseDTO.setResponseCode(OK.value());

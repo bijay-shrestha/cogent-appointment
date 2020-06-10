@@ -50,19 +50,23 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     private final AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository;
 
+    private final HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository weekDaysDutyRosterDoctorInfoRepository;
+
     public AppointmentHospitalDepartmentServiceImpl(
             HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
             HospitalDeptDutyRosterOverrideRepository hospitalDeptDutyRosterOverrideRepository,
             HospitalDeptWeekDaysDutyRosterRepository hospitalDeptWeekDaysDutyRosterRepository,
             AppointmentRepository appointmentRepository,
             HospitalDeptDutyRosterRoomInfoRepository hospitalDeptDutyRosterRoomInfoRepository,
-            AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository) {
+            AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository,
+            HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository weekDaysDutyRosterDoctorInfoRepository) {
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.hospitalDeptDutyRosterOverrideRepository = hospitalDeptDutyRosterOverrideRepository;
         this.hospitalDeptWeekDaysDutyRosterRepository = hospitalDeptWeekDaysDutyRosterRepository;
         this.appointmentRepository = appointmentRepository;
         this.hospitalDeptDutyRosterRoomInfoRepository = hospitalDeptDutyRosterRoomInfoRepository;
         this.appointmentHospitalDepartmentReservationLogRepository = appointmentHospitalDepartmentReservationLogRepository;
+        this.weekDaysDutyRosterDoctorInfoRepository = weekDaysDutyRosterDoctorInfoRepository;
     }
 
     @Override
@@ -144,8 +148,10 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
             List<HospitalDepartmentDutyRoster> dutyRosters,
             AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO) {
 
+        HospitalDepartmentDutyRoster dutyRoster = dutyRosters.get(0);
+
         HospitalDeptDutyRosterTimeResponseTO dutyRosterTimeResponseTO = fetchHospitalDeptDutyRoster(
-                dutyRosters.get(0), null,
+                dutyRoster, null,
                 requestDTO.getAppointmentDate(), requestDTO.getHospitalDepartmentId()
         );
 
@@ -154,7 +160,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         String endTime = getTimeFromDate(dutyRosterTimeResponseTO.getEndTime());
 
         if (dutyRosterTimeResponseTO.getDayOffStatus().equals(YES))
-            return parseToAvailabilityResponseWithoutRoom(date, startTime, endTime, new ArrayList<>());
+            return parseToAvailabilityResponseWithoutRoom(date, startTime, endTime, new ArrayList<>(), new ArrayList<>());
 
         List<String> availableTimeSlots = filterHospitalDeptTimeWithAppointment(
                 startTime, endTime,
@@ -168,7 +174,11 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 requestDTO.getHospitalDepartmentId(), null
         );
 
-        return parseToAvailabilityResponseWithoutRoom(date, startTime, endTime, availableTimeSlots);
+        List<String> availableDoctors = fetchAvailableDoctors(dutyRoster.getId(),
+                getDayCodeFromDate(date));
+
+        return parseToAvailabilityResponseWithoutRoom(
+                date, startTime, endTime, availableTimeSlots, availableDoctors);
     }
 
     /*ASSUMING HOSPITAL DEPARTMENT CAN BE CREATED EITHER WITHOUT ROOM OR WITH ROOM(CAN BE MULTIPLE)*/
@@ -254,7 +264,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         if (dutyRosterTimeResponseTO.getDayOffStatus().equals(YES))
             return parseToAvailabilityResponseWithRoom(
-                    date, availableRoomInfo, roomInfo, startTime, endTime, new ArrayList<>()
+                    date, availableRoomInfo, roomInfo, startTime, endTime, new ArrayList<>(), new ArrayList<>()
             );
 
         List<String> availableTimeSlots = filterHospitalDeptTimeWithAppointment(
@@ -270,8 +280,11 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 roomInfo.getHospitalDepartmentRoomInfoId()
         );
 
+        List<String> availableDoctors = fetchAvailableDoctors(dutyRoster.getId(),
+                getDayCodeFromDate(date));
+
         return parseToAvailabilityResponseWithRoom(
-                date, availableRoomInfo, roomInfo, startTime, endTime, availableTimeSlots
+                date, availableRoomInfo, roomInfo, startTime, endTime, availableTimeSlots, availableDoctors
         );
     }
 
@@ -320,10 +333,13 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         List<String> bookedAppointmentReservations =
                 appointmentHospitalDepartmentReservationLogRepository.fetchBookedAppointmentReservations(
-                        appointmentDate, hospitalDepartmentId, hospitalDepartmentRoomInfoId );
+                        appointmentDate, hospitalDepartmentId, hospitalDepartmentRoomInfoId);
 
         availableTimeSlots.removeAll(bookedAppointmentReservations);
     }
 
+    private List<String> fetchAvailableDoctors(Long hddRosterId, String weekDayCode) {
+        return weekDaysDutyRosterDoctorInfoRepository.fetchAvailableDoctors(hddRosterId, weekDayCode);
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.HospitalDepartmentDoctorInfoResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Qualifier("HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepositoryCustom")
 public interface HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepositoryCustom {
 
-    List<String> fetchAvailableDoctors(Long hddRosterId, String weekDayCode);
+    List<HospitalDepartmentDoctorInfoResponseDTO> fetchAvailableDoctors(Long hddRosterId, String weekDayCode);
 }
 
 

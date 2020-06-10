@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.utils;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.HospitalDepartmentDoctorInfoResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterRoomInfoResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterTimeResponseTO;
 import org.joda.time.DateTime;
@@ -36,7 +37,7 @@ public class AppointmentHospitalDepartmentUtils {
             String startTime,
             String endTime,
             List<String> availableTimeSlots,
-            List<String> availableDoctors) {
+            List<HospitalDepartmentDoctorInfoResponseDTO> availableDoctors) {
 
         AppointmentHospitalDeptCheckAvailabilityResponseDTO responseDTO =
                 AppointmentHospitalDeptCheckAvailabilityResponseDTO.builder()
@@ -60,7 +61,7 @@ public class AppointmentHospitalDepartmentUtils {
             String startTime,
             String endTime,
             List<String> availableTimeSlots,
-            List<String> availableDoctors) {
+            List<HospitalDepartmentDoctorInfoResponseDTO> availableDoctors) {
 
         AppointmentHospitalDeptCheckAvailabilityResponseDTO responseDTO =
                 AppointmentHospitalDeptCheckAvailabilityResponseDTO.builder()

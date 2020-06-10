@@ -32,5 +32,5 @@ public class AppointmentHospitalDeptCheckAvailabilityResponseDTO extends StatusR
 
     private List<String> availableTimeSlots;
 
-    List<String> availableDoctors;
+    private List<HospitalDepartmentDoctorInfoResponseDTO> availableDoctors;
 }

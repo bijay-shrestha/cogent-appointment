@@ -2,14 +2,17 @@ package com.cogent.cogentappointment.esewa.service.impl;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.response.StatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.HospitalDepartmentDoctorInfoResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterRoomInfoResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterTimeResponseTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.*;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentService;
+import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentReservationLog;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
@@ -22,11 +25,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentLog.CHECK_AVAILABILITY_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentLog.CHECK_AVAILABILITY_PROCESS_STARTED;
+import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentReservationLog.APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentDutyRosterLog.HOSPITAL_DEPARTMENT_DUTY_ROSTER;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentUtils.*;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.parseToStatusResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.validateIfRequestIsPastDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
@@ -109,6 +114,24 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         return responseDTO;
     }
 
+    @Override
+    public StatusResponseDTO cancelRegistration(Long appointmentReservationId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS);
+
+        AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
+                fetchAppointmentHospitalDeptReservationLogById(appointmentReservationId);
+
+        if (!Objects.isNull(appointmentReservationLog))
+            appointmentHospitalDepartmentReservationLogRepository.delete(appointmentReservationLog);
+
+        log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return parseToStatusResponseDTO();
+    }
+
     private AppointmentHospitalDeptCheckAvailabilityResponseDTO fetchAvailableHospitalDeptTimeSlots(
             AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO) {
 
@@ -174,7 +197,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 requestDTO.getHospitalDepartmentId(), null
         );
 
-        List<String> availableDoctors = fetchAvailableDoctors(dutyRoster.getId(),
+        List<HospitalDepartmentDoctorInfoResponseDTO> availableDoctors = fetchAvailableDoctors(dutyRoster.getId(),
                 getDayCodeFromDate(date));
 
         return parseToAvailabilityResponseWithoutRoom(
@@ -280,7 +303,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 roomInfo.getHospitalDepartmentRoomInfoId()
         );
 
-        List<String> availableDoctors = fetchAvailableDoctors(dutyRoster.getId(),
+        List<HospitalDepartmentDoctorInfoResponseDTO> availableDoctors = fetchAvailableDoctors(dutyRoster.getId(),
                 getDayCodeFromDate(date));
 
         return parseToAvailabilityResponseWithRoom(
@@ -338,8 +361,13 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         availableTimeSlots.removeAll(bookedAppointmentReservations);
     }
 
-    private List<String> fetchAvailableDoctors(Long hddRosterId, String weekDayCode) {
+    private List<HospitalDepartmentDoctorInfoResponseDTO> fetchAvailableDoctors(Long hddRosterId, String weekDayCode) {
         return weekDaysDutyRosterDoctorInfoRepository.fetchAvailableDoctors(hddRosterId, weekDayCode);
     }
 
+    private AppointmentHospitalDepartmentReservationLog fetchAppointmentHospitalDeptReservationLogById(
+            Long appointmentReservationId) {
+        return appointmentHospitalDepartmentReservationLogRepository.findAppointmentReservationLogById(
+                appointmentReservationId);
+    }
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus;
 
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -40,4 +41,6 @@ public class HospitalDeptDutyRosterStatusResponseDTO implements Serializable {
     private String patientDetails;
 
     private List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots;
+
+    private List<DropDownResponseDTO> roomList;
 }

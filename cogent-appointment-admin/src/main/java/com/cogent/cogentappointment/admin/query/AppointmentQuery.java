@@ -59,7 +59,7 @@ public class AppointmentQuery {
                 "  d.name as doctorName," +
                 "  s.name as specializationName," +
                 "  atd.transactionNumber as transactionNumber," +
-                "  DATE_FORMAT(ard.cancelledDate,'%M %d %Y') as cancelledDate," +
+                "  DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
                 "  p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
@@ -526,7 +526,7 @@ public class AppointmentQuery {
                     " atd.transactionNumber as transactionNumber," +
                     " ard.refundAmount as refundAmount," +
                     " atd.appointmentAmount as appointmentCharge," +
-                    " DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
+                    " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
                     " a.appointmentModeId.name as appointmentMode," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
@@ -731,4 +731,13 @@ public class AppointmentQuery {
 
         return query;
     }
+
+    public static String QUERY_TO_GET_CANCELLED_APPOINTMENT=
+            "SELECT" +
+                    " a" +
+                    " FROM" +
+                    " Appointment a " +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id " +
+                    " WHERE atd.transactionNumber=:transactionNumber" +
+                    " AND a.patientId.eSewaId =:esewaId";
 }

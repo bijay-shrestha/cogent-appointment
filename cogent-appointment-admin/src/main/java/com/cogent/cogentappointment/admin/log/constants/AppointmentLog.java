@@ -8,6 +8,8 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_REFUND = "REFUND REQUEST APPOINTMENT";
 
+    public final static String APPOINTMENT_REFUND_DETAIL = "APPOINTMENT REFUND DETAIL";
+
     public final static String APPOINTMENT_LOG = "APPOINTMENT LOG";
 
     public final static String TRANSACTION_LOG = "TRANSACTION LOG";

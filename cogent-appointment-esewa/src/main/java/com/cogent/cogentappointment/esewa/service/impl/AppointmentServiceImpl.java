@@ -25,12 +25,14 @@ import com.cogent.cogentappointment.esewa.exception.DataDuplicationException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.*;
 import com.cogent.cogentappointment.esewa.service.*;
+import com.cogent.cogentappointment.esewa.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -40,6 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
@@ -112,6 +115,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final Validator validator;
 
+    private final NepaliDateUtility nepaliDateUtility;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -134,7 +139,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentModeRepository appointmentModeRepository,
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                  Validator validator) {
+                                  Validator validator, NepaliDateUtility nepaliDateUtility) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -158,6 +163,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     @Override
@@ -237,6 +243,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
+        validateEsewaId(requestDTO);
+
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
                         requestDTO.getTransactionInfo().getTransactionDate(),
@@ -285,6 +293,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital,
                 appointmentMode
         );
+
+        appointment.setAppointmentDateInNepali(nepaliDateUtility
+                .getNepaliDateForDate(appointmentReservationLog.getAppointmentDate()));
 
         save(appointment);
 
@@ -515,6 +526,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                         (requestDTO.getTransactionNumber(), requestDTO.getPatientName());
 
         return parseToAppointmentTransactionStatusResponseDTO(appointmentTransactionRequestLogStatus);
+    }
+
+    public void validateEsewaId(AppointmentRequestDTOForSelf requestDTO) {
+
+        String appointmentModeCode = requestDTO.getTransactionInfo().getAppointmentModeCode();
+
+        String esewaId = requestDTO.getPatientInfo().getESewaId();
+
+        if (appointmentModeCode.equals(APPOINTMENT_MODE_ESEWA_CODE) && ObjectUtils.isEmpty(esewaId)) {
+            throw new BadRequestException("esewa Id cannot be null");
+        }
+
     }
 
     /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS

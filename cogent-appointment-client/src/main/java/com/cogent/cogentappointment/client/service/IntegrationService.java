@@ -8,4 +8,8 @@ import com.cogent.cogentappointment.client.dto.request.integrationClient.ApiInte
 public interface IntegrationService {
 
     void approveAppointmentCheckIn(ApiIntegrationCheckInRequestDTO requestDTO);
+
+//    void approveRefund(ApiIntegrationApproveRefundRequestDTO requestDTO);
+//
+//    void rejectRefund(com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRejectRequestDTO requestDTO);
 }

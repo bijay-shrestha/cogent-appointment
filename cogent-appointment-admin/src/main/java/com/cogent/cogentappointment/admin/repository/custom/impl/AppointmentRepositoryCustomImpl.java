@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentSta
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
@@ -233,6 +234,22 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Map<String, List<AppointmentQueueDTO>> results = parseQueryResultToAppointmentQueueForTodayByTimeResponse(objects);
 
         return results;
+    }
+
+    @Override
+    public Appointment fetchCancelledAppointmentDetails(RefundStatusRequestDTO requestDTO) {
+        try {
+            Appointment appointment = entityManager.createQuery(QUERY_TO_GET_CANCELLED_APPOINTMENT,
+                    Appointment.class)
+                    .setParameter(ESEWA_ID, requestDTO.getEsewaId())
+                    .setParameter(TRANSACTION_NUMBER, requestDTO.getTransactionNumber())
+                    .getSingleResult();
+
+            return appointment;
+        } catch (NoResultException e) {
+            log.error(CONTENT_NOT_FOUND, APPOINTMENT);
+            throw APPOINTMENT_NOT_FOUND.get();
+        }
     }
 
     @Override

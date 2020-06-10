@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
@@ -31,6 +32,7 @@ import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -40,6 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentHospitalDepartmentMessage.HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID;
@@ -127,6 +130,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository;
 
+    private final NepaliDateUtility nepaliDateUtility;
+
     private final AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService;
 
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
@@ -160,6 +165,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             AppointmentDoctorInfoRepository appointmentDoctorInfoRepository,
             AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository,
             AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository,
+            NepaliDateUtility nepaliDateUtility,
             AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService,
             HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository) {
         this.patientService = patientService;
@@ -190,6 +196,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
         this.appointmentHospitalDepartmentInfoRepository = appointmentHospitalDepartmentInfoRepository;
         this.appointmentHospitalDepartmentFollowUpLogRepository = appointmentHospitalDepartmentFollowUpLogRepository;
+        this.nepaliDateUtility = nepaliDateUtility;
         this.appointmentHospitalDepartmentFollowUpRequestLogService = appointmentHospitalDepartmentFollowUpRequestLogService;
         this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
     }
@@ -268,6 +275,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
         validateConstraintViolation(validator.validate(requestDTO));
+
+        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
+        validateEsewaId(requestDTO);
 
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
@@ -472,6 +483,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                         (requestDTO.getTransactionNumber(), requestDTO.getPatientName());
 
         return parseToAppointmentTransactionStatusResponseDTO(appointmentTransactionRequestLogStatus);
+    }
+
+    public void validateEsewaId(AppointmentRequestDTOForSelf requestDTO) {
+
+        String appointmentModeCode = requestDTO.getTransactionInfo().getAppointmentModeCode();
+
+        String esewaId = requestDTO.getPatientInfo().getESewaId();
+
+        if (appointmentModeCode.equals(APPOINTMENT_MODE_ESEWA_CODE) && ObjectUtils.isEmpty(esewaId)) {
+            throw new BadRequestException("esewa Id cannot be null");
+        }
+
     }
 
     /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS
@@ -884,7 +907,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
             log.error(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE, appointmentAmount);
-            throw new BadRequestException(String.format(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID, appointmentAmount),
+            throw new BadRequestException(String.format(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID
+                    , appointmentAmount),
                     HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);
         }
     }
@@ -1005,6 +1029,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospitalAppointmentServiceType
         );
 
+        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
+
         save(appointment);
 
         saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
@@ -1053,6 +1079,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentMode,
                 hospitalAppointmentServiceType
         );
+
+        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
 
         save(appointment);
 
@@ -1186,6 +1214,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospitalAppointmentServiceType
         );
 
+        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
+
         save(appointment);
 
         saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
@@ -1235,6 +1265,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentMode,
                 hospitalAppointmentServiceType
         );
+
+        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
 
         save(appointment);
 

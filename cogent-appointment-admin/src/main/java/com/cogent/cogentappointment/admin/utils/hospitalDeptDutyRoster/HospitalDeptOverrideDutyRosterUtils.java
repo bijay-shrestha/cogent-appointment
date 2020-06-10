@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRost
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateResponseDTO;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRosterOverride;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentRoomInfo;
@@ -40,6 +41,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
         override.setRemarks(requestDTO.getRemarks());
         override.setHospitalDepartmentDutyRoster(hospitalDepartmentDutyRoster);
         override.setHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfo);
+
 
         return override;
     }

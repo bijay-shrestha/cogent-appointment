@@ -14,12 +14,14 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.Ap
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentTransactionRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.EsewaRefundRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.Properties;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -33,18 +35,21 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,13 +58,14 @@ import javax.validation.Validator;
 import java.util.*;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
@@ -71,9 +77,12 @@ import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDe
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionRequestLogUtils.parseToAppointmentTransactionStatusResponseDTO;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionRequestLogUtils.updateAppointmentTransactionRequestLog;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
+import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
+import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.ESEWA_REFUND_API;
 
 /**
  * @author smriti on 2019-10-22
@@ -129,6 +138,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final Validator validator;
 
+    private final RestTemplateUtils restTemplateUtils;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -151,7 +162,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentModeRepository appointmentModeRepository,
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                  Validator validator) {
+                                  Validator validator,
+                                  RestTemplateUtils restTemplateUtils) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -175,6 +187,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
+        this.restTemplateUtils = restTemplateUtils;
     }
 
     @Override
@@ -589,7 +602,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 rejectDTO.getAppointmentId(), getLoggedInHospitalId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(rejectDTO.getAppointmentId()));
 
-        parseAppointmentRejectDetails(rejectDTO, appointment);
+        save(parseAppointmentRejectDetails(rejectDTO, appointment));
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -662,11 +675,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
 
-
         //TO DO Dynamic Backend Admin Integration...
-
-
-
 
 
         AppointmentRefundDetail refundAppointmentDetail =
@@ -678,16 +687,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                 (appointmentId, getLoggedInHospitalId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
-        appointment.setStatus(REFUNDED);
+        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
 
-        refundAppointmentDetail.setStatus(APPROVED);
+        String response = processRefundRequest(appointment,
+                appointmentTransactionDetail,
+                refundAppointmentDetail,
+                true);
 
-        refundAppointmentDetail.setRefundedDate(new Date());
-
-        saveRefundDetails(refundAppointmentDetail);
+        updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, null);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
+
 
     @Override
     public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO) {
@@ -696,15 +707,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(REJECT_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
-        AppointmentRefundDetail refundAppointmentDetail =
-                appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId(
-                        refundRejectDTO.getAppointmentId(), getLoggedInHospitalId())
-                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(refundRejectDTO.getAppointmentId()));
+        Long appointmentId = refundRejectDTO.getAppointmentId();
 
-        parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail);
+        AppointmentRefundDetail refundAppointmentDetail =
+                appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
+                        (appointmentId, getLoggedInHospitalId())
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        Appointment appointment = appointmentRepository.fetchRefundAppointmentByIdAndHospitalId
+                (appointmentId, getLoggedInHospitalId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
+
+        String response = processRefundRequest(appointment,
+                appointmentTransactionDetail,
+                refundAppointmentDetail,
+                false);
+
+        updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, refundRejectDTO);
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
+
 
     @Override
     public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(
@@ -953,8 +978,124 @@ public class AppointmentServiceImpl implements AppointmentService {
         return childPatient;
     }
 
+    private void changeAppointmentAndAppointmentRefundDetailStatus(Appointment appointment,
+                                                                   AppointmentRefundDetail refundAppointmentDetail,
+                                                                   String remarks) {
+
+        save(changeAppointmentStatus.apply(appointment, remarks));
+
+        saveAppointmentRefundDetail(changeAppointmentRefundDetailStatus.apply(refundAppointmentDetail, remarks));
+
+    }
+
+    private void defaultAppointmentAndAppointmentRefundDetailStatusChanges(Appointment appointment,
+                                                                           AppointmentRefundDetail refundAppointmentDetail,
+                                                                           String remarks) {
+
+        save(defaultAppointmentStatusChange.apply(appointment, remarks));
+
+        saveAppointmentRefundDetail(defaultAppointmentRefundDetailStatusChange.apply(refundAppointmentDetail, remarks));
+
+    }
+
+    private String processRefundRequest(Appointment appointment,
+                                        AppointmentTransactionDetail transactionDetail,
+                                        AppointmentRefundDetail appointmentRefundDetail,
+                                        Boolean isRefund) {
+
+        String thirdPartyResponse = null;
+
+        switch (appointment.getAppointmentModeId().getCode()) {
+
+            case APPOINTMENT_MODE_ESEWA_CODE:
+                thirdPartyResponse = requestEsewaForRefund(appointment,
+                        transactionDetail,
+                        appointmentRefundDetail,
+                        isRefund);
+                break;
+
+            default:
+                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+        }
+
+
+        return thirdPartyResponse;
+    }
+
+
+    private String requestEsewaForRefund(Appointment appointment,
+                                         AppointmentTransactionDetail transactionDetail,
+                                         AppointmentRefundDetail appointmentRefundDetail,
+                                         Boolean isRefund) {
+        String esewaId = appointment.getPatientId().getESewaId();
+
+        String merchentCode = appointment.getHospitalId().getEsewaMerchantCode();
+
+        EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
+                .esewa_id("9841409090")
+                .is_refund(isRefund)
+                .refund_amount(800D)
+                .product_code("testBir")
+                .remarks("refund")
+                .txn_amount(1000D)
+                .properties(Properties.builder()
+                        .appointmentId(10L)
+                        .hospitalName("Bir hospital")
+                        .build())
+                .build();
+
+
+//        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
+//                getEsewaHeader(parseToHmacRequestForEsewaDTO.apply("9841409090", "testBir")));
+
+        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
+                getEsewaPaymentStatusAPIHeaders());
+
+        String url = String.format(ESEWA_REFUND_API, "5VO");
+
+        ResponseEntity<EsewaResponseDTO
+                > response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
+                postRequest(url, request, EsewaResponseDTO.class);
+
+        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
+    }
+
+    private void updateAppointmentAndAppointmentRefundDetails(String response,
+                                                              Appointment appointment,
+                                                              AppointmentRefundDetail refundAppointmentDetail,
+                                                              AppointmentRefundRejectDTO refundRejectDTO) {
+        switch (response) {
+
+            case PARTIAL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment, refundAppointmentDetail, response);
+                break;
+
+            case FULL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment, refundAppointmentDetail, response);
+                break;
+
+            case SUCCESS:
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO.getRemarks(), refundAppointmentDetail));
+                break;
+
+            case AMBIGIOUS:
+                defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment, refundAppointmentDetail, response);
+                break;
+
+            default:
+                defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment, refundAppointmentDetail, response);
+                break;
+
+        }
+    }
+
     private Appointment findPendingAppointmentById(Long appointmentId) {
         return appointmentRepository.fetchPendingAppointmentById(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+    }
+
+    private AppointmentTransactionDetail fetchAppointmentTransactionDetail(Long appointmentId) {
+        return appointmentTransactionDetailRepository.fetchByAppointmentId(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
@@ -964,6 +1105,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_TRANSACTION_DETAIL, id);
+        throw new NoContentFoundException(AppointmentTransactionDetail.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };

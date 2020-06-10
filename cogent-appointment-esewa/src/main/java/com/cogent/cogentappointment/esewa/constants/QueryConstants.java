@@ -34,6 +34,8 @@ public class QueryConstants {
 
 
     //E
+    public static final String ESEWA_ID = "esewaId";
+    public static final String ESEWA_MERCHANT_CODE = "esewaMerchantCode";
 
     //F
     public static final String FROM_DATE = "fromDate";

@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
@@ -250,5 +252,21 @@ public class DateUtils {
             log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
         }
+    }
+
+    public static Date getDateFromString(String date) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date changedDate;
+        try {
+            changedDate = df.parse(date);
+        } catch (ParseException ex) {
+            return null;
+        }
+        return changedDate;
+    }
+
+    public static String convertToString(Date date, String format) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        return simpleDateFormat.format(date);
     }
 }

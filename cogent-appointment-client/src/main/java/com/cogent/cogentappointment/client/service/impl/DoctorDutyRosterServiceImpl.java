@@ -12,6 +12,7 @@ import com.cogent.cogentappointment.client.service.DoctorDutyRosterService;
 import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.client.service.SpecializationService;
 import com.cogent.cogentappointment.client.service.WeekDaysService;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -63,13 +64,16 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
     private final HospitalRepository hospitalRepository;
 
+    private final NepaliDateUtility nepaliDateUtility;
+
     public DoctorDutyRosterServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                        DoctorService doctorService,
                                        SpecializationService specializationService,
                                        WeekDaysService weekDaysService,
                                        DoctorWeekDaysDutyRosterRepository doctorWeekDaysDutyRosterRepository,
                                        DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-                                       AppointmentRepository appointmentRepository, HospitalRepository hospitalRepository) {
+                                       AppointmentRepository appointmentRepository, HospitalRepository hospitalRepository,
+                                       NepaliDateUtility nepaliDateUtility) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -78,6 +82,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.appointmentRepository = appointmentRepository;
         this.hospitalRepository = hospitalRepository;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     @Override
@@ -99,6 +104,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 findDoctorByIdAndHospitalId(requestDTO.getDoctorId(), hospitalId),
                 fetchSpecializationByIdAndHospitalId(requestDTO.getSpecializationId(), hospitalId),
                 findHospitalById(hospitalId));
+
+        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
+
+        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
 
         save(doctorDutyRoster);
 
@@ -435,7 +444,16 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                         requestDTO.getFromDate(),
                                         requestDTO.getToDate()));
 
-                        return parseToDoctorDutyRosterOverride(requestDTO, doctorDutyRoster);
+                        DoctorDutyRosterOverride doctorDutyRosterOverride = parseToDoctorDutyRosterOverride(requestDTO,
+                                doctorDutyRoster);
+
+                        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                                (requestDTO.getFromDate()));
+
+                        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                                (requestDTO.getToDate()));
+
+                        return doctorDutyRosterOverride;
                     }).collect(Collectors.toList());
 
             saveDoctorDutyRosterOverride(doctorDutyRosterOverrides);
@@ -456,6 +474,12 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
 
+        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                (updateRequestDTO.getOverrideFromDate()));
+
+        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                (updateRequestDTO.getOverrideToDate()));
+
         doctorDutyRosterOverrideRepository.save(doctorDutyRosterOverride);
 
         return doctorDutyRosterOverride.getId();
@@ -466,7 +490,14 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         DoctorDutyRosterOverride doctorDutyRosterOverride =
                 doctorDutyRosterOverrideRepository.fetchById(updateRequestDTO.getDoctorDutyRosterOverrideId());
 
-        parseDoctorDutyRosterOverrideDetails(updateRequestDTO, doctorDutyRosterOverride);
+        DoctorDutyRosterOverride rosterOverride = parseDoctorDutyRosterOverrideDetails(updateRequestDTO,
+                doctorDutyRosterOverride);
+
+        rosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                (updateRequestDTO.getOverrideFromDate()));
+
+        rosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                (updateRequestDTO.getOverrideToDate()));
 
         return doctorDutyRosterOverride.getId();
     }

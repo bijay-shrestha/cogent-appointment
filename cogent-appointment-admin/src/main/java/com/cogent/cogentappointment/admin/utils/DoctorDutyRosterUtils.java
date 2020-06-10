@@ -26,6 +26,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocal
  */
 public class DoctorDutyRosterUtils {
 
+
     public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
                                                            Doctor doctor,
                                                            Specialization specialization,
@@ -40,6 +41,7 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setHospitalId(hospital);
         doctorDutyRoster.setDoctorId(doctor);
         doctorDutyRoster.setSpecializationId(specialization);
+
         return doctorDutyRoster;
     }
 
@@ -72,13 +74,15 @@ public class DoctorDutyRosterUtils {
                         }));
     }
 
-    public static void parseToUpdatedDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
+    public static DoctorDutyRoster parseToUpdatedDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
                                                       DoctorDutyRosterUpdateRequestDTO updateRequestDTO) {
 
         doctorDutyRoster.setRosterGapDuration(updateRequestDTO.getRosterGapDuration());
         doctorDutyRoster.setStatus(updateRequestDTO.getStatus());
         doctorDutyRoster.setRemarks(updateRequestDTO.getRemarks());
         doctorDutyRoster.setHasOverrideDutyRoster(updateRequestDTO.getHasOverrideDutyRoster());
+
+        return doctorDutyRoster;
     }
 
     public static DoctorWeekDaysDutyRoster parseToUpdatedDoctorWeekDaysDutyRoster(

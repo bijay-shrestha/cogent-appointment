@@ -132,7 +132,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final NepaliDateUtility nepaliDateUtility;
 
-
     private final AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService;
 
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
@@ -1030,6 +1029,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospitalAppointmentServiceType
         );
 
+        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
+
         save(appointment);
 
         saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
@@ -1078,6 +1079,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentMode,
                 hospitalAppointmentServiceType
         );
+
+        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
 
         save(appointment);
 
@@ -1211,6 +1214,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospitalAppointmentServiceType
         );
 
+        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
+
         save(appointment);
 
         saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
@@ -1260,6 +1265,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentMode,
                 hospitalAppointmentServiceType
         );
+
+        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
 
         save(appointment);
 

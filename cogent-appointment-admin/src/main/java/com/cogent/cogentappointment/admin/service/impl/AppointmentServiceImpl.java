@@ -436,7 +436,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
 
-        String url = String.format(ESEWA_REFUND_API, transactionDetail.getTransactionNumber());
+        String url = String.format(ESEWA_REFUND_API, "5VO");
 
         ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
                 postRequest(url, request, EsewaResponseDTO.class);

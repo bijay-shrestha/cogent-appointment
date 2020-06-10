@@ -21,6 +21,8 @@ public class ErrorMessageConstants {
         String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
 
         String INVALID_TRANSACTION_NUMBER = "Transaction number '%s' and patient '%s' not found";
+
+        String ESEWA_ID_CANNOT_BE_NULL = "eSewa Id cannot be null";
     }
 
     public interface AppointmentHospitalDepartmentMessage {

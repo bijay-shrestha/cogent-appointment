@@ -276,9 +276,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         validateConstraintViolation(validator.validate(requestDTO));
 
-        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
-
-        validateEsewaId(requestDTO);
+        validateEsewaId(requestDTO.getTransactionInfo().getAppointmentModeCode(),
+                requestDTO.getPatientInfo().getESewaId());
 
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
@@ -321,6 +320,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
         validateConstraintViolation(validator.validate(requestDTO));
+
+        validateEsewaId(requestDTO.getTransactionInfo().getAppointmentModeCode(),
+                requestDTO.getRequestBy().getESewaId());
 
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
@@ -485,14 +487,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentTransactionStatusResponseDTO(appointmentTransactionRequestLogStatus);
     }
 
-    public void validateEsewaId(AppointmentRequestDTOForSelf requestDTO) {
-
-        String appointmentModeCode = requestDTO.getTransactionInfo().getAppointmentModeCode();
-
-        String esewaId = requestDTO.getPatientInfo().getESewaId();
+    public void validateEsewaId(String appointmentModeCode, String esewaId) {
 
         if (appointmentModeCode.equals(APPOINTMENT_MODE_ESEWA_CODE) && ObjectUtils.isEmpty(esewaId)) {
-            throw new BadRequestException("esewa Id cannot be null");
+            throw new BadRequestException(ESEWA_ID_CANNOT_BE_NULL);
         }
 
     }

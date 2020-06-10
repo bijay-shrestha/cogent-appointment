@@ -66,10 +66,9 @@ public class NepaliDateUtility {
         DateConverterResponeDTO nepaliDateResponse = YearMonthDayUtils.convertFromADToBS(
                 YearMonthDayUtils.getNepaliDateMap(yearMonthDayRepository.findAll()), englishDateRequest);
         //commented so as to remove extra 0 in front of single digit
-        /*result[0] = nepaliDateResponse.getYear() + "-" +
+        return nepaliDateResponse.getYear() + "-" +
                 (nepaliDateResponse.getMonth() <= 9 ? "0" + nepaliDateResponse.getMonth() : nepaliDateResponse.getMonth()) + "-" +
-                (nepaliDateResponse.getDay() <= 9 ? "0" + nepaliDateResponse.getDay() : nepaliDateResponse.getDay());*/
-        return nepaliDateResponse.getYear() + "-" + nepaliDateResponse.getMonth() + "-" + nepaliDateResponse.getDay();
+                (nepaliDateResponse.getDay() <= 9 ? "0" + nepaliDateResponse.getDay() : nepaliDateResponse.getDay());
     }
 
     public static String getReadableNepaliDate(DateConverterResponeDTO nepaliDateResponse) {

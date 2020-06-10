@@ -36,6 +36,8 @@ public class HospitalDeptOverrideDutyRosterUtils {
         HospitalDepartmentDutyRosterOverride override = new HospitalDepartmentDutyRosterOverride();
         override.setFromDate(requestDTO.getFromDate());
         override.setToDate(requestDTO.getToDate());
+        override.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
+        override.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
         override.setStartTime(requestDTO.getStartTime());
         override.setEndTime(requestDTO.getEndTime());
         override.setDayOffStatus(requestDTO.getDayOffStatus());
@@ -43,8 +45,6 @@ public class HospitalDeptOverrideDutyRosterUtils {
         override.setRemarks(requestDTO.getRemarks());
         override.setHospitalDepartmentDutyRoster(hospitalDepartmentDutyRoster);
         override.setHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfo);
-        override.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
-        override.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
 
         return override;
     }
@@ -56,6 +56,8 @@ public class HospitalDeptOverrideDutyRosterUtils {
 
         override.setFromDate(updateRequestDTO.getFromDate());
         override.setToDate(updateRequestDTO.getToDate());
+        override.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(updateRequestDTO.getFromDate()));
+        override.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(updateRequestDTO.getToDate()));
         override.setEndTime(updateRequestDTO.getEndTime());
         override.setStartTime(updateRequestDTO.getStartTime());
         override.setDayOffStatus(updateRequestDTO.getDayOffStatus());

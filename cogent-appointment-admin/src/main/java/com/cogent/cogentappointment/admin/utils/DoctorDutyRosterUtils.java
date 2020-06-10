@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorWee
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
-import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.time.LocalDate;
@@ -27,11 +26,6 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocal
  */
 public class DoctorDutyRosterUtils {
 
-    private static NepaliDateUtility nepaliDateUtility;
-
-    public DoctorDutyRosterUtils(NepaliDateUtility nepaliDateUtility) {
-        this.nepaliDateUtility = nepaliDateUtility;
-    }
 
     public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
                                                            Doctor doctor,
@@ -47,8 +41,7 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setHospitalId(hospital);
         doctorDutyRoster.setDoctorId(doctor);
         doctorDutyRoster.setSpecializationId(specialization);
-        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
-        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
+
         return doctorDutyRoster;
     }
 

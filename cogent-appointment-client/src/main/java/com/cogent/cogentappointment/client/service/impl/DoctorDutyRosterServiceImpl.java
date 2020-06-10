@@ -444,6 +444,12 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                         requestDTO.getFromDate(),
                                         requestDTO.getToDate()));
 
+                        DoctorDutyRosterOverride doctorDutyRosterOverride = parseToDoctorDutyRosterOverride(requestDTO, doctorDutyRoster);
+
+                        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
+
+                        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
+
                         return parseToDoctorDutyRosterOverride(requestDTO, doctorDutyRoster);
                     }).collect(Collectors.toList());
 
@@ -475,7 +481,12 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         DoctorDutyRosterOverride doctorDutyRosterOverride =
                 doctorDutyRosterOverrideRepository.fetchById(updateRequestDTO.getDoctorDutyRosterOverrideId());
 
-        parseDoctorDutyRosterOverrideDetails(updateRequestDTO, doctorDutyRosterOverride);
+        DoctorDutyRosterOverride rosterOverride = parseDoctorDutyRosterOverrideDetails(updateRequestDTO,
+                doctorDutyRosterOverride);
+
+        rosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(updateRequestDTO.getOverrideFromDate()));
+
+        rosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(updateRequestDTO.getOverrideToDate()));
 
         return doctorDutyRosterOverride.getId();
     }

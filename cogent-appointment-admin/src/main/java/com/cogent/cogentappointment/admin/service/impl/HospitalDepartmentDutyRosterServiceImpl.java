@@ -17,6 +17,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.HospitalDepartmentDutyRosterService;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -76,7 +77,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
     private final HospitalDepartmentDoctorInfoRepository hospitalDepartmentDoctorInfoRepository;
 
-    private final HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
+    private final HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
+            hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
+
+    private final NepaliDateUtility nepaliDateUtility;
 
     public HospitalDepartmentDutyRosterServiceImpl(
             HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
@@ -88,7 +92,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
             HospitalRepository hospitalRepository,
             HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository,
             HospitalDepartmentDoctorInfoRepository hospitalDepartmentDoctorInfoRepository,
-            HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository) {
+            HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository,
+            NepaliDateUtility nepaliDateUtility) {
 
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.weekDaysDutyRosterRepository = weekDaysDutyRosterRepository;
@@ -100,6 +105,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         this.hospitalDepartmentRoomInfoRepository = hospitalDepartmentRoomInfoRepository;
         this.hospitalDepartmentDoctorInfoRepository = hospitalDepartmentDoctorInfoRepository;
         this.hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository = hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     @Override
@@ -115,6 +121,12 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 requestDTO,
                 fetchHospitalDepartment(requestDTO.getHospitalDepartmentId(), requestDTO.getHospitalId()),
                 findHospitalById(requestDTO.getHospitalId()));
+
+        dutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                (requestDTO.getFromDate()));
+
+        dutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
+                (requestDTO.getToDate()));
 
         save(dutyRoster);
 
@@ -411,8 +423,16 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                                     ? fetchHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfoId,
                                     hospitalDepartmentDutyRoster.getHospitalDepartment().getId()) : null;
 
-                    saveDutyRosterOverride(parseOverrideDetails(
-                            requestDTO, hospitalDepartmentDutyRoster, hospitalDepartmentRoomInfo)
+                    HospitalDepartmentDutyRosterOverride hospitalDepartmentDutyRosterOverride=parseOverrideDetails(
+                            requestDTO, hospitalDepartmentDutyRoster, hospitalDepartmentRoomInfo);
+
+                    hospitalDepartmentDutyRosterOverride.setFromDateInNepali(nepaliDateUtility
+                            .getNepaliDateFromDate(requestDTO.getFromDate()));
+
+                    hospitalDepartmentDutyRosterOverride.setToDateInNepali(nepaliDateUtility
+                            .getNepaliDateFromDate(requestDTO.getToDate()));
+
+                    saveDutyRosterOverride(hospitalDepartmentDutyRosterOverride
                     );
                 });
 
@@ -671,6 +691,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         HospitalDepartmentDutyRosterOverride override = parseOverrideDetails(
                 updateRequestDTO, new HospitalDepartmentDutyRosterOverride(), hospitalDepartmentRoomInfo);
+
+        override.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(updateRequestDTO.getFromDate()));
+
+        override.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(updateRequestDTO.getToDate()));
 
         override.setHospitalDepartmentDutyRoster(dutyRoster);
 

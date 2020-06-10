@@ -57,5 +57,11 @@ public class IntegrationQuery {
                     " AND aqp.status='Y'"+
                     " AND cfi.status='Y'";
 
+    public static String CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY =
+            CLIENT_FEAUTRES_INTEGRATION_API_QUERY +
+                    " AND f.code=:featureCode" +
+                    " AND ic.code=:integrationChannelCode" +
+                    " AND cfi.hospitalId=:hospitalId";
+
 
 }

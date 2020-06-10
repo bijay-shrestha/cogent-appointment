@@ -38,6 +38,9 @@ public class QueryConstants {
     public static final String EMAIL = "email";
 
     //F
+
+    public static final String FEATURE_CODE = "featureCode";
+    
     public interface AppointmentFollowUpTrackerConstants {
         String PARENT_APPOINTMENT_ID = "parentAppointmentId";
     }
@@ -55,6 +58,7 @@ public class QueryConstants {
 
     //I
     public static final String ID = "id";
+    public static final String INTEGRATION_CHANNEL_CODE = "integrationChannelCode";
     public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
     public static final String API_FEATURE__ID = "featureId";
 

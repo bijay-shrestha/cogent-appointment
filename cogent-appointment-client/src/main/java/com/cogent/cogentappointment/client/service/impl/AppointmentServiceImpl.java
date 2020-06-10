@@ -14,10 +14,11 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.Ap
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentTransactionRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
@@ -32,6 +33,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
@@ -40,11 +42,15 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
+import com.cogent.cogentthirdpartyconnector.service.ThirdPartyService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -129,6 +135,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final Validator validator;
 
+    private final IntegrationRepository integrationRepository;
+
+    private final ThirdPartyService thirdPartyService;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -151,7 +161,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentModeRepository appointmentModeRepository,
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                  Validator validator) {
+                                  Validator validator,
+                                  IntegrationRepository integrationRepository,
+                                  ThirdPartyService thirdPartyService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -175,6 +187,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
+        this.integrationRepository = integrationRepository;
+        this.thirdPartyService = thirdPartyService;
     }
 
     @Override
@@ -563,10 +577,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveAppointment(Long appointmentId) {
+    public void approveAppointment(Long appointmentId,
+                                   IntegrationBackendRequestDTO integrationBackendRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
+
+        if (integrationBackendRequestDTO != null) {
+            apiIntegrationCheckpoint(integrationBackendRequestDTO);
+        }
 
         Appointment appointment = appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(
                 appointmentId, getLoggedInHospitalId())
@@ -577,6 +596,59 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveAppointmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+
+    private void apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+
+        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
+
+        integrationHospitalApiInfo.forEach(apiInfo -> {
+            ResponseEntity<?> responseEntity = thirdPartyService.getHospitalService(apiInfo);
+        });
+
+    }
+
+    private List<BackendIntegrationHospitalApiInfo> getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+
+        List<FeatureIntegrationResponse> featureIntegrationResponse = integrationRepository.
+                fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
+
+        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfos = new ArrayList<>();
+
+        featureIntegrationResponse.forEach(integrationResponse -> {
+
+            Map<String, String> requestHeaderResponse = integrationRepository.
+                    findApiRequestHeaders(integrationResponse.getApiIntegrationFormatId());
+
+            Map<String, String> queryParametersResponse = integrationRepository.
+                    findApiQueryParameters(integrationResponse.getApiIntegrationFormatId());
+
+            //headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+
+            requestHeaderResponse.forEach((key, value) -> {
+                headers.add(key, value);
+            });
+
+            BackendIntegrationHospitalApiInfo hospitalApiInfo = new BackendIntegrationHospitalApiInfo();
+            hospitalApiInfo.setApiUri(integrationResponse.getUrl());
+            hospitalApiInfo.setHttpHeaders(headers);
+
+            if (!queryParametersResponse.isEmpty()) {
+                hospitalApiInfo.setQueryParameters(queryParametersResponse);
+            }
+            hospitalApiInfo.setHttpMethod(integrationResponse.getRequestMethod());
+
+            integrationHospitalApiInfos.add(hospitalApiInfo);
+
+        });
+
+        return integrationHospitalApiInfos;
+
     }
 
     @Override
@@ -662,11 +734,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
 
-
         //TO DO Dynamic Backend Admin Integration...
-
-
-
 
 
         AppointmentRefundDetail refundAppointmentDetail =

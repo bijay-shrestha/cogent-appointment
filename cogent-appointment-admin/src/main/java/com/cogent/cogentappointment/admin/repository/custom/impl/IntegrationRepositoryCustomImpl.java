@@ -178,7 +178,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     public List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY)
                 .setParameter(HOSPITAL_ID,requestDTO.getHospitalId())
-                .setParameter(API_INTEGRATION_CHANNEL_CODE,requestDTO.getIntegrationChannelCode())
+                .setParameter(INTEGRATION_CHANNEL_CODE,requestDTO.getIntegrationChannelCode())
                 .setParameter(FEATURE_CODE,requestDTO.getFeatureCode());
 
         List<ClientFeatureIntegrationResponse> responseDTOList =

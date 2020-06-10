@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
@@ -41,6 +40,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
+import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToUpdateAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -114,11 +114,16 @@ public class AdminServiceImpl implements AdminService {
 
         validateAdminCount(adminRequestDTO.getHospitalId());
 
-        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber(), adminRequestDTO.getHospitalId());
+        List<Object[]> admins = adminRepository.validateDuplicity(
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber()
+        );
 
-        validateAdminDuplicity(admins, adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        validateAdminDuplicity(admins,
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(),
+                adminRequestDTO.getHospitalId()
+        );
 
         Admin admin = save(adminRequestDTO);
 
@@ -192,7 +197,9 @@ public class AdminServiceImpl implements AdminService {
         if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
             throw new BadRequestException(INVALID_DELETE_REQUEST);
 
-        convertAdminToDeleted(admin, deleteRequestDTO);
+        deleteAdminMetaInfo(admin, deleteRequestDTO);
+
+        save(convertAdminToDeleted(admin, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -236,10 +243,16 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findById(updateRequestDTO.getId());
 
+        if (Objects.isNull(admin.getPassword()))
+            throw new BadRequestException(BAD_UPDATE_MESSAGE, BAD_UPDATE_DEBUG_MESSAGE);
+
         List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO);
 
-        validateAdminDuplicity(admins, updateRequestDTO.getEmail(),
-                updateRequestDTO.getMobileNumber());
+        validateAdminDuplicity(admins,
+                updateRequestDTO.getEmail(),
+                updateRequestDTO.getMobileNumber(),
+                updateRequestDTO.getHospitalId()
+        );
 
         emailIsNotUpdated(updateRequestDTO, admin, files);
 
@@ -250,11 +263,12 @@ public class AdminServiceImpl implements AdminService {
 
     private void emailIsNotUpdated(AdminUpdateRequestDTO updateRequestDTO,
                                    Admin admin, MultipartFile files) {
+
         if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
-            update(updateRequestDTO, ACTIVE, admin);
+            update(updateRequestDTO, updateRequestDTO.getStatus(), admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
                 updateAvatar(admin, files);
@@ -271,6 +285,7 @@ public class AdminServiceImpl implements AdminService {
 
     private void emailIsUpdated(AdminUpdateRequestDTO updateRequestDTO,
                                 Admin admin, MultipartFile files) {
+
         if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -302,10 +317,15 @@ public class AdminServiceImpl implements AdminService {
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+            AdminDashboardFeature adminDashboardFeature =
+                    adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(
+                            result.getId(),
+                            admin.getId()
+                    );
 
             if (adminDashboardFeature == null) {
-                saveAdminDashboardFeature(result.getId(), admin);
+                Character status = result.getStatus();
+                updateAdminDashboardFeature(result.getId(), result.getStatus(), admin);
             }
 
             if (adminDashboardFeature != null) {
@@ -324,8 +344,19 @@ public class AdminServiceImpl implements AdminService {
         DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
                 .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
 
+
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
         adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+
+    }
+
+    private void updateAdminDashboardFeature(Long id, Character status, Admin admin) {
+
+        DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
+                .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
+
+        List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
+        adminDashboardFeatureRepository.saveAll(parseToUpdateAdminDashboardFeature(dashboardFeatureList, status, admin));
 
     }
 
@@ -383,22 +414,6 @@ public class AdminServiceImpl implements AdminService {
             log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE,
                     ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
-        }
-    }
-
-    private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists) {
-            log.error(DUPLICATION_ERROR, ADMIN, email);
-            throw new DataDuplicationException(
-                    String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
-        }
-    }
-
-    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists) {
-            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
-            throw new DataDuplicationException(
-                    String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
         }
     }
 
@@ -473,6 +488,13 @@ public class AdminServiceImpl implements AdminService {
         adminMetaInfoRepository.save(parseMetaInfo(admin, adminMetaInfo));
     }
 
+    private void deleteAdminMetaInfo(Admin admin, DeleteRequestDTO deleteRequestDTO) {
+        AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
+                .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
+
+        adminMetaInfoRepository.save(deleteMetaInfo(adminMetaInfo, deleteRequestDTO));
+    }
+
     private AdminConfirmationToken saveAdminConfirmationToken(Admin admin) {
         AdminConfirmationToken adminConfirmationToken = parseInAdminConfirmationToken(admin);
         return confirmationTokenRepository.save(adminConfirmationToken);
@@ -521,20 +543,35 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestEmail,
-                                        String requestMobileNumber) {
+                                        String requestMobileNumber, Long requestedHospitalId) {
 
         final int EMAIL = 0;
         final int MOBILE_NUMBER = 1;
+        final int HOSPITAL_ID = 2;
 
         adminList.forEach(admin -> {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
+            Long hospitalId = (Long) get(admin, HOSPITAL_ID);
 
-            if (isEmailExists && isMobileNumberExists)
-                throw ADMIN_DUPLICATION.get();
+              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED HOSPITAL*/
+            if (hospitalId.equals(requestedHospitalId)) {
+                if (isEmailExists && isMobileNumberExists) {
+                    log.error(String.format(ADMIN_DUPLICATION_MESSAGE, requestEmail, requestMobileNumber));
+                    ADMIN_DUPLICATION(requestEmail, requestMobileNumber);
+                }
 
-            validateEmail(isEmailExists, requestEmail);
-            validateMobileNumber(isMobileNumberExists, requestMobileNumber);
+                validateEmail(isEmailExists, requestEmail);
+                validateMobileNumber(isMobileNumberExists, requestMobileNumber);
+            }
+              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER HOSPITAL*/
+            else {
+                if (isEmailExists && isMobileNumberExists)
+                    ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(requestEmail, requestMobileNumber);
+
+                validateEmailInDifferentHospital(isEmailExists, requestEmail);
+                validateMobileNumberInDifferentHospital(isMobileNumberExists, requestMobileNumber);
+            }
         });
     }
 
@@ -574,8 +611,41 @@ public class AdminServiceImpl implements AdminService {
         }
     };
 
-    private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
-            new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
+    private void ADMIN_DUPLICATION(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_MESSAGE, email, mobileNumber));
+    }
+
+    private void ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email, mobileNumber));
+    }
+
+    private void validateEmail(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_MESSAGE, email));
+        }
+    }
+
+    private void validateEmailInDifferentHospital(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email));
+        }
+    }
+
+    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, mobileNumber));
+        }
+    }
+
+    private void validateMobileNumberInDifferentHospital(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, mobileNumber));
+        }
+    }
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, ADMIN, id);

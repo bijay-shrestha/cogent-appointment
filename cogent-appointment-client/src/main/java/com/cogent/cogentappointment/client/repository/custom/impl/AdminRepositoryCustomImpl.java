@@ -60,25 +60,21 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<Object[]> validateDuplicity(String email, String mobileNumber,
-                                            Long hospitalId) {
+    public List<Object[]> validateDuplicity(String email, String mobileNumber) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_FOR_VALIDATION)
                 .setParameter(EMAIL, email)
-                .setParameter(MOBILE_NUMBER, mobileNumber)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(MOBILE_NUMBER, mobileNumber);
 
         return query.getResultList();
     }
 
     @Override
-    public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO, Long hospitalId) {
+    public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
                 .setParameter(ID, updateRequestDTO.getId())
                 .setParameter(EMAIL, updateRequestDTO.getEmail())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(HOSPITAL_ID, hospitalId);
-
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber());
         return query.getResultList();
     }
 
@@ -210,7 +206,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         return transformQueryToResultList(query, AdminMacAddressInfoResponseDTO.class);
     }
 
-    private Supplier<NoContentFoundException> NO_DASHBOARD_FEATURE_FOUND = () -> new NoContentFoundException(DashboardFeature.class);
+    private Supplier<NoContentFoundException> NO_DASHBOARD_FEATURE_FOUND = () -> new NoContentFoundException(
+            DashboardFeature.class);
 
     private Supplier<NoContentFoundException> NO_ADMIN_FOUND = () -> new NoContentFoundException(Admin.class);
 

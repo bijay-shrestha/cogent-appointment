@@ -54,10 +54,9 @@ public class AdminLogResource {
 
     @PutMapping(USERMENU_LOG_DIAGRAM)
     @ApiOperation(USER_MENU_LOG_DIAGRAM_OPERATION)
-    public ResponseEntity<?> fetchUserMenuLogsStaticsforDiagram(@RequestBody AdminLogSearchRequestDTO searchRequestDTO) {
+    public ResponseEntity<?> fetchUserMenuLogStaticsForDiagram(@RequestBody AdminLogSearchRequestDTO searchRequestDTO) {
 
-
-        return ok().body(adminLogService.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO));
+        return ok().body(adminLogService.fetchUserMenuLogStaticsForDiagram(searchRequestDTO));
     }
 
     @PutMapping(BASE_CLIENT + SEARCH)
@@ -76,7 +75,7 @@ public class AdminLogResource {
                                                       @RequestParam("size") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(clientLogService.fetchUserMenuLogsStaticsByClientId(searchRequestDTO, pageable));
+        return ok().body(clientLogService.fetchUserMenuLogStaticsByClientId(searchRequestDTO, pageable));
     }
 
     @PutMapping(BASE_CLIENT + USERMENU_LOG_DIAGRAM)
@@ -84,6 +83,14 @@ public class AdminLogResource {
     public ResponseEntity<?> fetchUserMenuLogsStaticsforDiagramByClientId(@RequestBody ClientLogSearchRequestDTO searchRequestDTO) {
 
         return ok().body(clientLogService.fetchUserMenuLogsStaticsforDiagramByClientId(searchRequestDTO));
+    }
+
+    @GetMapping("test")
+    public String testController(){
+
+        System.out.println("This is logging profile...");
+
+        return "This is logging profile....";
     }
 
 

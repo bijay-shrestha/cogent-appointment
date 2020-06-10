@@ -60,7 +60,7 @@ public class QualificationQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND q.status='" + searchRequestDTO.getStatus() + "'";
 
-        return whereClause;
+        return whereClause + " ORDER BY q.id DESC";
     }
 
     public static final String QUERY_TO_FETCH_QUALIFICATION_DETAILS =
@@ -71,7 +71,8 @@ public class QualificationQuery {
                     " qa.id as qualificationAliasId," +                         //[3]
                     " qa.name as qualificationAliasName," +                     //[4]
                     " q.status as status," +                                    //[5]
-                    " q.remarks as remarks" +                                  //[6]
+                    " q.remarks as remarks," +                                  //[6]
+                    QUALIFICATION_AUDITABLE_QUERY() +
                     " FROM Qualification q " +
                     " LEFT JOIN University u ON u.id = q.university.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
@@ -79,16 +80,27 @@ public class QualificationQuery {
                     " AND q.id =:id";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
-            "SELECT q.id as id," +                                                  //[0]
-                    " q.name as name," +                                            //[1]
-                    " q.university.name as university," +                           //[2]
-                    " q.qualificationAlias.name as qualificationAliasName" +        //[3]
+            "SELECT q.id as value," +                                             //[0]
+                    " CONCAT(q.name,',',u.name)" +                                //[1]
+                    " AS label" +
                     " FROM Qualification q " +
-                    " WHERE q.status = 'Y'";
+                    " LEFT JOIN University u ON u.id = q.university.id" +
+                    " WHERE q.status = 'Y'" +
+                    " AND u.status = 'Y'" +
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_MIN_QUALIFICATION =
             "SELECT q.id as value," +                                           //[0]
                     " q.name as label" +                                        //[1]
                     " FROM Qualification q " +
-                    " WHERE q.status != 'D'";
+                    " WHERE q.status != 'D'" +
+                    " ORDER BY label ASC";
+
+    public static String QUALIFICATION_AUDITABLE_QUERY() {
+        return " q.createdBy as createdBy," +
+                " q.createdDate as createdDate," +
+                " q.lastModifiedBy as lastModifiedBy," +
+                " q.lastModifiedDate as lastModifiedDate";
+    }
+
 }

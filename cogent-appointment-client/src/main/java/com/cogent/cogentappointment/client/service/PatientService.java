@@ -24,9 +24,14 @@ public interface PatientService {
 
     PatientDetailResponseDTOWithStatus searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
+    PatientDetailResponseDTOWithStatus searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO);
+
     /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
     PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                           Pageable pageable);
+
+    PatientResponseDTOForOthersWithStatus searchForOthersHospitalWise(PatientMinSearchRequestDTO searchRequestDTO,
+                                                                      Pageable pageable);
 
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
 
@@ -49,4 +54,6 @@ public interface PatientService {
     void registerPatient(Long patientId, Long hospitalId);
 
     PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
+
+    List<DropDownResponseDTO> fetchPatientEsewaId();
 }

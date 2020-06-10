@@ -1,4 +1,3 @@
-
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
@@ -92,6 +91,11 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "is_self")
     private Character isSelf;
 
+    /* If Appointment has been transferred - Y
+     * Else N */
+    @Column(name = "has_transferred")
+    private Character hasTransferred = 'N';
+
     @Override
     public String toString() {
         return "Appointment{" +
@@ -99,7 +103,7 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", specializationId=" + specializationId.getName() +
                 ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
-                ", appointmentMode=" + appointmentModeId.getName() +
+                ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
                 ", appointmentNumber='" + appointmentNumber + '\'' +
@@ -110,6 +114,7 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", hospitalId=" + hospitalId.getName() +
                 ", isFollowUp=" + isFollowUp +
                 ", isSelf=" + isSelf +
+                ", hasTransferred='" + hasTransferred + '\'' +
                 '}';
     }
 }

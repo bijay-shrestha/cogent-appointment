@@ -3,13 +3,21 @@ package com.cogent.cogentappointment.client.resource;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentHistorySearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentTransactionStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTOForOthers;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
+import com.cogent.cogentappointment.client.service.IntegrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -20,8 +28,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentConstant.*;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.FETCH_CLIENT_API_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -35,9 +45,11 @@ import static org.springframework.http.ResponseEntity.ok;
 public class AppointmentResource {
 
     private final AppointmentService appointmentService;
+    private final IntegrationService integrationService;
 
-    public AppointmentResource(AppointmentService appointmentService) {
+    public AppointmentResource(AppointmentService appointmentService, IntegrationService integrationService) {
         this.appointmentService = appointmentService;
+        this.integrationService = integrationService;
     }
 
     /*esewa*/
@@ -47,7 +59,6 @@ public class AppointmentResource {
         return ok(appointmentService.fetchAvailableTimeSlots(requestDTO));
     }
 
-    //todo: shift in esewa-module
     /*esewa*/
     @PutMapping(FETCH_CURRENT_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_CURRENT_APPOINTMENT_AVAILABILITY)
@@ -72,7 +83,7 @@ public class AppointmentResource {
     /*esewa*/
     @PutMapping(PENDING_APPOINTMENT)
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
-    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
+    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentHistorySearchDTO searchDTO) {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
@@ -99,8 +110,15 @@ public class AppointmentResource {
     /*esewa*/
     @PutMapping(HISTORY)
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
-    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentSearchDTO searchDTO) {
+    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentHistorySearchDTO searchDTO) {
         return ok(appointmentService.fetchAppointmentHistory(searchDTO));
+    }
+
+    /*SEARCH APPOINTMENTS FOR SELF/OTHERS*/
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_APPOINTMENT)
+    public ResponseEntity<?> searchAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
+        return ok(appointmentService.searchAppointments(searchDTO));
     }
 
     /*esewa*/
@@ -147,12 +165,12 @@ public class AppointmentResource {
     }
 
     @PutMapping(REFUND)
-    @ApiOperation(FETCH_REFUND_APPOINTMENTS)
-    public ResponseEntity<?> fetchRefundAppointments(@RequestBody AppointmentRefundSearchDTO searchDTO,
+    @ApiOperation(FETCH_APPOINTMENT_CANCEL_APPROVALS)
+    public ResponseEntity<?> fetchRefundAppointments(@RequestBody AppointmentCancelApprovalSearchDTO searchDTO,
                                                      @RequestParam("page") int page,
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
+        return ok().body(appointmentService.fetchAppointmentCancelApprovals(searchDTO, pageable));
     }
 
     @GetMapping(REFUND + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
@@ -184,6 +202,15 @@ public class AppointmentResource {
         return ok().body(appointmentService.searchAppointmentLogs(searchRequestDTO, pageable));
     }
 
+    @PutMapping(TRANSACTION_LOG)
+    @ApiOperation(FETCH_TRANSACTION_LOG)
+    public ResponseEntity<?> fetchTransactionLog(@RequestBody TransactionLogSearchDTO searchRequestDTO,
+                                                 @RequestParam("page") int page,
+                                                 @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.searchTransactionLogs(searchRequestDTO, pageable));
+    }
+
     @PutMapping(RESCHEDULE_LOG)
     @ApiOperation(FETCH_APPOINTMENT_RESCHEDULE_LOG)
     public ResponseEntity<?> fetchAppointmentLog(@RequestBody AppointmentRescheduleLogSearchDTO rescheduleLogSearchDTO,
@@ -192,6 +219,14 @@ public class AppointmentResource {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchRescheduleAppointment(rescheduleLogSearchDTO, pageable));
     }
+
+    @PutMapping(CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE)
+    @ApiOperation(FETCH_CLIENT_API_INTEGRATION)
+    public ResponseEntity<?> approveAppointmentCheckIn(@Valid @RequestBody ApiIntegrationCheckInRequestDTO requestDTO) {
+        integrationService.approveAppointmentCheckIn(requestDTO);
+        return ok().build();
+    }
+
 
 
 }

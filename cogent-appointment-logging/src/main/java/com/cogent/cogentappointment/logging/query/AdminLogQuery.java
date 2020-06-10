@@ -46,10 +46,27 @@ public class AdminLogQuery {
 
         return " SELECT " +
                 " al.logDate as logDate," +
-                " DATE_FORMAT(al.logDateTime,'%h:%i %p') as logTime," +
+                " DATE_FORMAT(al.logDateTime,'%h:%i:%s %p') as logTime," +
                 " al.browser as browser," +
                 " al.operatingSystem as os," +
-                " a.email as email," +
+                " al.location as location," +
+
+                " CASE" +
+                " WHEN" +
+                " a.email is NULL" +
+                " THEN" +
+                " al.unknownUser" +
+                " ELSE" +
+                " a.email" +
+                " END AS email," +
+
+                " CASE" +
+                " WHEN" +
+                " a.mobileNumber is NOT NULL" +
+                " THEN" +
+                " a.mobileNumber"+
+                " END AS mobileNumber," +
+
                 " a.mobileNumber as mobileNumber," +
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +
@@ -75,11 +92,6 @@ public class AdminLogQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
             whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
-
-//        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
-//
-//            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName()
-//                    + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + " OR a.fullName LIKE %" + searchRequestDTO.getUserName() + "%" + "')";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
             whereClause += " AND al.parentId=" + searchRequestDTO.getParentId();

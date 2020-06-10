@@ -18,11 +18,13 @@ import java.util.Date;
 @NoArgsConstructor
 public class AppointmentPendingApprovalDetailResponseDTO implements Serializable {
 
+    private Long hospitalId;
+
     private Long appointmentId;
 
     private String hospitalName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
     private String appointmentNumber;
@@ -39,7 +41,7 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String patientAge;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date patientDob;
 
     private Character isRegistered;
@@ -47,6 +49,8 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
     private String mobileNumber;
 
     private String doctorName;
+
+    private String fileUri;
 
     private String specializationName;
 
@@ -57,4 +61,8 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
     private Character isSelf;
 
     private String appointmentMode;
+
+    private Long doctorId,specializationId;
+
+    private Character followUp;
 }

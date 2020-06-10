@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLog
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
@@ -41,7 +41,7 @@ public class AppointmentQuery {
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";
 
-    public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
+    public static String QUERY_TO_FETCH_APPOINTMENT_CANCEL_APPROVALS(AppointmentCancelApprovalSearchDTO searchDTO) {
         return " SELECT" +
                 "  a.id as appointmentId," +
                 "  a.appointmentDate as appointmentDate," +
@@ -59,14 +59,17 @@ public class AppointmentQuery {
                 "  d.name as doctorName," +
                 "  s.name as specializationName," +
                 "  atd.transactionNumber as transactionNumber," +
-                "  DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
+                "  DATE_FORMAT(ard.cancelledDate,'%M %d %Y') as cancelledDate," +
                 "  p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
-                " a.appointmentModeId.name as appointmentMode, " +
-                QUERY_TO_CALCULATE_PATIENT_AGE +
+                " a.appointmentModeId.name as appointmentMode," +
+                " hpi.isRegistered as isRegistered," +
+                QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                " da.fileUri as fileUri" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                 " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                 " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
                 " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
@@ -76,8 +79,10 @@ public class AppointmentQuery {
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
-    private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
-        String whereClause = " WHERE ard.status = 'PA'";
+    private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentCancelApprovalSearchDTO searchDTO) {
+        String whereClause = " WHERE ard.status = 'PA'" +
+                " AND s.status!='D'" +
+                " AND d.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchDTO.getFromDate()) && !ObjectUtils.isEmpty(searchDTO.getToDate()))
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchDTO.getFromDate())
@@ -105,7 +110,7 @@ public class AppointmentQuery {
         return whereClause + " ORDER BY a.appointmentDate DESC";
     }
 
-    public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentRefundSearchDTO searchDTO) {
+    public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentCancelApprovalSearchDTO searchDTO) {
         return " SELECT SUM(ard.refundAmount)" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -132,7 +137,9 @@ public class AppointmentQuery {
                 " p.gender as gender," +                                                                //[6]
                 " p.mobile_number as mobileNumber," +                                                   //[7]
                 QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE + "," +                                           //[8]
-                " a.id as appointmentId" +                                                              //[9]
+                " a.id as appointmentId," +                                                              //[9]
+                " a.is_follow_up as isFollowUp," +
+                " a.has_transferred as hastransferred" +                                                          //[10]
                 " FROM appointment a" +
                 " LEFT JOIN doctor d ON d.id = a.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = a.specialization_id" +
@@ -176,12 +183,16 @@ public class AppointmentQuery {
                             " p.name as patientName," +                                                  //[5]
                             " p.mobileNumber as mobileNumber," +                                        //[6]
                             " sp.name as specializationName," +                                         //[7]
-                            " d.name as doctorName," +
-                            " a.appointmentModeId.name as appointmentMode" +                                                  //[8]
+                            " d.name as doctorName," +                                                  //[8]
+                            " a.appointmentModeId.name as appointmentMode," +
+                            " atd.appointmentAmount as appointmentAmount," +
+                            " da.fileUri as fileUri," +
+                            " hpi.hospitalNumber as hospitalNumber" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
@@ -249,12 +260,16 @@ public class AppointmentQuery {
                             " ard.refundAmount as refundAmount," +                         //[16]
                             " hpi.address as patientAddress," +                            //[17]
                             " atd.transactionDate as transactionDate," +                    //[18]
-                            " am.name as appointmentMode" +                                //[19]
+                            " am.name as appointmentMode," +                                //[19]
+                            " a.isFollowUp as isFollowUp," +                                //[20]
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[21]
+                            " da.fileUri as fileUri" +
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
@@ -267,31 +282,19 @@ public class AppointmentQuery {
             AppointmentLogSearchDTO appointmentLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " sp.status='Y' ";
+                " sp.status!='D'" +
+                " AND d.status!='D'";
 
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getToDate()))
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(appointmentLogSearchDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getToDate()) + "')";
 
-        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionToDate()))
-            whereClause += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(appointmentLogSearchDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getTransactionToDate()) + "')";
-
-
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
-        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionNumber()))
-            whereClause += " AND atd.transactionNumber LIKE '%" + appointmentLogSearchDTO.getTransactionNumber() + "%'";
-
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
-
-        if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentId()))
-            whereClause += " AND a.id = " + appointmentLogSearchDTO.getAppointmentId();
 
         if (!Objects.isNull(appointmentLogSearchDTO.getHospitalId()))
             whereClause += " AND h.id = " + appointmentLogSearchDTO.getHospitalId();
@@ -317,25 +320,41 @@ public class AppointmentQuery {
     }
 
 
-    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
+    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->
                     " SELECT" +
                             " h.name as hospitalName," +                                                 //[0]
-                            " p.eSewaId as eSewaId," +                                                   //[1]
+                            " p.eSewaId as esewaId," +                                                   //[1]
                             " arl.previousAppointmentDate as previousAppointmentDate," +                 //[2]
-                            " arl.rescheduleDate as rescheduleDate," +                                   //[3]
-                            " a.appointmentNumber as appointmentNumber," +                               //[4]
-                            " hpi.registrationNumber as registeredNumber," +                             //[5]
-                            " p.name as patientName," +                                                  //[6]
-                            " p.dateOfBirth as dateOfBirth," +                                           //[7]
-                            " p.gender as gender," +                                                     //[8]
-                            " p.mobileNumber as mobileNumber," +                                         //[9]
-                            " sp.name as specializationName," +                                         //[10]
-                            " d.name as doctorName," +                                                  //[11]
-                            " atd.transactionNumber as transactionNumber," +                            //[12]
-                            " atd.appointmentAmount as appointmentAmount," +                            //[13]
-                            " arl.remarks as remarks" +                                                 //[14]
-                            " from AppointmentRescheduleLog arl" +
+                            " DATE_FORMAT(arl.previousAppointmentDate, '%h:%i %p') as previousAppointmentTime," +   //[3]
+                            " arl.rescheduleDate as rescheduleAppointmentDate," +                                   //[4]
+                            " DATE_FORMAT(arl.rescheduleDate, '%h:%i %p') as rescheduleAppointmentTime," +          //[5]
+                            " a.appointmentNumber as appointmentNumber," +                               //[6]
+                            " hpi.registrationNumber as registrationNumber," +                           //[7]
+                            " p.name as patientName," +                                                  //[8]
+                            " CASE" +
+                            " WHEN" +
+                            " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                            " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                            " THEN" +
+                            " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                            " WHEN" +
+                            " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                            " THEN" +
+                            " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                            " ELSE" +
+                            " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                            " END AS patientAge," +                                                     //[9]
+                            " p.gender as patientGender," +                                             //[10]
+                            " p.mobileNumber as mobileNumber," +                                         //[11]
+                            " sp.name as specializationName," +                                         //[12]
+                            " d.name as doctorName," +                                                  //[13]
+                            " atd.transactionNumber as transactionNumber," +                            //[14]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[15]
+                            " arl.remarks as remarks," +                                                 //[16]
+                            " a.isFollowUp as isFollowUp," +                                             //[17]
+                            " da.fileUri as fileUri" +                                                   //[18]
+                            " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
                             " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
@@ -344,13 +363,16 @@ public class AppointmentQuery {
                             " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                             " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                            " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                             GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(appointmentRescheduleLogSearchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
 
         String whereClause = " WHERE " +
                 " hpi.status='Y' " +
-                " AND arl.status='RES' " +
+                " AND arl.status='RES'" +
+                " AND sp.status!='D'" +
+                " AND d.status!='D'" +
                 " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate";
 
         if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
@@ -380,6 +402,22 @@ public class AppointmentQuery {
         whereClause += " ORDER BY arl.rescheduleDate";
 
         return whereClause;
+    }
+
+    public static String QUERY_TO_CALCULATE_TOTAL_RESCHEDULE_AMOUNT(AppointmentRescheduleLogSearchDTO searchDTO) {
+        return
+                "SELECT" +
+                        " COALESCE(SUM(atd.appointmentAmount),0)" +
+                        " FROM AppointmentRescheduleLog arl" +
+                        " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                        " LEFT JOIN Patient p ON p.id=a.patientId" +
+                        " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                        " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                        " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
+                        " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
+                        " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                        " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                        GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
     }
 
     public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_APPOINTMENT_QUEUE =
@@ -444,13 +482,19 @@ public class AppointmentQuery {
                     " atd.transactionNumber as transactionNumber," +                            //[12]
                     " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                //[13]
                     " d.name as doctorName," +                                                  //[14]
-                    " a.isSelf as isSelf," +                                                      //[15]
+                    " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +
-                    " a.appointmentModeId.name as appointmentMode" +                                                   //[16]
+                    " a.appointmentModeId.name as appointmentMode," +                           //[16]
+                    " da.fileUri as fileUri," +
+                    " a.doctorId.id as doctorId," +
+                    " a.specializationId.id as specializationId," +
+                    " a.isFollowUp as followUp," +
+                    " h.id as hospitalId" +                                                   //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                     " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
@@ -484,7 +528,9 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentCharge," +
                     " DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
                     " a.appointmentModeId.name as appointmentMode," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " hpi.isRegistered as isRegistered," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    " dv.fileUri as fileUri" +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -492,12 +538,13 @@ public class AppointmentQuery {
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " WHERE ard.appointmentId.id=:appointmentId" +
                     " AND ard.status='PA'";
 
-    private static String SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT=
+    private static String SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT =
             "SELECT" +
                     " COALESCE (SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
                     " FROM Appointment a" +
@@ -509,13 +556,86 @@ public class AppointmentQuery {
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                    " WHERE"+
-                    " sp.status='Y'";
+                    " WHERE" +
+                    " sp.status!='D'" +
+                    " AND d.status!='D'";
 
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
             "SELECT" +
-                    " COUNT(a.id),"+
-                    " COALESCE(SUM(atd.appointmentAmount ),0)"+
+                    " COUNT(a.id)," +
+                    " COALESCE(SUM(atd.appointmentAmount ),0)" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                    " WHERE" +
+                    " sp.status!='D'" +
+                    " AND d.status!='D'";
+
+    public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " AND a.status='PA'" +
+                " AND a.isFollowUp = 'N'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_WITH_FOLLOW_UP
+            (AppointmentLogSearchDTO searchRequestDTO) {
+
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " AND a.status='PA'" +
+                " AND a.isFollowUp = 'Y'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " AND a.status='A'" +
+                " AND a.isFollowUp = 'N'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " AND a.status='A'" +
+                " AND a.isFollowUp = 'Y'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " AND a.status='C'" +
+                " AND a.isFollowUp = 'N'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " AND a.status='C'" +
+                " AND a.isFollowUp = 'Y'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    private static String SELECT_CLAUSE_TO_FETCH_REFUNDED_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(a.id)," +
+                    " COALESCE (SUM(ard.refundAmount ),0) as amount" +
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -525,83 +645,58 @@ public class AppointmentQuery {
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                    " WHERE";
+                    " WHERE" +
+                    " sp.status!='D'" +
+                    " AND d.status!='D'" +
+                    " AND a.status='RE'";
 
-    public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
-       String query= SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
+    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_FETCH_REFUNDED_APPOINTMENT +
+                " AND a.isFollowUp = 'N'";
 
-       return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED(AppointmentLogSearchDTO searchRequestDTO) {
-        String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT+
-                " AND a.status!='PA'";
+    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_FETCH_REFUNDED_APPOINTMENT +
+                " AND a.isFollowUp = 'Y'";
 
-        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
+    private static String SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(a.id)," +
+                    " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " WHERE" +
+                    " sp.status!='D'" +
+                    " AND d.status!='D'" +
+                    " AND a.status='RE'";
 
-    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
-        String query= SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA'";
+    public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT +
+                " AND a.isFollowUp = 'N'";
 
-        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT (AppointmentLogSearchDTO searchRequestDTO) {
-        String query= SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A'";
+    public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT +
+                " AND a.isFollowUp = 'Y'";
 
-        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT (AppointmentLogSearchDTO searchRequestDTO) {
-        String query= SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C'";
-
-        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
-    }
-
-    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT (AppointmentLogSearchDTO searchRequestDTO) {
-        String query= "SELECT" +
-                " COUNT(a.id),"+
-                " COALESCE (SUM(ard.refundAmount ),0) as amount" +
-                " FROM Appointment a" +
-                " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
-                " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
-                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                " WHERE" +
-                " a.status='RE'";
-
-
-        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
-    }
-
-    public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
-        String query = "SELECT" +
-                " COUNT(a.id),"+
-                " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
-                " FROM Appointment a" +
-                " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
-                " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
-                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                " WHERE" +
-                " a.status='RE'";
-
-        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
-    }
-
-    public static String QUERY_TO_SEARCH_BY_DATES(String query,AppointmentLogSearchDTO searchRequestDTO){
+    private static String QUERY_TO_SEARCH_BY_DATES(String query, AppointmentLogSearchDTO searchRequestDTO) {
 
         if (!Objects.isNull(searchRequestDTO.getHospitalId()))
             query += " AND h.id = " + searchRequestDTO.getHospitalId();
@@ -611,23 +706,11 @@ public class AppointmentQuery {
             query += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchRequestDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getTransactionToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getTransactionToDate()) + "')";
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentNumber()))
             query += " AND a.appointmentNumber LIKE '%" + searchRequestDTO.getAppointmentNumber() + "%'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
-            query += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";
-
         if (!Objects.isNull(searchRequestDTO.getStatus()) && !searchRequestDTO.getStatus().equals(""))
             query += " AND a.status = '" + searchRequestDTO.getStatus() + "'";
-
-        if (!Objects.isNull(searchRequestDTO.getAppointmentId()))
-            query += " AND a.id = " + searchRequestDTO.getAppointmentId();
 
         if (!Objects.isNull(searchRequestDTO.getPatientMetaInfoId()))
             query += " AND pi.id = " + searchRequestDTO.getPatientMetaInfoId();
@@ -648,5 +731,4 @@ public class AppointmentQuery {
 
         return query;
     }
-
 }

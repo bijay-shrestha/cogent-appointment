@@ -76,9 +76,15 @@ public class DoctorResource {
     }
 
     @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_ACTIVE_DOCTORS_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorForDropDown() {
         return ok(doctorService.fetchActiveMinDoctor());
+    }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DOCTORS_BY_HOSPITAL_ID)
+    public ResponseEntity<?> fetchMinDoctorByHospitalId() {
+        return ok(doctorService.fetchMinDoctor());
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
@@ -99,8 +105,9 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorBySpecializationId(specializationId));
     }
 
+//    todo:Can be Removed
     @GetMapping(HOSPITAL_WISE)
-    @ApiOperation(FETCH_BY_HOSPITAL_ID)
+    @ApiOperation(FETCH_ACTIVE_DOCTORS_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId() {
         return ok(doctorService.fetchDoctorByHospitalId());
     }

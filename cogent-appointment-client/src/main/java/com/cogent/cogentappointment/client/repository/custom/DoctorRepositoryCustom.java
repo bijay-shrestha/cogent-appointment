@@ -31,6 +31,8 @@ public interface DoctorRepositoryCustom {
 
     List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
 
+    List<DoctorDropdownDTO> fetchMinDoctorByHospitalId(Long hospitalId);
+
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id, Long hospitalId);
 
     List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId);

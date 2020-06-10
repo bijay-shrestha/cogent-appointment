@@ -13,12 +13,20 @@ public class ErrorMessageConstants {
 
     public interface AdminServiceMessages {
 
-        String ADMIN_DUPLICATION_MESSAGE = "Admin with given email and mobile number" +
-                " already exists.";
+        String ADMIN_DUPLICATION_MESSAGE = "Admin with email '%s' and mobile number" +
+                " '%s' already exists.";
 
-        String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
+        String ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'" +
+                " and mobile number '%s'.";
 
-        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with mobile number '%s'";
+        String EMAIL_DUPLICATION_MESSAGE = "Admin with email '%s' already exists.";
+
+        String EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'.";
+
+        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "Admin with mobile number '%s' already exists.";
+
+        String MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with" +
+                " and mobile number '%s'.";
 
         String ADMIN_NOT_FOUND = "Admin '%s' doesn't exist";
 
@@ -41,11 +49,14 @@ public class ErrorMessageConstants {
         String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
 
         String ACCOUNT_NOT_ACTIVATED_MESSAGE = "Sorry '%s', please activate your account first.";
-        String ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE = "'isAccountActivated' flag is 'N'";
+        String ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE = "'status' flag in Admin entity is 'N'";
+
+        String BAD_UPDATE_MESSAGE = "Operation failed, save password pending.";
+        String BAD_UPDATE_DEBUG_MESSAGE = "Admin hasn't saved its password yet and is still inactive.";
     }
 
-    public interface AppointmentModeMessages{
-         String APPOINTMENT_MODE_NOT_EDITABLE = "Appointment Mode cannot be updated'";
+    public interface AppointmentModeMessages {
+        String APPOINTMENT_MODE_NOT_EDITABLE = "Appointment Mode cannot be updated'";
         String APPOINTMENT_MODE_NOT_EDITABLE_DEBUG_MESSAGE = "Appointment Mode having is_editable 'N' cannot be updated";
     }
 
@@ -56,6 +67,15 @@ public class ErrorMessageConstants {
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
     //D
+
+    public interface DoctorServiceMessages {
+        String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
+                "actual doctor appointment charge";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
+                "Doctor actual appointment charge/ follow-up appointment charge";
+    }
+
     public interface DoctorDutyRosterServiceMessages {
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 
@@ -66,6 +86,10 @@ public class ErrorMessageConstants {
 
         String APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE = "Cannot update doctor duty roster because appointment" +
                 " exists within the selected date range '%s'.";
+    }
+
+    public interface DashboardMessages {
+        String DOCTOR_REVENUE_NOT_FOUND = "Doctor Revenue(s) not found";
     }
 
     //E
@@ -91,11 +115,38 @@ public class ErrorMessageConstants {
     //H
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
+    public interface HospitalDeptDutyRosterMessages {
+        String BAD_REQUEST_MESSAGE = "Department Duty Roster Override doesn't lie within the actual" +
+                " duty roster date range '%s' to '%s'";
+
+        String BAD_ROOM_REQUEST = "If room is enabled, corresponding room details is also required";
+
+        String DUPLICATE_DUTY_ROSTER_WITHOUT_ROOM =
+                "Department Duty Roster already exists within '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_WITH_ROOM =
+                "Department Duty Roster already exists within '%s' to '%s' for selected room";
+
+        String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITHOUT_ROOM =
+                "Department Duty Roster Override already exists within '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITH_ROOM =
+                "Department Duty Roster Override already exists within '%s' to '%s' for selected room";
+
+        String HOSPITAL_DEPARTMENT_DOCTOR_NOT_ASSIGNED = "Sorry, Requested doctor of '%s' are not assigned to " +
+                "the selected hospital department";
+    }
+
     //I
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
     public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
     public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 
+    public static final String INVALID_DATE_TIME_MESSAGE = "Start time cannot be greater than end time";
+    public static final String INVALID_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
+
+    public static final String EQUAL_DATE_TIME_MESSAGE = "Start time cannot be equal to end time";
+    public static final String EQUAL_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
     //J
 
     //K
@@ -112,7 +163,7 @@ public class ErrorMessageConstants {
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s' ";
 
-
+    public static String NO_RECORD_FOUND = "No %s(s) found.";
 
     //O
 
@@ -130,6 +181,7 @@ public class ErrorMessageConstants {
     //Q
 
     //R
+    public static final String ROOM_NUMBER_DUPLICATION_MESSAGE = "Room Number '%s' already in use";
 
 
     //S

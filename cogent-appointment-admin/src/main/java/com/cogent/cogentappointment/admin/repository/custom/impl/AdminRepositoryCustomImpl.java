@@ -28,6 +28,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -41,6 +42,7 @@ import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_NO
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH_MAC_ADDRESS_INFO;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
+import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.QUERY_TO_FETCH_ADMIN_BY_EMAIL;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -67,13 +69,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<Object[]> validateDuplicity(String email, String mobileNumber,
-                                            Long hospitalId) {
+    public List<Object[]> validateDuplicity(String email, String mobileNumber) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_FOR_VALIDATION)
                 .setParameter(EMAIL, email)
-                .setParameter(MOBILE_NUMBER, mobileNumber)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(MOBILE_NUMBER, mobileNumber);
 
         return query.getResultList();
     }
@@ -92,8 +92,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
                 .setParameter(ID, updateRequestDTO.getId())
                 .setParameter(EMAIL, updateRequestDTO.getEmail())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(HOSPITAL_ID, updateRequestDTO.getHospitalId());
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber());
 
         return query.getResultList();
     }
@@ -103,8 +102,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_COMPANY_ADMIN_EXCEPT_CURRENT_COMPANY_ADMIN)
                 .setParameter(ID, updateRequestDTO.getId())
                 .setParameter(EMAIL, updateRequestDTO.getEmail())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(COMPANY_ID, updateRequestDTO.getCompanyId());
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber());
 
         return query.getResultList();
     }
@@ -166,6 +164,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     public LoggedInAdminDTO getLoggedInAdmin(String email) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO)
                 .setParameter(EMAIL, email);
+//        LoggedInAdminDTO loggedInAdminDTO=transformQueryToSingleResult(query, LoggedInAdminDTO.class);
+
         try {
             return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         } catch (NoResultException e) {
@@ -224,6 +224,17 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
             return transformQueryToSingleResult(query, CompanyAdminLoggedInInfoResponseDTO.class);
         } catch (NoResultException e) {
             throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Admin fetchActiveAdminByEmail(String email) {
+        try {
+            return entityManager.createQuery(QUERY_TO_FETCH_ACTIVE_ADMIN_BY_EMAIL, Admin.class)
+                    .setParameter(EMAIL, email)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            throw ADMIN_NOT_FOUND.apply(email);
         }
     }
 

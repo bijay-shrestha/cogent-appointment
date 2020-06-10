@@ -36,6 +36,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.CompanyLog.COMPANY;
@@ -80,7 +81,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public void save(@Valid  CompanyRequestDTO requestDTO, MultipartFile logo) throws NoSuchAlgorithmException {
+    public void save(@Valid CompanyRequestDTO requestDTO, MultipartFile logo) throws NoSuchAlgorithmException {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, COMPANY);
@@ -106,7 +107,9 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void update(@Valid CompanyUpdateRequestDTO updateRequestDTO, MultipartFile logo) throws NoSuchAlgorithmException {
+    public void update(@Valid CompanyUpdateRequestDTO updateRequestDTO,
+                       MultipartFile logo) throws NoSuchAlgorithmException {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, COMPANY);
@@ -123,12 +126,12 @@ public class CompanyServiceImpl implements CompanyService {
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByCompanyId(updateRequestDTO.getId());
 
-
         save(parseToUpdatedCompany(updateRequestDTO, company));
 
         updateCompanyContactNumber(company.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
-        updateCompanyLogo(company, logo);
+        if (updateRequestDTO.getIsLogoUpdate().equals(YES))
+            updateCompanyLogo(company, logo);
 
         updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
 

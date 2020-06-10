@@ -22,8 +22,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.admin.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
@@ -76,11 +76,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorMinimalResponseDTO> results = transformNativeQueryToResultList(
                 query, DoctorMinimalResponseDTO.class);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             error();
             throw DOCTOR_NOT_FOUND.get();
-        }
-        else {
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -92,11 +91,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             error();
             throw DOCTOR_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
@@ -117,11 +115,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             error();
             throw DOCTOR_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
@@ -131,11 +128,23 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             error();
             throw DOCTOR_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
+    }
+
+    @Override
+    public List<DoctorDropdownDTO> fetchMinDoctorByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_DOCTOR_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
+
+        if (results.isEmpty()) {
+            error();
+            throw DOCTOR_NOT_FOUND.get();
+        } else return results;
     }
 
     @Override
@@ -157,22 +166,22 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             error();
             throw DOCTOR_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
+
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
             new NoContentFoundException(Doctor.class);
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (doctorId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR,doctorId);
+        log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, doctorId);
         throw new NoContentFoundException(Doctor.class, "doctorId", doctorId.toString());
     };
 
-    public void error(){
-        log.error(CONTENT_NOT_FOUND,DOCTOR);
+    public void error() {
+        log.error(CONTENT_NOT_FOUND, DOCTOR);
     }
 }

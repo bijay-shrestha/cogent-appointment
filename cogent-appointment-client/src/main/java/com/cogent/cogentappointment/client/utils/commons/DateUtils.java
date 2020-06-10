@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -12,8 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.constants.UtilityConfigConstants.*;
 import static java.util.Calendar.MONTH;
@@ -79,6 +79,7 @@ public class DateUtils {
         return new java.sql.Date(date.getTime()).toLocalDate();
     }
 
+
     public static String getDayCodeFromDate(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("EE");
         return dateFormat.format(date);
@@ -89,13 +90,20 @@ public class DateUtils {
     }
 
     public static boolean isDateBetweenInclusive(Date startDate, Date endDate, Date target) {
-        return !target.before(startDate) && !target.after(endDate);
+        Date targetDateOnly = removeTime(target);
+        Date startDateOnly = removeTime(startDate);
+        Date endDateOnly = removeTime(endDate);
+        return !targetDateOnly.before(startDateOnly) && !targetDateOnly.after(endDateOnly);
     }
 
     public static Date convertStringToDate(String date) throws ParseException {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);
     }
 
+    public static String convertDateToString(Date date) throws ParseException {
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
+    }
 
     public static int getYearFromNepaliDate(String nepaliDate) {
         return Integer.parseInt(nepaliDate.split(HYPHEN)[0]);
@@ -109,17 +117,48 @@ public class DateUtils {
         return nepaliDate.split(HYPHEN)[2];
     }
 
-    public static String fetchStartingFiscalYear(int year, int month) {
 
-        return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year - 1 + APPLICATION_STARTING_FISCAL_DAY)
-                : (year + APPLICATION_ENDING_FISCAL_DAY);
+    /*IF REQUESTED YEAR IS ODD,
+    *   IF MONTH <4
+    *       S = YEAR - 1 + START_FISCAL_DAY
+    *       E = YEAR + END_FISCAL_DAY
+    *   ELSE
+    *       S = YEAR + END_FISCAL_DAY
+    *       E = YEAR + 1 + START_FISCAL-DAY
+    * ELSE
+    *   IF MONTH <4
+    *       S = YEAR - 1 + END_FISCAL_DAY
+    *       E = YEAR + START_FISCAL_DAY
+    *   ELSE
+    *       S = YEAR + START_FISCAL_DAY
+    *       E = YEAR + 1 + END_FISCAL_DAY
+    * */
+    public static String fetchStartingFiscalYear(int year, int month) {
+        if (year % 2 == 0) {
+            //selected year is even
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year - 1 + APPLICATION_ENDING_FISCAL_DAY)
+                    : (year + APPLICATION_STARTING_FISCAL_DAY);
+        } else {
+            //selected year is odd
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year - 1 + APPLICATION_STARTING_FISCAL_DAY)
+                    : (year + APPLICATION_ENDING_FISCAL_DAY);
+        }
     }
 
     public static String fetchEndingFiscalYear(int year, int month) {
-        return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + APPLICATION_ENDING_FISCAL_DAY)
-                : (year + 1 + APPLICATION_STARTING_FISCAL_DAY);
+        if (year % 2 == 0) {
+            //selected year is even
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year + APPLICATION_STARTING_FISCAL_DAY)
+                    : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
+        } else {
+            //selected year is odd
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year + APPLICATION_ENDING_FISCAL_DAY)
+                    : (year + 1 + APPLICATION_STARTING_FISCAL_DAY);
+        }
     }
 
     public static String getTimeIn12HourFormat(Date date) {
@@ -142,6 +181,13 @@ public class DateUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String convert12HourTo24HourFormat(String timeIn12HrFormat) {
+        int hour = Integer.parseInt(timeIn12HrFormat.substring(0, 2)) % 12;
+        if (timeIn12HrFormat.endsWith("PM") || timeIn12HrFormat.endsWith("pm"))
+            hour += 12;
+        return String.format("%02d", hour) + timeIn12HrFormat.substring(2, 6);
     }
 
     public static Date parseTime(String requestedTime) {
@@ -187,10 +233,9 @@ public class DateUtils {
         }
     }
 
-    public static List<Date> getDates(
-            Date startDate, Date endDate) {
+    public static List<Date> getDates(Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();
-        Date today = new Date();
+        Date today = utilDateToSqlDate(new Date());
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(startDate);
 
@@ -199,7 +244,7 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            if (!result.before(today)) {
+            if (!utilDateToSqlDate(calendar.getTime()).before(today)) {
                 datesInRange.add(result);
             }
             calendar.add(Calendar.DATE, 1);
@@ -223,6 +268,23 @@ public class DateUtils {
         if (fromDateGreaterThanToDate) {
             log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
+    }
+
+    public static void validateIfStartTimeGreater(Date startTime, Date endTime) {
+
+        boolean isBothTimeEqual = startTime.equals(endTime);
+
+        if (isBothTimeEqual) {
+            log.error(EQUAL_DATE_TIME_MESSAGE);
+            throw new BadRequestException(EQUAL_DATE_TIME_MESSAGE, EQUAL_DATE_TIME_DEBUG_MESSAGE);
+        }
+
+        boolean isStartTimeGreaterThanEndTime = startTime.after(endTime);
+
+        if (isStartTimeGreaterThanEndTime) {
+            log.error(INVALID_DATE_TIME_MESSAGE);
+            throw new BadRequestException(INVALID_DATE_TIME_MESSAGE, INVALID_DATE_TIME_DEBUG_MESSAGE);
         }
     }
 

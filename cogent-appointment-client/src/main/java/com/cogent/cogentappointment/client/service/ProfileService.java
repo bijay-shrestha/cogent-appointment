@@ -31,6 +31,8 @@ public interface ProfileService {
 
     List<DropDownResponseDTO> fetchActiveMinProfile();
 
+    List<DropDownResponseDTO> fetchMinProfile();
+
     Profile findActiveProfileByIdAndHospitalId(Long id, Long hospitalId);
 
     List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId);

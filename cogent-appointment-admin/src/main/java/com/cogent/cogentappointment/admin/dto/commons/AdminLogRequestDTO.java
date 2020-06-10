@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class AdminLogRequestDTO implements Serializable {
 
     @NotNull
-    private Long adminId;
+    private String adminEmail;
 
     @NotNull
     private Long parentId;

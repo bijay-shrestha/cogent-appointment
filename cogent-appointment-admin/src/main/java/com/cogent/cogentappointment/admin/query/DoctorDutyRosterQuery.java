@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
@@ -29,14 +30,20 @@ public class DoctorDutyRosterQuery {
                 " ddr.fromDate as fromDate," +                                          //[4]
                 " ddr.toDate as toDate," +                                              //[5]
                 " ddr.status as status," +                                              //[6]
-                " h.name as hospitalName" +                                             //[7]
+                " h.name as hospitalName," +                                            //[7]
+                " da.fileUri as fileUri"+                                               //[8]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                 " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                 " LEFT JOIN Hospital h ON ddr.hospitalId.id = h.id" +
+                " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                 " WHERE" +
                 " ddr.status !='D'" +
+                " AND d.status = 'Y'" +
                 " AND ddr.toDate >=:fromDate AND ddr.fromDate <=:toDate";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            sql += " AND ddr.status='" + searchRequestDTO.getStatus() + "'";
 
         if (!Objects.isNull(searchRequestDTO.getDoctorId()))
             sql += " AND d.id = " + searchRequestDTO.getDoctorId();
@@ -64,9 +71,12 @@ public class DoctorDutyRosterQuery {
                     " ddr.remarks as remarks," +                                        //[9]
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[10]
                     " h.name as hospitalName," +                                        //[11]
-                    " h.id as hospitalId" +                                              //[12]
+                    " h.id as hospitalId," +                                              //[12]
+                    " dv.fileUri as fileUri,"+
+                    DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
+                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                     " LEFT JOIN Hospital h ON ddr.hospitalId.id = h.id" +
                     " WHERE ddr.status !='D'" +
@@ -146,4 +156,11 @@ public class DoctorDutyRosterQuery {
                     " FROM DoctorDutyRoster dd" +
                     " WHERE dd.status !='D'" +
                     " AND dd.id = :id";
+
+    public static String DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() {
+        return " ddr.createdBy as createdBy," +
+                " ddr.createdDate as createdDate," +
+                " ddr.lastModifiedBy as lastModifiedBy," +
+                " ddr.lastModifiedDate as lastModifiedDate";
+    }
 }

@@ -13,18 +13,18 @@ public class AdminQuery {
     public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber," +                        //[1]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
             " SELECT " +
@@ -40,19 +40,19 @@ public class AdminQuery {
     public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber," +                        //[1]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND a.id !=:id" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
@@ -66,6 +66,7 @@ public class AdminQuery {
     public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
 
         return SELECT_CLAUSE_TO_FETCH_ADMIN +
+
                 " FROM" +
                 " Admin a" +
                 " LEFT JOIN AdminMetaInfo ami ON a.id = ami.admin.id" +
@@ -132,7 +133,8 @@ public class AdminQuery {
                     " p.id as profileId," +                                         //[12]
                     " d.id as departmentId," +                                      //[13]
                     " d.name as departmentName," +                                  //[14]
-                    " h.alias as hospitalAlias"+                                    //[15]
+                    " h.alias as hospitalAlias," +
+                    ADMIN_AUDITABLE_QUERY() +//[15]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
@@ -157,8 +159,9 @@ public class AdminQuery {
                     " FROM AdminMetaInfo ami" +
                     " LEFT JOIN Admin a ON a.id=ami.admin.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " WHERE a.status !='D'" +
-                    " AND p.isCompanyProfile='N'";
+                    " WHERE ami.status !='D'" +
+                    " AND p.isCompanyProfile='N'" +
+                    " ORDER BY metaInfo ASC";
 
     public static String QUERY_TO_FETCH_COMPANY_ADMIN_META_INFO_BY_COMPANY_ID =
             " SELECT" +
@@ -168,8 +171,9 @@ public class AdminQuery {
                     " LEFT JOIN Admin a ON a.id=ami.admin.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE a.status !='D'" +
-                    " AND p.isCompanyProfile='Y'"+
-                    " AND p.company.id =:companyId";
+                    " AND p.isCompanyProfile='Y'" +
+                    " AND p.company.id =:companyId" +
+                    " ORDER BY metaInfo ASC";
 
     public static String QUERY_TO_FETCH_COMPANY_ADMIN_META_INFO_BY_CLIENT_ID =
             " SELECT ami.id as adminMetaInfoId," +                   //[0]
@@ -180,5 +184,13 @@ public class AdminQuery {
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE a.status !='D'" +
-                    " AND h.id=:hospitalId";
+                    " AND h.id=:hospitalId" +
+                    " ORDER BY metaInfo ASC";
+
+    public static String ADMIN_AUDITABLE_QUERY() {
+        return " a.createdBy as createdBy," +
+                " a.createdDate as createdDate," +
+                " a.lastModifiedBy as lastModifiedBy," +
+                " a.lastModifiedDate as lastModifiedDate";
+    }
 }

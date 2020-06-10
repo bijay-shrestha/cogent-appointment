@@ -80,7 +80,8 @@ public class PatientUtils {
     public static void registerPatientDetails(HospitalPatientInfo hospitalPatientInfo,
                                               String latestRegistrationNumber) {
         hospitalPatientInfo.setIsRegistered(YES);
-        hospitalPatientInfo.setRegistrationNumber(generateRegistrationNumber(latestRegistrationNumber));
+        hospitalPatientInfo.setRegistrationNumber(
+                generateRegistrationNumber(latestRegistrationNumber, hospitalPatientInfo.getHospital().getAlias()));
     }
 
     /*REGISTRATION NUMBER IS GENERATED IN FORMAT :
@@ -90,7 +91,7 @@ public class PatientUtils {
      *  NEXT REGISTRATION NUMBER = 2002130002
      *  NOTE THAT REGISTRATION NUMBER IS UNIQUELY GENERATED ONLY ONCE FOR THE PATIENT IN SPECIFIC HOSPITAL
      *  */
-    private static String generateRegistrationNumber(String latestRegistrationNumber) {
+    private static String generateRegistrationNumber(String latestRegistrationNumber, String alias) {
 
         LocalDateTime date = LocalDateTime.now();
 
@@ -107,7 +108,7 @@ public class PatientUtils {
         if (Objects.isNull(latestRegistrationNumber)) {
             registrationNumber = year + month + day + String.format("%04d", 1);
         } else {
-            long l1 = Long.parseLong((latestRegistrationNumber.substring(6)));
+            long l1 = Long.parseLong((latestRegistrationNumber.substring(alias.length()+7)));
 
             String patientCount = (l1 < 9999) ?
                     String.format("%04d", l1 + 1) : String.format("%d", l1 + 1);
@@ -115,7 +116,7 @@ public class PatientUtils {
             registrationNumber = year + month + day + patientCount;
         }
 
-        return registrationNumber;
+        return Objects.isNull(alias) ? registrationNumber : alias + "-" + registrationNumber;
     }
 
     public static void updateOtherPatient(PatientUpdateDTOForOthers requestDTO,
@@ -149,5 +150,18 @@ public class PatientUtils {
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();
+    }
+
+    public static void parseHospitalWisePatientInfo(PatientDetailResponseDTO responseDTO,
+                                                    Object[] result) {
+
+        final int ADDRESS_INDEX = 0;
+        final int EMAIL_INDEX = 1;
+        final int REGISTRATION_NUMBER_INDEX = 2;
+
+        responseDTO.setAddress(Objects.isNull(result[ADDRESS_INDEX]) ? null : result[ADDRESS_INDEX].toString());
+        responseDTO.setEmail(Objects.isNull(result[EMAIL_INDEX]) ? null : result[EMAIL_INDEX].toString());
+        responseDTO.setRegistrationNumber(Objects.isNull(result[REGISTRATION_NUMBER_INDEX])
+                ? null : result[REGISTRATION_NUMBER_INDEX].toString());
     }
 }

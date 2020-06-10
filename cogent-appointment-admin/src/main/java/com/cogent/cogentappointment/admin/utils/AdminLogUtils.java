@@ -16,7 +16,14 @@ public class AdminLogUtils {
     public static AdminLog parseToAdminLog(AdminLogRequestDTO requestDTO, Character status, Admin admin) {
 
         AdminLog adminLog = new AdminLog();
-        adminLog.setAdminId(admin);
+
+        if (admin == null) {
+            adminLog.setAdminId(null);
+            adminLog.setUnknownUser(requestDTO.getAdminEmail());
+        } else {
+            adminLog.setAdminId(admin);
+        }
+
         adminLog.setParentId(requestDTO.getParentId());
         adminLog.setRoleId(requestDTO.getRoleId());
         adminLog.setIpAddress(requestDTO.getIpAddress());

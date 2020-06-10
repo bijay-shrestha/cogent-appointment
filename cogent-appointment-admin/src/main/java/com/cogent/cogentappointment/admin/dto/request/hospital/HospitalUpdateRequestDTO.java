@@ -28,11 +28,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
-    @NotBlank
-    private String hospitalCode;
-
-    @NotNull
-    @NotEmpty
     @SpecialCharacters
     @NotBlank
     private String address;
@@ -64,18 +59,24 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @NotEmpty
     private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 
-    @NotNull
-    @NotEmpty
-    @NotBlank
-    private String alias;
-
     /*Y-> NEW LOGO IS UPDATED
     * N-> LOGO IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE LOGO
     */
+    @NotNull
+    @Status
     private Character isLogoUpdate;
 
     /*Y-> NEW BANNER IS UPDATED
    * N-> BANNER IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE BANNER
    */
     private Character isBannerUpdate;
+
+    /*only updated appointment service type from front-end*/
+    @NotNull
+    private List<HospitalAppointmentServiceTypeUpdateRequestDTO> appointmentServiceTypeUpdateRequestDTO;
+
+    @NotNull
+    private Long primaryAppointmentServiceTypeId;
+
+    private List<HospitalBillingModeUpdateRequestDTO> billingModeIds;
 }

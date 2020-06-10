@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.university;
 
+import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UniversityResponseDTO implements Serializable {
+public class UniversityResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private String name;
 

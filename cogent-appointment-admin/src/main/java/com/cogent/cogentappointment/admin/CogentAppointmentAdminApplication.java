@@ -16,10 +16,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EntityScan(basePackages =
         {"com.cogent.cogentappointment.persistence.model",
-        "com.cogent.cogentappointment.persistence.history"})
+                "com.cogent.cogentappointment.persistence.history"})
 @EnableJpaRepositories
 @PropertySource(
-        factory= YamlPropertySourceFactory.class,
+        factory = YamlPropertySourceFactory.class,
         value =
                 {
                         "file:${catalina.home}/conf/admin/application-${spring.profiles.active}.yml"
@@ -30,7 +30,6 @@ public class CogentAppointmentAdminApplication extends SpringBootServletInitiali
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(CogentAppointmentAdminApplication.class);
     }
-
 
     public static void main(String[] args) {
 

@@ -51,9 +51,6 @@ public class DepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
             whereClause += " AND d.id=" + searchRequestDTO.getId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-            whereClause += " AND d.name LIKE '%" + searchRequestDTO.getName() + "%'";
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentCode()))
             whereClause += " AND d.code LIKE '%" + searchRequestDTO.getDepartmentCode() + "%'";
 
@@ -70,7 +67,8 @@ public class DepartmentQuery {
                     " d.name as name," +                            //[0]
                     " d.code as departmentCode," +                  //[1]
                     " d.status as status," +                        //[2]
-                    " d.remarks as remarks" +                      //[3]
+                    " d.remarks as remarks," +                      //[3]
+                    DEPARTMENT_AUDITABLE_QUERY() +
                     " FROM Department d" +
                     " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.id =:id" +
@@ -95,4 +93,12 @@ public class DepartmentQuery {
                     " WHERE d.status = 'Y'" +
                     " AND d.hospital.id= :hospitalId" +
                     " ORDER BY d.id DESC";
+
+    public static String DEPARTMENT_AUDITABLE_QUERY() {
+        return " d.createdBy as createdBy," +
+                " d.createdDate as createdDate," +
+                " d.lastModifiedBy as lastModifiedBy," +
+                " d.lastModifiedDate as lastModifiedDate";
+    }
+
 }

@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author smriti on 7/21/19
@@ -30,8 +31,7 @@ public interface AdminRepositoryCustom {
 
     Object[] validateAdminCount(Long hospitalId);
 
-    List<Object[]> validateDuplicity(String email, String mobileNumber,
-                                     Long hospitalId);
+    List<Object[]> validateDuplicity(String email, String mobileNumber);
 
     List<Object[]> validateDuplicityForCompanyAdmin(String email, String mobileNumber);
 
@@ -61,5 +61,7 @@ public interface AdminRepositoryCustom {
     CompanyAdminDetailResponseDTO fetchCompanyAdminDetailsById(Long id);
 
     CompanyAdminLoggedInInfoResponseDTO fetchLoggedInCompanyAdminInfo(CompanyAdminInfoRequestDTO requestDTO);
+
+    Admin fetchActiveAdminByEmail(String email);
 }
 

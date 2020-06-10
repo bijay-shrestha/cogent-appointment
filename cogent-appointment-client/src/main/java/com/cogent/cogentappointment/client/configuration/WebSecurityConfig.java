@@ -62,6 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/password/forgot").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/password/verify").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/v1/password").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/login/eSewa").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/test").permitAll()
                 .anyRequest().authenticated();
     }
 

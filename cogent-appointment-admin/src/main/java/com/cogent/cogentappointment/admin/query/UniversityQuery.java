@@ -32,7 +32,7 @@ public class UniversityQuery {
                     " u.address as address," +                                    //[2]
                     " c.id as countryId," +                                        //[3]
                     " c.name as countryName," +                                   //[4]
-                    " c.status as status" +                                       //[5]
+                    " u.status as status" +                                       //[5]
                     " FROM University u " +
                     " LEFT JOIN Country c ON c.id = u.country.id";
 
@@ -56,6 +56,8 @@ public class UniversityQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND u.status='" + searchRequestDTO.getStatus() + "'";
 
+        whereClause += " ORDER BY u.id DESC";
+
         return whereClause;
     }
 
@@ -66,7 +68,8 @@ public class UniversityQuery {
                     " u.status as status," +                                      //[2]
                     " u.remarks as remarks," +                                    //[3]
                     " c.name as countryName," +                                   //[4]
-                    " c.id as countryId" +                                       //[5]
+                    " c.id as countryId," +                                       //[5]
+                    UNIVERSITY_AUDITABLE_QUERY() +
                     " FROM University u " +
                     " LEFT JOIN Country c ON c.id = u.country.id" +
                     " WHERE u.status != 'D'" +
@@ -77,5 +80,13 @@ public class UniversityQuery {
                     " u.id as value," +                 //[0]
                     " u.name as label" +                //[1]
                     " FROM University u" +
-                    " WHERE u.status = 'Y'";
+                    " WHERE u.status = 'Y' " +
+                    " ORDER BY label ASC";
+
+    public static String UNIVERSITY_AUDITABLE_QUERY() {
+        return " u.createdBy as createdBy," +
+                " u.createdDate as createdDate," +
+                " u.lastModifiedBy as lastModifiedBy," +
+                " u.lastModifiedDate as lastModifiedDate";
+    }
 }

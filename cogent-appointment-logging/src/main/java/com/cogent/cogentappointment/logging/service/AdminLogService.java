@@ -14,5 +14,5 @@ public interface AdminLogService {
 
     UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(AdminLogSearchRequestDTO searchRequestDTO);
+    UserMenuStaticsResponseDTO fetchUserMenuLogStaticsForDiagram(AdminLogSearchRequestDTO searchRequestDTO);
 }

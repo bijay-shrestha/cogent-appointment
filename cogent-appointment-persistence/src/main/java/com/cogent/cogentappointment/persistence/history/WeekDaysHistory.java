@@ -32,8 +32,7 @@ public class WeekDaysHistory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "week_days_id",
-            foreignKey = @ForeignKey(name = "FK_week_days_history_week_days"))
+    @JoinColumn(name = "week_days_id")
     private WeekDays weekDays;
 
     @Column(name = "week_days_content")

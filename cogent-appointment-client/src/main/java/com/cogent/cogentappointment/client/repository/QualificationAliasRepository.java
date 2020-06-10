@@ -18,4 +18,7 @@ public interface QualificationAliasRepository extends JpaRepository<Qualificatio
 
     @Query("SELECT q FROM QualificationAlias q WHERE q.status='Y' AND q.id = :id")
     Optional<QualificationAlias> fetchActiveQualificationAliasById(@Param("id") Long id);
+
+    @Query("SELECT q FROM QualificationAlias q WHERE q.status!='D' AND q.id = :id")
+    Optional<QualificationAlias> fetchQualificationAliasById(@Param("id") Long id);
 }

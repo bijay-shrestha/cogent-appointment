@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.query;
 import com.cogent.cogentappointment.admin.dto.request.department.DepartmentSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -40,7 +41,7 @@ public class DepartmentQuery {
                             " CONCAT(h.alias, '-',d.name) as name," +                           //[1]
                             " d.code as departmentCode," +                                      //[2]
                             " d.status as status," +                                           //[3]
-                            " h.name as hospitalName" +                  //[4]
+                            " h.name as hospitalName" +                                        //[4]
                             " FROM Department d" +
                             " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                             GET_WHERE_CLAUSE_FOR_SEARCH(searchRequestDTO));
@@ -49,11 +50,8 @@ public class DepartmentQuery {
 
         String whereClause = " WHERE d.status != 'D'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
+        if (!Objects.isNull(searchRequestDTO.getId()))
             whereClause += " AND d.id=" + searchRequestDTO.getId();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-            whereClause += " AND d.name LIKE '%" + searchRequestDTO.getName() + "%'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentCode()))
             whereClause += " AND d.code LIKE '%" + searchRequestDTO.getDepartmentCode() + "%'";
@@ -61,7 +59,7 @@ public class DepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND d.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
+        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
         whereClause += " ORDER BY d.id DESC";
@@ -77,7 +75,8 @@ public class DepartmentQuery {
                     " d.remarks as remarks," +                      //[3]
                     " h.id as hospitalId," +                        //[4]
                     " h.name as hospitalName," +                     //[5]
-                    " h.alias as hospitalAlias" +                    //[6]
+                    " h.alias as hospitalAlias," +
+                    DEPARTMENT_AUDITABLE_QUERY() +//[6]
                     " FROM Department d" +
                     " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.id =:id" +
@@ -112,4 +111,12 @@ public class DepartmentQuery {
                     " AND h.status = 'Y'" +
                     " AND h.id=:hospitalId" +
                     " ORDER BY label ASC";
+
+    public static String DEPARTMENT_AUDITABLE_QUERY() {
+        return " d.createdBy as createdBy," +
+                " d.createdDate as createdDate," +
+                " d.lastModifiedBy as lastModifiedBy," +
+                " d.lastModifiedDate as lastModifiedDate";
+    }
+
 }

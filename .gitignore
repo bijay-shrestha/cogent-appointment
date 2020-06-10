@@ -4,6 +4,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+
 ### STS ###
 .apt_generated
 .classpath
@@ -40,4 +41,4 @@ build/
 
 /cogent-uploads/**
 
-/src/main/resources/application.yml
+/src/main/resources/application.yml.DS_Store

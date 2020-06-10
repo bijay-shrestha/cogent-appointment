@@ -1,10 +1,13 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.request.login.LoginEsewaRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
+import com.cogent.cogentappointment.client.exception.UnauthorisedException;
 import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.HMACUtils;
 import com.cogent.cogentappointment.client.service.AuthenticateService;
+import com.cogent.cogentappointment.persistence.model.Admin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,14 +37,19 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public String loginUser(LoginRequestDTO requestDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
+        } catch (Exception e) {
+            throw new UnauthorisedException(Admin.class, "Invalid Username or Password");
+        }
         return hmacUtils.getHash(authentication);
     }
 
     @Override
-    public String loginThirdParty(LoginRequestDTO requestDTO) {
-        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(null);
+    public String loginThirdParty(LoginEsewaRequestDTO requestDTO) {
+        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(requestDTO.getCompanyCode());
 
         return hmacUtils.getAuthTokenForEsewa(thirdPartyDetail);
     }

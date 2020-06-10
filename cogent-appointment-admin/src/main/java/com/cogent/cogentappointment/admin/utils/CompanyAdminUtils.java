@@ -12,20 +12,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_ADMIN_VERIFICATION;
-import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_EMAIL_VERIFICATION;
-import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_UPDATE_ADMIN;
-import static com.cogent.cogentappointment.admin.constants.EmailTemplates.ADMIN_VERIFICATION;
-import static com.cogent.cogentappointment.admin.constants.EmailTemplates.EMAIL_VERIFICATION;
-import static com.cogent.cogentappointment.admin.constants.EmailTemplates.UPDATE_ADMIN;
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
@@ -42,14 +34,11 @@ public class CompanyAdminUtils {
         admin.setFullName(convertToNormalCase(requestDTO.getFullName()));
         admin.setEmail(requestDTO.getEmail());
         admin.setMobileNumber(requestDTO.getMobileNumber());
-        admin.setStatus(requestDTO.getStatus());
+        admin.setStatus(INACTIVE);
         admin.setHasMacBinding(requestDTO.getHasMacBinding());
-        admin.setIsAccountActivated(NO);
-
         parseCompanyAdminDetails(gender, profile, admin);
         return admin;
     }
-
 
     public static void convertCompanyAdminUpdateRequestDTOToAdmin(Admin admin,
                                                                   CompanyAdminUpdateRequestDTO updateRequestDTO,
@@ -137,8 +126,8 @@ public class CompanyAdminUtils {
     }
 
     public static EmailRequestDTO convertCompanyAdminRequestToEmailRequestDTO(CompanyAdminRequestDTO adminRequestDTO,
-                                                                       Admin admin,
-                                                                       String confirmationToken) {
+                                                                              Admin admin,
+                                                                              String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
@@ -154,12 +143,12 @@ public class CompanyAdminUtils {
     }
 
     public static EmailRequestDTO convertCompanyAdminUpdateRequestToEmailRequestDTO(CompanyAdminUpdateRequestDTO adminRequestDTO,
-                                                                             String confirmationToken) {
+                                                                                    String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
 
-        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email"  + "?token =" + confirmationToken;
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email" + "?token =" + confirmationToken;
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(adminRequestDTO.getEmail())

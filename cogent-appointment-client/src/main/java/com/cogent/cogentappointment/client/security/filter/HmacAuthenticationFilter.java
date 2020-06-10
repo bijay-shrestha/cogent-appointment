@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
 import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.client.security.hmac.HMACBuilder;
+import com.cogent.cogentappointment.client.security.hmac.HMACBuilderEsewa;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -70,7 +71,8 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                 signatureBuilder = null;
             }
 
-            compareSignature(signatureBuilder, authHeader.getDigest());
+            compareSignature(signatureBuilder, authHeader.getDigest()); if (!signatureBuilder.isHashEquals(authHeader.getDigest()))
+                throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
 
             SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(authHeader.getEmail(),
                     adminMinDetails.getHospitalId()));
@@ -82,16 +84,18 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                     eSewaAuthHeader.getHospitalCode(),
                     eSewaAuthHeader.getApiKey());
 
-            final HMACBuilder signatureBuilder = new HMACBuilder()
+            final HMACBuilderEsewa signatureBuilder = new HMACBuilderEsewa()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
                     .nonce(eSewaAuthHeader.getNonce())
                     .hospitalCode(eSewaAuthHeader.getHospitalCode())
                     .apiKey(eSewaAuthHeader.getApiKey())
                     .apiSecret(thirdPartyDetail.getApiSecret());
 
-            compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
+            if (!signatureBuilder.isHashEquals(eSewaAuthHeader.getDigest()))
+                throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode()));
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode(),
+                    thirdPartyDetail.getHospitalCode()));
         }
 
         try {
@@ -149,9 +153,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthentication(String email) {
+    public PreAuthenticatedAuthenticationToken getAuthentication(String username, String hospitalCode) {
         return new PreAuthenticatedAuthenticationToken(
-                email,
+                username,
+                hospitalCode,
                 null);
     }
 

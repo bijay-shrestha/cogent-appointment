@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.logging.service.impl;
 import com.cogent.cogentappointment.logging.dto.request.client.ClientLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
+import com.cogent.cogentappointment.logging.repository.AdminRepository;
 import com.cogent.cogentappointment.logging.repository.ClientLogRepository;
 import com.cogent.cogentappointment.logging.service.ClientLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +25,16 @@ import static com.cogent.cogentappointment.logging.utils.common.DateUtils.getTim
 public class ClientLogServiceImpl implements ClientLogService {
 
     private final ClientLogRepository clientLogRepository;
+    private final AdminRepository adminRepository;
 
-    public ClientLogServiceImpl(ClientLogRepository clientLogRepository) {
+    public ClientLogServiceImpl(ClientLogRepository clientLogRepository, AdminRepository adminRepository) {
         this.clientLogRepository = clientLogRepository;
+        this.adminRepository = adminRepository;
     }
 
     @Override
     public UserMenuLogResponseDTO searchByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(USER_MENU_LOG_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
@@ -43,12 +47,12 @@ public class ClientLogServiceImpl implements ClientLogService {
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogStaticsByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsByClientId(searchRequestDTO, pageable);
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogStaticsByClientId(searchRequestDTO, pageable);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -89,7 +93,8 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO);
+
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogStaticsForDiagram(searchRequestDTO);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -102,7 +107,7 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsforDiagramByClientId(searchRequestDTO);
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogStaticsForDiagramByClientId(searchRequestDTO);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 

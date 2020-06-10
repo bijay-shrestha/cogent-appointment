@@ -11,6 +11,14 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/*WHEN ADMIN IS FIRST CREATED, ITS STATUS INITIALLY IS INACTIVE.
+ WHEN HE/SHE SAVES PASSWORD EITHER THROUGH EMAIL VERIFICATION
+  OR SOMEONE ELSE RESET ITS PASSWORD, ONLY THEN ADMIN WILL BE ACTIVE.
+ INACTIVE ADMINS CANNOT USE FORGOT PASSWORD FEATURE AND LOGIN INTO APPLICATION.
+
+ WHEN INACTIVE ADMIN IS UPDATED (MAINLY IF STATUS IS SET AS ACTIVE),
+ FIRST CHECK IF THAT ADMIN IS ACTIVATED (MEANING IT HAS SAVED ITS PASSWORD)
+  */
 @Table(name = "admin")
 @Entity
 @NoArgsConstructor
@@ -35,17 +43,14 @@ public class Admin extends Auditable<String> implements Serializable {
     @Column(name = "mobile_number")
     private String mobileNumber;
 
+    /*INITIALLY, AFTER SAVING ADMIN, THIS FLAG IS 'N'
+    * AND AFTER IT ACTIVATES ACCOUNT (SAVES PASSWORD FROM CONFIRMATION URL, THIS FLAG IS SET AS 'Y').
+    *
+    * SUPPOSE ADMIN IS CREATED SUCCESSFULLY BUT IT HAS NOT SAVED ITS PASSWORD,
+    * BUT ATTEMPTS TO UPDATE PASSWORD USING 'FORGOT PASSWORD' FEATURE. TO AVOID THIS, THIS FLAG IS MAINTAINED.
+    * */
     @Column(name = "status")
     private Character status;
-
-    /*INITIALLY, AFTER SAVING ADMIN, THIS FLAG IS 'N'
-     * AND AFTER IT ACTIVATES ACCOUNT (SAVES PASSWORD FROM CONFIRMATION URL, THIS FLAG IS SET AS 'Y').
-     *
-     * SUPPOSE ADMIN IS CREATED SUCCESSFULLY BUT IT HAS NOT SAVED ITS PASSWORD,
-     * BUT ATTEMPTS TO UPDATE PASSWORD USING 'FORGOT PASSWORD' FEATURE. TO AVOID THIS, THIS FLAG IS MAINTAINED.
-     * */
-    @Column(name = "is_account_activated")
-    private Character isAccountActivated;
 
     @Column(name = "has_mac_binding")
     private Character hasMacBinding;
@@ -70,7 +75,6 @@ public class Admin extends Auditable<String> implements Serializable {
                 ", email='" + email + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", status=" + status +
-                ", isAccountActivated=" + isAccountActivated +
                 ", hasMacBinding=" + hasMacBinding +
                 ", gender=" + gender +
                 ", remarks='" + remarks + '\'' +

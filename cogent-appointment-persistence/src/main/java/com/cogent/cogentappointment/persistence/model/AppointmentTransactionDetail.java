@@ -13,12 +13,11 @@ import java.util.Date;
 
 /**
  * @author smriti ON 04/02/2020
- *
+ * <p>
  * ALL THE TRANSACTION INFO ARE SAVED HERE.
  * taxAmount, discountAmount, serviceChargeAmount IS ZERO AND NOT CONSIDERED AS OF NOW
- *
+ * <p>
  * RELATION BETWEEN APPOINTMENT + TRANSACTION DETAILS + TRANSACTION STATUS
- *
  */
 @Entity
 @Table(name = "appointment_transaction_detail")
@@ -37,10 +36,13 @@ public class AppointmentTransactionDetail extends Auditable<String> implements S
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    //TODO : REMOVE UNNECESSARY PARAMETERS FROM HERE SINCE IT IS SAVED NOW IN AppointmentTransactionRequestLog
     @Temporal(TemporalType.DATE)
     @Column(name = "transaction_date")
     private Date transactionDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "transaction_date_time")
+    private Date transactionDateTime;
 
     @Column(name = "transaction_number")
     private String transactionNumber;
@@ -57,6 +59,7 @@ public class AppointmentTransactionDetail extends Auditable<String> implements S
     @Column(name = "service_charge_amount")
     private Double serviceChargeAmount;
 
+    //TODO : REMOVE THIS AppointmentTransactionRequestLog(BY Bijay Shrestha)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_transaction_request_log_id")
     private AppointmentTransactionRequestLog appointmentTransactionRequestLog;
@@ -67,6 +70,7 @@ public class AppointmentTransactionDetail extends Auditable<String> implements S
                 "id=" + id +
                 ", appointment=" + appointment.getAppointmentNumber() +
                 ", transactionDate=" + transactionDate +
+                ", transactionDateTime =" + transactionDateTime +
                 ", transactionNumber='" + transactionNumber + '\'' +
                 ", appointmentAmount=" + appointmentAmount +
                 ", taxAmount=" + taxAmount +

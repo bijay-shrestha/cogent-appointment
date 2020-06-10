@@ -26,14 +26,12 @@ public class RequestData {
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
-        }
 
-        ip = request.getRemoteAddr();
-
-        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            String ipAddress = inetAddress.getHostAddress();
-            ip = ipAddress;
+            if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                String ipAddress = inetAddress.getHostAddress();
+                ip = ipAddress;
+            }
         }
 
 
@@ -60,13 +58,11 @@ public class RequestData {
     }
 
     public static String getClientBrowser(HttpServletRequest request) {
-        String browserDetails = getUserAgent(request);
 
+        String browserDetails = getUserAgent(request);
         String user = browserDetails.toLowerCase();
 
         String browser = "";
-
-        //===============Browser===========================
         if (user.contains("msie")) {
             String substring = browserDetails.substring(browserDetails.indexOf("MSIE")).split(";")[0];
             browser = substring.split(" ")[0].replace("MSIE", "IE") + "-" + substring.split(" ")[1];
@@ -86,13 +82,29 @@ public class RequestData {
                         "-")).replace(
                         "OPR", "Opera");
 
+        } else if (user.contains("chromium")) {
+            browser = (browserDetails.substring(browserDetails.indexOf("Chromium")).split(" ")[0]).replace("/", "-");
+
+        } else if (user.contains("edg") || user.contains("edge")) {
+
+            if (user.contains("edge"))
+                browser = (browserDetails.substring(browserDetails.indexOf("Edge")).split(" ")[0]).split(
+                        "/")[0] + "-" + (browserDetails.substring(
+                        browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
+            else if (user.contains("edg"))
+                browser = ((browserDetails.substring(browserDetails.indexOf("Edg")).split(" ")[0]).replace("/",
+                        "-")).replace(
+                        "Edg", "Edge");
+
+        } else if (user.contains("UCBrowser")) {
+            browser = (browserDetails.substring(browserDetails.indexOf("UCBrowser")).split(" ")[0]).replace("/", "-");
+
         } else if (user.contains("chrome")) {
             browser = (browserDetails.substring(browserDetails.indexOf("Chrome")).split(" ")[0]).replace("/", "-");
 
         } else if ((user.indexOf("mozilla/7.0") > -1) || (user.indexOf("netscape6") != -1) || (user.indexOf(
                 "mozilla/4.7") != -1) || (user.indexOf("mozilla/4.78") != -1) || (user.indexOf(
                 "mozilla/4.08") != -1) || (user.indexOf("mozilla/3") != -1)) {
-            //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             browser = "Netscape-?";
 
         } else if (user.contains("firefox")) {
@@ -102,10 +114,11 @@ public class RequestData {
             browser = "IE";
 
         } else {
-            browser = "UnKnown, More-Info: " + browserDetails;
+            browser = "N/A";
         }
 
         return browser;
     }
+
 
 }

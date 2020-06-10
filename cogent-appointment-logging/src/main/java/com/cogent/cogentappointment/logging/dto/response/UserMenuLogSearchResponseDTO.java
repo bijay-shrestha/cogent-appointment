@@ -2,9 +2,12 @@ package com.cogent.cogentappointment.logging.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.data.jpa.repository.Temporal;
 
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Rupak
@@ -16,7 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserMenuLogSearchResponseDTO implements Serializable {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY",timezone = "Asia/Kathmandu")
     private Date logDate;
 
     private String logTime;

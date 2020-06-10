@@ -20,12 +20,12 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.logging.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.logging.constants.QueryConstants.FROM_DATE;
+import static com.cogent.cogentappointment.logging.constants.QueryConstants.TO_DATE;
 import static com.cogent.cogentappointment.logging.query.ClientLogQuery.*;
 import static com.cogent.cogentappointment.logging.utils.common.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.logging.utils.common.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.logging.utils.common.QueryUtils.transformQueryToResultList;
-import static com.cogent.cogentappointment.logging.utils.common.SecurityContextUtils.getLoggedInCompanyId;
 
 /**
  * @author Rupak
@@ -42,8 +42,7 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     public UserMenuLogResponseDTO searchByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_CLIENT_LOGS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getClientId());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
         int totalItems = query.getResultList().size();
 
@@ -65,11 +64,10 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogStaticsByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getClientId());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
         int totalItems = query.getResultList().size();
 
@@ -95,11 +93,9 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     @Override
     public UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-        Long hospitalId = getLoggedInCompanyId();
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_CLIENT_LOGS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
         int totalItems = query.getResultList().size();
 
@@ -121,12 +117,12 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogStaticsForDiagram(ClientLogSearchRequestDTO searchRequestDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getClientId());
+                .setMaxResults(10);
 
         int totalItems = query.getResultList().size();
 
@@ -148,39 +144,10 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO) {
-
-        Long hospitalId = getLoggedInCompanyId();
+    public UserMenuStaticsResponseDTO fetchUserMenuLogStaticsForDiagramByClientId(ClientLogSearchRequestDTO searchRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        int totalItems = query.getResultList().size();
-
-        List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
-
-        if (ObjectUtils.isEmpty(result)) {
-            //            error()//Error not integrated...
-            throw NO_CLIENT_LOGS_FOUND.get();
-        } else {
-
-            Long totalCount = result.stream().mapToLong(AdminLogStaticsResponseDTO::getCount).sum();
-
-            UserMenuStaticsResponseDTO userMenuStaticsResponseDTO = new UserMenuStaticsResponseDTO();
-            userMenuStaticsResponseDTO.setUserMenuCountList(result);
-            userMenuStaticsResponseDTO.setTotalCount(totalCount);
-            userMenuStaticsResponseDTO.setTotalItems(totalItems);
-            return userMenuStaticsResponseDTO;
-        }
-    }
-
-    @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagramByClientId(ClientLogSearchRequestDTO searchRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
-                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getClientId())
                 .setMaxResults(10);
 
         int totalItems = query.getResultList().size();
@@ -205,11 +172,9 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     @Override
     public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-        Long hospitalId = getLoggedInCompanyId();
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
         int totalItems = query.getResultList().size();
 

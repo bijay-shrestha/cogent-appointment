@@ -17,7 +17,7 @@ public class AppointmentRefundDTO implements Serializable {
 
     private Long appointmentId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
     private String appointmentTime;
@@ -34,6 +34,8 @@ public class AppointmentRefundDTO implements Serializable {
 
     private String doctorName;
 
+    private String fileUri;
+
     private String specializationName;
 
     private String eSewaId;
@@ -47,4 +49,6 @@ public class AppointmentRefundDTO implements Serializable {
     private Double refundAmount;
 
     private String appointmentMode;
+
+    private Character isRegistered;
 }

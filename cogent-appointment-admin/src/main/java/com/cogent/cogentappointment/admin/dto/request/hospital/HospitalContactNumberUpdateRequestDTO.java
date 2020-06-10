@@ -16,7 +16,6 @@ import java.io.Serializable;
 @Setter
 public class HospitalContactNumberUpdateRequestDTO implements Serializable {
 
-    @NotNull
     private Long hospitalContactNumberId;
 
     @NotNull

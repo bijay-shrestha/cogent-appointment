@@ -105,7 +105,6 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 
         if (result.isEmpty()) {
-//            error();
             throw NO_USER_STATICS_FOUND.get();
         } else {
 
@@ -120,7 +119,7 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(AdminLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogStaticsForDiagram(AdminLogSearchRequestDTO searchRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())

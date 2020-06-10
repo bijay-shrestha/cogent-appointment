@@ -24,7 +24,6 @@ import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.Dash
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorRevenueUtils.convertToDoctorRevenueRequestDTO;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertStringToDate;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -105,10 +104,6 @@ public class DashboardResource {
 
     @GetMapping(DOCTOR_REVENUE)
     @ApiOperation(DOCTOR_REVENUE_OPERATION)
-//    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
-//            paramType = "query"),
-//            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
-//                    paramType = "query")})
     public ResponseEntity<?> getDoctorRevenueList(@RequestParam("toDate") String toDate,
                                                   @RequestParam("fromDate") String fromDate,
                                                   @RequestParam("doctorId") Long doctorId,
@@ -117,16 +112,10 @@ public class DashboardResource {
                                                   @RequestParam("page") int page,
                                                   @RequestParam("size") int size) throws ParseException {
 
-//    public ResponseEntity<?> getDoctorRevenueList(@RequestParam("request") String request,
-//                                                  @RequestParam("page") int page,
-//                                                  @RequestParam("size") int size) throws ParseException, IOException {
-//
-//        DoctorRevenueRequestDTO requestDTO = ObjectMapperUtils.map(request, DoctorRevenueRequestDTO.class);
-
         DoctorRevenueRequestDTO doctorRevenueRequestDTO =
-                convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId);
+                convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId, fromDate, toDate);
 
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate), convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
+        return ok(dashboardService.calculateOverallDoctorRevenue(doctorRevenueRequestDTO, pageable));
     }
 }

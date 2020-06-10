@@ -20,5 +20,5 @@ public interface AdminLogRepositoryCustom {
 
     UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO);
 
-    UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(AdminLogSearchRequestDTO searchRequestDTO);
+    UserMenuStaticsResponseDTO fetchUserMenuLogStaticsForDiagram(AdminLogSearchRequestDTO searchRequestDTO);
 }

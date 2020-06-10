@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
@@ -21,7 +21,6 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Das
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DashboardConstants.*;
 import static com.cogent.cogentappointment.client.utils.DoctorRevenueUtils.convertToDoctorRevenueRequestDTO;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convertStringToDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -93,10 +92,6 @@ public class DashboardResource {
 
     @GetMapping(DOCTOR_REVENUE)
     @ApiOperation(DOCTOR_REVENUE_OPERATION)
-//    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
-//            paramType = "query"),
-//            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
-//                    paramType = "query")})
     public ResponseEntity<?> getDoctorRevenueList(@RequestParam("toDate") String toDate,
                                                   @RequestParam("fromDate") String fromDate,
                                                   @RequestParam("doctorId") Long doctorId,
@@ -104,9 +99,10 @@ public class DashboardResource {
                                                   @RequestParam("page") int page,
                                                   @RequestParam("size") int size) throws ParseException {
 
-        DoctorRevenueRequestDTO doctorRevenueRequestDTO = convertToDoctorRevenueRequestDTO(doctorId, getLoggedInHospitalId(), specializationId);
+        DoctorRevenueRequestDTO doctorRevenueRequestDTO =
+                convertToDoctorRevenueRequestDTO(doctorId, getLoggedInHospitalId(), specializationId, fromDate, toDate);
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate), convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
+        return ok(dashboardService.calculateOverallDoctorRevenue(doctorRevenueRequestDTO, pageable));
     }
 
     @PutMapping(DYNAMIC_DASHBOARD_FEATURE + ADMIN_ID_PATH_VARIABLE_BASE)

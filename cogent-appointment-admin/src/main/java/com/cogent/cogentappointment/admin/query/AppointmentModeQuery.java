@@ -11,19 +11,21 @@ import java.util.function.Function;
 public class AppointmentModeQuery {
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
-            " SELECT COUNT(am.id)" +
+            " SELECT am.name," +
+                    " am.code" +
                     " FROM AppointmentMode am" +
                     " WHERE" +
                     " am.status !='D'" +
-                    " AND am.name=:name";
+                    " AND (am.name=:name OR am.code=:code)";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
-            " SELECT COUNT(am.id)" +
-                    " FROM AppointmentMode am" +
+            " SELECT am.name," +
+                    " am.code" +
+                    " FROM  AppointmentMode am" +
                     " WHERE" +
-                    " am.status!='D'" +
+                    " am.status !='D'" +
                     " AND am.id!=:id" +
-                    " AND am.name=:name";
+                    " AND (am.name=:name OR am.code=:code)";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_APPOINTMENT_MODE =
             "SELECT am.id as id," +
@@ -36,10 +38,10 @@ public class AppointmentModeQuery {
     public static Function<AppointmentModeSearchRequestDTO, String> QUERY_TO_SEARCH_APPOINTMENT_MODE =
             (searchRequestDTO -> (
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_APPOINTMENT_MODE +
-                            GET_WHERE_CLAUSE_FOR_SEARCHING_UNIVERSITY(searchRequestDTO)
+                            GET_WHERE_CLAUSE_FOR_SEARCHING_APPOINTMENT_MODE(searchRequestDTO)
             ));
 
-    private static String GET_WHERE_CLAUSE_FOR_SEARCHING_UNIVERSITY
+    private static String GET_WHERE_CLAUSE_FOR_SEARCHING_APPOINTMENT_MODE
             (AppointmentModeSearchRequestDTO searchRequestDTO) {
 
         String whereClause = " WHERE am.status!='D'";
@@ -63,9 +65,9 @@ public class AppointmentModeQuery {
                     " am.status as status," +
                     " am.remarks as remarks," +
                     " am.description as description," +
-                    " DATE_FORMAT(am.created_date,'%Y-%m-%d') as createdDate," +
+                    " DATE_FORMAT(am.created_date,'%d %M, %Y, %h:%i %p') as createdDate," +
                     " am.created_by as createdBy," +
-                    " DATE_FORMAT(am.last_modified_date,'%Y-%m-%d') as modifiedDate," +
+                    " DATE_FORMAT(am.last_modified_date,'%d %M, %Y, %h:%i %p') as modifiedDate," +
                     " am.last_modified_by as modifiedBy" +
                     " FROM appointment_mode am " +
                     " WHERE am.status != 'D'" +

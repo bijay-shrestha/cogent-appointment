@@ -29,4 +29,19 @@ public class DashboardFeatureUtils {
         return adminDashboardFeatureList;
     }
 
+    public static List<AdminDashboardFeature> parseToUpdateAdminDashboardFeature(List<DashboardFeature> dashboardFeatureList,Character status,
+                                                                           Admin admin) {
+
+        List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
+        dashboardFeatureList.forEach(dashboardFeature -> {
+            AdminDashboardFeature adminDashboardFeature = new AdminDashboardFeature();
+            adminDashboardFeature.setAdminId(admin);
+            adminDashboardFeature.setDashboardFeatureId(dashboardFeature);
+            adminDashboardFeature.setStatus(status);
+            adminDashboardFeatureList.add(adminDashboardFeature);
+        });
+
+        return adminDashboardFeatureList;
+    }
+
 }

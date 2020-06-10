@@ -15,8 +15,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class AppointmentLogSearchDTO implements Serializable {
 
-    private String status;
-
     private Date fromDate;
 
     private Date toDate;
@@ -37,13 +35,5 @@ public class AppointmentLogSearchDTO implements Serializable {
     /*SELF OR OTHERS*/
     private Character appointmentCategory;
 
-    private String patientAddress;
-
-    private String transactionNumber;
-
-    private Date transactionToDate;
-
-    private Date transactionFromDate;
-
-    private Date transactionDate;
+    private String status;
 }

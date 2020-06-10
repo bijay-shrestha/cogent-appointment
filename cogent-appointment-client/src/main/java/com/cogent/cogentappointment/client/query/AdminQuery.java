@@ -25,35 +25,35 @@ public class AdminQuery {
     public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber," +                        //[1]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                         //[1]
+                    " a.mobileNumber," +                         //[1]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND a.id !=:id" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
@@ -65,7 +65,8 @@ public class AdminQuery {
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE a.status ='Y'" +
-                    " AND h.id=:hospitalId";
+                    " AND h.id=:hospitalId" +
+                    " ORDER BY label ASC";
 
     public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
 
@@ -132,7 +133,8 @@ public class AdminQuery {
                     " a.remarks as remarks," +                                      //[11]
                     " p.id as profileId," +                                         //[12]
                     " d.id as departmentId," +                                      //[13]
-                    " d.name as departmentName" +                                   //[14]
+                    " d.name as departmentName," +                                   //[14]
+                    ADMIN_AUDITABLE_QUERY() +
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
@@ -157,7 +159,9 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " (a.email =:email)" +
-                    " AND a.status != 'D'";
+                    " AND a.status != 'D'" +
+                    " AND h.isCompany='N'" +
+                    " AND h.status='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
@@ -174,15 +178,18 @@ public class AdminQuery {
                     " d.name as departmentName," +
                     " h.name as hospitalName," +                                           //[6]
                     " p.isAllRoleAssigned as isAllRoleAssigned," +                         //[7]
-                    " af.isSideBarCollapse as isSideBarCollapse" +                         //[8]
+                    " af.isSideBarCollapse as isSideBarCollapse," +                         //[8]
+                    " hl.fileUri as hospitalLogo"+
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN HospitalLogo hl ON hl.hospital.id=h.id" +
                     " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
+                    " AND hl.status='Y'"+
                     " AND a.status='Y'" +
                     " AND h.id=:hospitalId";
 
@@ -194,8 +201,9 @@ public class AdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                    " WHERE a.status !='D'" +
-                    " AND h.id=:hospitalId";
+                    " WHERE ami.status !='D'" +
+                    " AND h.id=:hospitalId" +
+                    " ORDER BY metaInfo ASC";
 
     public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
             "SELECT" +
@@ -216,7 +224,15 @@ public class AdminQuery {
                     " WHERE" +
                     " (a.mobileNumber=:email OR a.email=:email)" +
                     " AND a.status = 'Y'" +
-                    " AND h.isCompany='N'";
+                    " AND h.isCompany='N'" +
+                    " AND h.status='Y'";
+
+    public static String ADMIN_AUDITABLE_QUERY() {
+        return " a.createdBy as createdBy," +
+                " a.createdDate as createdDate," +
+                " a.lastModifiedBy as lastModifiedBy," +
+                " a.lastModifiedDate as lastModifiedDate";
+    }
 
 
 }

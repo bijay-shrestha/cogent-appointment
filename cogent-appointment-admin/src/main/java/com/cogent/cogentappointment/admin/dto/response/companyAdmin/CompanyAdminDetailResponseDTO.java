@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.response.companyAdmin;
 
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminMacAddressInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyAdminDetailResponseDTO implements Serializable {
+public class CompanyAdminDetailResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private Long id;
 

@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
@@ -35,9 +36,8 @@ public class AdminUtils {
         admin.setFullName(convertToNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
-        admin.setStatus(adminRequestDTO.getStatus());
+        admin.setStatus(INACTIVE);
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setIsAccountActivated(NO);
 
         parseAdminDetails(gender, profile, admin);
         return admin;
@@ -78,13 +78,23 @@ public class AdminUtils {
     public static AdminMetaInfo parseInAdminMetaInfo(Admin admin) {
         AdminMetaInfo adminMetaInfo = new AdminMetaInfo();
         adminMetaInfo.setAdmin(admin);
-        parseMetaInfo(admin, adminMetaInfo);
+        adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getEmail() + OR + admin.getMobileNumber());
+        adminMetaInfo.setStatus(admin.getStatus());
         return adminMetaInfo;
     }
 
-    public static AdminMetaInfo parseMetaInfo(Admin admin,
-                                              AdminMetaInfo adminMetaInfo) {
+    public static AdminMetaInfo parseMetaInfo(Admin admin, AdminMetaInfo adminMetaInfo) {
         adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getEmail() + OR + admin.getMobileNumber());
+        adminMetaInfo.setStatus(admin.getStatus());
+        adminMetaInfo.setRemarks(admin.getRemarks());
+
+        return adminMetaInfo;
+    }
+
+    public static AdminMetaInfo deleteMetaInfo(AdminMetaInfo adminMetaInfo, DeleteRequestDTO requestDTO) {
+        adminMetaInfo.setStatus(requestDTO.getStatus());
+        adminMetaInfo.setRemarks(requestDTO.getRemarks());
+
         return adminMetaInfo;
     }
 
@@ -145,15 +155,17 @@ public class AdminUtils {
         adminAvatar.setStatus(ACTIVE);
     }
 
-    public static void convertAdminToDeleted(Admin admin, DeleteRequestDTO deleteRequestDTO) {
+    public static Admin convertAdminToDeleted(Admin admin, DeleteRequestDTO deleteRequestDTO) {
         admin.setStatus(deleteRequestDTO.getStatus());
         admin.setRemarks(deleteRequestDTO.getRemarks());
+
+        return admin;
     }
 
     public static Admin updateAdminPassword(String password, String remarks, Admin admin) {
         admin.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         admin.setRemarks(remarks);
-
+        admin.setStatus(ACTIVE);
         return admin;
     }
 
@@ -241,10 +253,10 @@ public class AdminUtils {
     }
 
     public static Admin saveAdminPassword(AdminPasswordRequestDTO requestDTO,
-                                          AdminConfirmationToken confirmationToken) {
-        Admin admin = confirmationToken.getAdmin();
+                                          Admin admin) {
+
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
-        admin.setIsAccountActivated(YES);
+        admin.setStatus(ACTIVE);
         return admin;
     }
 

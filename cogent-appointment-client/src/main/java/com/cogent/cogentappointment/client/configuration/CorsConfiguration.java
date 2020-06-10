@@ -27,7 +27,22 @@ public class CorsConfiguration {
         corsConfig.addAllowedMethod("DELETE");
         corsConfig.addAllowedMethod("PATCH");
 
-        corsConfig.setAllowedHeaders(ImmutableList.of("Access-Control-Allow-Origin", "Authorization", "Cache-Control", "Content-Type", "Set-Cookie", "XSRF-TOKEN", "x-xsrf-token", "log-header", "X-FORWARDED-FOR"));
+        corsConfig.setAllowedHeaders(ImmutableList.of(
+                "Access-Control-Allow-Origin",
+                "Authorization",
+                "Cache-Control",
+                "Content-Type",
+                "Set-Cookie",
+                "XSRF-TOKEN",
+                "x-xsrf-token",
+                "log-header",
+                "X-FORWARDED-FOR",
+                "User-Agent",
+                "Proxy-Client-IP",
+                "WL-Proxy-Client-IP",
+                "HTTP_CLIENT_IP",
+                "HTTP_X_FORWARDED_FOR"
+        ));
 
         // This allow us to expose the headers
         corsConfig.setExposedHeaders(

@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentTransactionRequestDTO;
-import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentTransactionRequestDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
+
+import java.util.Date;
 
 /**
  * @author smriti ON 04/02/2020
@@ -21,6 +23,7 @@ public class AppointmentTransactionDetailUtils {
         transactionDetail.setDiscountAmount(requestDTO.getDiscountAmount());
         transactionDetail.setServiceChargeAmount(requestDTO.getServiceChargeAmount());
         transactionDetail.setTaxAmount(requestDTO.getTaxAmount());
+        transactionDetail.setTransactionDateTime(new Date());
         return transactionDetail;
     }
 }

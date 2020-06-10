@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface HmacApiInfoRepositoryCustom {
     ThirdPartyDetail getDetailForAuthentication(String hospitalCode, String apiKey);
 
-    ThirdPartyDetail getDetailsByHospitalCode(String hospitalCode);
+    ThirdPartyDetail getDetailsByHospitalCode(String companyCode);
 
     AdminMinDetails getAdminDetailForAuthentication(String email,
                                                     String hospitalCode,

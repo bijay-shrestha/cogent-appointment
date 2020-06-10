@@ -11,11 +11,6 @@ import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository
 import com.cogent.cogentappointment.client.service.AppointmentReservationService;
 import com.cogent.cogentappointment.persistence.model.AppointmentReservationLog;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Minutes;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +26,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_P
 import static com.cogent.cogentappointment.client.log.constants.AppointmentReservationLogConstant.APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.client.utils.AppointmentReservationLogUtils.parseToAppointmentReservation;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.validateIfRequestIsBeforeCurrentDateTime;
+import static com.cogent.cogentappointment.client.utils.AppointmentUtils.validateIfRequestedAppointmentTimeIsValid;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
@@ -174,34 +170,6 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
             return doctorDutyRosterRepository.fetchDoctorDutyRosterTime(date, doctorId, specializationId);
 
         return overrideRosters;
-    }
-
-    /*VALIDATE IF REQUESTED APPOINTMENT TIME LIES BETWEEN DOCTOR DUTY ROSTER TIME SCHEDULES
-    * IF IT MATCHES, THEN DO NOTHING
-    * ELSE REQUESTED TIME IS INVALID AND THUS CANNOT TAKE AN APPOINTMENT*/
-    private boolean validateIfRequestedAppointmentTimeIsValid(DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
-                                                              String appointmentTime) {
-
-        final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
-
-        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
-        String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
-
-        DateTime startDateTime = new DateTime(FORMAT.parseDateTime(doctorStartTime));
-
-        do {
-            String date = FORMAT.print(startDateTime);
-
-            final Duration rosterGapDuration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration())
-                    .toStandardDuration();
-
-            if (date.equals(appointmentTime))
-                return true;
-
-            startDateTime = startDateTime.plus(rosterGapDuration);
-        } while (startDateTime.compareTo(FORMAT.parseDateTime(doctorEndTime)) <= 0);
-
-        return false;
     }
 
 

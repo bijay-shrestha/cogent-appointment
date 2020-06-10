@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.*;
@@ -21,14 +22,20 @@ public interface PatientRepositoryCustom {
     /*esewa*/
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
+    PatientDetailResponseDTO searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO);
+
     List<PatientRelationInfoResponseDTO> fetchPatientRelationInfo(PatientMinSearchRequestDTO searchRequestDTO);
+
+    List<PatientRelationInfoResponseDTO> fetchPatientRelationInfoHospitalWise(String name,
+                                                                              String mobileNumber,
+                                                                              Date dateOfBirth,
+                                                                              Long hospitalId);
 
     PatientResponseDTOForOthers fetchMinPatientInfoForOthers(List<PatientRelationInfoResponseDTO> patientRelationInfo,
                                                              Pageable pageable);
 
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
 
-    /*admin*/
     Long validatePatientDuplicity(Long patientId, String name, String mobileNumber, Date dateOfBirth);
 
     PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId);
@@ -45,4 +52,6 @@ public interface PatientRepositoryCustom {
     PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 
     Patient getPatientByHospitalPatientInfoId(Long hospitalPatientInfoId, Long hospitalId);
+
+    List<DropDownResponseDTO> fetchPatientEsewaId(Long hospitalId);
 }

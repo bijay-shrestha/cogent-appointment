@@ -13,11 +13,19 @@ import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdmin
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.FeatureIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
+import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
 import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
@@ -31,16 +39,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
+import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -85,6 +91,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminFeatureService adminFeatureService;
 
+    private final IntegrationRepository integrationRepository;
+    private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
+    private final AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository;
+    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
+    private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
+
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
                                    AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -95,7 +107,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    ProfileService profileService,
                                    DashboardFeatureRepository dashboardFeatureRepository,
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
-                                   AdminFeatureService adminFeatureService) {
+                                   AdminFeatureService adminFeatureService,
+                                   IntegrationRepository integrationRepository,
+                                   IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
+                                   AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository,
+                                   AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
+                                   AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -108,6 +125,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.adminFeatureService = adminFeatureService;
+        this.integrationRepository = integrationRepository;
+        this.requestBodyParametersRepository = requestBodyParametersRepository;
+        this.appointmentModeHospitalInfoRepository = appointmentModeHospitalInfoRepository;
+        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
+        this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
     }
 
     @Override
@@ -119,11 +141,16 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         validateConstraintViolation(validator.validate(adminRequestDTO));
 
-        List<Object[]> admins = adminRepository.validateDuplicityForCompanyAdmin(adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        List<Object[]> admins = adminRepository.validateDuplicityForCompanyAdmin(
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber()
+        );
 
-        validateCompanyAdminDuplicity(admins, adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        validateCompanyAdminDuplicity(admins,
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(),
+                adminRequestDTO.getCompanyId()
+        );
 
         Admin admin = save(adminRequestDTO);
 
@@ -199,7 +226,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
             throw new BadRequestException(INVALID_DELETE_REQUEST);
 
-        convertAdminToDeleted(admin, deleteRequestDTO);
+        deleteAdminMetaInfo(admin, deleteRequestDTO);
+
+        save(convertAdminToDeleted(admin, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -258,10 +287,15 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Admin admin = findById(updateRequestDTO.getId());
 
+        if (Objects.isNull(admin.getPassword()))
+            throw new BadRequestException(BAD_UPDATE_MESSAGE, BAD_UPDATE_DEBUG_MESSAGE);
+
         List<Object[]> admins = adminRepository.validateCompanyAdminDuplicity(updateRequestDTO);
 
-        validateCompanyAdminDuplicity(admins, updateRequestDTO.getEmail(),
-                updateRequestDTO.getMobileNumber());
+        validateCompanyAdminDuplicity(
+                admins, updateRequestDTO.getEmail(),
+                updateRequestDTO.getMobileNumber(),
+                updateRequestDTO.getCompanyId());
 
         emailIsNotUpdated(updateRequestDTO, admin, files);
 
@@ -276,7 +310,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
-            updateCompanyAdmin(updateRequestDTO, ACTIVE, admin);
+            updateCompanyAdmin(updateRequestDTO, updateRequestDTO.getStatus(), admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
                 updateAvatar(admin, files);
@@ -369,7 +403,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
                         .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
 
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
+        save(saveAdminPassword(requestDTO, adminConfirmationToken.getAdmin()));
 
         adminConfirmationToken.setStatus(INACTIVE);
 
@@ -386,10 +420,200 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
+        responseDTO.setApiIntegration(getApiIntegrations());
+
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    private Map<String, List<?>> getApiIntegrations() {
+
+        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList =
+                getAdminModeApiIntegration();
+
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOList =
+                getHospitalApiIntegration();
+
+        Map<String, List<?>> map = new HashMap();
+
+        if (featureIntegrationResponseDTOList.size() != 0 || featureIntegrationResponseDTOList != null) {
+            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTOList);
+        }
+
+        if (clientIntegrationResponseDTOList.size() != 0 || clientIntegrationResponseDTOList != null) {
+            map.put(KEY_ADMIN_INTEGRATION, featureIntegrationResponseDTOList);
+        }
+
+        return map;
+
+
+    }
+
+    private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
+
+        Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.
+                fetchAdminModeIntegrationResponseDTO().stream()
+                .collect(Collectors.groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
+
+        List<AdminModeFeatureIntegrationResponseDTO> adminModeFeatureIntegrationResponseDTOS = new ArrayList<>();
+
+        integrationResponseMap.entrySet().stream().forEach(responseMap -> {
+
+            List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+
+            responseMap.getValue().forEach(responseDTO -> {
+
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                        findAdminModeApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+
+                Map<String, String> queryParametersResponseDTO = integrationRepository.
+                        findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+
+                FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
+                        convertToAdminApiResponseDTO(responseDTO, requestBody, requestHeaderResponseDTO, queryParametersResponseDTO);
+
+                features.add(featureIntegrationResponseDTO);
+
+            });
+
+            AdminModeFeatureIntegrationResponseDTO adminModeFeatureIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
+            adminModeFeatureIntegrationResponseDTO.setFeatures(features);
+            adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(responseMap.getKey());
+
+            adminModeFeatureIntegrationResponseDTOS.add(adminModeFeatureIntegrationResponseDTO);
+
+
+        });
+
+
+        return adminModeFeatureIntegrationResponseDTOS;
+
+    }
+
+    private List<ClientIntegrationResponseDTO> getHospitalApiIntegration() {
+
+        List<ClientFeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
+                fetchClientIntegrationResponseDTO();
+
+        Map<Long, List<ClientFeatureIntegrationResponse>> integrationResponseMap = integrationResponseDTOList.stream()
+                .collect(Collectors.groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
+
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS = new ArrayList<>();
+
+        integrationResponseMap.entrySet().stream().forEach(responseMap -> {
+
+            List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+
+            integrationResponseDTOList.forEach(responseDTO -> {
+
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                        findApiRequestHeadersResponse(responseDTO.getApiIntegrationFormatId());
+
+                Map<String, String> queryParametersResponseDTO = integrationRepository.
+                        findApiQueryParametersResponse(responseDTO.getApiIntegrationFormatId());
+
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+
+                FeatureIntegrationResponseDTO featureIntegrationResponseDTO = convertToClientApiResponseDTO(responseDTO,
+                        requestBody,
+                        requestHeaderResponseDTO,
+                        queryParametersResponseDTO);
+
+
+                features.add(featureIntegrationResponseDTO);
+
+            });
+
+            ClientIntegrationResponseDTO clientIntegrationResponseDTO = new ClientIntegrationResponseDTO();
+            clientIntegrationResponseDTO.setFeatures(features);
+            clientIntegrationResponseDTO.setClientId(responseMap.getKey());
+
+            clientIntegrationResponseDTOS.add(clientIntegrationResponseDTO);
+
+        });
+
+
+        return clientIntegrationResponseDTOS;
+
+    }
+
+    private Object[] getRequestBodyByFeature(Long featureId, String requestMethod) {
+
+        Object[] requestBody = new Object[0];
+        if (requestMethod.equalsIgnoreCase("POST")) {
+            List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.
+                    fetchRequestBodyAttributeByFeatureId(featureId);
+
+            if (responses != null) {
+                requestBody = responses.stream()
+                        .map(request -> request.getName())
+                        .collect(Collectors.toList()).toArray();
+            }
+
+        }
+
+        return requestBody;
+    }
+
+
+    private FeatureIntegrationResponseDTO convertToAdminApiResponseDTO(AdminFeatureIntegrationResponse responseDTO,
+                                                                       Object[] requestBody,
+                                                                       Map<String, String> requestHeaderResponseDTO,
+                                                                       Map<String, String> queryParametersResponseDTO) {
+
+        FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
+                FeatureIntegrationResponseDTO.builder()
+                        .featureCode(responseDTO.getFeatureCode())
+                        .integrationChannelCode(responseDTO.getIntegrationChannelCode())
+                        .build();
+
+        if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+
+            ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+
+            apiInfoResponseDTO.setUrl(responseDTO.getUrl());
+            apiInfoResponseDTO.setRequestBody(requestBody);
+            apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+            apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+            apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+            featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+        }
+
+
+        return featureIntegrationResponseDTO;
+
+    }
+
+    private FeatureIntegrationResponseDTO convertToClientApiResponseDTO(ClientFeatureIntegrationResponse responseDTO,
+                                                                        Object[] requestBody,
+                                                                        Map<String, String> requestHeaderResponseDTO,
+                                                                        Map<String, String> queryParametersResponseDTO) {
+
+        FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
+        featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
+        featureIntegrationResponseDTO.setIntegrationChannelCode(responseDTO.getIntegrationChannelCode());
+
+        if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+            ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+            apiInfoResponseDTO.setUrl(responseDTO.getUrl());
+            apiInfoResponseDTO.setRequestBody(requestBody);
+            apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+            apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+            apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+            featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+        }
+
+
+        return featureIntegrationResponseDTO;
+
     }
 
     @Override
@@ -443,7 +667,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.
+                    findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
 
             if (adminDashboardFeature == null) {
                 saveAdminDashboardFeature(result.getId(), admin);
@@ -478,39 +703,34 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private void validateCompanyAdminDuplicity(List<Object[]> adminList, String requestEmail,
-                                               String requestMobileNumber) {
+                                               String requestMobileNumber, Long requestedCompanyId) {
 
         final int EMAIL = 0;
         final int MOBILE_NUMBER = 1;
+        final int COMPANY_ID = 2;
 
         adminList.forEach(admin -> {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
+            Long companyId = (Long) get(admin, COMPANY_ID);
 
-            if (isEmailExists && isMobileNumberExists) {
-                log.error(ADMIN_DUPLICATION_MESSAGE);
-                throw ADMIN_DUPLICATION.get();
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED COMPANY*/
+            if (companyId.equals(requestedCompanyId)) {
+                if (isEmailExists && isMobileNumberExists)
+                    ADMIN_DUPLICATION(requestEmail, requestMobileNumber);
+
+                validateEmail(isEmailExists, requestEmail);
+                validateMobileNumber(isMobileNumberExists, requestMobileNumber);
             }
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER COMPANY*/
+            else {
+                if (isEmailExists && isMobileNumberExists)
+                    ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(requestEmail, requestMobileNumber);
 
-            validateEmail(isEmailExists, requestEmail);
-            validateMobileNumber(isMobileNumberExists, requestMobileNumber);
+                validateEmailInDifferentHospital(isEmailExists, requestEmail);
+                validateMobileNumberInDifferentHospital(isMobileNumberExists, requestMobileNumber);
+            }
         });
-    }
-
-    private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists) {
-            log.error(EMAIL_DUPLICATION_MESSAGE);
-            throw new DataDuplicationException(
-                    String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
-        }
-    }
-
-    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists) {
-            log.error(MOBILE_NUMBER_DUPLICATION_MESSAGE);
-            throw new DataDuplicationException(
-                    String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
-        }
     }
 
     private Admin save(CompanyAdminRequestDTO adminRequestDTO) {
@@ -584,6 +804,13 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         adminMetaInfoRepository.save(parseMetaInfo(admin, adminMetaInfo));
     }
 
+    private void deleteAdminMetaInfo(Admin admin, DeleteRequestDTO deleteRequestDTO) {
+        AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
+                .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
+
+        adminMetaInfoRepository.save(deleteMetaInfo(adminMetaInfo, deleteRequestDTO));
+    }
+
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
         return confirmationTokenRepository.save(adminConfirmationToken);
     }
@@ -636,6 +863,42 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             throw new NoContentFoundException(AdminMacAddressInfo.class);
     };
 
+    private void ADMIN_DUPLICATION(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_MESSAGE, email, mobileNumber));
+    }
+
+    private void ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email, mobileNumber));
+    }
+
+    private void validateEmail(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_MESSAGE, email));
+        }
+    }
+
+    private void validateEmailInDifferentHospital(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email));
+        }
+    }
+
+    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, mobileNumber));
+        }
+    }
+
+    private void validateMobileNumberInDifferentHospital(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, mobileNumber));
+        }
+    }
+
     private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
 
         if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword()))
@@ -645,8 +908,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
     }
 
-    private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
-            new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Admin.class, "id", id.toString());
@@ -656,6 +917,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
+    };
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_MODE_HOSPITAL_INFO = (companyId) -> {
+        throw new NoContentFoundException(AppointmentModeHospitalInfo.class);
     };
 
     private Gender fetchGender(Character genderCode) {

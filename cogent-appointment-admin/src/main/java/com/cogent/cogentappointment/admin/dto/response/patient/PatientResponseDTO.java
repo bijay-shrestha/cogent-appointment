@@ -43,5 +43,7 @@ public class PatientResponseDTO implements Serializable {
 
     private Date dateOfBirth;
 
+    private Character isRegistered;
+
     private Integer totalItems;
 }

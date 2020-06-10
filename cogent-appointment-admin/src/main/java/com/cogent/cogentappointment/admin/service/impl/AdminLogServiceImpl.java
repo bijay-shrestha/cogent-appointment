@@ -40,7 +40,9 @@ public class AdminLogServiceImpl implements AdminLogService {
 
         log.info(SAVING_PROCESS_STARTED, ADMIN_USER_MENU_LOG);
 
-        Admin admin = adminRepository.findAdminById(requestDTO.getAdminId()).get();
+        Admin admin = adminRepository.findAdminByEmail(requestDTO.getAdminEmail()).
+                orElse(null);
+
         AdminLog adminLog = parseToAdminLog(requestDTO, status, admin);
         adminLogRepository.save(adminLog);
 

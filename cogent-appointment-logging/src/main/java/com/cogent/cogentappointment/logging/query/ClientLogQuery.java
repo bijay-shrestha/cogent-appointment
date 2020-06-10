@@ -48,11 +48,28 @@ public class ClientLogQuery {
 
         return " SELECT " +
                 " cl.logDate as logDate," +
-                " DATE_FORMAT(cl.logDateTime,'%h:%i %p') as logTime," +
+                " DATE_FORMAT(cl.logDateTime,'%h:%i:%s %p') as logTime," +
                 " cl.browser as browser," +
                 " cl.operatingSystem as os," +
-                " a.email as email," +
-                " a.mobileNumber as mobileNumber," +
+                " cl.location as location," +
+
+                " CASE" +
+                " WHEN" +
+                " a.email is NULL" +
+                " THEN" +
+                " cl.unknownUser" +
+                " ELSE" +
+                " a.email" +
+                " END AS email," +
+
+                " CASE" +
+                " WHEN" +
+                " a.mobileNumber is NOT NULL" +
+                " THEN" +
+                " a.mobileNumber"+
+                " END AS mobileNumber," +
+
+
                 " cl.ipAddress as ipAddress," +
                 " cl.feature as feature," +
                 " cl.actionType as actionType," +
@@ -70,8 +87,11 @@ public class ClientLogQuery {
 
     public static String WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE h.id=:hospitalId AND cl.status != 'D'" +
+        String whereClause = " WHERE cl.status != 'D'" +
                 " AND cl.logDate BETWEEN :fromDate AND :toDate";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getClientId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getClientId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
             whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();

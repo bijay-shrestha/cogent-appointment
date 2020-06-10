@@ -21,9 +21,11 @@ public class AppointmentLog {
     public static String REJECT_PROCESS_STARTED = ":::: REJECTING {} STARTED ::::";
     public static String REJECT_PROCESS_COMPLETED = ":::: REJECTING {} COMPLETED IN {} ms ::::";
 
-    public static String APPOINTMENT_REFUND = "REFUND REQUEST APPOINTMENT";
+    public static String APPOINTMENT_CANCEL_APPROVAL = "APPOINTMENT CANCEL APPROVALS";
 
     public static String APPOINTMENT_LOG = "APPOINTMENT LOG";
+
+    public final static String TRANSACTION_LOG = "TRANSACTION LOG";
 
     public static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
 

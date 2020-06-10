@@ -95,10 +95,12 @@ public class PatientQuery {
                 " p.id as patientId," +                                 //[1]
                 " p.name as name," +                                    //[2]
                 " p.mobileNumber as mobileNumber," +                    //[3]
-                " p.gender as gender," +                                //[4]
-                " hpi.address as address," +                            //[5]
-                " hpi.registrationNumber as registrationNumber," +      //[6]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[7]
+                " p.dateOfBirth as dateOfBirth," +                       //[4]
+                " p.gender as gender," +                                //[5]
+                " hpi.address as address," +                            //[6]
+                " hpi.registrationNumber as registrationNumber," +      //[7]
+                " hpi.hospital.name as hospitalName," +                  //[8]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[9]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
                 " WHERE p.id IN (" + childPatientIds + ")";
@@ -124,7 +126,9 @@ public class PatientQuery {
                     " hpi.email as email," +
                     " hpi.address as address," +
                     " hpi.isRegistered as isRegistered," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " hpi.remarks as remarks," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    PATIENT_AUDITABLE_QUERY() +
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
@@ -141,11 +145,12 @@ public class PatientQuery {
                 " hpi.email as email," +                                         //[4]
                 " p.mobileNumber as mobileNumber," +                             //[5]
                 " hpi.registrationNumber as registrationNumber," +               //[6]
-                " p.eSewaId as eSewaId," +
-                " p.gender as gender," +                                       //[7]
-                " hpi.status as status," +                                       //[8]
-                " hpi.hospitalNumber as hospitalNumber," +                       //[9]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[10]
+                " p.eSewaId as eSewaId," +                                       //[7]
+                " p.gender as gender," +                                         //[8]
+                " hpi.status as status," +                                       //[9]
+                " hpi.hospitalNumber as hospitalNumber," +                       //[10]
+                " hpi.isRegistered as isRegistered," +                           //[11]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[12]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
@@ -172,13 +177,13 @@ public class PatientQuery {
     }
 
     public static final String QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER =
-            " SELECT registration_number" +
-                    " FROM hospital_patient_info p " +
+            "SELECT" +
+                    " MAX(hpi.registrationNumber)" +
+                    " FROM" +
+                    " HospitalPatientInfo hpi" +
                     " WHERE" +
-                    " registration_number IS NOT NULL" +
-                    " AND p.hospital_id=:hospitalId" +
-                    " ORDER BY id DESC" +
-                    " LIMIT 1";
+                    " hpi.hospital.id = :hospitalId" +
+                    " AND hpi.isRegistered='Y'";
 
     public static final String QUERY_TO_FETCH_PATIENT =
             " SELECT p FROM Patient p" +
@@ -201,7 +206,8 @@ public class PatientQuery {
                     " a.isSelf as isSelf," +                                    //[9]
                     " atd.appointmentAmount as appointmentAmount," +            //[10]
                     " a.appointmentModeId.name as appointmentMode," +          //[11]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[12]
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +                       //[12]
+                    " a.isFollowUp as isFollowUp" +                             //[13]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -219,5 +225,66 @@ public class PatientQuery {
                     " WHERE hpi.id=:hospitalPatientInfoId" +
                     " AND h.id=:hospitalId";
 
+    public static String PATIENT_AUDITABLE_QUERY() {
+        return " p.createdBy as createdBy," +
+                " p.createdDate as createdDate," +
+                " p.lastModifiedBy as lastModifiedBy," +
+                " p.lastModifiedDate as lastModifiedDate";
+    }
+
+    /*PATIENT INFO HOSPITAL WISE*/
+    /*FOR SELF*/
+    public static final String QUERY_TO_FETCH_PATIENT_INFO_FOR_SELF =
+            " SELECT p.id as patientId," +                                  //[0]
+                    " p.name as name," +                                    //[1]
+                    " p.mobileNumber as mobileNumber," +                    //[2]
+                    " p.gender as gender," +                                //[3]
+                    " p.dateOfBirth as dateOfBirth," +                      //[4]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " FROM Patient p" +
+                    GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
+
+    public static String QUERY_TO_FETCH_PATIENT_HOSPITAL_WISE_INFO(Long hospitalId) {
+
+        String query = " SELECT " +
+                " hpi.address as address," +                             //[0]
+                " hpi.email as email," +                                 //[1]
+                " hpi.registrationNumber as registrationNumber" +        //[2]
+                " FROM Patient p" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
+                " WHERE p.id =:patientId";
+
+        if (!Objects.isNull(hospitalId) && hospitalId != 0)
+            query += " AND hpi.hospital.id =" + hospitalId;
+
+        return query;
+    }
+
+    /*FOR OTHERS -> HOSPITAL WISE*/
+    public static String QUERY_TO_FETCH_CHILD_PATIENT_IDS(Long hospitalId) {
+
+        String query = " SELECT " +
+                " pm.parentPatientId.id as parentPatientId," +                 //[0]
+                " pm.childPatientId.id as childPatientId" +                   //[1]
+                " FROM Patient p" +
+                " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = pm.childPatientId.id" +
+                GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
+                " AND pm.status = 'Y'";
+
+        if (!Objects.isNull(hospitalId) && hospitalId != 0)
+            query += " AND hpi.hospital.id=" + hospitalId;
+
+        return query;
+    }
+
+
+    public static final String QUERY_TO_FETCH_ESEWA_ID =
+            " SELECT p.id as value," +                                      //[0]
+                    " p.eSewaId as label" +                                 //[1]
+                    " FROM Patient p " +
+                    " LEFT JOIN HospitalPatientInfo hp ON p.id = hp.patient.id " +
+                    " WHERE p.eSewaId IS NOT NULL" +
+                    " AND hp.hospital.id =:hospitalId";
 
 }

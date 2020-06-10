@@ -13,9 +13,12 @@ public class QueryConstants {
         String TRANSACTION_NUMBER = "transactionNumber";
     }
 
+    public static final String APPOINTMENT_TRANSFER_ID = "appointmentTransferId";
+
     public static final String API_KEY = "apiKey";
 
     //B
+    public static final String BILLING_MODE_ID = "billingModeId";
 
 
     //C
@@ -47,10 +50,13 @@ public class QueryConstants {
     //H
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
-
+    public static final String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";
+    public static final String HOSPITAL_DEPARTMENT_ROOM_INFO_ID = "hospitalDepartmentRoomInfoId";
 
     //I
     public static final String ID = "id";
+    public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
+    public static final String API_FEATURE__ID = "featureId";
 
     //J
 
@@ -64,20 +70,24 @@ public class QueryConstants {
     //N
     public static final String NAME = "name";
 
+
     //O
 
     //P
     public interface PatientQueryConstants {
+
+        String PATIENT_ID = "patientId";
         String PARENT_PATIENT_ID = "parentPatientId";
         String CHILD_PATIENT_ID = "childPatientId";
         String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
     }
 
-    public static final String PATIENT_ID = "patientId";
 
     //Q
 
     //R
+    public static final String ROOM_ID = "roomId";
+    public static final String ROOM_NUMBER = "roomNumber";
 
 
     //S
@@ -89,7 +99,6 @@ public class QueryConstants {
     public static final String TO_DATE = "toDate";
 
     //U
-    public static final String USERNAME = "username";
 
     public static final String UNIVERSITY_ID = "universityId";
 

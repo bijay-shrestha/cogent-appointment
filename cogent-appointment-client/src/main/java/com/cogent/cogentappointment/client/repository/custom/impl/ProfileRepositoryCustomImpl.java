@@ -125,6 +125,20 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchMinProfile(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILES_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()){
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        }
+        else return results;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchProfileByDepartmentAndHospitalId(Long departmentId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_AND_HOSPITAL_ID)
                 .setParameter(ID, departmentId)

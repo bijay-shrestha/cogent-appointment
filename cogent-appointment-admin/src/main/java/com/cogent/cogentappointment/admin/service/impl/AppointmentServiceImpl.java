@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQue
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDetailResponseDTO;
@@ -17,11 +18,13 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentFollowUpLogRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.repository.IntegrationRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
@@ -30,15 +33,18 @@ import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpLog;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
@@ -75,12 +81,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final ThirdPartyService thirdPartyService;
 
+    private final IntegrationRepository integrationRepository;
+
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                   AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
                                   PatientService patientService,
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
-                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService, ThirdPartyService thirdPartyService) {
+                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService, ThirdPartyService thirdPartyService, IntegrationRepository integrationRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
@@ -88,6 +96,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.thirdPartyService = thirdPartyService;
+        this.integrationRepository = integrationRepository;
     }
 
     @Override
@@ -207,12 +216,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveAppointment(Long appointmentId) {
+    public void approveAppointment(Long appointmentId, IntegrationBackendRequestDTO backendRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
 
-        apiIntegrationCheckpoint();
+        if (backendRequestDTO != null) {
+            apiIntegrationCheckpoint(backendRequestDTO);
+        }
 
         Appointment appointment = appointmentRepository.fetchPendingAppointmentById(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
@@ -224,10 +235,51 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void apiIntegrationCheckpoint() {
+    private void apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
-        thirdPartyService.getHospitalService();
+        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
+        integrationHospitalApiInfo.forEach(apiInfo -> {
+            ResponseEntity<?> responseEntity = thirdPartyService.getHospitalService(apiInfo);
+        });
+
+    }
+
+    private List<BackendIntegrationHospitalApiInfo> getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+
+        List<ClientFeatureIntegrationResponse> featureIntegrationResponse = integrationRepository.
+                fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
+
+        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfos = new ArrayList<>();
+
+        featureIntegrationResponse.forEach(integrationResponse -> {
+
+            Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                    findApiRequestHeadersResponse(integrationResponse.getApiIntegrationFormatId());
+
+            Map<String, String> queryParametersResponseDTO = integrationRepository.
+                    findApiQueryParametersResponse(integrationResponse.getApiIntegrationFormatId());
+
+            //headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+
+            requestHeaderResponseDTO.forEach((key, value) -> {
+                headers.add(key, value);
+            });
+
+            BackendIntegrationHospitalApiInfo hospitalApiInfo = new BackendIntegrationHospitalApiInfo();
+            hospitalApiInfo.setApiUri(integrationResponse.getUrl());
+            hospitalApiInfo.setHttpHeaders(headers);
+            hospitalApiInfo.setHttpMethod(integrationResponse.getRequestMethod());
+
+            integrationHospitalApiInfos.add(hospitalApiInfo);
+
+        });
+
+        return integrationHospitalApiInfos;
 
     }
 

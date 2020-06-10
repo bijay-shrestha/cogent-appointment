@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
@@ -44,6 +45,9 @@ public interface IntegrationRepositoryCustom {
     List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long featureId);
 
     List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTO();
+
+    List<ClientFeatureIntegrationResponse>
+    fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId);
 }

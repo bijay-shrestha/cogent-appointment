@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import io.swagger.annotations.Api;
@@ -81,10 +82,11 @@ public class AppointmentResource {
         return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
     }
 
-    @GetMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(APPROVE_APPOINTMENT)
-    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId) {
-        appointmentService.approveAppointment(appointmentId);
+    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId,
+                                                @RequestBody IntegrationBackendRequestDTO backendRequestDTO) {
+        appointmentService.approveAppointment(appointmentId, backendRequestDTO);
         return ok().build();
     }
 

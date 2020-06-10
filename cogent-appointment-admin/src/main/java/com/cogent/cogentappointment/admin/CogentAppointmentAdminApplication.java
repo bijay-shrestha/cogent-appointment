@@ -16,8 +16,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-//@ComponentScan(basePackages={"com.cogent.cogentthirdpartyconnector.service.utils.resttempalte",
-//"com.cogent.cogentthirdpartyconnector.service"})
 @ComponentScan(basePackages={"com.cogent.cogentappointment.admin",
         "com.cogent.cogentthirdpartyconnector.service"})
 @EntityScan(basePackages =

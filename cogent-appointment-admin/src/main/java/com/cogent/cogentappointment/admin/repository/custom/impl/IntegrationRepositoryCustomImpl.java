@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
@@ -119,7 +120,6 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         Query query = createQuery.apply(entityManager, CLIENT_FEATURES_INTEGRATION_DETAILS_API_QUERY)
                 .setParameter(CLIENT_FEATURE_INTEGRATION_ID, id);
 
-
         try {
             return transformQueryToSingleResult(query, ClientApiIntegrationResponseDTO.class);
         } catch (NoResultException e) {
@@ -138,7 +138,6 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
                 transformQueryToResultList(query, ApiRequestHeaderUpdateResponseDTO.class);
 
         if (apiRequestHeaderUpdateResponseDTOS.isEmpty())
-//            throw CLIENT_API_REQUEST_HEADER_NOT_FOUND.get();
             return null;
 
         else {
@@ -157,7 +156,6 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
                 transformQueryToResultList(query, ApiQueryParametersUpdateResponseDTO.class);
 
         if (apiQueryParametersUpdateResponseDTOS.isEmpty())
-//            throw CLIENT_API_QUERY_PARAMETERS_NOT_FOUND.get();
             return null;
 
         else {
@@ -169,14 +167,24 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTO() {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_FEAUTRES_INTEGRATION_API_QUERY);
-//                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<ClientFeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, ClientFeatureIntegrationResponse.class);
 
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
+        return responseDTOList;
+    }
+
+    @Override
+    public List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
+        Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY)
+                .setParameter(HOSPITAL_ID,requestDTO.getHospitalId())
+                .setParameter(API_INTEGRATION_CHANNEL_CODE,requestDTO.getIntegrationChannelCode())
+                .setParameter(FEATURE_CODE,requestDTO.getFeatureCode());
+
+        List<ClientFeatureIntegrationResponse> responseDTOList =
+                transformQueryToResultList(query, ClientFeatureIntegrationResponse.class);
+
+        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
 
         return responseDTOList;
     }

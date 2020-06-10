@@ -38,7 +38,6 @@ import com.cogent.cogentthirdpartyconnector.service.ThirdPartyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -254,10 +253,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         featureIntegrationResponse.forEach(integrationResponse -> {
 
-            Map<String, String> requestHeaderResponseDTO = integrationRepository.
+            Map<String, String> requestHeaderResponse = integrationRepository.
                     findApiRequestHeadersResponse(integrationResponse.getApiIntegrationFormatId());
 
-            Map<String, String> queryParametersResponseDTO = integrationRepository.
+            Map<String, String> queryParametersResponse = integrationRepository.
                     findApiQueryParametersResponse(integrationResponse.getApiIntegrationFormatId());
 
             //headers
@@ -266,13 +265,17 @@ public class AppointmentServiceImpl implements AppointmentService {
             headers.add("user-agent",
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
-            requestHeaderResponseDTO.forEach((key, value) -> {
+            requestHeaderResponse.forEach((key, value) -> {
                 headers.add(key, value);
             });
 
             BackendIntegrationHospitalApiInfo hospitalApiInfo = new BackendIntegrationHospitalApiInfo();
             hospitalApiInfo.setApiUri(integrationResponse.getUrl());
             hospitalApiInfo.setHttpHeaders(headers);
+
+            if (!queryParametersResponse.isEmpty()) {
+                hospitalApiInfo.setQueryParameters(queryParametersResponse);
+            }
             hospitalApiInfo.setHttpMethod(integrationResponse.getRequestMethod());
 
             integrationHospitalApiInfos.add(hospitalApiInfo);

@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author rupak ON 2020/06/10-11:31 AM
@@ -19,6 +20,8 @@ public class BackendIntegrationHospitalApiInfo implements Serializable {
     private String apiUri;
 
     private HttpHeaders httpHeaders;
+
+    private Map<String, String> queryParameters;
 
     private String httpMethod;
 

@@ -3,11 +3,17 @@ package com.cogent.cogentthirdpartyconnector.service;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
-import com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
+import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryPamarameter;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 /**
  * @author rupak ON 2020/06/09-11:41 AM
@@ -24,12 +30,23 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
     @Override
     public ResponseEntity<?> getHospitalService(BackendIntegrationHospitalApiInfo hospitalApiInfo) {
 
-        HttpMethod httpMethod = HttpMethodUtils.getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
-        String uri=hospitalApiInfo.getApiUri();
+        HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
+
+        String uri = "";
+        if ((httpMethod == GET) || (httpMethod == POST)) {
+
+            Map<String, String> queryParameter = hospitalApiInfo.getQueryParameters();
+            if (!queryParameter.isEmpty()) {
+                uri = createQueryPamarameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
+            }
+        }else{
+            uri = hospitalApiInfo.getApiUri();
+        }
 
         ResponseEntity<?> response = restTemplateUtils.
-                postRequest(uri,
-                        new HttpEntity<>(getAPiRequestBody(), hospitalApiInfo.getHttpHeaders()));
+                requestAPI(httpMethod,
+                        uri,
+                        new HttpEntity<>(getApiRequestBody(), hospitalApiInfo.getHttpHeaders()));
 
         System.out.println(response);
 
@@ -37,7 +54,7 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
 
     }
 
-    private ClientSaveRequestDTO getAPiRequestBody() {
+    private ClientSaveRequestDTO getApiRequestBody() {
 
         ClientSaveRequestDTO saveRequestDTO = ClientSaveRequestDTO.builder()
                 .name("Hari Singh Tharu")

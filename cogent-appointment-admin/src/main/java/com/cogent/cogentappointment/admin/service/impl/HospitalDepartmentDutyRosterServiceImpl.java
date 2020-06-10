@@ -432,8 +432,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                     hospitalDepartmentDutyRosterOverride.setToDateInNepali(nepaliDateUtility
                             .getNepaliDateFromDate(requestDTO.getToDate()));
 
-                    saveDutyRosterOverride(hospitalDepartmentDutyRosterOverride
-                    );
+                    saveDutyRosterOverride(hospitalDepartmentDutyRosterOverride);
                 });
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER_OVERRIDE,

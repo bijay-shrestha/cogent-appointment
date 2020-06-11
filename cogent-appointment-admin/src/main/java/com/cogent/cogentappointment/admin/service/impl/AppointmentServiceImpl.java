@@ -30,7 +30,6 @@ import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
-import com.cogent.cogentthirdpartyconnector.request.Properties;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
@@ -48,7 +47,6 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
-import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.ESEWA_REFUND_REMARKS;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -61,8 +59,9 @@ import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.checkApiUri;
+import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
+import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaRequestBody;
 
 /**
  * @author smriti on 2019-10-22
@@ -511,52 +510,28 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
 
-
     private ThirdPartyResponse processEsewaRefundRequest(Appointment appointment,
                                                          AppointmentTransactionDetail transactionDetail,
                                                          AppointmentRefundDetail appointmentRefundDetail,
                                                          Boolean isRefund,
                                                          IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
 
-        //requestBody
-//        EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
-//                .esewa_id(appointment.getPatientId().getESewaId())
-//                .is_refund(isRefund)
-//                .refund_amount(appointmentRefundDetail.getRefundAmount())
-//                .product_code(appointment.getHospitalId().getEsewaMerchantCode())
-//                .remarks(refundRemarks)
-//                .txn_amount(transactionDetail.getAppointmentAmount())
-//                .properties(Properties.builder()
-//                        .appointmentId(appointment.getId())
-//                        .hospitalName(appointment.getHospitalId().getName())
-//                        .build())
-//                .build();
 
-        EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
-                .esewa_id("9841409090")
-                .is_refund(isRefund)
-                .refund_amount(1000D)
-                .product_code("testBir")
-                .remarks(ESEWA_REFUND_REMARKS)
-                .txn_amount(1000D)
-                .properties(Properties.builder()
-                        .appointmentId(10L)
-                        .hospitalName("Bir hospital")
-                        .build())
-                .build();
-
-        String generatedEsewaHmac = getSigatureForEsewa.apply(esewaRefundRequestDTO.getEsewa_id(),
-                esewaRefundRequestDTO.getProduct_code());
+        String generatedEsewaHmac = getSigatureForEsewa.apply(appointment.getPatientId().getESewaId(),
+                appointment.getHospitalId().getEsewaMerchantCode());
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(backendRequestDTO,
                 appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 
-        checkApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber());
+        EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
+                transactionDetail,
+                appointmentRefundDetail,
+                isRefund);
 
-        ThirdPartyResponse responseEntity =
-                thirdPartyConnectorService.getEsewaService(integrationApiInfo,
-                        esewaRefundRequestDTO);
-        return responseEntity;
+        parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber());
+
+        return  thirdPartyConnectorService.getEsewaService(integrationApiInfo,
+                esewaRefundRequestDTO);
 
     }
 

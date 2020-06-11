@@ -38,14 +38,9 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
 
         String uri = "";
-        if ((httpMethod == GET) || (httpMethod == POST)) {
-
-            Map<String, String> queryParameter = hospitalApiInfo.getQueryParameters();
-            if (queryParameter != null) {
-                uri = createQueryPamarameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
-            } else {
-                uri = hospitalApiInfo.getApiUri();
-            }
+        Map<String, String> queryParameter = hospitalApiInfo.getQueryParameters();
+        if (queryParameter != null) {
+            uri = createQueryPamarameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
         } else {
             uri = hospitalApiInfo.getApiUri();
         }

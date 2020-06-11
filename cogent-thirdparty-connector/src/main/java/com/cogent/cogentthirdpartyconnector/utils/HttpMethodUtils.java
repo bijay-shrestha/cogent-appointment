@@ -12,7 +12,6 @@ public class HttpMethodUtils {
     public static HttpMethod getHttpRequestMethod(String methodName) {
 
         HttpMethod httpMethod = null;
-
         switch (methodName) {
             case "GET":
                 httpMethod = GET;

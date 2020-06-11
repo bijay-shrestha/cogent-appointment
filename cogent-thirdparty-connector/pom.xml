@@ -40,6 +40,12 @@
             <version>3.5</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.cogent</groupId>
+            <artifactId>cogent-appointment-persistence</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 
     </dependencies>
 

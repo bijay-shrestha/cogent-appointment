@@ -5,14 +5,12 @@ package com.cogent.cogentthirdpartyconnector.utils;
  */
 public class ApiUriUtils {
 
-    public static String checkApiUri(String uri,String key) {
+    public static String parseApiUri(String uri, String key) {
 
         if (uri.contains("%s")) {
-
             return uri.replace("%s", "5VQ");
             //add key
         }
-
         return uri;
 
     }

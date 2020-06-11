@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientAp
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
@@ -50,4 +51,7 @@ public interface IntegrationRepositoryCustom {
     fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId);
+
+    AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO,
+            Long appointmentModeId);
 }

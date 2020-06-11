@@ -58,6 +58,7 @@ import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderBy
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.lang.reflect.Array.get;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author smriti on 2019-08-05
@@ -455,7 +456,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.
                 fetchAdminModeIntegrationResponseDTO().stream()
-                .collect(Collectors.groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
+                .collect(groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
 
         List<AdminModeFeatureIntegrationResponseDTO> adminModeFeatureIntegrationResponseDTOS = new ArrayList<>();
 
@@ -500,7 +501,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 fetchClientIntegrationResponseDTO();
 
         Map<Long, List<ClientFeatureIntegrationResponse>> integrationResponseMap = integrationResponseDTOList.stream()
-                .collect(Collectors.groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
+                .collect(groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
 
         List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS = new ArrayList<>();
 

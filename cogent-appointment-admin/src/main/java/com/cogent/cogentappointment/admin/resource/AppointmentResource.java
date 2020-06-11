@@ -63,8 +63,9 @@ public class AppointmentResource {
 
     @PutMapping(REFUND + REJECT)
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
-    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO) {
-        appointmentService.rejectRefundAppointment(refundRejectDTO);
+    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO,
+                                                     IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+        appointmentService.rejectRefundAppointment(refundRejectDTO,integrationBackendRequestDTO);
         return ok().build();
     }
 

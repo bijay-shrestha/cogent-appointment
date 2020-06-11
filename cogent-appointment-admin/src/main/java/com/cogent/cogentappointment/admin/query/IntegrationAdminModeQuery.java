@@ -130,6 +130,36 @@ public class IntegrationAdminModeQuery {
                     " AND hrm.id=:requestMethodId" +
                     " AND amfi.appointmentModeId.id=:appointmentModeId";
 
+    public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY =
+            " SELECT" +
+                    " aif.id as apiIntegrationFormatId," +
+                    " amfi.id as appointmentModeId," +
+                    " ic.code as integrationChannelCode," +
+                    " f.code as featureCode," +
+                    " hrm.name as requestMethod," +
+                    " aif.url as url" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                    " WHERE aif.status='Y'" +
+                    " AND hrm.status='Y'" +
+                    " AND amafi.status='Y'" +
+                    " AND f.status='Y'" +
+                    " AND amfi.status='Y'" +
+                    " AND ic.status='Y'";
+
+    public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY =
+            APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY +
+                    " AND f.code=:featureCode" +
+                    " AND ic.code=:integrationChannelCode" +
+                    " AND amfi.appointmentModeId=:appointmentModeId";
+
+
+    //
+
     public static Function<AdminModeApiIntegrationSearchRequestDTO, String> ADMIN_MODE_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +

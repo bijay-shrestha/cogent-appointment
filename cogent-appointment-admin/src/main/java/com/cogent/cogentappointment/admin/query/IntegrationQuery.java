@@ -46,28 +46,6 @@ public class IntegrationQuery {
                     " WHERE hrm.status ='Y'" +
                     " ORDER by hrm.name ASC";
 
-    public static final String ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY =
-            " SELECT" +
-                    " aif.id as apiIntegrationFormatId," +
-                    " amfi.id as appointmentModeId," +
-                    " ic.code as integrationChannelCode," +
-                    " f.code as featureCode," +
-                    " hrm.name as requestMethod," +
-                    " aif.url as url" +
-                    " FROM AdminModeFeatureIntegration amfi" +
-                    " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
-                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
-                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
-                    " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-//                    " WHERE amfi.appointmentModeId.id=:appointmentModeId" +
-                    " WHERE aif.status='Y'" +
-                    " AND hrm.status='Y'" +
-                    " AND amafi.status='Y'" +
-                    " AND f.status='Y'" +
-                    " AND amfi.status='Y'" +
-                    " AND ic.status='Y'";
-
 
     public static final String CLIENT_API_FEATURES_HEADERS_DETAILS_QUERY =
             " SELECT " +

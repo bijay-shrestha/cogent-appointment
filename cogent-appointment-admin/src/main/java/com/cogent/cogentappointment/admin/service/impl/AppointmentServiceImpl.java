@@ -20,6 +20,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
@@ -34,7 +35,6 @@ import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendI
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,8 +59,6 @@ import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentappointment.admin.utils.resttemplate.IntegrationRequestURI.ESEWA_REFUND_API;
 
 /**
  * @author smriti on 2019-10-22
@@ -154,18 +152,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.fetchRefundAppointmentById(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
-        //api integration logic
-        ResponseEntity<?> responseEntity = null;
-        if (backendRequestDTO != null) {
-            responseEntity = apiIntegrationCheckpoint(backendRequestDTO);
-        }
-
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
 
         String response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
                 refundAppointmentDetail,
-                true,backendRequestDTO);
+                true, backendRequestDTO);
 
         updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, null);
 
@@ -196,7 +188,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
                 refundAppointmentDetail,
-                false,backendRequestDTO);
+                false, backendRequestDTO);
 
         updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, refundRejectDTO);
 
@@ -289,10 +281,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         ClientFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
                 fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
 
-//        List<BackendIntegrationApiInfo> integrationHospitalApiInfos = new ArrayList<>();
-
-//        featureIntegrationResponse.forEach(integrationResponse -> {
-
         Map<String, String> requestHeaderResponse = integrationRepository.
                 findApiRequestHeadersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
 
@@ -318,13 +306,54 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         hospitalApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
 
-//            integrationHospitalApiInfos.add(hospitalApiInfo);
-
-//        });
-
         return hospitalApiInfo;
 
     }
+
+
+    private BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO,
+                                                                       Long appointmentModeId,
+                                                                       String dynamicHmacKey) {
+
+
+        AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
+                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO,
+                        appointmentModeId);
+
+        Map<String, String> requestHeaderResponse = integrationRepository.
+                findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        Map<String, String> queryParametersResponse = integrationRepository.
+                findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
+
+
+        //headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+
+        requestHeaderResponse.forEach((key, value) -> {
+            headers.add(key, value);
+        });
+
+        if (dynamicHmacKey != null) {
+            headers.add("signature", "");
+        }
+
+        BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
+        integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
+        integrationApiInfo.setHttpHeaders(headers);
+
+        if (!queryParametersResponse.isEmpty()) {
+            integrationApiInfo.setQueryParameters(queryParametersResponse);
+        }
+        integrationApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
+
+        return integrationApiInfo;
+
+    }
+
 
     @Override
     public void rejectAppointment(AppointmentRejectDTO rejectDTO) {
@@ -434,7 +463,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 thirdPartyResponse = requestEsewaForRefund(appointment,
                         transactionDetail,
                         appointmentRefundDetail,
-                        isRefund,backendRequestDTO);
+                        isRefund, backendRequestDTO);
                 break;
 
             default:
@@ -500,10 +529,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                          Boolean isRefund,
                                          IntegrationBackendRequestDTO backendRequestDTO) {
 
-//        BackendIntegrationApiInfo backendIntegrationHospitalApiInfo
-
-
-
+        //requestBody
         EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
                 .esewa_id("9841409090")
                 .is_refund(isRefund)
@@ -517,12 +543,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                         .build())
                 .build();
 
+        String dynamicHmac = "key.........";
 
-        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
 
-        String url = String.format(ESEWA_REFUND_API, "5VQ");
+        BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(backendRequestDTO,
+                appointment.getAppointmentModeId().getId(), dynamicHmac);
 
-//        thirdPartyConnectorService.getHospitalService(backendRequestDTO);
+
+//        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
+//        String url = String.format(ESEWA_REFUND_API, "5VQ");
+
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationApiInfo);
 
 //        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
 //                postRequest(url, request, EsewaResponseDTO.class);

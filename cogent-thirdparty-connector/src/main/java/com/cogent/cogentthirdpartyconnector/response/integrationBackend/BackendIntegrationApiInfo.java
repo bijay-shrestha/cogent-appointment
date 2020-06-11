@@ -25,7 +25,4 @@ public class BackendIntegrationApiInfo implements Serializable {
 
     private String httpMethod;
 
-
-
-
 }

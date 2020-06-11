@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientAp
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiQueryParametersResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiRequestHeaderResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
@@ -41,6 +42,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.*;
+import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY;
 import static com.cogent.cogentappointment.admin.query.IntegrationQuery.*;
 import static com.cogent.cogentappointment.admin.query.RequestBodyAttributesQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -177,12 +179,28 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public ClientFeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY)
-                .setParameter(HOSPITAL_ID,requestDTO.getHospitalId())
-                .setParameter(INTEGRATION_CHANNEL_CODE,requestDTO.getIntegrationChannelCode())
-                .setParameter(FEATURE_CODE,requestDTO.getFeatureCode());
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId())
+                .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
+                .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());
 
         ClientFeatureIntegrationResponse responseDTOList =
                 transformQueryToSingleResult(query, ClientFeatureIntegrationResponse.class);
+
+//        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
+
+        return responseDTOList;
+    }
+
+    @Override
+    public AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO,
+                                                                                                           Long appointmentModeId) {
+        Query query = createQuery.apply(entityManager, APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY)
+                .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
+                .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
+                .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());
+
+        AdminFeatureIntegrationResponse responseDTOList =
+                transformQueryToSingleResult(query, AdminFeatureIntegrationResponse.class);
 
 //        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
 

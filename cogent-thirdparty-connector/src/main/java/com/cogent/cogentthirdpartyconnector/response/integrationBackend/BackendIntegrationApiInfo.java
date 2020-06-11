@@ -15,7 +15,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BackendIntegrationHospitalApiInfo implements Serializable {
+public class BackendIntegrationApiInfo implements Serializable {
 
     private String apiUri;
 

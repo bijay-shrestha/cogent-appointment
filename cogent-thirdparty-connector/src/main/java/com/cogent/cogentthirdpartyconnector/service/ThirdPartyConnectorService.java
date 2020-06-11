@@ -1,10 +1,10 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import org.springframework.http.ResponseEntity;
 
 public interface ThirdPartyConnectorService {
 
-    public ResponseEntity<?> getHospitalService(BackendIntegrationHospitalApiInfo backendIntegrationHospitalApiInfo);
+    public ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
 
 }

@@ -44,7 +44,7 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
@@ -605,7 +605,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
-        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
+        List<BackendIntegrationApiInfo> integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
         integrationHospitalApiInfo.forEach(apiInfo -> {
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(apiInfo);
@@ -613,12 +613,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
-    private List<BackendIntegrationHospitalApiInfo> getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    private List<BackendIntegrationApiInfo> getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         List<FeatureIntegrationResponse> featureIntegrationResponse = integrationRepository.
                 fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
 
-        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfos = new ArrayList<>();
+        List<BackendIntegrationApiInfo> integrationHospitalApiInfos = new ArrayList<>();
 
         featureIntegrationResponse.forEach(integrationResponse -> {
 
@@ -638,7 +638,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 headers.add(key, value);
             });
 
-            BackendIntegrationHospitalApiInfo hospitalApiInfo = new BackendIntegrationHospitalApiInfo();
+            BackendIntegrationApiInfo hospitalApiInfo = new BackendIntegrationApiInfo();
             hospitalApiInfo.setApiUri(integrationResponse.getUrl());
             hospitalApiInfo.setHttpHeaders(headers);
 

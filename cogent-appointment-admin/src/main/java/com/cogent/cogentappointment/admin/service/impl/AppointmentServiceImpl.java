@@ -21,7 +21,6 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.refund.Appoin
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
-import com.cogent.cogentappointment.admin.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -31,7 +30,7 @@ import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerServ
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.*;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -76,7 +75,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
 
     private final AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
-
 
     private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
 
@@ -276,7 +274,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private ResponseEntity<?> apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
-        BackendIntegrationHospitalApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
+        BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
 //        integrationHospitalApiInfo.forEach(apiInfo -> {
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
@@ -286,12 +284,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
-    private BackendIntegrationHospitalApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    private BackendIntegrationApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         ClientFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
                 fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
 
-//        List<BackendIntegrationHospitalApiInfo> integrationHospitalApiInfos = new ArrayList<>();
+//        List<BackendIntegrationApiInfo> integrationHospitalApiInfos = new ArrayList<>();
 
 //        featureIntegrationResponse.forEach(integrationResponse -> {
 
@@ -311,7 +309,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             headers.add(key, value);
         });
 
-        BackendIntegrationHospitalApiInfo hospitalApiInfo = new BackendIntegrationHospitalApiInfo();
+        BackendIntegrationApiInfo hospitalApiInfo = new BackendIntegrationApiInfo();
         hospitalApiInfo.setApiUri(featureIntegrationResponse.getUrl());
         hospitalApiInfo.setHttpHeaders(headers);
 
@@ -502,7 +500,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                          Boolean isRefund,
                                          IntegrationBackendRequestDTO backendRequestDTO) {
 
-//        BackendIntegrationHospitalApiInfo backendIntegrationHospitalApiInfo
+//        BackendIntegrationApiInfo backendIntegrationHospitalApiInfo
 
 
 

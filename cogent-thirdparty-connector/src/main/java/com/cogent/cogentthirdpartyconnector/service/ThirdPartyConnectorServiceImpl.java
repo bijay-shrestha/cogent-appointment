@@ -1,7 +1,7 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationHospitalApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -28,7 +28,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> getHospitalService(BackendIntegrationHospitalApiInfo hospitalApiInfo) {
+    public ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo hospitalApiInfo) {
 
         HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
 

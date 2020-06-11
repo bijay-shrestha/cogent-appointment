@@ -19,6 +19,7 @@ public class HospitalDeptAppointmentStatusRequestDTO implements Serializable {
     @NotNull
     private Date toDate;
 
+    @NotNull
     private Long hospitalId;
 
     private Long hospitalDepartmentId;

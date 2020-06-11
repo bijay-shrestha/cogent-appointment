@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
 import lombok.*;
 
@@ -44,4 +45,6 @@ public class HospitalDeptDutyRosterStatusResponseDTO implements Serializable {
     private String patientDetails;
 
     private List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots;
+
+    private List<DropDownResponseDTO> roomList;
 }

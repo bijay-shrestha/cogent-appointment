@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAndWeekdaysDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
@@ -13,6 +14,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
+import com.cogent.cogentappointment.admin.service.RoomService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +64,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private final HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
             hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
 
+    private final RoomService roomService;
+
     public AppointmentStatusServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                         HospitalDeptDutyRosterOverrideRepository deptDutyRosterOverrideRepository,
                                         HospitalDeptDutyRosterRepository deptDutyRosterRepository,
@@ -70,7 +74,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                                         AppointmentService appointmentService,
                                         AppointmentRepository appointmentRepository,
                                         HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
-                                                hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository) {
+                                                hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository,
+                                        RoomService roomService) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.deptDutyRosterOverrideRepository = deptDutyRosterOverrideRepository;
         this.deptDutyRosterRepository = deptDutyRosterRepository;
@@ -79,6 +84,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         this.appointmentService = appointmentService;
         this.appointmentRepository = appointmentRepository;
         this.hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository = hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
+        this.roomService = roomService;
     }
 
     @Override
@@ -151,6 +157,20 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE, getDifferenceBetweenTwoTime(startTime));
 
         return hospitalDeptDutyRosterStatus;
+    }
+
+
+    private List<HospitalDeptDutyRosterStatusResponseDTO> getRoomListByDepartmentId
+            (List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS){
+
+        rosterStatusResponseDTOS.forEach(rosterStatusResponseDTO -> {
+            List<DropDownResponseDTO> roomList=roomService.fetchActiveMinRoomByHospitalDepartmentId(rosterStatusResponseDTO.getHospitalDepartmentId());
+
+        rosterStatusResponseDTO.setRoomList(roomList);
+        });
+
+        return rosterStatusResponseDTOS;
+
     }
 
     private List<HospitalDeptAndDoctorDTO> fetchHospitalDeptAndDoctorInfo

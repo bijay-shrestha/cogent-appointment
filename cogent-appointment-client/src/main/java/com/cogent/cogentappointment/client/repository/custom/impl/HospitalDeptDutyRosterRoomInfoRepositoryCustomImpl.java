@@ -28,7 +28,7 @@ public class HospitalDeptDutyRosterRoomInfoRepositoryCustomImpl implements Hospi
     private EntityManager entityManager;
 
     @Override
-    public Long fetchRoomCount(Long hospitalDeptId, Date fromDate, Date toDate,  Long hospitalDepartmentRoomInfoId) {
+    public Long fetchRoomCount(Long hospitalDeptId, Date fromDate, Date toDate, Long hospitalDepartmentRoomInfoId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROOM_COUNT)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
@@ -40,13 +40,14 @@ public class HospitalDeptDutyRosterRoomInfoRepositoryCustomImpl implements Hospi
     }
 
     @Override
-    public Long fetchRoomCountExceptCurrentId(Long hospitalDeptId, Date fromDate, Date toDate, Long hospitalDepartmentRoomInfoId,
+    public Long fetchRoomCountExceptCurrentId(Long hospitalDeptId, Date fromDate, Date toDate,
+                                              Long hospitalDepartmentRoomInfoId,
                                               Long hddRosterId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROOM_COUNT_EXCEPT_CURRENT_ID)
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_ROOM_COUNT_EXCEPT_CURRENT_ID(hospitalDepartmentRoomInfoId))
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
-                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDeptId)
                 .setParameter(ID, hddRosterId);
 

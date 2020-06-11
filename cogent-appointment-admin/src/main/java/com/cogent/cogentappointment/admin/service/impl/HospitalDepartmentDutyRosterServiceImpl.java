@@ -122,11 +122,9 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 fetchHospitalDepartment(requestDTO.getHospitalDepartmentId(), requestDTO.getHospitalId()),
                 findHospitalById(requestDTO.getHospitalId()));
 
-        dutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (requestDTO.getFromDate()));
+        dutyRoster.setFromDateInNepali(getNepaliDate(requestDTO.getFromDate()));
 
-        dutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (requestDTO.getToDate()));
+        dutyRoster.setToDateInNepali(getNepaliDate(requestDTO.getToDate()));
 
         save(dutyRoster);
 
@@ -427,11 +425,9 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                     HospitalDepartmentDutyRosterOverride hospitalDepartmentDutyRosterOverride=parseOverrideDetails(
                             requestDTO, hospitalDepartmentDutyRoster, hospitalDepartmentRoomInfo);
 
-                    hospitalDepartmentDutyRosterOverride.setFromDateInNepali(nepaliDateUtility
-                            .getNepaliDateFromDate(requestDTO.getFromDate()));
+                    hospitalDepartmentDutyRosterOverride.setFromDateInNepali(getNepaliDate(requestDTO.getFromDate()));
 
-                    hospitalDepartmentDutyRosterOverride.setToDateInNepali(nepaliDateUtility
-                            .getNepaliDateFromDate(requestDTO.getToDate()));
+                    hospitalDepartmentDutyRosterOverride.setToDateInNepali(getNepaliDate(requestDTO.getToDate()));
 
                     saveDutyRosterOverride(hospitalDepartmentDutyRosterOverride);
                 });
@@ -695,9 +691,9 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         HospitalDepartmentDutyRosterOverride override = parseOverrideDetails(
                 updateRequestDTO, new HospitalDepartmentDutyRosterOverride(), hospitalDepartmentRoomInfo);
 
-        override.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(updateRequestDTO.getFromDate()));
+        override.setFromDateInNepali(getNepaliDate(updateRequestDTO.getFromDate()));
 
-        override.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(updateRequestDTO.getToDate()));
+        override.setToDateInNepali(getNepaliDate(updateRequestDTO.getToDate()));
 
         override.setHospitalDepartmentDutyRoster(dutyRoster);
 
@@ -884,6 +880,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         if (rosterCount > 0)
             DUPLICATE_HOSPITAL_DEPT_DUTY_ROSTER_WITH_ROOM_EXCEPTION(
                     hospitalDepartmentDutyRoster.getFromDate(), hospitalDepartmentDutyRoster.getToDate());
+    }
+
+    private String getNepaliDate(Date date){
+        return   nepaliDateUtility.getNepaliDateFromDate(date);
     }
 }
 

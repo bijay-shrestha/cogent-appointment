@@ -70,7 +70,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                        DoctorWeekDaysDutyRosterRepository doctorWeekDaysDutyRosterRepository,
                                        DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
                                        AppointmentRepository appointmentRepository,
-                                       HospitalService hospitalService, NepaliDateUtility nepaliDateUtility) {
+                                       HospitalService hospitalService,
+                                       NepaliDateUtility nepaliDateUtility) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -100,9 +101,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 findSpecializationById(requestDTO.getSpecializationId()),
                 findHospitalById(requestDTO.getHospitalId()));
 
-        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
+        doctorDutyRoster.setFromDateInNepali(getNepaliDate(requestDTO.getFromDate()));
 
-        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
+        doctorDutyRoster.setToDateInNepali(getNepaliDate(requestDTO.getToDate()));
 
         save(doctorDutyRoster);
 
@@ -431,11 +432,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                         DoctorDutyRosterOverride doctorDutyRosterOverride = parseToDoctorDutyRosterOverride(requestDTO,
                                 doctorDutyRoster);
 
-                        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                                (requestDTO.getFromDate()));
+                        doctorDutyRosterOverride.setFromDateInNepali(getNepaliDate(requestDTO.getFromDate()));
 
-                        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                                (requestDTO.getToDate()));
+                        doctorDutyRosterOverride.setToDateInNepali(getNepaliDate(requestDTO.getToDate()));
 
                         return doctorDutyRosterOverride;
                     }).collect(Collectors.toList());
@@ -458,11 +457,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
 
-        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (updateRequestDTO.getOverrideFromDate()));
+        doctorDutyRosterOverride.setFromDateInNepali(getNepaliDate(updateRequestDTO.getOverrideFromDate()));
 
-        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (updateRequestDTO.getOverrideToDate()));
+        doctorDutyRosterOverride.setToDateInNepali(getNepaliDate(updateRequestDTO.getOverrideToDate()));
 
         doctorDutyRosterOverrideRepository.save(doctorDutyRosterOverride);
 
@@ -477,11 +474,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         DoctorDutyRosterOverride rosterOverride = parseDoctorDutyRosterOverrideDetails(updateRequestDTO,
                 doctorDutyRosterOverride);
 
-        rosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (updateRequestDTO.getOverrideFromDate()));
+        rosterOverride.setFromDateInNepali(getNepaliDate(updateRequestDTO.getOverrideFromDate()));
 
-        rosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (updateRequestDTO.getOverrideToDate()));
+        rosterOverride.setToDateInNepali(getNepaliDate(updateRequestDTO.getOverrideToDate()));
 
         return doctorDutyRosterOverride.getId();
     }
@@ -547,6 +542,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private static boolean isOriginalUpdatedCondition(DoctorDutyRosterOverride originalOverride,
                                                       DoctorDutyRosterOverrideUpdateRequestDTO updatedOverride) {
         return originalOverride.getId().equals(updatedOverride.getDoctorDutyRosterOverrideId());
+    }
+
+    private String getNepaliDate(Date date){
+      return   nepaliDateUtility.getNepaliDateFromDate(date);
     }
 
 }

@@ -32,8 +32,8 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ThirdPartyResponse getEsewaService(BackendIntegrationApiInfo hospitalApiInfo,
-                                              EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException {
+    public ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo hospitalApiInfo,
+                                                     EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException {
 
         HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
 

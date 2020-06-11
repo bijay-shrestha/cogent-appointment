@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public interface ThirdPartyConnectorService {
 
-    ThirdPartyResponse getEsewaService(BackendIntegrationApiInfo backendIntegrationApiInfo,
-                                       EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException;
+    ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
+                                              EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException;
 
     ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
 

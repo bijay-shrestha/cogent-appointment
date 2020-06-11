@@ -60,7 +60,7 @@ public class HMACUtils {
         return hash;
     }
 
-    public static BiFunction<String, String, String> getSigatureForEsewa = (esewaId, merchantCode) -> {
+    public static BiFunction<String, String, String> getSignatureForEsewa = (esewaId, merchantCode) -> {
 
         final String signature = hmacShaGenerator(esewaId + COLON + merchantCode);
 

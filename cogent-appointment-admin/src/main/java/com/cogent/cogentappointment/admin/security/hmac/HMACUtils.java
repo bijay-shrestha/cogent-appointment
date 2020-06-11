@@ -62,9 +62,7 @@ public class HMACUtils {
 
     public static BiFunction<String, String, String> getSigatureForEsewa = (esewaId, merchantCode) -> {
 
-        String message = esewaId + COLON + merchantCode;
-
-        final String signature = hmacShaGenerator(message);
+        final String signature = hmacShaGenerator(esewaId + COLON + merchantCode);
 
         return signature;
     };

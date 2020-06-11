@@ -32,18 +32,15 @@ import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.Properties;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.integrationThirdParty.ThirdPartyResponseDTO;
+import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -51,6 +48,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
+import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.ESEWA_REFUND_REMARKS;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -63,6 +61,8 @@ import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.checkApiUri;
+import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 
 /**
  * @author smriti on 2019-10-22
@@ -158,13 +158,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
 
-        ThirdPartyResponseDTO response = processRefundRequest(appointment,
+        ThirdPartyResponse response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
                 refundAppointmentDetail,
                 true, backendRequestDTO);
 
-        if(!Objects.isNull(response.getCode())){
-            throw new BadRequestException(response.getMessage(),response.getMessage());
+        if (!Objects.isNull(response.getCode())) {
+            throw new BadRequestException(response.getMessage(), response.getMessage());
         }
 
         updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail, null);
@@ -193,16 +193,25 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
 
-        ThirdPartyResponseDTO response = processRefundRequest(appointment,
-                appointmentTransactionDetail,
-                refundAppointmentDetail,
-                false, backendRequestDTO);
+        if (backendRequestDTO != null) {
+            ThirdPartyResponse response = processRefundRequest(appointment,
+                    appointmentTransactionDetail,
+                    refundAppointmentDetail,
+                    false, backendRequestDTO);
 
-        if(!Objects.isNull(response.getCode())){
-            throw new BadRequestException(response.getMessage());
+            if (!Objects.isNull(response.getCode())) {
+                throw new BadRequestException(response.getMessage());
+            }
+
+            updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                    appointment,
+                    refundAppointmentDetail,
+                    refundRejectDTO);
+
+        } else {
+            throw new BadRequestException("Integration parameters not found", "Integration parameter return null");
         }
 
-        updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail, refundRejectDTO);
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
@@ -279,92 +288,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     private ResponseEntity<?> apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
-
-//        integrationHospitalApiInfo.forEach(apiInfo -> {
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
-//        });
 
         return responseEntity;
 
     }
-
-    private BackendIntegrationApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
-
-        ClientFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
-                fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
-
-        Map<String, String> requestHeaderResponse = integrationRepository.
-                findApiRequestHeadersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
-
-        Map<String, String> queryParametersResponse = integrationRepository.
-                findApiQueryParametersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
-
-        //headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.add("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-
-        requestHeaderResponse.forEach((key, value) -> {
-            headers.add(key, value);
-        });
-
-        BackendIntegrationApiInfo hospitalApiInfo = new BackendIntegrationApiInfo();
-        hospitalApiInfo.setApiUri(featureIntegrationResponse.getUrl());
-        hospitalApiInfo.setHttpHeaders(headers);
-
-        if (!queryParametersResponse.isEmpty()) {
-            hospitalApiInfo.setQueryParameters(queryParametersResponse);
-        }
-        hospitalApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
-
-        return hospitalApiInfo;
-
-    }
-
-
-    private BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO,
-                                                                       Long appointmentModeId,
-                                                                       String dynamicHmacKey) {
-
-        AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
-                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO,
-                        appointmentModeId);
-
-        Map<String, String> requestHeaderResponse = integrationRepository.
-                findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
-
-        Map<String, String> queryParametersResponse = integrationRepository.
-                findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
-
-
-        //headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-//        headers.add("user-agent",
-//                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-
-        requestHeaderResponse.forEach((key, value) -> {
-            headers.add(key, value);
-        });
-
-        if (dynamicHmacKey != null) {
-            headers.add("signature", dynamicHmacKey);
-        }
-
-        BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
-        integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
-        integrationApiInfo.setHttpHeaders(headers);
-
-        if (!queryParametersResponse.isEmpty()) {
-            integrationApiInfo.setQueryParameters(queryParametersResponse);
-        }
-        integrationApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
-
-        return integrationApiInfo;
-
-    }
-
 
     @Override
     public void rejectAppointment(AppointmentRejectDTO rejectDTO) {
@@ -458,21 +386,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTOS;
     }
 
-    private ThirdPartyResponseDTO processRefundRequest(Appointment appointment,
-                                                       AppointmentTransactionDetail transactionDetail,
-                                                       AppointmentRefundDetail appointmentRefundDetail,
-                                                       Boolean isRefund,
-                                                       IntegrationBackendRequestDTO backendRequestDTO)
-            throws IOException {
+    private ThirdPartyResponse processRefundRequest(Appointment appointment,
+                                                    AppointmentTransactionDetail transactionDetail,
+                                                    AppointmentRefundDetail appointmentRefundDetail,
+                                                    Boolean isRefund,
+                                                    IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
 
-        ThirdPartyResponseDTO thirdPartyResponse = null;
-
+        ThirdPartyResponse thirdPartyResponse = null;
         switch (appointment.getAppointmentModeId().getCode()) {
 
             case APPOINTMENT_MODE_ESEWA_CODE:
 
                 //api integration
-                thirdPartyResponse = requestEsewaForRefund(appointment,
+                thirdPartyResponse = processEsewaRefundRequest(appointment,
                         transactionDetail,
                         appointmentRefundDetail,
                         isRefund, backendRequestDTO);
@@ -535,59 +461,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
-    private ThirdPartyResponseDTO requestEsewaForRefund(Appointment appointment,
-                                                        AppointmentTransactionDetail transactionDetail,
-                                                        AppointmentRefundDetail appointmentRefundDetail,
-                                                        Boolean isRefund,
-                                                        IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
-
-        String refundRemarks = "refund";
-        //requestBody
-//        EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
-//                .esewa_id(appointment.getPatientId().getESewaId())
-//                .is_refund(isRefund)
-//                .refund_amount(appointmentRefundDetail.getRefundAmount())
-//                .product_code(appointment.getHospitalId().getEsewaMerchantCode())
-//                .remarks(refundRemarks)
-//                .txn_amount(transactionDetail.getAppointmentAmount())
-//                .properties(Properties.builder()
-//                        .appointmentId(appointment.getId())
-//                        .hospitalName(appointment.getHospitalId().getName())
-//                        .build())
-//                .build();
-
-        EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
-                .esewa_id("9841409090")
-                .is_refund(isRefund)
-                .refund_amount(1000D)
-                .product_code("testBir")
-                .remarks("refund")
-                .txn_amount(1000D)
-                .properties(Properties.builder()
-                        .appointmentId(10L)
-                        .hospitalName("Bir hospital")
-                        .build())
-                .build();
-
-        String dynamicHmac = getSigatureForEsewa.apply(esewaRefundRequestDTO.getEsewa_id(),
-                esewaRefundRequestDTO.getProduct_code());
-
-        BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(backendRequestDTO,
-                appointment.getAppointmentModeId().getId(), dynamicHmac);
-
-        if (integrationApiInfo.getApiUri().contains("%s")) {
-            integrationApiInfo.setApiUri(integrationApiInfo.getApiUri().
-                    replace("%s", "5VQ"));
-//                    replace("%s", transactionDetail.getTransactionNumber()));
-        }
-
-        ThirdPartyResponseDTO responseEntity =
-                thirdPartyConnectorService.getEsewaService(integrationApiInfo,
-                        esewaRefundRequestDTO);
-        return responseEntity;
-
-    }
-
     private void save(Appointment appointment) {
         appointmentRepository.save(appointment);
     }
@@ -637,6 +510,109 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail) {
         appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
+
+
+    private ThirdPartyResponse processEsewaRefundRequest(Appointment appointment,
+                                                         AppointmentTransactionDetail transactionDetail,
+                                                         AppointmentRefundDetail appointmentRefundDetail,
+                                                         Boolean isRefund,
+                                                         IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+
+        //requestBody
+//        EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
+//                .esewa_id(appointment.getPatientId().getESewaId())
+//                .is_refund(isRefund)
+//                .refund_amount(appointmentRefundDetail.getRefundAmount())
+//                .product_code(appointment.getHospitalId().getEsewaMerchantCode())
+//                .remarks(refundRemarks)
+//                .txn_amount(transactionDetail.getAppointmentAmount())
+//                .properties(Properties.builder()
+//                        .appointmentId(appointment.getId())
+//                        .hospitalName(appointment.getHospitalId().getName())
+//                        .build())
+//                .build();
+
+        EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
+                .esewa_id("9841409090")
+                .is_refund(isRefund)
+                .refund_amount(1000D)
+                .product_code("testBir")
+                .remarks(ESEWA_REFUND_REMARKS)
+                .txn_amount(1000D)
+                .properties(Properties.builder()
+                        .appointmentId(10L)
+                        .hospitalName("Bir hospital")
+                        .build())
+                .build();
+
+        String generatedEsewaHmac = getSigatureForEsewa.apply(esewaRefundRequestDTO.getEsewa_id(),
+                esewaRefundRequestDTO.getProduct_code());
+
+        BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(backendRequestDTO,
+                appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
+
+        checkApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber());
+
+        ThirdPartyResponse responseEntity =
+                thirdPartyConnectorService.getEsewaService(integrationApiInfo,
+                        esewaRefundRequestDTO);
+        return responseEntity;
+
+    }
+
+
+    private BackendIntegrationApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+
+        ClientFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
+                fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
+
+        Map<String, String> requestHeaderResponse = integrationRepository.
+                findApiRequestHeadersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        Map<String, String> queryParametersResponse = integrationRepository.
+                findApiQueryParametersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
+
+
+        BackendIntegrationApiInfo hospitalApiInfo = new BackendIntegrationApiInfo();
+        hospitalApiInfo.setApiUri(featureIntegrationResponse.getUrl());
+        hospitalApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, null));
+
+        if (!queryParametersResponse.isEmpty()) {
+            hospitalApiInfo.setQueryParameters(queryParametersResponse);
+        }
+        hospitalApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
+
+        return hospitalApiInfo;
+
+    }
+
+    private BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO,
+                                                                       Long appointmentModeId,
+                                                                       String generatedHmacKey) {
+
+        AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
+                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO,
+                        appointmentModeId);
+
+        Map<String, String> requestHeaderResponse = integrationRepository.
+                findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        Map<String, String> queryParametersResponse = integrationRepository.
+                findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
+        integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
+        integrationApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, generatedHmacKey));
+
+        if (!queryParametersResponse.isEmpty()) {
+            integrationApiInfo.setQueryParameters(queryParametersResponse);
+        }
+        integrationApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
+
+        return integrationApiInfo;
+
+    }
+
 
 }
 

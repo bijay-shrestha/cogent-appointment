@@ -3,7 +3,7 @@ package com.cogent.cogentthirdpartyconnector.service;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.integrationThirdParty.ThirdPartyResponseDTO;
+import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -32,8 +32,8 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ThirdPartyResponseDTO getEsewaService(BackendIntegrationApiInfo hospitalApiInfo,
-                                                 EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException {
+    public ThirdPartyResponse getEsewaService(BackendIntegrationApiInfo hospitalApiInfo,
+                                              EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException {
 
         HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
 
@@ -57,11 +57,11 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         System.out.println(response);
 
-        ThirdPartyResponseDTO thirdPartyResponseDTO = map(response.getBody().toString(),
-                ThirdPartyResponseDTO.class);
+        ThirdPartyResponse thirdPartyResponse = map(response.getBody().toString(),
+                ThirdPartyResponse.class);
 
 
-        return thirdPartyResponseDTO;
+        return thirdPartyResponse;
     }
 
     @Override

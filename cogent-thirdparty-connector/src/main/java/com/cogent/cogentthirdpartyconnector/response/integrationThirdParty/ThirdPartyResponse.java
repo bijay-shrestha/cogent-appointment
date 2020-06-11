@@ -1,4 +1,4 @@
-package com.cogent.cogentthirdpartyconnector.response.integrationBackend.integrationThirdParty;
+package com.cogent.cogentthirdpartyconnector.response.integrationThirdParty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThirdPartyResponseDTO implements Serializable {
+public class ThirdPartyResponse implements Serializable {
 
     private String status;
 

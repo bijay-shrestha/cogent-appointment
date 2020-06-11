@@ -185,7 +185,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         HospitalDepartmentDutyRoster dutyRoster =
                 findHospitalDeptDutyRosterById(updateRequestDTO.getUpdateDetail().getHddRosterId());
 
-        validateUpdateHDDRosterDuplicity(updateRequestDTO, dutyRoster);
+        if (updateRequestDTO.getUpdateDetail().getIsRoomUpdated().equals(YES))
+            validateUpdateHDDRosterDuplicity(updateRequestDTO, dutyRoster);
 
         parseToUpdatedRosterDetails(dutyRoster, updateRequestDTO.getUpdateDetail());
 
@@ -200,6 +201,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 updateRequestDTO.getRoomDetail().getHospitalDepartmentRoomInfoId(),
                 updateRequestDTO.getUpdateDetail().getIsRoomUpdated()
         );
+
+        long a = 1 / 0;
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -622,9 +625,12 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 dutyRosterRoomInfoRepository.fetchById(rosterRoomUpdateRequestDTO.getRosterRoomId())
                         .orElseThrow(() -> new NoContentFoundException(HospitalDepartmentDutyRosterRoomInfo.class));
 
-        HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo = fetchHospitalDepartmentRoomInfo(
-                rosterRoomUpdateRequestDTO.getHospitalDepartmentRoomInfoId(), hospitalDepartmentId
-        );
+        HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo =
+                Objects.isNull(rosterRoomUpdateRequestDTO.getHospitalDepartmentRoomInfoId())
+                        ? null
+                        : fetchHospitalDepartmentRoomInfo(
+                        rosterRoomUpdateRequestDTO.getHospitalDepartmentRoomInfoId(), hospitalDepartmentId
+                );
 
         updateRoomDetails(rosterRoomInfo, hospitalDepartmentRoomInfo, rosterRoomUpdateRequestDTO.getStatus());
     }
@@ -746,20 +752,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 if (roomStatus.equals(NO))
                     DUPLICATE_HOSPITAL_DEPT_DUTY_ROSTER_WITHOUT_ROOM_EXCEPTION(
                             hospitalDepartmentDutyRoster.getFromDate(), hospitalDepartmentDutyRoster.getToDate());
-            } else {
-
-                Long rosterCount = dutyRosterRoomInfoRepository.fetchRoomCountExceptCurrentId(
-                        hospitalDepartmentDutyRoster.getHospitalDepartment().getId(),
-                        hospitalDepartmentDutyRoster.getFromDate(),
-                        hospitalDepartmentDutyRoster.getToDate(),
-                        requestDTO.getRoomDetail().getHospitalDepartmentRoomInfoId(),
-                        hospitalDepartmentDutyRoster.getId()
-                );
-
-                if (rosterCount > 0)
-                    DUPLICATE_HOSPITAL_DEPT_DUTY_ROSTER_WITH_ROOM_EXCEPTION(
-                            hospitalDepartmentDutyRoster.getFromDate(), hospitalDepartmentDutyRoster.getToDate());
-            }
+                else
+                    validateDutyRosterWithRoomDuplicity(hospitalDepartmentDutyRoster, requestDTO);
+            } else
+                validateDutyRosterWithRoomDuplicity(hospitalDepartmentDutyRoster, requestDTO);
         }
     }
 
@@ -853,6 +849,21 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_WEEK_DAYS_DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(weekDaysDoctorInfoId));
     }
 
+    private void validateDutyRosterWithRoomDuplicity(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster,
+                                                     HospitalDeptDutyRosterUpdateRequestDTO requestDTO) {
+
+        Long rosterCount = dutyRosterRoomInfoRepository.fetchRoomCountExceptCurrentId(
+                hospitalDepartmentDutyRoster.getHospitalDepartment().getId(),
+                hospitalDepartmentDutyRoster.getFromDate(),
+                hospitalDepartmentDutyRoster.getToDate(),
+                requestDTO.getRoomDetail().getHospitalDepartmentRoomInfoId(),
+                hospitalDepartmentDutyRoster.getId()
+        );
+
+        if (rosterCount > 0)
+            DUPLICATE_HOSPITAL_DEPT_DUTY_ROSTER_WITH_ROOM_EXCEPTION(
+                    hospitalDepartmentDutyRoster.getFromDate(), hospitalDepartmentDutyRoster.getToDate());
+    }
 }
 
 

@@ -53,6 +53,7 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSigatureForEsewa;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseAppointmentRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
@@ -165,7 +166,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
                 refundAppointmentDetail,
-                true,backendRequestDTO);
+                true, backendRequestDTO);
 
         updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, null);
 
@@ -196,7 +197,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
                 refundAppointmentDetail,
-                false,backendRequestDTO);
+                false, backendRequestDTO);
 
         updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, refundRejectDTO);
 
@@ -434,7 +435,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 thirdPartyResponse = requestEsewaForRefund(appointment,
                         transactionDetail,
                         appointmentRefundDetail,
-                        isRefund,backendRequestDTO);
+                        isRefund, backendRequestDTO);
                 break;
 
             default:
@@ -503,7 +504,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        BackendIntegrationApiInfo backendIntegrationHospitalApiInfo
 
 
-
         EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
                 .esewa_id("9841409090")
                 .is_refund(isRefund)
@@ -518,7 +518,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
 
-        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
+        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
+                getEsewaPaymentStatusAPIHeaders.apply(getSigatureForEsewa.apply(esewaRefundRequestDTO.getEsewa_id(),
+                        esewaRefundRequestDTO.getProduct_code())));
 
         String url = String.format(ESEWA_REFUND_API, "5VQ");
 

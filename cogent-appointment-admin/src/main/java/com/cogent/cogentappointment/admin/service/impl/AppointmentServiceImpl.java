@@ -528,7 +528,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                                          AppointmentRefundDetail appointmentRefundDetail,
                                          Boolean isRefund,
                                          IntegrationBackendRequestDTO backendRequestDTO) {
-
         //requestBody
         EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
                 .esewa_id("9841409090")

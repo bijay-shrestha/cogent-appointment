@@ -64,7 +64,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private final HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
             hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
 
-    private final RoomService roomService;
+    private final RoomRepository roomRepository;
 
     public AppointmentStatusServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                         HospitalDeptDutyRosterOverrideRepository deptDutyRosterOverrideRepository,
@@ -75,7 +75,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                                         AppointmentRepository appointmentRepository,
                                         HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
                                                 hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository,
-                                        RoomService roomService) {
+                                         RoomRepository roomRepository) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.deptDutyRosterOverrideRepository = deptDutyRosterOverrideRepository;
         this.deptDutyRosterRepository = deptDutyRosterRepository;
@@ -84,7 +84,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         this.appointmentService = appointmentService;
         this.appointmentRepository = appointmentRepository;
         this.hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository = hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository;
-        this.roomService = roomService;
+        this.roomRepository = roomRepository;
     }
 
     @Override
@@ -120,7 +120,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus = fetchHospitalDepartmentStatus
                 (requestDTO);
 
+        fetchRoomByDepartmentId(hospitalDeptDutyRosterStatus);
+
         List<HospitalDeptAppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO);
+
 
         hospitalDeptDutyRosterStatus = setDepartmentAppointmentTimeSlot(requestDTO.getStatus(),
                 hospitalDeptDutyRosterStatus, appointments);
@@ -160,16 +163,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
 
-    private List<HospitalDeptDutyRosterStatusResponseDTO> getRoomListByDepartmentId
-            (List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS){
+    private void fetchRoomByDepartmentId(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS){
 
         rosterStatusResponseDTOS.forEach(rosterStatusResponseDTO -> {
-            List<DropDownResponseDTO> roomList=roomService.fetchActiveMinRoomByHospitalDepartmentId(rosterStatusResponseDTO.getHospitalDepartmentId());
+            List<DropDownResponseDTO> roomList=roomRepository.fetchActiveMinRoomForAppointmentStatus(
+                    rosterStatusResponseDTO.getHospitalDepartmentId());
 
         rosterStatusResponseDTO.setRoomList(roomList);
         });
-
-        return rosterStatusResponseDTOS;
 
     }
 

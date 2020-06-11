@@ -36,7 +36,7 @@ public interface AppointmentService {
 
     void approveRefundAppointment(Long appointmentId,IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
-    void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO);
+    void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO, IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 

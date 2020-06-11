@@ -1,6 +1,7 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
+import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import org.springframework.http.HttpEntity;
@@ -28,6 +29,35 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
+    public ResponseEntity<?> getEsewaService(BackendIntegrationApiInfo hospitalApiInfo,
+                                             EsewaRefundRequestDTO esewaRefundRequestDTO) {
+
+        HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
+
+        String uri = "";
+        if ((httpMethod == GET) || (httpMethod == POST)) {
+
+            Map<String, String> queryParameter = hospitalApiInfo.getQueryParameters();
+            if (queryParameter != null) {
+                uri = createQueryPamarameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
+            } else {
+                uri = hospitalApiInfo.getApiUri();
+            }
+        } else {
+            uri = hospitalApiInfo.getApiUri();
+        }
+
+        ResponseEntity<?> response = restTemplateUtils.
+                requestAPI(httpMethod,
+                        uri,
+                        new HttpEntity<>(esewaRefundRequestDTO, hospitalApiInfo.getHttpHeaders()));
+
+        System.out.println(response);
+
+        return response;
+    }
+
+    @Override
     public ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo hospitalApiInfo) {
 
         HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
@@ -39,7 +69,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
             if (!queryParameter.isEmpty()) {
                 uri = createQueryPamarameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
             }
-        }else{
+        } else {
             uri = hospitalApiInfo.getApiUri();
         }
 

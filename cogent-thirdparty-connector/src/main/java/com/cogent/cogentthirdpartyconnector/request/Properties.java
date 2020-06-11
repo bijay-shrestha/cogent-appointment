@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.refund;
+package com.cogent.cogentthirdpartyconnector.request;
 
 import lombok.*;
 

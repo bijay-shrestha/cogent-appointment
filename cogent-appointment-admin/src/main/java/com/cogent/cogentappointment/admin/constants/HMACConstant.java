@@ -11,6 +11,5 @@ public class HMACConstant {
     public static final String SPACE = " ";
     public static final String COLON = ":";
 
-    public static final String HMAC_API_SECRET_ESEWA = "ZXNld2FfbWVyY2hhbnRfY2xpZW50 ";
-    public static final String HMAC_ALGORITHM_ESEWA = "SHA512";
+    public static final String HMAC_API_SECRET_ESEWA = "ZXNld2FfbWVyY2hhbnRfY2xpZW50";
 }

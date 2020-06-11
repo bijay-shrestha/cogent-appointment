@@ -9,8 +9,6 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentSta
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.refund.EsewaRefundRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.refund.Properties;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDetailResponseDTO;
@@ -32,6 +30,8 @@ import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerServ
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
+import com.cogent.cogentthirdpartyconnector.request.Properties;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
@@ -317,7 +317,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                                        Long appointmentModeId,
                                                                        String dynamicHmacKey) {
 
-
         AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
                 fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO,
                         appointmentModeId);
@@ -332,8 +331,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         //headers
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.add("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+//        headers.add("user-agent",
+//                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
         requestHeaderResponse.forEach((key, value) -> {
             headers.add(key, value);
@@ -533,16 +532,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         String refundRemarks = "refund";
         //requestBody
+//        EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
+//                .esewa_id(appointment.getPatientId().getESewaId())
+//                .is_refund(isRefund)
+//                .refund_amount(appointmentRefundDetail.getRefundAmount())
+//                .product_code(appointment.getHospitalId().getEsewaMerchantCode())
+//                .remarks(refundRemarks)
+//                .txn_amount(transactionDetail.getAppointmentAmount())
+//                .properties(Properties.builder()
+//                        .appointmentId(appointment.getId())
+//                        .hospitalName(appointment.getHospitalId().getName())
+//                        .build())
+//                .build();
+
         EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
-                .esewa_id(appointment.getPatientId().getESewaId())
+                .esewa_id("9841409090")
                 .is_refund(isRefund)
-                .refund_amount(appointmentRefundDetail.getRefundAmount())
-                .product_code(appointment.getHospitalId().getEsewaMerchantCode())
-                .remarks(refundRemarks)
-                .txn_amount(transactionDetail.getAppointmentAmount())
+                .refund_amount(1000D)
+                .product_code("testBir")
+                .remarks("refund")
+                .txn_amount(1000D)
                 .properties(Properties.builder()
-                        .appointmentId(appointment.getId())
-                        .hospitalName(appointment.getHospitalId().getName())
+                        .appointmentId(10L)
+                        .hospitalName("Bir hospital")
                         .build())
                 .build();
 
@@ -554,11 +566,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         if (integrationApiInfo.getApiUri().contains("%s")) {
             integrationApiInfo.setApiUri(integrationApiInfo.getApiUri().
-                    replace("%s", transactionDetail.getTransactionNumber()));
+                    replace("%s", "5VQ"));
+//                    replace("%s", transactionDetail.getTransactionNumber()));
         }
 
         ResponseEntity<EsewaResponseDTO> responseEntity = (ResponseEntity<EsewaResponseDTO>)
-                thirdPartyConnectorService.getHospitalService(integrationApiInfo);
+                thirdPartyConnectorService.getEsewaService(integrationApiInfo,
+                        esewaRefundRequestDTO);
 
         return (responseEntity.getBody().getStatus() == null) ? AMBIGIOUS : responseEntity.getBody().getStatus();
 

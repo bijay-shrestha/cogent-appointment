@@ -155,7 +155,7 @@ public class IntegrationAdminModeQuery {
             APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY +
                     " AND f.code=:featureCode" +
                     " AND ic.code=:integrationChannelCode" +
-                    " AND amfi.appointmentModeId=:appointmentModeId";
+                    " AND amfi.appointmentModeId.id=:appointmentModeId";
 
 
     //

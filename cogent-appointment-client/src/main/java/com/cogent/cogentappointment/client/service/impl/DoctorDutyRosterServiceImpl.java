@@ -105,9 +105,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 fetchSpecializationByIdAndHospitalId(requestDTO.getSpecializationId(), hospitalId),
                 findHospitalById(hospitalId));
 
-        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
+        doctorDutyRoster.setFromDateInNepali(getNepaliDate(requestDTO.getFromDate()));
 
-        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
+        doctorDutyRoster.setToDateInNepali(getNepaliDate(requestDTO.getToDate()));
 
         save(doctorDutyRoster);
 
@@ -447,11 +447,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                         DoctorDutyRosterOverride doctorDutyRosterOverride = parseToDoctorDutyRosterOverride(requestDTO,
                                 doctorDutyRoster);
 
-                        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                                (requestDTO.getFromDate()));
+                        doctorDutyRosterOverride.setFromDateInNepali(getNepaliDate(requestDTO.getFromDate()));
 
-                        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                                (requestDTO.getToDate()));
+                        doctorDutyRosterOverride.setToDateInNepali(getNepaliDate(requestDTO.getToDate()));
 
                         return doctorDutyRosterOverride;
                     }).collect(Collectors.toList());
@@ -474,11 +472,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
 
-        doctorDutyRosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (updateRequestDTO.getOverrideFromDate()));
+        doctorDutyRosterOverride.setFromDateInNepali(getNepaliDate(updateRequestDTO.getOverrideFromDate()));
 
-        doctorDutyRosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (updateRequestDTO.getOverrideToDate()));
+        doctorDutyRosterOverride.setToDateInNepali(getNepaliDate(updateRequestDTO.getOverrideToDate()));
 
         doctorDutyRosterOverrideRepository.save(doctorDutyRosterOverride);
 
@@ -493,11 +489,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         DoctorDutyRosterOverride rosterOverride = parseDoctorDutyRosterOverrideDetails(updateRequestDTO,
                 doctorDutyRosterOverride);
 
-        rosterOverride.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (updateRequestDTO.getOverrideFromDate()));
+        rosterOverride.setFromDateInNepali(getNepaliDate(updateRequestDTO.getOverrideFromDate()));
 
-        rosterOverride.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate
-                (updateRequestDTO.getOverrideToDate()));
+        rosterOverride.setToDateInNepali(getNepaliDate(updateRequestDTO.getOverrideToDate()));
 
         return doctorDutyRosterOverride.getId();
     }
@@ -574,5 +568,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, hospitalId);
         throw new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString());
     };
+
+    private String getNepaliDate(Date date){
+        return   nepaliDateUtility.getNepaliDateFromDate(date);
+    }
 
 }

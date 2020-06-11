@@ -1027,7 +1027,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospitalAppointmentServiceType
         );
 
-        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
+        appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
 
         save(appointment);
 
@@ -1078,7 +1078,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospitalAppointmentServiceType
         );
 
-        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
+        appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
 
         save(appointment);
 
@@ -1212,7 +1212,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospitalAppointmentServiceType
         );
 
-        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
+        appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
 
         save(appointment);
 
@@ -1264,7 +1264,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospitalAppointmentServiceType
         );
 
-        appointment.setAppointmentDateInNepali(nepaliDateUtility.getNepaliDateFromDate(appointment.getAppointmentDate()));
+        appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
 
         save(appointment);
 
@@ -1293,5 +1293,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentSuccessResponseDTO(appointment.getAppointmentNumber(),
                 transactionRequestLog.getTransactionStatus(), appointment.getHospitalId().getRefundPercentage()
         );
+    }
+
+    private String getNepaliDate(Date date){
+        return   nepaliDateUtility.getNepaliDateFromDate(date);
     }
 }

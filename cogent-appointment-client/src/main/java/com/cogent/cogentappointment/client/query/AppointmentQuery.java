@@ -407,7 +407,12 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +
                             " da.fileUri as fileUri," +
                             " a.isFollowUp as followUp," +
-                            " hpi.hospitalNumber as hospitalNumber" +
+                            " hpi.hospitalNumber as hospitalNumber," +
+                            " p.id as patientId," +
+                            " p.gender as gender," +
+                            " hpi.address as address," +
+                            " hpi.isRegistered as isRegistered," +
+                            QUERY_TO_CALCULATE_PATIENT_AGE +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

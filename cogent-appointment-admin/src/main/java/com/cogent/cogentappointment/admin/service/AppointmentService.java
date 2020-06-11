@@ -21,6 +21,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLo
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +35,9 @@ public interface AppointmentService {
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId);
 
-    void approveRefundAppointment(Long appointmentId,IntegrationBackendRequestDTO integrationBackendRequestDTO);
+    void approveRefundAppointment(Long appointmentId,IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException;
 
-    void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO, IntegrationBackendRequestDTO integrationBackendRequestDTO);
+    void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO, IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException;
 
     List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 

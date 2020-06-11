@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.io.IOException;
+
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
@@ -56,7 +58,7 @@ public class AppointmentResource {
     @PutMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
     public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId,
-                                                      @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+                                                      @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
         appointmentService.approveRefundAppointment(appointmentId,integrationBackendRequestDTO);
         return ok().build();
     }
@@ -64,7 +66,7 @@ public class AppointmentResource {
     @PutMapping(REFUND + REJECT)
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
     public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO,
-                                                     IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+                                                     IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
         appointmentService.rejectRefundAppointment(refundRejectDTO,integrationBackendRequestDTO);
         return ok().build();
     }

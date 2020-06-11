@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.io.IOException;
+
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.RefundStatusConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
@@ -45,7 +47,7 @@ public class RefundStatusResource {
 
     @PutMapping(CHECK)
     @ApiOperation(FETCH_REFUND_DETAILS_TO_APPROVE)
-    public ResponseEntity<?> checkRefundStatus(@Valid @RequestBody RefundStatusRequestDTO requestDTO) {
+    public ResponseEntity<?> checkRefundStatus(@Valid @RequestBody RefundStatusRequestDTO requestDTO) throws IOException {
         refundStatusService.checkRefundStatus(requestDTO);
         return ok().build();
     }

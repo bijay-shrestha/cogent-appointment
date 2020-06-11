@@ -3,15 +3,18 @@ package com.cogent.cogentthirdpartyconnector.service;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.integrationThirdParty.ThirdPartyResponseDTO;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
+import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryPamarameter;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -29,8 +32,8 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> getEsewaService(BackendIntegrationApiInfo hospitalApiInfo,
-                                             EsewaRefundRequestDTO esewaRefundRequestDTO) {
+    public ThirdPartyResponseDTO getEsewaService(BackendIntegrationApiInfo hospitalApiInfo,
+                                                 EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException {
 
         HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
 
@@ -54,7 +57,11 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         System.out.println(response);
 
-        return response;
+        ThirdPartyResponseDTO thirdPartyResponseDTO = map(response.getBody().toString(),
+                ThirdPartyResponseDTO.class);
+
+
+        return thirdPartyResponseDTO;
     }
 
     @Override

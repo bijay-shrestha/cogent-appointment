@@ -20,7 +20,6 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.refund.Appoin
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
-import com.cogent.cogentappointment.admin.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -33,6 +32,7 @@ import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.Properties;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.integrationThirdParty.ThirdPartyResponseDTO;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -42,9 +42,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
@@ -142,7 +144,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void approveRefundAppointment(Long appointmentId,
-                                         IntegrationBackendRequestDTO backendRequestDTO) {
+                                         IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
@@ -156,19 +158,23 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
 
-        String response = processRefundRequest(appointment,
+        ThirdPartyResponseDTO response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
                 refundAppointmentDetail,
                 true, backendRequestDTO);
 
-        updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, null);
+        if(!Objects.isNull(response.getCode())){
+            throw new BadRequestException(response.getMessage(),response.getMessage());
+        }
+
+        updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail, null);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO,
-                                        IntegrationBackendRequestDTO backendRequestDTO) {
+                                        IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -187,12 +193,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
 
-        String response = processRefundRequest(appointment,
+        ThirdPartyResponseDTO response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
                 refundAppointmentDetail,
                 false, backendRequestDTO);
 
-        updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, refundRejectDTO);
+        if(!Objects.isNull(response.getCode())){
+            throw new BadRequestException(response.getMessage());
+        }
+
+        updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail, refundRejectDTO);
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
@@ -448,13 +458,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTOS;
     }
 
-    private String processRefundRequest(Appointment appointment,
-                                        AppointmentTransactionDetail transactionDetail,
-                                        AppointmentRefundDetail appointmentRefundDetail,
-                                        Boolean isRefund,
-                                        IntegrationBackendRequestDTO backendRequestDTO) {
+    private ThirdPartyResponseDTO processRefundRequest(Appointment appointment,
+                                                       AppointmentTransactionDetail transactionDetail,
+                                                       AppointmentRefundDetail appointmentRefundDetail,
+                                                       Boolean isRefund,
+                                                       IntegrationBackendRequestDTO backendRequestDTO)
+            throws IOException {
 
-        String thirdPartyResponse = null;
+        ThirdPartyResponseDTO thirdPartyResponse = null;
 
         switch (appointment.getAppointmentModeId().getCode()) {
 
@@ -524,11 +535,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
-    private String requestEsewaForRefund(Appointment appointment,
-                                         AppointmentTransactionDetail transactionDetail,
-                                         AppointmentRefundDetail appointmentRefundDetail,
-                                         Boolean isRefund,
-                                         IntegrationBackendRequestDTO backendRequestDTO) {
+    private ThirdPartyResponseDTO requestEsewaForRefund(Appointment appointment,
+                                                        AppointmentTransactionDetail transactionDetail,
+                                                        AppointmentRefundDetail appointmentRefundDetail,
+                                                        Boolean isRefund,
+                                                        IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
 
         String refundRemarks = "refund";
         //requestBody
@@ -570,11 +581,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 //                    replace("%s", transactionDetail.getTransactionNumber()));
         }
 
-        ResponseEntity<EsewaResponseDTO> responseEntity = (ResponseEntity<EsewaResponseDTO>)
+        ThirdPartyResponseDTO responseEntity =
                 thirdPartyConnectorService.getEsewaService(integrationApiInfo,
                         esewaRefundRequestDTO);
-
-        return (responseEntity.getBody().getStatus() == null) ? AMBIGIOUS : responseEntity.getBody().getStatus();
+        return responseEntity;
 
     }
 

@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.admin.dto.request.clientIntegration.EsewaPay
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
@@ -15,10 +14,10 @@ import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
@@ -27,8 +26,6 @@ import static com.cogent.cogentappointment.admin.log.constants.RefundStatusLog.R
 import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentappointment.admin.utils.resttemplate.IntegrationRequestURI.ESEWA_API_PAYMENT_STATUS;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
@@ -68,7 +65,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     }
 
     @Override
-    public void checkRefundStatus(RefundStatusRequestDTO requestDTO) {
+    public void checkRefundStatus(RefundStatusRequestDTO requestDTO) throws IOException {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, REFUND_STATUS);
@@ -94,10 +91,10 @@ public class RefundStatusServiceImpl implements RefundStatusService {
                 break;
 
             case AMBIGIOUS:
-//                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(), requestDTO.getIntegrationBackendRequestDTO());
 
             default:
-//                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(), requestDTO.getIntegrationBackendRequestDTO());
         }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));

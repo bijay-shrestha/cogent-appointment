@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepo
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.RefundStatusService;
-import com.cogent.cogentappointment.admin.utils.resttemplate.RestTemplateUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
@@ -43,20 +42,16 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     private final AppointmentRefundDetailRepository refundDetailRepository;
 
     private final AppointmentRepository appointmentRepository;
-
-    private final RestTemplateUtils restTemplateUtils;
-
     private final AppointmentService appointmentService;
 
-
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
-                                   AppointmentRepository appointmentRepository,
-                                   RestTemplateUtils restTemplateUtils, AppointmentService appointmentService) {
+                                   AppointmentRepository
+                                           appointmentRepository, AppointmentService appointmentService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
-        this.restTemplateUtils = restTemplateUtils;
         this.appointmentService = appointmentService;
     }
+
 
     @Override
     public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
@@ -98,11 +93,11 @@ public class RefundStatusServiceImpl implements RefundStatusService {
                 changeAppointmentAndAppointmentRefundDetailStatus(appointment, appointmentRefundDetail, response);
                 break;
 
-            case AMBIGIOUS :
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+            case AMBIGIOUS:
+//                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
 
             default:
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+//                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
         }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
@@ -129,12 +124,14 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         EsewaPayementStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
 
         HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
+//
+//        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
+//                postRequest(ESEWA_API_PAYMENT_STATUS,
+//                        request, EsewaResponseDTO.class);
+//
+//        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
 
-        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-                postRequest(ESEWA_API_PAYMENT_STATUS,
-                        request, EsewaResponseDTO.class);
-
-        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
+        return null;
     }
 
     private String processRefundRequest(RefundStatusRequestDTO requestDTO) {

@@ -202,8 +202,6 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 updateRequestDTO.getUpdateDetail().getIsRoomUpdated()
         );
 
-        long a = 1 / 0;
-
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
                 getDifferenceBetweenTwoTime(startTime));
     }

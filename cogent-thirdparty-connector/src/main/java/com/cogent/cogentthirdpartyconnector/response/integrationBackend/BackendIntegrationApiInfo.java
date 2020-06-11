@@ -2,9 +2,9 @@ package com.cogent.cogentthirdpartyconnector.response.integrationBackend;
 
 import lombok.*;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +22,8 @@ public class BackendIntegrationApiInfo implements Serializable {
     private HttpHeaders httpHeaders;
 
     private Map<String, String> queryParameters;
+
+    private List<String> requestBody;
 
     private String httpMethod;
 

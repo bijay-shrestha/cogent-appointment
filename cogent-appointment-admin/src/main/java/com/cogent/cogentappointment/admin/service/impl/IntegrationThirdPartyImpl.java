@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.repository.IntegrationRepository;
@@ -11,11 +12,14 @@ import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
+import com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSignatureForEsewa;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
@@ -50,7 +54,14 @@ public class IntegrationThirdPartyImpl {
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(backendRequestDTO,
                 appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 
-        EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
+//        EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
+//                transactionDetail,
+//                appointmentRefundDetail,
+//                isRefund);
+
+        Map<String, Object> esewaRefundRequestDTO = RequestBodyUtils.getDynamicEsewaRequestBodyLog(
+                integrationApiInfo.getRequestBody(),
+                appointment,
                 transactionDetail,
                 appointmentRefundDetail,
                 isRefund);
@@ -102,9 +113,13 @@ public class IntegrationThirdPartyImpl {
         Map<String, String> queryParametersResponse = integrationRepository.
                 findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
 
+        List<String> requestBody = getRequestBodyByFeature(featureIntegrationResponse.getFeatureId(), featureIntegrationResponse.getRequestMethod());
+
+
         BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
         integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
         integrationApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, generatedHmacKey));
+        integrationApiInfo.setRequestBody(requestBody);
 
         if (!queryParametersResponse.isEmpty()) {
             integrationApiInfo.setQueryParameters(queryParametersResponse);
@@ -113,5 +128,24 @@ public class IntegrationThirdPartyImpl {
 
         return integrationApiInfo;
 
+    }
+
+    private List<String> getRequestBodyByFeature(Long featureId, String requestMethod) {
+
+        List<String> requestBody = null;
+        if (requestMethod.equalsIgnoreCase("POST")) {
+            List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.
+                    fetchRequestBodyAttributeByFeatureId(featureId);
+
+            if (responses != null) {
+                requestBody = responses.stream()
+                        .map(request -> request.getName())
+                        .collect(Collectors.toList());
+            }
+
+        }
+
+
+        return requestBody;
     }
 }

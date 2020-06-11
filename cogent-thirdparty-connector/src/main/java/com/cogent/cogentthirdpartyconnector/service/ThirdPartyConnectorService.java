@@ -6,11 +6,12 @@ import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.Third
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface ThirdPartyConnectorService {
 
     ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
-                                              EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException;
+                                              Map<String, Object> esewaRefundRequestDTO) throws IOException;
 
     ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
 

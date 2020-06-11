@@ -135,6 +135,7 @@ public class IntegrationAdminModeQuery {
                     " aif.id as apiIntegrationFormatId," +
                     " amfi.id as appointmentModeId," +
                     " ic.code as integrationChannelCode," +
+                    " f.id as featureId," +
                     " f.code as featureCode," +
                     " hrm.name as requestMethod," +
                     " aif.url as url" +

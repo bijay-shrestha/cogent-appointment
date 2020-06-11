@@ -113,6 +113,8 @@ public class SwaggerConstants {
     }
 
     //C
+
+
     public interface CompanyAdminConstant {
         String BASE_API_VALUE = "This is Company Admin Resource";
         String SAVE_OPERATION = "Save new company admin";
@@ -293,6 +295,37 @@ public class SwaggerConstants {
 
 
     //I
+
+    public interface IntegrationConstant {
+        String BASE_API_VALUE = "This is Client Integration Resource.";
+        String SAVE_CLIENT_OPERATION = "Save new Client API Integration";
+        String UPDATE_CLIENT_OPERATION = "Update Client API Integration";
+        String SEARCH_CLIENT_API_INTEGRATION_OPERATION = "Search Client API Integration";
+        String FETCH_CLIENT_API_INTEGRATION_DETAIL = "Fetch Client Api Integration detail by client integration id";
+        String DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION = "Delete client integration feature by client integration id";
+        String DETAILS_FOR_UPDATE_CLIENT_INTEGRATION_MODAL_OPERATION = "Fetch Client Integration details for update modal by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
+    }
+
+    public interface IntegrationAdminModeConstant {
+        String BASE_API_VALUE = "This is Admin Mode API Integration Resource.";
+        String SAVE_ADMIN_MODE_INTEGRATION_OPERATION = "Save new Admin Mode API Integration";
+        String UPDATE_ADMIN_MODE_INTEGRATION_OPERATION = "Update Admin Mode API Integration";
+        String SEARCH_ADMIN_MODE_INTEGRATION_OPERATION = "Search Admin Mode API Integration";
+        String FETCH_ADMIN_MODE_INTEGRATION_DETAIL = "Fetch Admin Mode API Integration detail by admin mode integration id";
+        String DELETE_ADMIN_MODE_INTEGRATION_OPERATION = "Delete Admin Mode API Integration feature by admin mode api integration id";
+        String DETAILS_FOR_UPDATE_ADMIN_MODE_INTEGRATION_MODAL_OPERATION = "Fetch Admin Mode API Integration details for update modal by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
+    }
+
+    public interface IntegrationRequestBodyConstant {
+        String BASE_API_VALUE = "This is Integration Request Body Resource.";
+        String DELETE_API_REQUEST_HEADER_ATTRIBUTE_OPERATION = "Delete API Request Body Attributes by request body attribute id";
+        String SAVE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION = "Save new Integration Request Body Attributes";
+        String UPDATE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION = "Update Request Body Attributes";
+        String FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION = "Fetch Request Body Attributes by feature id";
+        String SEARCH_API_REQUEST_BODY_ATTRIBUTE_OPERATION = "Search API Request Body Attributes";
+    }
 
     //J
     //K

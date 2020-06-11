@@ -43,10 +43,9 @@ public class HospitalDeptDutyRosterRoomInfoRepositoryCustomImpl implements Hospi
     public Long fetchRoomCountExceptCurrentId(Long hospitalDeptId, Date fromDate, Date toDate,
                                               Long hospitalDepartmentRoomInfoId, Long hddRosterId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROOM_COUNT_EXCEPT_CURRENT_ID)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROOM_COUNT_EXCEPT_CURRENT_ID(hospitalDepartmentRoomInfoId))
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
-                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDeptId)
                 .setParameter(ID, hddRosterId);
 

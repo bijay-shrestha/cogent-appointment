@@ -125,7 +125,7 @@ public class ErrorMessageConstants {
                 "Department Duty Roster already exists within '%s' to '%s'";
 
         String DUPLICATE_DUTY_ROSTER_WITH_ROOM =
-                "Department Duty Roster already exists within '%s' to '%s' for selected room";
+                "Department Duty Roster already exists within '%s' to '%s' with room";
 
         String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITHOUT_ROOM =
                 "Department Duty Roster Override already exists within '%s' to '%s'";

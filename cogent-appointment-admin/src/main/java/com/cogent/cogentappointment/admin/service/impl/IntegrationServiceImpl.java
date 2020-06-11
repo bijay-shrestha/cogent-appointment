@@ -5,6 +5,10 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.*;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiQueryParametersResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiRequestHeaderResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
@@ -15,7 +19,6 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
-import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATION;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.CLIENT_API_INTEGRATION;
@@ -212,7 +215,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 requestHeader.setKeyName(requestDTO.getKeyParam());
                 requestHeader.setValue(requestDTO.getValueParam());
                 requestHeader.setDescription(requestDTO.getDescription());
-                requestHeader.setStatus(requestDTO.getStatus());
+                requestHeader.setStatus(ACTIVE);
 
                 apiRequestHeaderRepository.save(requestHeader);
 
@@ -245,7 +248,8 @@ public class IntegrationServiceImpl implements IntegrationService {
                 queryParameters.setApiIntegrationFormatId(integrationFormatId);
                 queryParameters.setParam(requestDTO.getKeyParam());
                 queryParameters.setValue(requestDTO.getValueParam());
-                queryParameters.setStatus(requestDTO.getStatus());
+                queryParameters.setDescription(requestDTO.getDescription());
+                queryParameters.setStatus(ACTIVE);
 
                 apiQueryParametersRepository.save(queryParameters);
 
@@ -255,6 +259,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 apiQueryParameters.setParam(requestDTO.getKeyParam());
                 apiQueryParameters.setValue(requestDTO.getValueParam());
                 apiQueryParameters.setStatus(requestDTO.getStatus());
+                apiQueryParameters.setDescription(requestDTO.getDescription());
                 apiQueryParameters.setApiIntegrationFormatId(integrationFormatId);
 
             }
@@ -262,7 +267,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
     }
-
 
     @Override
     public ClientApiIntegrationSearchDTO search(ClientApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable) {
@@ -360,10 +364,10 @@ public class IntegrationServiceImpl implements IntegrationService {
         ClientApiIntegrationResponseDTO featureIntegrationResponse = integrationRepository.
                 findClientApiIntegration(id);
 
-        Map<String, String> requestHeaderResponseDTO = integrationRepository.
+        List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO = integrationRepository.
                 findApiRequestHeaders(featureIntegrationResponse.getFeatureId());
 
-        Map<String, String> queryParametersResponseDTO = integrationRepository.
+        List<ApiQueryParametersDetailResponse> queryParametersResponseDTO = integrationRepository.
                 findApiQueryParameters(featureIntegrationResponse.getFeatureId());
 
         ClientApiIntegrationDetailResponseDTO responseDTO = new ClientApiIntegrationDetailResponseDTO();

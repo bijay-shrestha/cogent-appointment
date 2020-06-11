@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiQueryParametersResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiRequestHeaderResponseDTO;
@@ -88,7 +90,8 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO,
+                                                                    Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, CLIENT_API_INTEGRATION_SEARCH_QUERY.apply(searchRequestDTO));
 
@@ -196,7 +199,29 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public Map<String, String> findApiRequestHeaders(Long featureId) {
+    public List<ApiRequestHeaderDetailResponse> findApiRequestHeaders(Long featureId) {
+        Query query = createQuery.apply(entityManager, CLIENT_API_FEATURES_HEADERS_DETAILS_QUERY)
+                .setParameter(API_FEATURE_ID, featureId);
+
+        List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO =
+                transformQueryToResultList(query, ApiRequestHeaderDetailResponse.class);
+
+        return requestHeaderResponseDTO;
+    }
+
+    @Override
+    public List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long featureId) {
+        Query query = createQuery.apply(entityManager, CLIENT_API_PARAMETERS_DETAILS_QUERY)
+                .setParameter(API_FEATURE_ID, featureId);
+
+        List<ApiQueryParametersDetailResponse> parametersResponseDTO =
+                transformQueryToResultList(query, ApiQueryParametersDetailResponse.class);
+
+        return parametersResponseDTO;
+    }
+
+    @Override
+    public Map<String, String> findApiRequestHeadersResponse(Long featureId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
                 .setParameter(API_FEATURE_ID, featureId);
 
@@ -212,7 +237,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public Map<String, String> findApiQueryParameters(Long featureId) {
+    public Map<String, String> findApiQueryParametersResponse(Long featureId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_PARAMETERS_QUERY)
                 .setParameter(API_FEATURE_ID, featureId);
 
@@ -235,7 +260,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     private Supplier<NoContentFoundException> CLIENT_API_INTEGRATION_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, CLIENT_FEATURE_INTEGRATION);
-        throw new NoContentFoundException(NO_RECORD_FOUND, CLIENT_FEATURE_INTEGRATION);
+        throw new NoContentFoundException(ClientFeatureIntegration.class);
     };
 
     private Function<Long, NoContentFoundException> CLIENT_API_REQUEST_HEADER_NOT_FOUND = (id) -> {

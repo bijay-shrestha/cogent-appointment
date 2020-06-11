@@ -10,10 +10,9 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientAp
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeApiIntegrationResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.*;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
@@ -433,10 +432,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         AdminModeApiIntegrationResponseDTO featureIntegrationResponse = adminModeFeatureIntegrationRepository.
                 findAdminModeFeatureIntegration(id);
 
-        Map<String, String> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
+        List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
                 findAdminModeApiRequestHeaders(featureIntegrationResponse.getFeatureId());
 
-        Map<String, String> queryParametersResponseDTO = adminModeQueryParametersRepository.
+        List<ApiQueryParametersDetailResponse> queryParametersResponseDTO = adminModeQueryParametersRepository.
                 findAdminModeApiQueryParameters(featureIntegrationResponse.getFeatureId());
 
         AdminModeIntegrationDetailResponseDTO responseDTO = new AdminModeIntegrationDetailResponseDTO();

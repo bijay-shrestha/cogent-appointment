@@ -1,6 +1,6 @@
-package com.cogent.cogentappointment.client.security.hmac;
+package com.cogent.cogentappointment.admin.security.hmac;
 
-import com.cogent.cogentappointment.client.exception.BadRequestException;
+import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
@@ -10,8 +10,8 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 
-import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_ALGORITHM_ESEWA;
-import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_API_SECRET_ESEWA;
+import static com.cogent.cogentappointment.admin.constants.HMACConstant.HMAC_ALGORITHM_ESEWA;
+import static com.cogent.cogentappointment.admin.constants.HMACConstant.HMAC_API_SECRET_ESEWA;
 
 /**
  * @author Sauravi Thapa २०/१/१९

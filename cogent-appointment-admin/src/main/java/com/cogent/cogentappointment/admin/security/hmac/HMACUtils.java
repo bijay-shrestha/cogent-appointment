@@ -5,7 +5,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.function.BiFunction;
+
 import static com.cogent.cogentappointment.admin.constants.HMACConstant.*;
+import static com.cogent.cogentappointment.admin.security.hmac.HMACBuilderForEsewa.hmacShaGenerator;
 import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generateNonce;
 
 /**
@@ -56,5 +59,18 @@ public class HMACUtils {
 
         return hash;
     }
+
+    public static BiFunction<String, String, String> getSigatureForEsewa = (esewaId, merchantCode) -> {
+
+        String message = esewaId + COLON + merchantCode;
+
+        final String signature = hmacShaGenerator(message);
+
+        return signature;
+    };
+
+
+
+
 
 }

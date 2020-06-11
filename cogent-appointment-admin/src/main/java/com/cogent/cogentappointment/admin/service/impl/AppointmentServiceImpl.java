@@ -22,6 +22,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.refund.Appoin
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -53,6 +54,7 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSigatureForEsewa;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseAppointmentRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
@@ -338,7 +340,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         });
 
         if (dynamicHmacKey != null) {
-            headers.add("signature", "");
+            headers.add("signature", dynamicHmacKey);
         }
 
         BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
@@ -528,38 +530,38 @@ public class AppointmentServiceImpl implements AppointmentService {
                                          AppointmentRefundDetail appointmentRefundDetail,
                                          Boolean isRefund,
                                          IntegrationBackendRequestDTO backendRequestDTO) {
+
+        String refundRemarks = "refund";
         //requestBody
         EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
-                .esewa_id("9841409090")
+                .esewa_id(appointment.getPatientId().getESewaId())
                 .is_refund(isRefund)
-                .refund_amount(800D)
-                .product_code("testBir")
-                .remarks("refund")
-                .txn_amount(1000D)
+                .refund_amount(appointmentRefundDetail.getRefundAmount())
+                .product_code(appointment.getHospitalId().getEsewaMerchantCode())
+                .remarks(refundRemarks)
+                .txn_amount(transactionDetail.getAppointmentAmount())
                 .properties(Properties.builder()
-                        .appointmentId(10L)
-                        .hospitalName("Bir hospital")
+                        .appointmentId(appointment.getId())
+                        .hospitalName(appointment.getHospitalId().getName())
                         .build())
                 .build();
 
-        String dynamicHmac = "key.........";
-
+        String dynamicHmac = getSigatureForEsewa.apply(esewaRefundRequestDTO.getEsewa_id(),
+                esewaRefundRequestDTO.getProduct_code());
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(backendRequestDTO,
                 appointment.getAppointmentModeId().getId(), dynamicHmac);
 
+        if (integrationApiInfo.getApiUri().contains("%s")) {
+            integrationApiInfo.setApiUri(integrationApiInfo.getApiUri().
+                    replace("%s", transactionDetail.getTransactionNumber()));
+        }
 
-//        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
-//        String url = String.format(ESEWA_REFUND_API, "5VQ");
+        ResponseEntity<EsewaResponseDTO> responseEntity = (ResponseEntity<EsewaResponseDTO>)
+                thirdPartyConnectorService.getHospitalService(integrationApiInfo);
 
-        ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationApiInfo);
+        return (responseEntity.getBody().getStatus() == null) ? AMBIGIOUS : responseEntity.getBody().getStatus();
 
-//        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-//                postRequest(url, request, EsewaResponseDTO.class);
-
-//        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
-
-        return null;
     }
 
     private void save(Appointment appointment) {

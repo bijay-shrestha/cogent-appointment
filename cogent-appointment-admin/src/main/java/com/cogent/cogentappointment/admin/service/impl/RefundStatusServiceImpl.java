@@ -123,7 +123,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         EsewaPayementStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
 
-        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
+//        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
 //
 //        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
 //                postRequest(ESEWA_API_PAYMENT_STATUS,

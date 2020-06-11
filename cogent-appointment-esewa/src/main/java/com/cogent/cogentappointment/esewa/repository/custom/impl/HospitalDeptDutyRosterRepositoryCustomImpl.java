@@ -139,6 +139,20 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         return dutyRosterTimeResponseTO;
     }
 
+    @Override
+    public List<HospitalDepartmentDutyRoster> fetchHospitalDeptDutyRoster(Long hospitalDepartmentId) {
+
+        List<HospitalDepartmentDutyRoster> dutyRosters = entityManager.createQuery(
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_BY_HOSPITAL_DEPARTMENT_ID, HospitalDepartmentDutyRoster.class)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .getResultList();
+
+        if (ObjectUtils.isEmpty(dutyRosters))
+            HOSPITAL_DEPARTMENT_DUTY_ROSTER_NOT_FOUND.get();
+
+        return dutyRosters;
+    }
+
     private HospitalDepartmentDutyRoster fetchHospitalDepartmentDutyRosterWithoutRoom(Date appointmentDate,
                                                                                       Long hospitalDepartmentId) {
         return fetchHospitalDeptDutyRosterWithoutRoom(appointmentDate, hospitalDepartmentId);

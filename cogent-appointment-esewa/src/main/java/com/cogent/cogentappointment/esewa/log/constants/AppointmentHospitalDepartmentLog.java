@@ -11,7 +11,7 @@ public class AppointmentHospitalDepartmentLog {
     public static String CHECK_AVAILABILITY_PROCESS_COMPLETED = ":::: CHECKING APPOINTMENT AVAILABILITY FOR " +
             "HOSPITAL DEPARTMENT PROCESS COMPLETED IN :::: {} ms";
 
-    public static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
+    public static String AVAILABLE_APPOINTMENT_DATES = "AVAILABLE APPOINTMENT DATES";
 
 
 }

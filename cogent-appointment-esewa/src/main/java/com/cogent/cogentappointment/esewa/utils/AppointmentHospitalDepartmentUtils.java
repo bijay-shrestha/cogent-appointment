@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.utils;
 
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.availableDate.AppointmentAvailableDateResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.HospitalDepartmentDoctorInfoResponseDTO;
@@ -12,6 +13,7 @@ import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -167,4 +169,14 @@ public class AppointmentHospitalDepartmentUtils {
 
         return false;
     }
+
+    public static AppointmentAvailableDateResponseDTO parseAvailableAppointmentDates(List<LocalDate> availableDates) {
+        AppointmentAvailableDateResponseDTO responseDTO = new AppointmentAvailableDateResponseDTO();
+        responseDTO.setAvailableDates(availableDates);
+        responseDTO.setResponseCode(OK.value());
+        responseDTO.setResponseStatus(OK);
+
+        return responseDTO;
+    }
+
 }

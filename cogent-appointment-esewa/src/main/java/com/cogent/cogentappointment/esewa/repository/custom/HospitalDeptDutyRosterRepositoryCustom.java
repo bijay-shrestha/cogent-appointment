@@ -27,5 +27,7 @@ public interface HospitalDeptDutyRosterRepositoryCustom {
                                                                      Long hospitalDepartmentId,
                                                                      Long hospitalDepartmentRoomInfoId);
 
+    List<HospitalDepartmentDutyRoster> fetchHospitalDeptDutyRoster(Long hospitalDepartmentId);
+
 
 }

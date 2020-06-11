@@ -4,9 +4,11 @@ import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartm
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.StatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.availableDate.AppointmentAvailableDateResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.HospitalDepartmentDoctorInfoResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterAvailableDateResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterRoomInfoResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterTimeResponseTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
@@ -19,15 +21,21 @@ import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentHospitalDepartmentMessage.APPOINTMENT_AVAILABLE_DATE_NOT_FOUND;
+import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentLog.CHECK_AVAILABILITY_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentLog.CHECK_AVAILABILITY_PROCESS_STARTED;
+import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentLog.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentReservationLog.APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentDutyRosterLog.HOSPITAL_DEPARTMENT_DUTY_ROSTER;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentUtils.*;
@@ -130,6 +138,39 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 getDifferenceBetweenTwoTime(startTime));
 
         return parseToStatusResponseDTO();
+    }
+
+    @Override
+    public AppointmentAvailableDateResponseDTO fetchAvailableDepartmentDates(Long hospitalDepartmentId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, AVAILABLE_APPOINTMENT_DATES);
+
+        List<HospitalDepartmentDutyRoster> hospitalDepartmentDutyRosters =
+                hospitalDeptDutyRosterRepository.fetchHospitalDeptDutyRoster(hospitalDepartmentId);
+
+        List<LocalDate> availableDates = new ArrayList<>();
+
+        hospitalDepartmentDutyRosters.forEach(dutyRoster -> {
+
+            fetchAvailableDatesFromWeekDaysRoster(dutyRoster, availableDates);
+
+            if (dutyRoster.getHasOverrideDutyRoster().equals(YES))
+                fetchAvailableDatesFromOverrideRoster(dutyRoster.getId(), availableDates);
+        });
+
+        if (ObjectUtils.isEmpty(availableDates))
+            NO_AVAILABLE_APPOINTMENT_DATES_FOUND.get();
+
+        Collections.sort(availableDates);
+
+        AppointmentAvailableDateResponseDTO availableAppointmentDates =
+                parseAvailableAppointmentDates(availableDates);
+
+        log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_APPOINTMENT_DATES, getDifferenceBetweenTwoTime(startTime));
+
+        return availableAppointmentDates;
     }
 
     private AppointmentHospitalDeptCheckAvailabilityResponseDTO fetchAvailableHospitalDeptTimeSlots(
@@ -370,4 +411,52 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         return appointmentHospitalDepartmentReservationLogRepository.findAppointmentReservationLogById(
                 appointmentReservationId);
     }
+
+    private void fetchAvailableDatesFromWeekDaysRoster(HospitalDepartmentDutyRoster dutyRoster,
+                                                       List<LocalDate> availableDates) {
+
+        List<String> availableWeekDays =
+                hospitalDeptWeekDaysDutyRosterRepository.fetchWeekDaysCode(dutyRoster.getId());
+
+        LocalDate startLocalDate = convertDateToLocalDate(dutyRoster.getFromDate());
+        LocalDate endLocalDate = convertDateToLocalDate(dutyRoster.getToDate());
+
+        Stream.iterate(startLocalDate, date -> date.plusDays(1))
+                .limit(ChronoUnit.DAYS.between(startLocalDate, endLocalDate) + 1)
+                .forEach(localDate -> {
+
+                    boolean isPastDate = localDate.isBefore(LocalDate.now());
+                    if (!isPastDate) {
+                        String weekDayCode = localDate.getDayOfWeek().toString().substring(0, 3);
+
+                        if (availableWeekDays.contains(weekDayCode) && !availableDates.contains(localDate))
+                            availableDates.add(localDate);
+                    }
+                });
+    }
+
+    private void fetchAvailableDatesFromOverrideRoster(Long hddRosterId,
+                                                       List<LocalDate> availableDates) {
+
+        List<HospitalDeptDutyRosterAvailableDateResponseDTO> overrideRosterDates =
+                hospitalDeptDutyRosterOverrideRepository.fetchOverrideRosterDates(hddRosterId);
+
+        overrideRosterDates.forEach(overrideRoster -> {
+
+            LocalDate startDate = convertDateToLocalDate(overrideRoster.getFromDate());
+            LocalDate endDate = convertDateToLocalDate(overrideRoster.getToDate());
+
+            Stream.iterate(startDate, date -> date.plusDays(1))
+                    .limit(ChronoUnit.DAYS.between(startDate, endDate) + 1)
+                    .forEach(localDate -> {
+                        if (overrideRoster.getDayOffStatus().equals(NO) && !availableDates.contains(localDate))
+                            availableDates.add(localDate);
+                    });
+        });
+    }
+
+    private Supplier<NoContentFoundException> NO_AVAILABLE_APPOINTMENT_DATES_FOUND = () -> {
+        log.error(APPOINTMENT_AVAILABLE_DATE_NOT_FOUND);
+        throw new NoContentFoundException(APPOINTMENT_AVAILABLE_DATE_NOT_FOUND);
+    };
 }

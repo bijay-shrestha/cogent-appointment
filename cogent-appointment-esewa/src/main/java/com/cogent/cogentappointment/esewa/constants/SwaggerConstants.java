@@ -31,6 +31,7 @@ public class SwaggerConstants {
                 " for specific hospital department";
         String CHECK_APPOINTMENT_AVAILABILITY_ROOM_WISE = "Check available time schedules in requested date" +
                 " for specific hospital department and room";
+        String FETCH_AVAILABLE_HOSPITAL_DEPARTMENT_DATES = "Fetch available hospital department appointment dates";
     }
 
     public interface AppointmentServiceTypeConstant {

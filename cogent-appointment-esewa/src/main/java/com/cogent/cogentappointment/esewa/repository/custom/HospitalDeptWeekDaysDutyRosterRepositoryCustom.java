@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smriti on 31/05/20
@@ -13,5 +14,7 @@ import java.util.Date;
 @Qualifier("hospitalDeptWeekDaysDutyRosterRepositoryCustom")
 public interface HospitalDeptWeekDaysDutyRosterRepositoryCustom {
 
-    HospitalDeptDutyRosterTimeResponseTO fetchWeekDaysTimeInfo(Long hddRosterId,  Date date);
+    HospitalDeptDutyRosterTimeResponseTO fetchWeekDaysTimeInfo(Long hddRosterId, Date date);
+
+    List<String> fetchWeekDaysCode(Long hddRosterId);
 }

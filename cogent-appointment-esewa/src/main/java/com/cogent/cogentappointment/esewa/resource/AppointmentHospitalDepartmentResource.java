@@ -17,6 +17,7 @@ import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.CANCEL;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentHospitalDepartmentConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -53,5 +54,9 @@ public class AppointmentHospitalDepartmentResource {
         return ok(appointmentHospitalDepartmentService.cancelRegistration(appointmentReservationId));
     }
 
-
+    @GetMapping(AVAILABLE_DATES+ HOSPITAL_DEPARTMENT_ID)
+    @ApiOperation(FETCH_AVAILABLE_HOSPITAL_DEPARTMENT_DATES)
+    public ResponseEntity<?> fetchAvailableAppointmentDate(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId){
+        return ok(appointmentHospitalDepartmentService.fetchAvailableDepartmentDates(hospitalDepartmentId));
+    }
 }

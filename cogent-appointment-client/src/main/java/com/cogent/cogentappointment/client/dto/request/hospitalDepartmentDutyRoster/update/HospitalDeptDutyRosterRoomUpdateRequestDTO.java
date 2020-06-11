@@ -14,7 +14,7 @@ public class HospitalDeptDutyRosterRoomUpdateRequestDTO implements Serializable 
 
     private Long rosterRoomId;
 
-    private Long roomId;
+    private Long hospitalDepartmentRoomInfoId;
 
     private Character status;
 }

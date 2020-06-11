@@ -22,6 +22,9 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String hospitalName;
 
+    private String hospitalNumber;
+
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 

@@ -11,6 +11,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 
+/*DEPARTMENT HAS BEEN RENAMED AS UNIT IN FRONT-END
+
+IN ERROR MESSAGES, UNIT IS USED IN BACKEND ELSE NOTHING IS CHANGED
+* */
 @Entity
 @Table(name = "department")
 @Getter

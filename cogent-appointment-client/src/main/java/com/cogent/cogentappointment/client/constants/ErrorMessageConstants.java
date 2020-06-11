@@ -73,9 +73,6 @@ public class ErrorMessageConstants {
 
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
-    public static final String CANNOT_ACCESS_CLIENT_MODULE = "SORRY!!! YOU CANNOT ACCESS CLIENT MODULE";
-    public static final String CANNOT_ACCESS_CLIENT_MODULE_DEBUG_MESSAGE = "Admin belongs to company";
-
     //D
 
     public interface DashboardMessages {
@@ -120,21 +117,25 @@ public class ErrorMessageConstants {
     public static final String HOSPITAL_NULL_MESSAGE = " Hospital id must not be null";
 
     public interface HospitalDeptDutyRosterMessages {
-        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range" +
-                " '%s' to '%s'";
+        String BAD_REQUEST_MESSAGE = "Department Duty Roster Override doesn't lie within the actual" +
+                " duty roster date range '%s' to '%s'";
+
+        String BAD_ROOM_REQUEST = "If room is enabled, corresponding room details is also required";
 
         String DUPLICATE_DUTY_ROSTER_WITHOUT_ROOM =
-                "Hospital Department Duty Roster already exists within '%s' to '%s'";
+                "Department Duty Roster already exists within '%s' to '%s'";
 
         String DUPLICATE_DUTY_ROSTER_WITH_ROOM =
-                "Hospital Department Duty Roster already exists within '%s' to '%s' for selected room";
+                "Department Duty Roster already exists within '%s' to '%s' for selected room";
 
         String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITHOUT_ROOM =
-                "Hospital Department Duty Roster Override already exists within '%s' to '%s'";
+                "Department Duty Roster Override already exists within '%s' to '%s'";
 
         String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITH_ROOM =
-                "Hospital Department Duty Roster Override already exists within '%s' to '%s' for selected room";
+                "Department Duty Roster Override already exists within '%s' to '%s' for selected room";
 
+        String HOSPITAL_DEPARTMENT_DOCTOR_NOT_ASSIGNED = "Sorry, Requested doctor of '%s' are not assigned to " +
+                "the selected hospital department";
     }
 
     //I
@@ -169,6 +170,8 @@ public class ErrorMessageConstants {
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s' ";
 
+    public static String NO_RECORD_FOUND = "No %s(s) found.";
+
 
     //O
 
@@ -186,7 +189,7 @@ public class ErrorMessageConstants {
     //Q
 
     //R
-    public static final String ROOM_NUMBER_DUPLICATION_MESSAGE = "Room Number already exists with number '%s'";
+    public static final String ROOM_NUMBER_DUPLICATION_MESSAGE = "Room Number '%s' already in use";
 
 
     //S
@@ -196,7 +199,6 @@ public class ErrorMessageConstants {
 
 
     //U
-    public static final String UNAUTHORISED = "Unauthorised";
 
     //V
 

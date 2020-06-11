@@ -10,13 +10,22 @@ import java.util.Objects;
  */
 public class HospitalDeptDutyRosterQuery {
 
-    public static final String QUERY_TO_FETCH_HDD_ROSTER_COUNT_WITHOUT_ROOM =
-            " SELECT COUNT(d.id)" +
+    public static final String QUERY_TO_FETCH_HDD_ROSTER_STATUS =
+            " SELECT MAX(d.isRoomEnabled)" +
                     " FROM HospitalDepartmentDutyRoster d" +
                     " WHERE" +
                     " d.status != 'D'" +
-                    " AND d.isRoomEnabled = 'N'" +
-                    " AND d.hospitalDepartment.id= :id" +
+                    " AND d.hospitalDepartment.id= :hospitalDepartmentId" +
+                    " AND d.toDate >=:fromDate" +
+                    " AND d.fromDate <=:toDate";
+
+    public static final String QUERY_TO_FETCH_HDD_ROSTER_STATUS_EXCEPT_CURRENT_ID =
+            " SELECT MAX(d.isRoomEnabled)" +
+                    " FROM HospitalDepartmentDutyRoster d" +
+                    " WHERE" +
+                    " d.status != 'D'" +
+                    " AND d.id != :id" +
+                    " AND d.hospitalDepartment.id= :hospitalDepartmentId" +
                     " AND d.toDate >=:fromDate" +
                     " AND d.fromDate <=:toDate";
 
@@ -29,12 +38,13 @@ public class HospitalDeptDutyRosterQuery {
                 " dr.rosterGapDuration as rosterGapDuration," +                        //[2]
                 " dr.fromDate as fromDate," +                                          //[3]
                 " dr.toDate as toDate," +                                              //[4]
-                " dr.status as status" +                                              //[5]
+                " dr.status as status," +                                              //[5]
+                " dr.isRoomEnabled as isRoomEnabled"+                                 //[6]
                 " FROM HospitalDepartmentDutyRoster dr" +
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
                 " WHERE" +
                 " dr.status !='D'" +
-                " AND hd.hospital.id=:hospitalId" +
+                " AND dr.hospital.id=:hospitalId" +
                 " AND dr.toDate >=:fromDate AND dr.fromDate <=:toDate";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
@@ -64,7 +74,7 @@ public class HospitalDeptDutyRosterQuery {
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ddr.hospitalDepartment.id" +
                     " WHERE ddr.status !='D'" +
                     " AND ddr.id = :id" +
-                    " AND hd.hospital.id =:hospitalId";
+                    " AND ddr.hospital.id =:hospitalId";
 
     private static String HDD_ROSTER_AUDITABLE_QUERY() {
         return " ddr.createdBy as createdBy," +
@@ -99,5 +109,5 @@ public class HospitalDeptDutyRosterQuery {
                     " AND hd.id=:id" +
                     " AND dd.toDate >=:fromDate" +
                     " AND dd.fromDate <=:toDate" +
-                    " AND hd.hospital.id=:hospitalId";
+                    " AND dd.hospital.id=:hospitalId";
 }

@@ -66,13 +66,13 @@ public class SwaggerConstants {
 
     public interface AppointmentTransferConstant {
         String BASE_API_VALUE = "Resource used for Appointment Transfer Scenario.";
-        String FETCH_AVAILABLE_DATES="Fetch available dates by doctor id and specialization id";
-        String FETCH_AVAILABLE_TIME="Fetch available time by available date and doctor id";
-        String FETCH_DOCTOR_CHARGE="Fetch selected doctor charge by  doctor id";
-        String APPOINTMENT_TRANSFER="Transfer current appointment details(i.e. doctorId,specializationId," +
+        String FETCH_AVAILABLE_DATES = "Fetch available dates by doctor id and specialization id";
+        String FETCH_AVAILABLE_TIME = "Fetch available time by available date and doctor id";
+        String FETCH_DOCTOR_CHARGE = "Fetch selected doctor charge by  doctor id";
+        String APPOINTMENT_TRANSFER = "Transfer current appointment details(i.e. doctorId,specializationId," +
                 "appointmentDate,appointmentTime,Charge)";
-        String FETCH_TRANSFERRED_APPOINTMENT_LIST="Fetch list of transferred appointments";
-        String FETCH_TRANSFERRED_APPOINTMENT_DETAIL="Fetch transferred appointment detail by id";
+        String FETCH_TRANSFERRED_APPOINTMENT_LIST = "Fetch list of transferred appointments";
+        String FETCH_TRANSFERRED_APPOINTMENT_DETAIL = "Fetch transferred appointment detail by id";
     }
 
     public interface AuthenticateConstant {
@@ -91,7 +91,27 @@ public class SwaggerConstants {
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Mode details for dropdown";
     }
 
+    public interface AppointmentServiceTypeConstant {
+        String BASE_API_VALUE = "This is Appointment Service Type Resource.";
+        String SAVE_OPERATION = "Save new Appointment Service Type";
+        String UPDATE_OPERATION = "Update existing Appointment Service Type";
+        String DELETE_OPERATION = "Set Appointment Service Type status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Appointment Service Type according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Appointment Service Type details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Service Type details for dropdown";
+    }
+
     //B
+    public interface BillingModeConstant {
+        String BASE_API_VALUE = "This is Billing Mode Resource.";
+        String SAVE_OPERATION = "Save new Billing Mode";
+        String UPDATE_OPERATION = "Update existing Billing Mode";
+        String DELETE_OPERATION = "Set Billing Mode status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Billing Mode according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Billing Mode details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Billing Mode details for dropdown";
+    }
+
     public interface BreakTypeConstant {
         String BASE_API_VALUE = "This is Break Type Resource";
         String SAVE_OPERATION = "Save new Break Type";
@@ -104,6 +124,8 @@ public class SwaggerConstants {
     }
 
     //C
+
+
     public interface CompanyAdminConstant {
         String BASE_API_VALUE = "This is Company Admin Resource";
         String SAVE_OPERATION = "Save new company admin";
@@ -118,7 +140,7 @@ public class SwaggerConstants {
                 "This can be done only by those admin who has privilege to do so";
         String UPDATE_AVATAR_OPERATION = "Update company admin avatar and if the file size is empty " +
                 "then change the isDefaultImage status as 'Y' else update accordingly.";
-        String VERIFY_ADMIN = "Verify if the confirmation token sent in email (after successful saveDDRWeekDaysDetail) is valid" +
+        String VERIFY_ADMIN = "Verify if the confirmation token sent in email (after successful save) is valid" +
                 " and company admin has not been registered.";
         String SAVE_PASSWORD_OPERATION = "Save company admin password";
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in company admin information." +
@@ -258,7 +280,6 @@ public class SwaggerConstants {
         String FETCH_MIN_DAY_WISE_DETAIL = "Fetch min day-wise doctor duty roster details";
 
 
-
         String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
                 " Note that doctor duty roster override can be deleted " +
                 " only if there are no appointments within the selected date range";
@@ -326,10 +347,45 @@ public class SwaggerConstants {
                 " (id and name) for dropdown by hospital id";
         String FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active hospital department" +
                 " details (id and name) for dropdown by hospital id";
+        String FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION = "Fetch available room " +
+                " details (id and name) for dropdown by hospitalId";
+        String FETCH_APPOINTMENT_CHARGE = "Fetch appointment charge by hospital department and billing mode id";
+        String FETCH_ASSIGNED_DOCTOR = "Fetch assigned doctor in selected hospital department";
     }
 
 
     //I
+
+    public interface IntegrationConstant {
+        String BASE_API_VALUE = "This is Client Integration Resource.";
+        String SAVE_CLIENT_OPERATION = "Save new Client API Integration";
+        String UPDATE_CLIENT_OPERATION = "Update Client API Integration";
+        String SEARCH_CLIENT_API_INTEGRATION_OPERATION = "Search Client API Integration";
+        String FETCH_CLIENT_API_INTEGRATION_DETAIL = "Fetch Client Api Integration detail by client integration id";
+        String DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION = "Delete client integration feature by client integration id";
+        String DETAILS_FOR_UPDATE_CLIENT_INTEGRATION_MODAL_OPERATION = "Fetch Client Integration details for update modal by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
+    }
+
+    public interface IntegrationAdminModeConstant {
+        String BASE_API_VALUE = "This is Admin Mode API Integration Resource.";
+        String SAVE_ADMIN_MODE_INTEGRATION_OPERATION = "Save new Admin Mode API Integration";
+        String UPDATE_ADMIN_MODE_INTEGRATION_OPERATION = "Update Admin Mode API Integration";
+        String SEARCH_ADMIN_MODE_INTEGRATION_OPERATION = "Search Admin Mode API Integration";
+        String FETCH_ADMIN_MODE_INTEGRATION_DETAIL = "Fetch Admin Mode API Integration detail by admin mode integration id";
+        String DELETE_ADMIN_MODE_INTEGRATION_OPERATION = "Delete Admin Mode API Integration feature by admin mode api integration id";
+        String DETAILS_FOR_UPDATE_ADMIN_MODE_INTEGRATION_MODAL_OPERATION = "Fetch Admin Mode API Integration details for update modal by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
+    }
+
+    public interface IntegrationRequestBodyConstant {
+        String BASE_API_VALUE = "This is Integration Request Body Resource.";
+        String DELETE_API_REQUEST_HEADER_ATTRIBUTE_OPERATION = "Delete API Request Body Attributes by request body attribute id";
+        String SAVE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION = "Save new Integration Request Body Attributes";
+        String UPDATE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION = "Update Request Body Attributes";
+        String FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION = "Fetch Request Body Attributes by feature id";
+        String SEARCH_API_REQUEST_BODY_ATTRIBUTE_OPERATION = "Search API Request Body Attributes";
+    }
 
     //J
     //K
@@ -396,6 +452,10 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search room number according to given request parameters";
         String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN = "Fetch active room numbers for drop down";
         String FETCH_ROOM_FOR_DROP_DOWN = "Fetch room numbers for drop down";
+        String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch active room numbers for drop down " +
+                " by hospital department Id";
+        String FETCH_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch room numbers for drop down " +
+                "by hospital department Id";
     }
 
     //S

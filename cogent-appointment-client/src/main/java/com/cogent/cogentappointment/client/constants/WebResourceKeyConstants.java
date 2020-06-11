@@ -9,6 +9,7 @@ public class WebResourceKeyConstants {
     public static final String API_V1 = "/api/v1";
     public static final String ACTIVE = "/active";
 
+
     public interface AdminConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
@@ -56,6 +57,11 @@ public class WebResourceKeyConstants {
 
     //B
     public static final String BASE_PASSWORD = "/password";
+
+    public interface BillingModeConstants {
+        String BASE_BILLING_MODE = "/billingMode";
+
+    }
 
     //C
     public interface CountryConstants {
@@ -140,6 +146,11 @@ public class WebResourceKeyConstants {
 
     public interface HospitalDepartmentConstants {
         String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
+        String AVAILABLE = "/available";
+        String ROOM = "/room";
+        String HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{hospitalDepartmentId}";
+        String CHARGE = "/charge";
+        String BILLING_MODE_WISE = "/billingModeWise";
     }
 
     public interface HospitalDeptDutyRosterConstants {
@@ -150,6 +161,14 @@ public class WebResourceKeyConstants {
     }
 
     //I
+    public interface IntegrationConstants {
+        String BASE_INTEGRATION = "/integration";
+        String CLIENT_API_INTEGRATION = "/client-api-integration";
+        String CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE = "/integration/approve";
+        String FEATURES="/features";
+        String HTTP_REQUEST_METHODS="/request-methods";
+    }
+
     public static final String INFO = "/info";
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 
@@ -200,11 +219,11 @@ public class WebResourceKeyConstants {
     //R
     public interface RoomConstants {
         String BASE_ROOM = "/room";
+        String HOSPITAL_DEPARTMENT_WISE = "/hospitalDepartmentWise";
     }
 
 
     //S
-
 
 
     public interface SalutationConstant {

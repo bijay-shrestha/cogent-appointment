@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.ChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
@@ -17,8 +18,9 @@ import java.net.URI;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorConstants.BASE_DOCTOR;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.*;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -51,13 +53,13 @@ public class HospitalDepartmentResource {
         return ok().build();
     }
 
-    @GetMapping(MIN+HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @GetMapping(MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION)
     public ResponseEntity<?> fetchMinDepartment(@PathVariable("hospitalId") Long hospitalId) {
         return ok(hospitalDepartmentService.fetchMinHospitalDepartment(hospitalId));
     }
 
-    @GetMapping(ACTIVE + MIN+HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @GetMapping(ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION)
     public ResponseEntity<?> fetchActiveMinDepartment(@PathVariable("hospitalId") Long hospitalId) {
         return ok(hospitalDepartmentService.fetchActiveMinHospitalDepartment(hospitalId));
@@ -84,4 +86,23 @@ public class HospitalDepartmentResource {
         hospitalDepartmentService.delete(deleteRequestDTO);
         return ok().build();
     }
+
+    @GetMapping(AVAILABLE + ROOM + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION)
+    public ResponseEntity<?> fetchAvailableRoom(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(hospitalDepartmentService.fetchAvailableRoom(hospitalId));
+    }
+
+    @PutMapping(BILLING_MODE_WISE + CHARGE)
+    @ApiOperation(FETCH_APPOINTMENT_CHARGE)
+    public ResponseEntity<?> fetchAppointmentCharge(@Valid @RequestBody ChargeRequestDTO requestDTO) {
+        return ok().body(hospitalDepartmentService.fetchAppointmentCharge(requestDTO));
+    }
+
+    @GetMapping(BASE_DOCTOR + HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ASSIGNED_DOCTOR)
+    public ResponseEntity<?> fetchAppointmentCharge(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId) {
+        return ok().body(hospitalDepartmentService.fetchAssignedHospitalDepartmentDoctor(hospitalDepartmentId));
+    }
+
 }

@@ -12,7 +12,10 @@ import java.util.Date;
 @Qualifier("hospitalDeptDutyRosterRoomRepositoryCustom")
 public interface HospitalDeptDutyRosterRoomInfoRepositoryCustom {
 
-    Long fetchRoomCount(Long hospitalDeptId, Date fromDate, Date toDate, Long roomId);
+    Long fetchRoomCount(Long hospitalDeptId, Date fromDate, Date toDate, Long hospitalDepartmentRoomInfoId);
+
+    Long fetchRoomCountExceptCurrentId(Long hospitalDeptId, Date fromDate, Date toDate,
+                                       Long hospitalDepartmentRoomInfoId, Long hddRosterId);
 }
 
 

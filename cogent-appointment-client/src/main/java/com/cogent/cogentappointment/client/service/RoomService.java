@@ -29,4 +29,8 @@ public interface RoomService {
                                   Pageable pageable);
 
     Room fetchActiveRoom(Long roomId);
+
+    List<DropDownResponseDTO> fetchActiveMinRoomByHospitalDepartmentId(Long hospitalDepartmentId);
+
+    List<DropDownResponseDTO> fetchMinRoomByHospitalDepartmentId(Long hospitalDepartmentId);
 }

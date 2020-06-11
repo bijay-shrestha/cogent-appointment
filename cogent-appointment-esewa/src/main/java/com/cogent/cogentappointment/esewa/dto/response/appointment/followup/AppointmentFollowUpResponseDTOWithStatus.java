@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.dto.response.appointment.followup;
 
-import com.cogent.cogentappointment.esewa.dto.response.appointment.followup.AppointmentFollowUpResponseDTO;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 

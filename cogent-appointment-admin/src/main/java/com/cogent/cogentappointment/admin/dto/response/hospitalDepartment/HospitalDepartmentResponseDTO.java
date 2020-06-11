@@ -15,7 +15,11 @@ import java.util.List;
 @Builder
 public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implements Serializable {
 
+    private Long hospitalId;
+
     private String hospitalName;
+
+    private Long id;
 
     private String name;
 
@@ -27,10 +31,10 @@ public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implemen
 
     private String remarks;
 
-    private Double appointmentCharge,followUpCharge;
-
     private List<DoctorDropdownDTO> doctorList;
 
     private List<DropDownResponseDTO> roomList;
+
+    private List<BillingModeChargeResponse> billingModeChargeResponseList;
 
 }

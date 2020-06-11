@@ -18,6 +18,8 @@ public class HospitalDeptDutyRosterMinResponseDTO implements Serializable {
 
     private Long hddRosterId;
 
+    private String hospitalName;
+
     private String hospitalDeptName;
 
     private Integer rosterGapDuration;
@@ -29,6 +31,8 @@ public class HospitalDeptDutyRosterMinResponseDTO implements Serializable {
     private Date toDate;
 
     private Character status;
+
+    private Character isRoomEnabled;
 
     private int totalItems;
 }

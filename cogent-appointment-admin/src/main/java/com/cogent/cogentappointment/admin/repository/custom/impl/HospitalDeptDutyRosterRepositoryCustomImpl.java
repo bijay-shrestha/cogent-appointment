@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
@@ -34,9 +35,11 @@ import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterOve
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER;
+import static com.cogent.cogentappointment.admin.query.HospitalDeptWeekDaysDutyRosterDoctorInfoQuery.QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseHDDRosterDetails;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToExistingRosterDetails;
 
@@ -52,14 +55,34 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     private EntityManager entityManager;
 
     @Override
-    public Long fetchRosterCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate) {
+    public Character fetchRoomStatusIfExists(Long hospitalDepartmentId, Date fromDate, Date toDate) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_COUNT_WITHOUT_ROOM)
-                .setParameter(ID, hospitalDepartmentId)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_STATUS)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 
-        return (Long) query.getSingleResult();
+        try {
+            return (Character) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Character fetchRoomStatusIfExistsExceptCurrentId(Long hospitalDepartmentId,
+                                                            Date fromDate, Date toDate, Long hddRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_STATUS_EXCEPT_CURRENT_ID)
+                .setParameter(ID, hddRosterId)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate));
+        try {
+            return (Character) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
@@ -174,7 +197,17 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_WEEK_DAYS_DETAIL)
                 .setParameter(ID, hddRosterId);
 
-        return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterResponseDTO.class);
+        List<HospitalDeptWeekDaysDutyRosterResponseDTO> weekDaysRosters =
+                transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterResponseDTO.class);
+
+        weekDaysRosters.forEach(weekDaysRoster -> {
+            List<HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO> weekDaysDoctorInfo
+                    = fetchWeekDaysDoctorInfo(weekDaysRoster.getRosterWeekDaysId());
+
+            weekDaysRoster.setWeekDaysDoctorInfo(weekDaysDoctorInfo);
+        });
+
+        return weekDaysRosters;
     }
 
     private List<HospitalDeptDutyRosterOverrideResponseDTO> fetchHDDRosterOverrideDetail(Long hddRosterId) {
@@ -187,11 +220,23 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     private Supplier<NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND,
+                splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())));
     };
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_WITH_ID_NOT_FOUND = (hddRosterId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(HospitalDepartmentDutyRoster.class, "hddRosterId", hddRosterId.toString());
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND,
+                splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())),
+                "hddRosterId", hddRosterId.toString());
     };
+
+    private List<HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO> fetchWeekDaysDoctorInfo(
+            Long hospitalDepartmentWeekDaysDutyRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO)
+                .setParameter(ID, hospitalDepartmentWeekDaysDutyRosterId);
+
+        return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO.class);
+    }
 }

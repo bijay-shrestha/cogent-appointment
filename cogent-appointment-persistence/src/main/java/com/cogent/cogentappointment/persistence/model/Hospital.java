@@ -15,6 +15,14 @@ import java.io.Serializable;
  * THIS ENTITY IS USED TO SAVE BOTH HOSPITAL/CLIENT AND COMPANY
  * IN CASE OF COMPANY - isCompany = 'Y' ELSE isCompany = 'N'
  * REFUND PERCENTAGE AND FOLLOW UP DETAILS DO NOT NEED TO BE SAVED IN CASE OF COMPANY
+ * <p>
+ * CONNECTED TABLE:
+ * a. HospitalContactNumber
+ * b. HospitalLogo
+ * c. HospitalBanner
+ * d. HospitalAppointmentServiceType
+ * <p>
+ * HOSPITAL HAS BEEN RENAMED AS CLIENT SETUP IN FRONT-END
  */
 @Table(name = "hospital")
 @Entity
@@ -35,6 +43,9 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "code")
     private String code;
 
+    @Column(name = "esewa_merchant_code",updatable = false)
+    private String esewaMerchantCode;
+
     @Column(name = "address")
     private String address;
 
@@ -50,16 +61,16 @@ public class Hospital extends Auditable<String> implements Serializable {
     private Character status;
 
     @Column(name = "refund_percentage")
-    private Double refundPercentage;
+    private Double refundPercentage = 0D;
 
     @Column(name = "number_of_admins")
-    private Integer numberOfAdmins;
+    private Integer numberOfAdmins = 0;
 
     @Column(name = "number_of_follow_ups")
-    private Integer numberOfFollowUps;
+    private Integer numberOfFollowUps = 0;
 
     @Column(name = "follow_up_interval_days")
-    private Integer followUpIntervalDays;
+    private Integer followUpIntervalDays = 0;
 
     @Column(name = "remarks")
     private String remarks;

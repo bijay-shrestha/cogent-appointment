@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRos
 
 import lombok.*;
 
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,6 +19,5 @@ public class HospitalDeptDutyRosterUpdateRequestDTO implements Serializable {
 
     private HospitalDeptDutyRosterRoomUpdateRequestDTO roomDetail;
 
-    @NotEmpty
     private List<HospitalDeptWeekDaysDutyRosterUpdateRequestDTO> weekDaysDetail;
 }

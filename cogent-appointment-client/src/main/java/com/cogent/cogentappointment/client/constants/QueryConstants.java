@@ -18,6 +18,7 @@ public class QueryConstants {
     public static final String API_KEY = "apiKey";
 
     //B
+    public static final String BILLING_MODE_ID = "billingModeId";
 
 
     //C
@@ -50,9 +51,12 @@ public class QueryConstants {
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
     public static final String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";
+    public static final String HOSPITAL_DEPARTMENT_ROOM_INFO_ID = "hospitalDepartmentRoomInfoId";
 
     //I
     public static final String ID = "id";
+    public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
+    public static final String API_FEATURE__ID = "featureId";
 
     //J
 

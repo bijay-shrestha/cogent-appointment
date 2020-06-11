@@ -49,23 +49,52 @@ public class HospitalDepartmentQuery {
                     " AND hd.hospital.id= :hospitalId" +
                     " ORDER BY hd.id DESC";
 
-    public static final Function<HospitalDepartmentSearchRequestDTO, String> QUERY_TO_SEARCH_DEPARTMENT =
+    public static final String QUERY_TO_FETCH_AVAILABLE_ROOM_FOR_DROPDOWN =
+            "SELECT" +
+                    " r.id as value," +
+                    " CONCAT('Room No',' - ',r.roomNumber) AS label" +
+                    " FROM" +
+                    " Room r" +
+                    " WHERE" +
+                    " r.id NOT IN (" +
+                    " SELECT" +
+                    "  DISTINCT r.id" +
+                    " FROM" +
+                    "  Room r" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hdri ON" +
+                    "  r.id = hdri.room.id" +
+                    " WHERE" +
+                    "  hdri.status = 'Y'" +
+                    "  AND r.hospital.id = :hospitalId)" +
+                    " AND r.hospital.id = :hospitalId" +
+                    " AND r.status = 'Y'" +
+                    " ORDER BY r.id ASC";
+
+    public static final Function<HospitalDepartmentSearchRequestDTO, String> QUERY_TO_SEARCH_HOSPITAL_DEPARTMENT =
             (searchRequestDTO ->
                     " SELECT" +
                             " hd.id as id," +
                             " hd.name as name," +
                             " hd.status as status," +
-                            " hdc.appointment_charge as appointmentCharge," +
-                            " hdc.appointment_follow_up_charge  as followUpCharge," +
                             " CASE" +
                             " WHEN GROUP_CONCAT(DISTINCT hdr.room_id) IS NULL THEN 'N/A'" +
-                            " ELSE GROUP_CONCAT(DISTINCT hdr.room_id)" +
-                            " END as roomList" +
+                            " ELSE GROUP_CONCAT(DISTINCT r.room_number )" +
+                            " END as roomList," +
+                            " CASE" +
+                            " WHEN GROUP_CONCAT(DISTINCT hdc.billing_mode_id) IS NULL THEN 'N/A'" +
+                            " ELSE GROUP_CONCAT(DISTINCT bm.name )" +
+                            " END as billingModes" +
                             " FROM" +
                             " hospital_department hd" +
-                            " LEFT JOIN hospital_department_charge hdc ON hdc.hospital_department_id=hd.id" +
-                            " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id AND hdr.status!='D'" +
-                            " LEFT JOIN hospital_department_doctor_info  hdd ON hdd.hospital_department_id=hd.id  AND hdd.status!='D'" +
+                            " LEFT JOIN hospital_department_billing_mode_info hdc ON hdc.hospital_department_id=hd.id" +
+                            " AND hdc.status!='D'" +
+                            " LEFT JOIN billing_mode bm ON bm.id=hdc.billing_mode_id " +
+                            " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id" +
+                            "  AND hdr.status!='D'" +
+                            " LEFT JOIN room r ON hdr.room_id =r.id " +
+                            " LEFT JOIN hospital_department_doctor_info  hdd ON hdd.hospital_department_id=hd.id" +
+                            "  AND hdd.status!='D'" +
+                            " LEFT JOIN hospital h ON h.id=hd.hospital_id" +
                             " WHERE " +
                             " hd.hospital_id=:hospitalId " +
                             GET_WHERE_CLAUSE_FOR_SEARCH(searchRequestDTO));
@@ -89,6 +118,9 @@ public class HospitalDepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getRoomId()))
             whereClause += " AND hdr.room_id=" + searchRequestDTO.getRoomId();
 
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getBillingModeId()))
+            whereClause += " AND hdc.billing_mode_id=" + searchRequestDTO.getBillingModeId();
+
         whereClause += " GROUP BY hd.id" +
                 " ORDER BY hd.id DESC";
 
@@ -97,17 +129,15 @@ public class HospitalDepartmentQuery {
 
     public static String QUERY_TO_GET_DETAILS =
             "SELECT " +
+                    "  hd.id as id, " +
                     "  hd.name as name, " +
                     "  hd.code as code, " +
                     "  hd.description as description, " +
                     "  hd.remarks as remarks, " +
-                    "  hdc.appointmentCharge as appointmentCharge, " +
-                    "  hdc.appointmentFollowUpCharge  as followUpCharge," +
                     "  hd.status as status, " +
                     HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() +
                     "  FROM " +
                     "  HospitalDepartment hd " +
-                    "  LEFT JOIN HospitalDepartmentCharge hdc ON hdc.hospitalDepartment.id=hd.id  " +
                     "  WHERE hd.id=:hospitalDepartmentId" +
                     "  AND hd.hospital.id=:hospitalId" +
                     "  AND hd.status!='D'";
@@ -141,6 +171,18 @@ public class HospitalDepartmentQuery {
                     " AND hdri.status='Y'" +
                     " AND hdri.hospitalDepartment.status!='D'";
 
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE=
+            "SELECT " +
+                    "  hb.id as id," +
+                    "  hb.billingMode.id as billingModeId, " +
+                    "  hb.billingMode.name as billingMode, " +
+                    "  hb.appointmentCharge as appointmentCharge, " +
+                    "  hb.appointmentFollowUpCharge as followUpCharge" +
+                    " FROM " +
+                    "  HospitalDepartmentBillingModeInfo hb " +
+                    " WHERE " +
+                    "  hb.hospitalDepartment.id = :hospitalDepartmentId " +
+                    " AND hb.status!='D'";
 
     public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {
         return " hd.createdBy as createdBy," +

@@ -21,9 +21,9 @@ import java.util.List;
 @Qualifier("hospitalRepositoryCustom")
 public interface HospitalRepositoryCustom {
 
-    List<Object[]> validateHospitalDuplicity(String name, String code, String alias);
+    List<Object[]> validateHospitalDuplicity(String name, String esewaMerchantCode, String alias);
 
-    List<Object[]> validateCompanyDuplicity(String name, String code);
+    List<Object[]> validateCompanyDuplicity(String name, String esewaMerchantCode);
 
     List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code, String alias);
 

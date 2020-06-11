@@ -7,11 +7,14 @@ public class QueryConstants {
 
     //A
     public static final String APPOINTMENT_ID = "appointmentId";
+    public static final String APPOINTMENT_MODE_ID = "appointmentModeId";
     public static final String APPOINTMENT_TRANSFER_ID = "appointmentTransferId";
     public static final String ALIAS = "alias";
 
-    //B
+    public static final String APPOINTMENT_SERVICE_TYPE_ID = "appointmentServiceTypeId";
 
+    //B
+    public static final String BILLING_MODE_ID = "billingModeId";
 
     //C
     public static final String CODE = "code";
@@ -41,6 +44,7 @@ public class QueryConstants {
 
 
     //E
+    public static final String ESEWA_MERCHANT_CODE = "esewaMerchantCode";
     public static final String EMAIL = "email";
 
     //F
@@ -60,9 +64,17 @@ public class QueryConstants {
 
     public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
 
+    public static final String HOSPITAL_DEPARTMENT_ROOM_INFO_ID = "hospitalDepartmentRoomInfoId";
+
 
     //I
     public static final String ID = "id";
+    public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
+    public static final String API_FEATURE_ID = "featureId";
+    public static final String ADMIN_MODE_FEATURE_INTEGRATION_ID = "adminModeFeatureIntegrationId";
+    public static final String CLIENT_FEATURE_INTEGRATION_ID = "clientFeatureIntegrationId";
+    public static final String CLIENT_API_INTEGRATION_TYPE_ID = "apiIntegrationTypeId";
+
 
     //J
 
@@ -85,6 +97,7 @@ public class QueryConstants {
     //R
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_NUMBER = "roomNumber";
+    public static final String API_REQUEST_METHOD_ID = "requestMethodId";
 
 
     //S

@@ -12,7 +12,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author smriti on 25/11/2019
+ * @author smriti on 20/05/20
+ *
+ * CONNECTED TABLE :
+ * 1. HospitalDepartmentWeekDaysDutyRoster
+ * 2. HospitalDepartmentDutyRosterOverride
+ * 3. HospitalDepartmentDutyRosterRoomInfo
+ * 4. HospitalDepartmentWeekDaysDutyRosterDoctorInfo
  */
 @Table(name = "hospital_department_duty_roster")
 @Entity
@@ -26,6 +32,10 @@ public class HospitalDepartmentDutyRoster extends Auditable<String> implements S
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id", updatable = false)
+    private Hospital hospital;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_department_id", updatable = false)
@@ -58,7 +68,7 @@ public class HospitalDepartmentDutyRoster extends Auditable<String> implements S
     public String toString() {
         return "HospitalDepartmentDutyRoster{" +
                 "id=" + id +
-//                ", hospitalDepartment=" + hospitalDepartment.getName() +
+                ", hospitalDepartment=" + hospitalDepartment.getName() +
                 ", rosterGapDuration=" + rosterGapDuration +
                 ", fromDate=" + fromDate +
                 ", toDate=" + toDate +

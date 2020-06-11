@@ -33,6 +33,7 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
 
     @Override
     public Long fetchOverrideCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITHOUT_ROOM)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
@@ -43,10 +44,11 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
 
     @Override
     public Long fetchOverrideCountWithRoom(Long hospitalDepartmentId, Date fromDate,
-                                           Date toDate, Long roomId) {
+                                           Date toDate, Long hospitalDepartmentRoomInfoId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITH_ROOM)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
-                .setParameter(ROOM_ID, roomId)
+                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 
@@ -67,12 +69,12 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
     }
 
     @Override
-    public Long fetchOverrideCountWithRoomExceptCurrentId(Long hospitalDepartmentId, Date fromDate,
-                                                          Date toDate, Long roomId, Long rosterOverrideId) {
+    public Long fetchOverrideCountWithRoomExceptCurrentId(Long hospitalDepartmentId, Date fromDate, Date toDate,
+                                                          Long hospitalDepartmentRoomInfoId, Long rosterOverrideId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITH_ROOM_EXCEPT_CURRENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
-                .setParameter(ROOM_ID, roomId)
+                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(ID, rosterOverrideId);
@@ -88,8 +90,16 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
     }
 
     @Override
+    public void updateOverrideRoomInfo(Long hddRosterId, Long hospitalDepartmentRoomInfoId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_UPDATE_OVERRIDE_ROOM(hospitalDepartmentRoomInfoId))
+                .setParameter(ID, hddRosterId);
+
+        query.executeUpdate();
+    }
+
+    @Override
     public List<HospitalDepartmentDutyRosterOverride> fetchOverrideList(List<HospitalDeptDutyRosterOverrideUpdateRequestDTO>
-                                                                                    updateRequestDTOS) {
+                                                                                updateRequestDTOS) {
         List<HospitalDepartmentDutyRosterOverride> overrides =
                 entityManager.createQuery(QUERY_TO_FETCH_HDD_ROSTER_OVERRIDE(updateRequestDTOS),
                         HospitalDepartmentDutyRosterOverride.class)

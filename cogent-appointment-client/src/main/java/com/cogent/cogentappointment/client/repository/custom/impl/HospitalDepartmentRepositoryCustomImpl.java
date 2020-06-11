@@ -5,11 +5,13 @@ import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.Hospit
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.BillingModeChargeResponse;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponse;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDepartmentRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -87,12 +89,22 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
     }
 
     @Override
+    public Optional<List<DropDownResponseDTO>> fetchAvailableHospitalDepartment(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_ROOM_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
+    }
+
+    @Override
     public HospitalDepartmentMinimalResponseDTO search(HospitalDepartmentSearchRequestDTO searchRequestDTO,
                                                        Pageable pageable) {
 
         HospitalDepartmentMinimalResponseDTO response = new HospitalDepartmentMinimalResponseDTO();
 
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_DEPARTMENT.apply(searchRequestDTO))
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL_DEPARTMENT.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         int totalItems = query.getResultList().size();
@@ -104,16 +116,18 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
 
         if (minimalResponseDTOS.isEmpty()) {
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();
-        } else {
-            response.setHospitalDepartmentList(minimalResponseDTOS);
-            response.setTotalItems(totalItems);
-            return response;
         }
 
+            response.setHospitalDepartmentList(minimalResponseDTOS);
+
+            response.setTotalItems(totalItems);
+
+            return response;
     }
 
     @Override
     public HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long hospitalDepartmentId, Long hospitalId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_DETAILS)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -124,11 +138,22 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         Query roomListQuery = createQuery.apply(entityManager, QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
 
+        Query billingModeWithChargeQuery = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+
         try {
             HospitalDepartmentResponseDTO responseDTO = transformQueryToSingleResult(query,
                     HospitalDepartmentResponseDTO.class);
+
             responseDTO.setDoctorList(transformQueryToResultList(doctorListQuery, DoctorDropdownDTO.class));
-            responseDTO.setRoomList(transformQueryToResultList(roomListQuery,DropDownResponseDTO.class));
+
+            responseDTO.setRoomList(transformQueryToResultList(roomListQuery, DropDownResponseDTO.class));
+
+            responseDTO.setBillingModeChargeResponseList(transformQueryToResultList(billingModeWithChargeQuery,
+                    BillingModeChargeResponse.class));
+
             return responseDTO;
         } catch (NoResultException e) {
             log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, hospitalDepartmentId);
@@ -136,9 +161,10 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         }
     }
 
+//    Hospital Department = Department in frontend
     private Supplier<NoContentFoundException> HOSPITAL_DEPARTMENT_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT);
-        throw new NoContentFoundException(HospitalDepartment.class);
+        throw new NoContentFoundException("No Department(s) Found");
     };
 
 }

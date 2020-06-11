@@ -42,11 +42,7 @@ public class HospitalDepartmentUpdateRequestDTO implements Serializable {
 
     private List<DepartmentRoomUpdateRequestDTO> roomUpdateList;
 
-    @NotNull
-    private Double appointmentCharge;
-
-    @NotNull
-    private Double followUpCharge;
+    private List<BillingModeChargeUpdateDTO> billingModeChargeUpdateDTOS;
 
     @NotNull
     @NotEmpty

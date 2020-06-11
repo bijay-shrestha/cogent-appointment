@@ -24,6 +24,5 @@ public class AppointmentTransferSearchRequestDTO implements Serializable {
 
     private Long patientMetaInfoId,specializationId,doctorId;
 
-    @NotNull
     private Long hospitalId;
 }

@@ -10,13 +10,22 @@ import java.util.Objects;
  */
 public class HospitalDeptDutyRosterQuery {
 
-    public static final String QUERY_TO_FETCH_HDD_ROSTER_COUNT_WITHOUT_ROOM =
-            " SELECT COUNT(d.id)" +
+    public static final String QUERY_TO_FETCH_HDD_ROSTER_STATUS =
+            " SELECT MAX(d.isRoomEnabled)" +
                     " FROM HospitalDepartmentDutyRoster d" +
                     " WHERE" +
                     " d.status != 'D'" +
-                    " AND d.isRoomEnabled = 'N'" +
-                    " AND d.hospitalDepartment.id= :id" +
+                    " AND d.hospitalDepartment.id= :hospitalDepartmentId" +
+                    " AND d.toDate >=:fromDate" +
+                    " AND d.fromDate <=:toDate";
+
+    public static final String QUERY_TO_FETCH_HDD_ROSTER_STATUS_EXCEPT_CURRENT_ID =
+            " SELECT MAX(d.isRoomEnabled)" +
+                    " FROM HospitalDepartmentDutyRoster d" +
+                    " WHERE" +
+                    " d.status != 'D'" +
+                    " AND d.id != :id" +
+                    " AND d.hospitalDepartment.id= :hospitalDepartmentId" +
                     " AND d.toDate >=:fromDate" +
                     " AND d.fromDate <=:toDate";
 
@@ -29,7 +38,9 @@ public class HospitalDeptDutyRosterQuery {
                 " dr.rosterGapDuration as rosterGapDuration," +                        //[2]
                 " dr.fromDate as fromDate," +                                          //[3]
                 " dr.toDate as toDate," +                                              //[4]
-                " dr.status as status" +                                              //[5]
+                " dr.status as status," +                                              //[5],
+                " dr.hospital.name as hospitalName," +                                 //[6]
+                " dr.isRoomEnabled as isRoomEnabled"+                                 //[7]
                 " FROM HospitalDepartmentDutyRoster dr" +
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
                 " WHERE" +
@@ -60,7 +71,9 @@ public class HospitalDeptDutyRosterQuery {
                     " ddr.status as status," +                                          //[6]
                     " ddr.remarks as remarks," +                                        //[7]
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[8]
-                    " ddr.isRoomEnabled as isRoomEnabled," +
+                    " ddr.isRoomEnabled as isRoomEnabled," +                            //[9]
+                    " ddr.hospital.name as hospitalName," +                             //[10]
+                    " ddr.hospital.id as hospitalId,"+                                  //[11]
                     HDD_ROSTER_AUDITABLE_QUERY() +
                     " FROM HospitalDepartmentDutyRoster ddr" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ddr.hospitalDepartment.id" +

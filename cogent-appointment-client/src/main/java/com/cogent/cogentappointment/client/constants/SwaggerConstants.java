@@ -98,6 +98,10 @@ public class SwaggerConstants {
     };
 
     //B
+    public interface BillingModeConstant {
+        String BASE_API_VALUE = "This is Billing Mode Resource.";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Billing Mode details for dropdown by hospitalId";
+    }
 
     //C
     public interface CountryConstant {
@@ -227,6 +231,10 @@ public class SwaggerConstants {
                 " (id and name) for dropdown";
         String FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active hospital department" +
                 " details (id and name) for dropdown";
+        String FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION = "Fetch available room " +
+                " details (id and name) for dropdown by hospitalId";
+        String FETCH_APPOINTMENT_CHARGE = "Fetch appointment charge by hospital department and billing mode id";
+        String FETCH_ASSIGNED_DOCTOR = "Fetch assigned doctor in selected hospital department";
     }
 
     public interface HospitalDeptDutyRosterConstant {
@@ -250,6 +258,11 @@ public class SwaggerConstants {
     }
 
     //I
+    public interface IntegrationConstant {
+        String BASE_API_VALUE = "This is Integration Resource.";
+        String FETCH_CLIENT_API_INTEGRATION = "Fetch client API integration detail";
+        String SAVE_OPERATION = "Save new Client API Integration";
+    }
 
     //J
     //K
@@ -323,6 +336,10 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search room number according to given request parameters";
         String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN = "Fetch active room numbers for drop down";
         String FETCH_ROOM_FOR_DROP_DOWN = "Fetch room numbers for drop down";
+        String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch active room numbers for drop down " +
+                " by hospital department Id";
+        String FETCH_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch room numbers for drop down " +
+                "by hospital department Id";
     }
 
     //S

@@ -12,6 +12,11 @@ import java.io.Serializable;
 
 /**
  * @author Sauravi Thapa ON 5/19/20
+ *
+ * CONNECTED TABLE :
+ * 1. HospitalDepartmentBillingModeInfo
+ * 2. HospitalDepartmentRoomInfo
+ * 3. HospitalDepartmentDoctorInfo
  */
 @Entity
 @Table(name = "hospital_department")

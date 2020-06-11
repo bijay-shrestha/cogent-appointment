@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRep
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.RefundStatusService;
-import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
@@ -39,17 +38,13 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private final AppointmentRepository appointmentRepository;
 
-    private final RestTemplateUtils restTemplateUtils;
-
     private final AppointmentService appointmentService;
-
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentRepository appointmentRepository,
-                                   RestTemplateUtils restTemplateUtils, AppointmentService appointmentService) {
+                                   AppointmentService appointmentService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
-        this.restTemplateUtils = restTemplateUtils;
         this.appointmentService = appointmentService;
     }
 

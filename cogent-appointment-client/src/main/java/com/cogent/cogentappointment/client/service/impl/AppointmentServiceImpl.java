@@ -50,7 +50,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -85,8 +84,6 @@ import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
-import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.ESEWA_REFUND_API;
 
 /**
  * @author smriti on 2019-10-22
@@ -1115,10 +1112,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
 //                getEsewaHeader(parseToHmacRequestForEsewaDTO.apply("9841409090", "testBir")));
 
-        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
-                getEsewaPaymentStatusAPIHeaders());
-
-        String url = String.format(ESEWA_REFUND_API, "5VO");
+//        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
+//                getEsewaPaymentStatusAPIHeaders());
+//
+//        String url = String.format(ESEWA_REFUND_API, "5VO");
 
 //        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
 //                postRequest(url, request, EsewaResponseDTO.class);

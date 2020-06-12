@@ -115,7 +115,9 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setSalutation(salutations);
         saveDoctor(doctor);
 
-        saveDoctorSalutation(doctor.getId(), requestDTO.getSalutationIds());
+        if (requestDTO.getSalutationIds() != null) {
+            saveDoctorSalutation(doctor.getId(), requestDTO.getSalutationIds());
+        }
 
         saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
 

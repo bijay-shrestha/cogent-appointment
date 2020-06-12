@@ -372,7 +372,7 @@ public class AppointmentQuery {
                 " AND arl.status='RES'" +
                 " AND sp.status!='D'" +
                 " AND d.status!='D'" +
-                " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate";
+                " AND (arl.rescheduleDate BETWEEN :fromDate AND :toDate)";
 
         if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentRescheduleLogSearchDTO.getAppointmentNumber() + "%'";

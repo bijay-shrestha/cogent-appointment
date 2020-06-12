@@ -21,14 +21,23 @@ import static com.cogent.cogentappointment.commons.constants.DateConstants.MONTH
 @Component
 public class NepaliDateUtility {
 
-//    private final YearMonthDayService yearMonthDayService;
-
     private final YearMonthDayRepository yearMonthDayRepository;
 
     public NepaliDateUtility(YearMonthDayRepository yearMonthDayRepository) {
-//        this.yearMonthDayService = yearMonthDayService;
         this.yearMonthDayRepository = yearMonthDayRepository;
     }
+
+    private static final String[] nepaliMonthNames = {"बैशाक", "जेष्ठ", "आषाढ", "श्रावन", "भाद्र", "आश्विन", "कार्तिक", "मंसिर", "पौष",
+            "माघ", "फागुन", "चैत्र"
+    };
+
+    private static final String[] nepaliMonthNamesEnglish = {"Baishak", "Jestha", "Ashad", "Shrawan", "Bhadra", "Ashwin",
+            "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"
+    };
+
+    private static final String[] nepaliNumbers = {"०", "१", "२", "३", "४", "५", "६", "७", "८", "९"};
+
+
 
     /**
      * Method to convert english date into equivalent nepali date.
@@ -47,14 +56,15 @@ public class NepaliDateUtility {
 
         DateConverterResponeDTO nepaliDateResponse = YearMonthDayUtils.convertFromADToBS(
                 YearMonthDayUtils.getNepaliDateMap(yearMonthDayRepository.findAll()), englishDateRequest);
-        //commented so as to remove extra 0 in front of single digit
-        /*result[0] = nepaliDateResponse.getYear() + "-" +
+
+        result[0] = nepaliDateResponse.getYear() + "-" +
                 (nepaliDateResponse.getMonth() <= 9 ? "0" + nepaliDateResponse.getMonth() : nepaliDateResponse.getMonth()) + "-" +
-                (nepaliDateResponse.getDay() <= 9 ? "0" + nepaliDateResponse.getDay() : nepaliDateResponse.getDay());*/
-        result[0] = nepaliDateResponse.getYear() + "-" + nepaliDateResponse.getMonth() + "-" + nepaliDateResponse.getDay();
+                (nepaliDateResponse.getDay() <= 9 ? "0" + nepaliDateResponse.getDay() : nepaliDateResponse.getDay());
+
         result[1] = getReadableNepaliDate(nepaliDateResponse);
         return result;
     }
+
     public String getNepaliDateFromDate(Date englishDate) {
         DateTime dt = new DateTime(englishDate);
 
@@ -65,7 +75,6 @@ public class NepaliDateUtility {
 
         DateConverterResponeDTO nepaliDateResponse = YearMonthDayUtils.convertFromADToBS(
                 YearMonthDayUtils.getNepaliDateMap(yearMonthDayRepository.findAll()), englishDateRequest);
-        //commented so as to remove extra 0 in front of single digit
         return nepaliDateResponse.getYear() + "-" +
                 (nepaliDateResponse.getMonth() <= 9 ? "0" + nepaliDateResponse.getMonth() : nepaliDateResponse.getMonth()) + "-" +
                 (nepaliDateResponse.getDay() <= 9 ? "0" + nepaliDateResponse.getDay() : nepaliDateResponse.getDay());
@@ -121,5 +130,57 @@ public class NepaliDateUtility {
     public Integer getCurrentNepaliYear(){
         String[] nepaliDate = (getNepaliDateForDate(new Date()))[0].split("-");
         return Integer.parseInt(nepaliDate[0]);
+    }
+
+    public static String formatToDateString(String nepaliDate) {
+        String[] splits = nepaliDate.split("-");
+        String year = splits[0];
+        String month = splits[1];
+        String date = splits[2];
+
+        month = nepaliMonthNames[Integer.parseInt(month) - 1];
+        year = convertNumberToNepaliNumber(year);
+        date = convertNumberToNepaliNumber(date);
+
+        return month + " " + date + ", " + year;
+    }
+
+    public static String formatStringToDateString(String nepaliDateString) {
+        String[] splits = nepaliDateString.split(",");
+        String monthAndDate = splits[0];
+        String year = splits[1].trim();
+
+        String[] monthAndDateSplits = monthAndDate.split(" ");
+        String monthName = monthAndDateSplits[0];
+        String date = monthAndDateSplits[1];
+
+        year = convertNumberToNepaliNumber(year);
+        date = convertNumberToNepaliNumber(date);
+
+        String month = "";
+        for (int i = 0; i < nepaliMonthNamesEnglish.length; i++) {
+            if (nepaliMonthNamesEnglish[i].toLowerCase().equals(monthName.toLowerCase())) {
+                month = nepaliMonthNames[i];
+                break;
+            }
+        }
+
+        return month + " " + date + ", " + year;
+    }
+
+    private static String convertNumberToNepaliNumber(String number) {
+        String result = "";
+
+        String[] digits = number.split("");
+        for (int i = 0; i < digits.length; i++) {
+            result += getNepaliDigit(digits[i]);
+        }
+
+        return result;
+    }
+
+    private static String getNepaliDigit(String digit)
+    {
+        return nepaliNumbers[Integer.parseInt(digit)];
     }
 }

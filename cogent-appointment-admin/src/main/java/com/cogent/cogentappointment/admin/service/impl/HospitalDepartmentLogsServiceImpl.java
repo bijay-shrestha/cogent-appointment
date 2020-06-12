@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.HospitalDepartmentAppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.HospitalDepartmentLogsService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +33,12 @@ public class HospitalDepartmentLogsServiceImpl implements HospitalDepartmentLogs
     }
 
     @Override
-    public AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable) {
+    public HospitalDepartmentAppointmentLogResponseDTO searchAppointmentLogs(HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO, Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_APPOINTMENT_LOG);
 
-        AppointmentLogResponseDTO responseDTOS =
+        HospitalDepartmentAppointmentLogResponseDTO responseDTOS =
                 appointmentRepository.searchHospitalDepartmentAppointmentLogs(searchRequestDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));

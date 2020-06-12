@@ -61,6 +61,7 @@ public class SwaggerConstants {
     public interface HospitalDepartmentAppointmentLogConstant {
         String BASE_API_VALUE = "This resource consists of APIs for  logs(transaction, appointment," +
                 " reschedule, transfer) based on hospital department ";
+        String FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG = "Fetch Appointment Log based on hospital department";
 
     }
 

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
@@ -366,9 +367,31 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
-                                                                             Pageable pageable) {
-        return null;
+    public HospitalDepartmentAppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(
+            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
+            Pageable pageable) {
+
+        HospitalDepartmentAppointmentLogResponseDTO results=new HospitalDepartmentAppointmentLogResponseDTO();
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOGS
+                .apply(searchRequestDTO));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<HospitalDepartmentAppointmentLogDTO> appointmentLogs  = transformQueryToResultList
+                (query,HospitalDepartmentAppointmentLogDTO.class);
+        if (results.getAppointmentLogs().isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+            results.setTotalItems(totalItems);
+            results.setAppointmentLogs(appointmentLogs);
+//            calculateAppointmentStatisticsForAppointmentLog(searchRequestDTO, results);
+            return results;
+        }
+
     }
 
     @Override

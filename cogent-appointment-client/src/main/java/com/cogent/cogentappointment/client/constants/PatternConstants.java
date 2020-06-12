@@ -6,9 +6,7 @@ package com.cogent.cogentappointment.client.constants;
 public class PatternConstants {
     public static final String ACTIVE_INACTIVE_PATTERN = "^[YN]{1}$";
 
-    public static final String EMAIL_PATTERN = "^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$";
-
-    public static final String MAC_ADDRESS_PATTERN = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
+    public static final String NUMBER_PATTERN="^[1-9]+[0-9]*$";
 
     public static final String SPECIAL_CHARACTER_PATTERN = "^[~@&!~#%*(){}+=.,]$";
 

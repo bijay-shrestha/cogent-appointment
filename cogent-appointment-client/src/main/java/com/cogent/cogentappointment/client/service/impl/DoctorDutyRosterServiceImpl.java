@@ -167,6 +167,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         /*UPDATE IS ALLOWED ONLY IF THERE ARE NO APPOINTMENTS WITHIN THAT RANGE*/
         validateAppointmentCount(overrideFromDate, overrideToDate, doctorId, specializationId);
 
+        validateIfStartTimeGreater(updateRequestDTO.getStartTime(), updateRequestDTO.getEndTime());
+
         Long savedOverrideId;
 
         if (Objects.isNull(updateRequestDTO.getDoctorDutyRosterOverrideId())) {
@@ -393,6 +395,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = weekDaysDutyRosterRequestDTOS.stream()
                 .map(requestDTO -> {
+                    validateIfStartTimeGreater(requestDTO.getStartTime(), requestDTO.getEndTime());
 
                     WeekDays weekDays = findWeekDaysById(requestDTO.getWeekDaysId());
 
@@ -418,6 +421,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
             doctorDutyRosterOverrides = overrideRequestDTOS
                     .stream()
                     .map(requestDTO -> {
+
+                        validateIfStartTimeGreater(requestDTO.getStartTime(), requestDTO.getEndTime());
 
                         validateIfOverrideDateIsBetweenDoctorDutyRoster(
                                 doctorDutyRoster.getFromDate(), doctorDutyRoster.getToDate(),
@@ -484,6 +489,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = updateRequestDTOS.stream()
                 .map(requestDTO -> {
+                    validateIfStartTimeGreater(requestDTO.getStartTime(), requestDTO.getEndTime());
+
                     WeekDays weekDays = findWeekDaysById(requestDTO.getWeekDaysId());
 
                     return parseToUpdatedDoctorWeekDaysDutyRoster(requestDTO, doctorDutyRoster, weekDays);

@@ -14,7 +14,7 @@ public class HospitalQuery {
                 " h.id as hospitalId," +                                   //[0]
                 " h.name as name," +                                       //[1]
                 " h.address as address," +                                 //[2]
-                " h.code as hospitalCode," +                               //[3]
+                " h.esewa_merchant_code as merchantCode," +                               //[3]
                 " CASE WHEN" +
                 " (hl.status IS NULL OR hl.status = 'N')" +
                 " THEN null" +

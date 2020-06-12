@@ -49,4 +49,19 @@ public class AppointmentTransactionRequestLog extends Auditable<String> implemen
     * */
     @Column(name = "transaction_status")
     private Character transactionStatus = 'N';
+
+    @Column(name = "has_transferred")
+    private Character has_transferred = 'N';
+
+    @Override
+    public String toString() {
+        return "AppointmentTransactionRequestLog{" +
+                "id=" + id +
+                ", patientName='" + patientName + '\'' +
+                ", transactionNumber='" + transactionNumber + '\'' +
+                ", transactionDate=" + transactionDate +
+                ", transactionStatus=" + transactionStatus +
+                ", has_transferred=" + has_transferred +
+                '}';
+    }
 }

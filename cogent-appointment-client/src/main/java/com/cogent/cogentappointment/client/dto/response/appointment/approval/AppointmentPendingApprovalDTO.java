@@ -31,6 +31,8 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private String patientName;
 
+    private String hospitalNumber;
+
     private String mobileNumber;
 
     private String doctorName;
@@ -44,5 +46,7 @@ public class AppointmentPendingApprovalDTO implements Serializable {
     private String appointmentMode;
 
     private Double appointmentAmount;
+
+    private Character followUp;
 
 }

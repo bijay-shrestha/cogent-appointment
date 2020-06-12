@@ -445,6 +445,7 @@ public class AppointmentUtils {
             final int AGE_INDEX = 8;
             final int APPOINTMENT_ID_INDEX = 9;
             final int IS_FOLLOW_UP_INDEX = 10;
+            final int HAS_TRANSFERRED_INDEX = 11;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
 
@@ -462,6 +463,7 @@ public class AppointmentUtils {
                     .gender(result[GENDER_INDEX].toString())
                     .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
                     .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
+                    .hasTransferred((Character) result[HAS_TRANSFERRED_INDEX])
                     .build();
 
             appointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);

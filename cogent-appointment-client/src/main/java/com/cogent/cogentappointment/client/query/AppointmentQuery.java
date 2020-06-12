@@ -411,7 +411,10 @@ public class AppointmentQuery {
                             " a.appointmentModeId.name as appointmentMode," +
                             " atd.appointmentAmount as appointmentAmount," +
                             " da.fileUri as fileUri," +
-                            " d.salutation as doctorSalutation"+
+                            " d.salutation as doctorSalutation,"+
+                            " da.fileUri as fileUri," +
+                            " a.isFollowUp as followUp," +
+                            " hpi.hospitalNumber as hospitalNumber" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -554,7 +557,8 @@ public class AppointmentQuery {
                 " p.mobile_number as mobileNumber," +                                                   //[7]
                 QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE + "," +                                           //[8]
                 " a.id as appointmentId," +                                                              //[9]
-                " a.is_follow_up as isFollowUp" +                                                        //[10]
+                " a.is_follow_up as isFollowUp," +                                                        //[10]
+                " a.has_transferred as hastransferred" +                                                   //[11]
                 " FROM appointment a" +
                 " LEFT JOIN doctor d ON d.id = a.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = a.specialization_id" +
@@ -606,7 +610,12 @@ public class AppointmentQuery {
                     " h.name as hospitalName," +                                                //[16]
                     " a.appointmentModeId.name as appointmentMode," +                          //[17]
                     " da.fileUri as fileUri," +                                                  //[18]
-                    " d.salutation as doctorSalutation"+
+                    " d.salutation as doctorSalutation,"+
+                    " da.fileUri as fileUri," +
+                    " a.doctorId.id as doctorId," +
+                    " a.specializationId.id as specializationId," +
+                    " a.isFollowUp as followUp," +                                               //[18]
+                    " hpi.hospitalNumber as hospitalNumber"+
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

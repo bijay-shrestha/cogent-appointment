@@ -82,13 +82,13 @@ public class PatientQuery {
                     " AND hpi.status='Y'";
 
     public static final String QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER =
-            " SELECT registration_number" +
-                    " FROM hospital_patient_info p " +
+            "SELECT" +
+                    " MAX(hpi.registrationNumber)" +
+                    " FROM" +
+                    " HospitalPatientInfo hpi" +
                     " WHERE" +
-                    " registration_number IS NOT NULL" +
-                    " AND p.hospital_id=:hospitalId" +
-                    " ORDER BY id DESC" +
-                    " LIMIT 1";
+                    " hpi.hospital.id = :hospitalId" +
+                    " AND hpi.isRegistered='Y'";
 
     public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +

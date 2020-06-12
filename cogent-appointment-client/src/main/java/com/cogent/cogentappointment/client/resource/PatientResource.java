@@ -12,7 +12,9 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.BASE_PATIENT;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.ESEWA_ID;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.getPageable;
 import static org.springframework.http.ResponseEntity.ok;
@@ -122,5 +124,11 @@ public class PatientResource {
     @ApiOperation(FETCH_PATIENT_MIN_DETAIL_BY_APPOINTMENT_ID)
     public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("appointmentId") Long appointmentId) {
         return ok(patientService.fetchDetailByAppointmentId(appointmentId));
+    }
+
+    @GetMapping(ESEWA_ID)
+    @ApiOperation(FETCH_PATIENT_ESEWA_ID)
+    public ResponseEntity<?> fetchPatientEsewaId() {
+        return ok(patientService.fetchPatientEsewaId());
     }
 }

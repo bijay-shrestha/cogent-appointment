@@ -68,6 +68,17 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
     }
 
+    public interface AppointmentTransferConstant {
+        String BASE_API_VALUE = "Resource used for Appointment Transfer Scenario.";
+        String FETCH_AVAILABLE_DATES = "Fetch available dates by doctor id and specialization id";
+        String FETCH_AVAILABLE_TIME = "Fetch available time by available date and doctor id";
+        String FETCH_DOCTOR_CHARGE = "Fetch selected doctor charge by  doctor id";
+        String APPOINTMENT_TRANSFER = "Transfer current appointment details(i.e. doctorId,specializationId," +
+                "appointmentDate,appointmentTime,Charge)";
+        String FETCH_TRANSFERRED_APPOINTMENT_LIST = "Fetch list of transferred appointments";
+        String FETCH_TRANSFERRED_APPOINTMENT_DETAIL = "Fetch transferred appointment detail by id";
+    }
+
     public interface AuthenticateConstant {
         String BASE_API_VALUE = "This is Login and SignUp Resource.";
         String LOGIN_OPERATION = "Login User";
@@ -87,6 +98,10 @@ public class SwaggerConstants {
     };
 
     //B
+    public interface BillingModeConstant {
+        String BASE_API_VALUE = "This is Billing Mode Resource.";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Billing Mode details for dropdown by hospitalId";
+    }
 
     //C
     public interface CountryConstant {
@@ -139,7 +154,8 @@ public class SwaggerConstants {
         String DETAILS_FOR_UPDATE_MODAL_OPERATION = "Fetch Doctor details for update modal by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch Doctor details (id and name) for dropdown";
         String FETCH_BY_SPECIALIZATION_ID = "Fetch active doctors by specialization id";
-        String FETCH_BY_HOSPITAL_ID = "Fetch active doctors by hospital id";
+        String FETCH_ACTIVE_DOCTORS_BY_HOSPITAL_ID = "Fetch active doctors by hospital id";
+        String FETCH_DOCTORS_BY_HOSPITAL_ID = "Fetch doctors by hospital id";
     }
 
     public interface DoctorDutyRosterConstant {
@@ -153,7 +169,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
-                " (Can saveSelfPatient new override schedules for the same roster or update existing rosters). " +
+                " (Can save new override schedules for the same roster or update existing rosters). " +
                 " Returns saved/updated override id as response.";
         String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
                 " Note that doctor duty roster override can be deleted " +
@@ -204,7 +220,48 @@ public class SwaggerConstants {
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";
     }
 
+    public interface HospitalDepartmentConstant {
+        String BASE_HOSPITAL_DEPARTMENT_API_VALUE = "This is Hospital Department Resource";
+        String SAVE_HOSPITAL_DEPARTMENT_OPERATION = "Save new hospital department";
+        String UPDATE_HOSPITAL_DEPARTMENT_OPERATION = "Update existing hospital department";
+        String DELETE_HOSPITAL_DEPARTMENT_OPERATION = "Set hospital department status as 'D' when deleted";
+        String SEARCH_HOSPITAL_DEPARTMENT_OPERATION = "Search hospital department according to given request parameters";
+        String HOSPITAL_DEPARTMENT_DETAILS_OPERATION = "Fetch hospital department details";
+        String FETCH_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal hospital department details" +
+                " (id and name) for dropdown";
+        String FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active hospital department" +
+                " details (id and name) for dropdown";
+        String FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION = "Fetch available room " +
+                " details (id and name) for dropdown by hospitalId";
+        String FETCH_APPOINTMENT_CHARGE = "Fetch appointment charge by hospital department and billing mode id";
+    }
+
+    public interface HospitalDeptDutyRosterConstant {
+        String BASE_API_VALUE = "This is Hospital Department Duty Roster Resource";
+        String SAVE_OPERATION = "Save Hospital Department Duty Roster";
+        String UPDATE_OPERATION = "Update Hospital Department Duty Roster. Note that week days time can be updated " +
+                "only if there are no appointments within the selected date range";
+        String DELETE_OPERATION = "Set Hospital Department Duty Roster status as 'D' when deleted. " +
+                " Note that Hospital Department duty roster can be deleted " +
+                " only if there are no appointments within the selected date range";
+        String SEARCH_OPERATION = "Search Hospital Department Duty Roster according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Hospital Department Duty Roster details by its id";
+        String UPDATE_OVERRIDE_OPERATION = "Update Hospital Department Duty Roster Override schedules." +
+                " (Can save new override schedules for the same roster or update existing rosters). " +
+                " Returns saved/updated override id as response.";
+        String DELETE_OVERRIDE_OPERATION = "Set Hospital Department Duty Roster" +
+                " Override status as 'D' when deleted. Note that Hospital Department duty roster override can be deleted" +
+                " only if there are no appointments within the selected date range";
+        String FETCH_EXISTING_ROSTERS = " Fetch existing Hospital Department duty rosters within the selected date range";
+        String REVERT_OVERRIDE_OPERATION = "Revert Hospital Department duty roster.";
+    }
+
     //I
+    public interface IntegrationConstant {
+        String BASE_API_VALUE = "This is Integration Resource.";
+        String FETCH_CLIENT_API_INTEGRATION = "Fetch client API integration detail";
+        String SAVE_OPERATION = "Save new Client API Integration";
+    }
 
     //J
     //K
@@ -233,6 +290,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient details by id";
         String FETCH_PATIENT_MIN_DETAIL_BY_APPOINTMENT_ID = "Fetch min patient detail by appointment id.";
+        String FETCH_PATIENT_ESEWA_ID = "Fetch patient esewa id";
 
     }
 
@@ -269,8 +327,22 @@ public class SwaggerConstants {
     }
 
     //R
+    public interface RoomConstant {
+        String BASE_API_VALUE = "This is Room Resource.";
+        String SAVE_OPERATION = "Save new room number.";
+        String UPDATE_OPERATION = "Update existing room number";
+        String DELETE_OPERATION = "Set room number status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search room number according to given request parameters";
+        String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN = "Fetch active room numbers for drop down";
+        String FETCH_ROOM_FOR_DROP_DOWN = "Fetch room numbers for drop down";
+        String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch active room numbers for drop down " +
+                " by hospital department Id";
+        String FETCH_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch room numbers for drop down " +
+                "by hospital department Id";
+    }
 
     //S
+
 
     public interface SalutationConstant {
         String BASE_API_VALUE = "This is Salutation Resource";

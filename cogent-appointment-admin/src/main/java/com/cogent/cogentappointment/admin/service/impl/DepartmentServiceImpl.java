@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.CONTENT_NOT_FOUND_BY_HOSPITAL_ID;
-import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
+import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.DepartmentUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -32,6 +32,8 @@ import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValida
 
 /**
  * @author smriti ON 25/01/2020
+ *
+ * DEPARTMENT IS RENAMED AS UNIT IN FRONT-END
  */
 @Slf4j
 @Service
@@ -57,8 +59,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         List<Object[]> departments = departmentRepository.validateDuplicity(requestDTO);
 
-        validateDuplicity(departments, requestDTO.getName(), requestDTO.getDepartmentCode(),
-                Department.class.getSimpleName());
+        validateDuplicity(departments, requestDTO.getName(), requestDTO.getDepartmentCode(), UNIT);
 
         Hospital hospital = fetchHospital(requestDTO.getHospitalId());
 
@@ -78,8 +79,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         List<Object[]> departments = departmentRepository.validateDuplicity(updateRequestDTO);
 
-        validateDuplicity(departments, updateRequestDTO.getName(), updateRequestDTO.getDepartmentCode(),
-                Department.class.getSimpleName());
+        validateDuplicity(departments, updateRequestDTO.getName(), updateRequestDTO.getDepartmentCode(), UNIT);
 
         save(parseToUpdatedDepartment(updateRequestDTO, department));
 
@@ -189,21 +189,19 @@ public class DepartmentServiceImpl implements DepartmentService {
         departmentRepository.save(department);
     }
 
-    private Supplier<NoContentFoundException> DEPARTMENT_NOT_FOUND = () ->
-            new NoContentFoundException(Department.class);
+    private Supplier<NoContentFoundException> DEPARTMENT_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, UNIT);
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, UNIT));
+    };
 
     private Function<Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT, id);
-        throw new NoContentFoundException(Department.class, "id", id.toString());
+        log.error(CONTENT_NOT_FOUND_BY_ID, UNIT, id);
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, UNIT), "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> DEPARTMENT_BY_GIVEN_HOSPITAL_ID_NOT_FOUND = (hospitalId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_ID,hospitalId);
-        throw new NoContentFoundException(Department.class, "hospitalId", hospitalId.toString());
+        log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_ID, hospitalId);
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, UNIT), "hospitalId", hospitalId.toString());
     };
 
-    private NoContentFoundException DEPARTMENT_NOT_FOUND(){
-        log.error(CONTENT_NOT_FOUND,DEPARTMENT);
-        throw new NoContentFoundException(Department.class);
-    }
 }

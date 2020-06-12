@@ -31,5 +31,7 @@ public class AvailableDoctorWithSpecialization implements Serializable {
 
     private String qualificationAlias;
 
+    private Double appointmentCharge;
+
     private String fileUri;
 }

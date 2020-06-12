@@ -21,5 +21,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
     @Query(" SELECT a FROM Appointment a WHERE a.id=:id AND a.status = 'PA'")
     Optional<Appointment> fetchPendingAppointmentById(@Param("id") Long id);
 
-
+    @Query(" SELECT a FROM Appointment a WHERE a.status= 'PA' AND a.id=:id AND a.hospitalId.id=:hospitalId")
+    Optional<Appointment> fetchAppointmentById(@Param("id") Long id,@Param("hospitalId") Long hospitalId);
 }

@@ -85,7 +85,6 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " WHERE a.id =:id";
 
-
     public static final String QUERY_TO_FETCH_APPOINTMENT_DETAILS_BY_ID =
             " SELECT" +
                     " a.appointmentDate as appointmentDate," +                              //[0]

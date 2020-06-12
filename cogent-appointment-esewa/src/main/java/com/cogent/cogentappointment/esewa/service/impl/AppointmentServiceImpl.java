@@ -1,19 +1,20 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForOthers;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentTransactionRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestForDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.*;
+import com.cogent.cogentappointment.esewa.dto.response.StatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appointmentTxnStatus.AppointmentTransactionStatusResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.cancel.AppointmentCancelResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.*;
@@ -297,7 +298,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         updateAppointmentTransactionRequestLog(transactionRequestLog);
 
         AppointmentSuccessResponseDTO responseDTO =
-                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus());
+                parseToAppointmentSuccessResponseDTO(appointmentNumber,
+                        transactionRequestLog.getTransactionStatus(),
+                        hospital.getRefundPercentage());
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -377,7 +380,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         updateAppointmentTransactionRequestLog(transactionRequestLog);
 
         AppointmentSuccessResponseDTO responseDTO =
-                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus());
+                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus(), hospital.getRefundPercentage());
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -399,7 +402,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public StatusResponseDTO cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO) {
+    public AppointmentCancelResponseDTO cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -409,15 +412,18 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         parseAppointmentCancelledDetails(appointment, cancelRequestDTO.getRemarks());
 
-        Double refundAmount = appointmentRepository.calculateRefundAmount(cancelRequestDTO.getAppointmentId());
+        Double appointmentAmount = fetchAppointmentAmount(appointment.getId());
 
-        saveAppointmentRefundDetail(
-                parseToAppointmentRefundDetail(appointment, refundAmount)
-        );
+        Double refundAmount = fetchRefundAmount(appointment.getId());
+
+        saveAppointmentRefundDetail(parseToAppointmentRefundDetail(appointment, refundAmount));
+
+        AppointmentCancelResponseDTO cancelResponseDTO =
+                parseAppointmentCancelResponse(appointmentAmount, refundAmount);
 
         log.info(CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToStatusResponseDTO();
+        return cancelResponseDTO;
     }
 
     @Override
@@ -919,5 +925,13 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
                     convert24HourTo12HourFormat(rescheduleRequestDTO.getRescheduleTime())));
         }
+    }
+
+    private Double fetchAppointmentAmount(Long appointmentId) {
+        return appointmentTransactionDetailRepository.fetchAppointmentAmount(appointmentId);
+    }
+
+    private Double fetchRefundAmount(Long appointmentId) {
+        return appointmentRepository.calculateRefundAmount(appointmentId);
     }
 }

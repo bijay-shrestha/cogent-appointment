@@ -9,6 +9,7 @@ public class WebResourceKeyConstants {
     public static final String API_V1 = "/api/v1";
     public static final String ACTIVE = "/active";
 
+
     public interface AdminConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
@@ -45,9 +46,22 @@ public class WebResourceKeyConstants {
         String TRANSACTION_LOG = "/transaction-log";
     }
 
+    public interface AppointmentTransferConstants {
+        String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
+        String APPOINTMENT_TIME = "/time";
+        String APPOINTMENT_CHARGE = "/charge";
+        String APPOINTMENT_DATE = "/date";
+        String APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE = "/{appointmentTransferId}";
+    }
+
 
     //B
     public static final String BASE_PASSWORD = "/password";
+
+    public interface BillingModeConstants {
+        String BASE_BILLING_MODE = "/billingMode";
+
+    }
 
     //C
     public interface CountryConstants {
@@ -130,7 +144,31 @@ public class WebResourceKeyConstants {
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
+    public interface HospitalDepartmentConstants {
+        String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
+        String AVAILABLE = "/available";
+        String ROOM = "/room";
+        String HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{hospitalDepartmentId}";
+        String CHARGE = "/charge";
+        String BILLING_MODE_WISE = "/billingModeWise";
+    }
+
+    public interface HospitalDeptDutyRosterConstants {
+        String BASE_HOSPITAL_DEPARTMENT_DUTY_ROSTER = "/hospitalDepartmentDutyRoster";
+        String OVERRIDE = "/override";
+        String EXISTING = "/existing";
+        String REVERT = "/revert";
+    }
+
     //I
+    public interface IntegrationConstants {
+        String BASE_INTEGRATION = "/integration";
+        String CLIENT_API_INTEGRATION = "/client-api-integration";
+        String CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE = "/integration/approve";
+        String FEATURES="/features";
+        String HTTP_REQUEST_METHODS="/request-methods";
+    }
+
     public static final String INFO = "/info";
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 
@@ -162,6 +200,7 @@ public class WebResourceKeyConstants {
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
         String HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE = "/{hospitalPatientInfoId}";
+        String ESEWA_ID = "/eSewaId";
     }
 
     public interface ProfileSetupConstants {
@@ -178,9 +217,14 @@ public class WebResourceKeyConstants {
     }
 
     //R
+    public interface RoomConstants {
+        String BASE_ROOM = "/room";
+        String HOSPITAL_DEPARTMENT_WISE = "/hospitalDepartmentWise";
+    }
 
 
     //S
+
 
     public interface SalutationConstant {
         String BASE_SALUTATION = "/salutation";

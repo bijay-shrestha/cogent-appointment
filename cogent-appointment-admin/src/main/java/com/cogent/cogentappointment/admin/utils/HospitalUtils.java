@@ -5,21 +5,15 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNu
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
-import com.cogent.cogentappointment.persistence.model.Hospital;
-import com.cogent.cogentappointment.persistence.model.HospitalBanner;
-import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
-import com.cogent.cogentappointment.persistence.model.HospitalLogo;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ALIAS_DUPLICATION_ERROR;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.NAME_DUPLICATION_ERROR;
 import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
@@ -35,7 +29,7 @@ public class HospitalUtils {
 
     public static void validateDuplicity(List<Object[]> objects,
                                          String requestedName,
-                                         String requestedCode,
+                                         String requestedEsewaMerchantCode,
                                          String requestedAlias,
                                          String className) {
         final int NAME = 0;
@@ -45,18 +39,19 @@ public class HospitalUtils {
         objects.forEach(object -> {
             boolean isNameExists = requestedName.equalsIgnoreCase((String) get(object, NAME));
 
-            boolean isCodeExists = requestedCode.equalsIgnoreCase((String) get(object, CODE));
+            boolean isCodeExists = requestedEsewaMerchantCode.equalsIgnoreCase((String) get(object, CODE));
 
             boolean isAliasExists = requestedAlias.equalsIgnoreCase((String) get(object, ALIAS));
 
             if (isNameExists && isCodeExists && isAliasExists)
                 throw new DataDuplicationException(
-                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName, requestedCode),
-                        "name", requestedName, "code", requestedCode
+                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName,
+                                requestedEsewaMerchantCode),
+                        "name", requestedName, "esewaMerchantCode", requestedEsewaMerchantCode
                 );
 
             validateName(isNameExists, requestedName, className);
-            validateCode(isCodeExists, requestedCode, className);
+            validateCode(isCodeExists, requestedEsewaMerchantCode, className);
             validateAlias(isAliasExists, requestedAlias, className);
         });
     }
@@ -85,7 +80,7 @@ public class HospitalUtils {
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
         hospital.setName(convertToNormalCase(hospitalRequestDTO.getName()));
-        hospital.setCode(toUpperCase(hospitalRequestDTO.getHospitalCode()));
+        hospital.setEsewaMerchantCode(toUpperCase(hospitalRequestDTO.getEsewaMerchantCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
@@ -137,8 +132,8 @@ public class HospitalUtils {
         hospitalBanner.setStatus(ACTIVE);
     }
 
-    public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
-                                              Hospital hospital) {
+    public static Hospital parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
+                                                  Hospital hospital) {
 
         hospital.setName(convertToNormalCase(updateRequestDTO.getName()));
         hospital.setAddress(updateRequestDTO.getAddress());
@@ -149,6 +144,8 @@ public class HospitalUtils {
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFollowUps(updateRequestDTO.getNumberOfFollowUps());
         hospital.setFollowUpIntervalDays(updateRequestDTO.getFollowUpIntervalDays());
+
+        return hospital;
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(
@@ -178,71 +175,22 @@ public class HospitalUtils {
         return hospital;
     }
 
-    public static HospitalResponseDTO parseToHospitalResponseDTO(Object[] results) {
-        final int HOSPITAL_ID_INDEX = 0;
-        final int NAME_INDEX = 1;
-        final int STATUS_INDEX = 2;
-        final int ADDRESS_INDEX = 3;
-        final int PAN_NUMBER_INDEX = 4;
-        final int REMARKS_INDEX = 5;
-        final int HOSPITAL_LOGO_INDEX = 6;
-        final int HOSPITAL_BANNER_INDEX = 7;
-        final int HOSPITAL_CODE_INDEX = 8;
-        final int CONTACT_DETAILS_INDEX = 9;
-        final int REFUND_PERCENTAGE_INDEX = 10;
-        final int NUMBER_OF_ADMINS_INDEX = 11;
-        final int NUMBER_OF_FOLLOWUPS_INDEX = 12;
-        final int FOLLOW_UP_INTERVAL_DAYS_INDEX = 13;
-        final int IS_COMPANY_INDEX = 14;
-        final int ALIAS_INDEX = 15;
+    public static HospitalAppointmentServiceType parseToHospitalAppointmentServiceType(Hospital hospital,
+                                                                                       AppointmentServiceType appointmentServiceType,
+                                                                                       Character isPrimary) {
 
-        final int CREATED_BY_INDEX = 16;
-        final int CREATED_DATE_INDEX = 17;
-        final int LAST_MODIFIED_BY_INDEX = 18;
-        final int LAST_MODIFIED_DATE_INDEX = 19;
-
-        return HospitalResponseDTO.builder()
-                .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
-                .name(results[NAME_INDEX].toString())
-                .status(results[STATUS_INDEX].toString().charAt(0))
-                .address(results[ADDRESS_INDEX].toString())
-                .panNumber(results[PAN_NUMBER_INDEX].toString())
-                .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
-                .hospitalLogo(Objects.isNull(results[HOSPITAL_LOGO_INDEX]) ? null : results[HOSPITAL_LOGO_INDEX].toString())
-                .hospitalBanner(Objects.isNull(results[HOSPITAL_BANNER_INDEX]) ? null : results[HOSPITAL_BANNER_INDEX].toString())
-                .hospitalCode(results[HOSPITAL_CODE_INDEX].toString())
-                .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
-                        new ArrayList<>() : parseToHospitalContactNumberResponseDTOS(results))
-                .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))
-                .numberOfAdmins(Objects.isNull(results[NUMBER_OF_ADMINS_INDEX]) ? 0 :
-                        Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
-                .numberOfFollowUps(Objects.isNull(results[NUMBER_OF_FOLLOWUPS_INDEX]) ?
-                        0 : Integer.parseInt(results[NUMBER_OF_FOLLOWUPS_INDEX].toString()))
-                .followUpIntervalDays(Objects.isNull(results[NUMBER_OF_FOLLOWUPS_INDEX]) ?
-                        0 : Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
-                .isCompany(Objects.isNull(results[IS_COMPANY_INDEX]) ? 'N' :
-                        results[IS_COMPANY_INDEX].toString().charAt(0))
-                .alias(Objects.isNull(results[ALIAS_INDEX]) ? null : results[ALIAS_INDEX].toString())
-                .createdBy(results[CREATED_BY_INDEX].toString())
-                .createdDate((Date) results[CREATED_DATE_INDEX])
-                .lastModifiedBy(results[LAST_MODIFIED_BY_INDEX].toString())
-                .lastModifiedDate((Date) results[LAST_MODIFIED_DATE_INDEX])
-                .build();
+        HospitalAppointmentServiceType hospitalAppointmentServiceType = new HospitalAppointmentServiceType();
+        hospitalAppointmentServiceType.setHospital(hospital);
+        hospitalAppointmentServiceType.setAppointmentServiceType(appointmentServiceType);
+        hospitalAppointmentServiceType.setIsPrimary(isPrimary);
+        hospitalAppointmentServiceType.setStatus(ACTIVE);
+        return hospitalAppointmentServiceType;
     }
 
-    private static List<HospitalContactNumberResponseDTO> parseToHospitalContactNumberResponseDTOS(Object[] results) {
+    public static HospitalAppointmentServiceType updateHospitalAppointmentServiceTypeStatus(
+            HospitalAppointmentServiceType hospitalAppointmentServiceType, Character status, Character isPrimary) {
 
-        final int CONTACT_DETAILS_INDEX = 9;
-
-        String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
-
-        return Arrays.stream(contactWithIdAndNumber)
-                .map(contact -> contact.split(FORWARD_SLASH))
-                .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
-                        .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
-                        .contactNumber(contactDetails[1])
-                        .status(contactDetails[2].charAt(0))
-                        .build())
-                .collect(Collectors.toList());
+        hospitalAppointmentServiceType.setStatus(status);
+        return hospitalAppointmentServiceType;
     }
 }

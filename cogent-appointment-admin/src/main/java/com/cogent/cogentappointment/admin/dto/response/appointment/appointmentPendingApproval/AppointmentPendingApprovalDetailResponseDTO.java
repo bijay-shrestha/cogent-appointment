@@ -18,6 +18,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class AppointmentPendingApprovalDetailResponseDTO implements Serializable {
 
+    private Long hospitalId;
+
     private Long appointmentId;
 
     private String hospitalName;
@@ -61,4 +63,8 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
     private Character isSelf;
 
     private String appointmentMode;
+
+    private Long doctorId,specializationId;
+
+    private Character followUp;
 }

@@ -30,6 +30,7 @@ import static com.cogent.cogentappointment.admin.log.constants.AppointmentModeLo
 import static com.cogent.cogentappointment.admin.utils.AppointmentModeUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 
 /**
  * @author Sauravi Thapa ON 4/17/20
@@ -53,9 +54,9 @@ public class AppointmentModeServiceImpl implements AppointmentModeService {
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_MODE);
 
-        Long appointmentMode = repository.validateDuplicity(requestDTO.getName());
+        List<Object[]> appointmentMode = repository.validateDuplicity(requestDTO);
 
-        validateName(appointmentMode, requestDTO.getName());
+        validateDuplicity(appointmentMode, requestDTO.getName(), requestDTO.getCode(), AppointmentMode.class.getSimpleName());
 
         saveAppointmentMode(parseToAppointmentMode(requestDTO));
 
@@ -72,11 +73,15 @@ public class AppointmentModeServiceImpl implements AppointmentModeService {
 
         if (appointmentMode.getIsEditable().equals('Y')) {
 
-            Long count = repository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
+            List<Object[]> appointmentModes = repository.validateDuplicity(requestDTO);
 
-            validateName(count, requestDTO.getName());
+            validateDuplicity(appointmentModes,
+                    requestDTO.getName(),
+                    requestDTO.getCode(),
+                    AppointmentMode.class.getSimpleName());
 
-            parseToUpdatedAppointmentMode(requestDTO, appointmentMode);
+            saveAppointmentMode(parseToUpdatedAppointmentMode(requestDTO, appointmentMode));
+
         } else {
             log.error(APPOINTMENT_MODE_NOT_EDITABLE_ERROR);
             throw new BadRequestException(APPOINTMENT_MODE_NOT_EDITABLE,APPOINTMENT_MODE_NOT_EDITABLE_DEBUG_MESSAGE);
@@ -93,7 +98,7 @@ public class AppointmentModeServiceImpl implements AppointmentModeService {
 
         AppointmentMode appointmentMode = fetchAppointmentModeById(deleteRequestDTO.getId());
 
-        parseToDeletedAppointmentMode(appointmentMode, deleteRequestDTO);
+        saveAppointmentMode(parseToDeletedAppointmentMode(appointmentMode, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_MODE, getDifferenceBetweenTwoTime(startTime));
     }
@@ -104,11 +109,11 @@ public class AppointmentModeServiceImpl implements AppointmentModeService {
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_MODE);
 
-        List<AppointmentModeMinimalResponseDTO> universities = repository.search(searchRequestDTO, pageable);
+        List<AppointmentModeMinimalResponseDTO> minimalResponseDTOS = repository.search(searchRequestDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_MODE, getDifferenceBetweenTwoTime(startTime));
 
-        return universities;
+        return minimalResponseDTOS;
     }
 
     @Override

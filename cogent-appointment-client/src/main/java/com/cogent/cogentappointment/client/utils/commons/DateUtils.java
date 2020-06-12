@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.constants.UtilityConfigConstants.*;
 import static java.util.Calendar.MONTH;
@@ -80,6 +79,7 @@ public class DateUtils {
         return new java.sql.Date(date.getTime()).toLocalDate();
     }
 
+
     public static String getDayCodeFromDate(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("EE");
         return dateFormat.format(date);
@@ -90,7 +90,10 @@ public class DateUtils {
     }
 
     public static boolean isDateBetweenInclusive(Date startDate, Date endDate, Date target) {
-        return !target.before(startDate) && !target.after(endDate);
+        Date targetDateOnly = removeTime(target);
+        Date startDateOnly = removeTime(startDate);
+        Date endDateOnly = removeTime(endDate);
+        return !targetDateOnly.before(startDateOnly) && !targetDateOnly.after(endDateOnly);
     }
 
     public static Date convertStringToDate(String date) throws ParseException {
@@ -180,6 +183,13 @@ public class DateUtils {
         }
     }
 
+    public static String convert12HourTo24HourFormat(String timeIn12HrFormat) {
+        int hour = Integer.parseInt(timeIn12HrFormat.substring(0, 2)) % 12;
+        if (timeIn12HrFormat.endsWith("PM") || timeIn12HrFormat.endsWith("pm"))
+            hour += 12;
+        return String.format("%02d", hour) + timeIn12HrFormat.substring(2, 6);
+    }
+
     public static Date parseTime(String requestedTime) {
         try {
             SimpleDateFormat time = new SimpleDateFormat("HH:mm");
@@ -223,10 +233,9 @@ public class DateUtils {
         }
     }
 
-    public static List<Date> getDates(
-            Date startDate, Date endDate) {
+    public static List<Date> getDates(Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();
-        Date today = new Date();
+        Date today = utilDateToSqlDate(new Date());
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(startDate);
 
@@ -235,7 +244,7 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            if (!result.before(today)) {
+            if (!utilDateToSqlDate(calendar.getTime()).before(today)) {
                 datesInRange.add(result);
             }
             calendar.add(Calendar.DATE, 1);
@@ -259,6 +268,23 @@ public class DateUtils {
         if (fromDateGreaterThanToDate) {
             log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
+    }
+
+    public static void validateIfStartTimeGreater(Date startTime, Date endTime) {
+
+        boolean isBothTimeEqual = startTime.equals(endTime);
+
+        if (isBothTimeEqual) {
+            log.error(EQUAL_DATE_TIME_MESSAGE);
+            throw new BadRequestException(EQUAL_DATE_TIME_MESSAGE, EQUAL_DATE_TIME_DEBUG_MESSAGE);
+        }
+
+        boolean isStartTimeGreaterThanEndTime = startTime.after(endTime);
+
+        if (isStartTimeGreaterThanEndTime) {
+            log.error(INVALID_DATE_TIME_MESSAGE);
+            throw new BadRequestException(INVALID_DATE_TIME_MESSAGE, INVALID_DATE_TIME_DEBUG_MESSAGE);
         }
     }
 

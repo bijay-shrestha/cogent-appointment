@@ -429,29 +429,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         return responseDTO;
     }
 
-    private Map<String, List<?>> getApiIntegrations() {
-
-        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList =
-                getAdminModeApiIntegration();
-
-        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOList =
-                getHospitalApiIntegration();
-
-        Map<String, List<?>> map = new HashMap();
-
-        if (featureIntegrationResponseDTOList.size() != 0 || featureIntegrationResponseDTOList != null) {
-            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTOList);
-        }
-
-        if (clientIntegrationResponseDTOList.size() != 0 || clientIntegrationResponseDTOList != null) {
-            map.put(KEY_ADMIN_INTEGRATION, featureIntegrationResponseDTOList);
-        }
-
-        return map;
-
-
-    }
-
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
 
         Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.
@@ -472,10 +449,14 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 Map<String, String> queryParametersResponseDTO = integrationRepository.
                         findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(),
+                        responseDTO.getRequestMethod());
 
                 FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
-                        convertToAdminApiResponseDTO(responseDTO, requestBody, requestHeaderResponseDTO, queryParametersResponseDTO);
+                        convertToAdminApiResponseDTO(responseDTO,
+                                requestBody,
+                                requestHeaderResponseDTO,
+                                queryParametersResponseDTO);
 
                 features.add(featureIntegrationResponseDTO);
 
@@ -517,7 +498,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 Map<String, String> queryParametersResponseDTO = integrationRepository.
                         findApiQueryParametersResponse(responseDTO.getApiIntegrationFormatId());
 
-                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(),
+                        responseDTO.getRequestMethod());
 
                 FeatureIntegrationResponseDTO featureIntegrationResponseDTO = convertToClientApiResponseDTO(responseDTO,
                         requestBody,
@@ -907,6 +889,30 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword()))
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
+    }
+
+
+    private Map<String, List<?>> getApiIntegrations() {
+
+        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList =
+                getAdminModeApiIntegration();
+
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOList =
+                getHospitalApiIntegration();
+
+        Map<String, List<?>> map = new HashMap();
+
+        if (featureIntegrationResponseDTOList.size() != 0 || featureIntegrationResponseDTOList != null) {
+            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTOList);
+        }
+
+        if (clientIntegrationResponseDTOList.size() != 0 || clientIntegrationResponseDTOList != null) {
+            map.put(KEY_ADMIN_INTEGRATION, featureIntegrationResponseDTOList);
+        }
+
+        return map;
+
+
     }
 
 

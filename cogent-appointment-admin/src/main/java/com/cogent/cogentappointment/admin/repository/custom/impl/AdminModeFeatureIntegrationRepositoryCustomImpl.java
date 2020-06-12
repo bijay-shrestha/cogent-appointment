@@ -72,12 +72,7 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
         List<AdminFeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, AdminFeatureIntegrationResponse.class);
 
-        if (responseDTOList.isEmpty())
-            throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
-
-        else {
             return responseDTOList;
-        }
     }
 
     @Override

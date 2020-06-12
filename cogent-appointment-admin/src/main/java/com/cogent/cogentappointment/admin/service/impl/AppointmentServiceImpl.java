@@ -493,11 +493,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         switch (response) {
 
             case PARTIAL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment, refundAppointmentDetail, response);
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        refundAppointmentDetail,
+                        response);
                 break;
 
             case FULL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment, refundAppointmentDetail, response);
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        refundAppointmentDetail,
+                        response);
                 break;
 
             case SUCCESS:
@@ -505,17 +509,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                         refundAppointmentDetail));
                 break;
 
-            case AMBIGIOUS:
+            case AMBIGUOUS:
                 defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment,
                         refundAppointmentDetail,
                         response);
-                break;
+                throw new BadRequestException(response, response);
 
             default:
                 defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment,
                         refundAppointmentDetail,
                         response);
-                break;
+                throw new BadRequestException(response, response);
 
         }
     }

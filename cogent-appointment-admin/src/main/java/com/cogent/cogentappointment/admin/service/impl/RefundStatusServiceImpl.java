@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
@@ -13,29 +12,26 @@ import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.RefundStatusService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
-import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
+import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
-import com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.RefundStatusLog.REFUND_STATUS;
+import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSignatureForEsewa;
 import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentthirdpartyconnector.api.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
@@ -94,29 +90,46 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         Appointment appointment = getAppointment(requestDTO);
 
-        requestDTO.setEsewaMerchantCode(appointment.getHospitalId().getEsewaMerchantCode());
+        requestDTO.setEsewaMerchantCode("testBir");
 
         requestDTO.setAppointmentMode(appointment.getAppointmentModeId().getCode());
 
         ThirdPartyResponse response = processRefundRequest(requestDTO,
-                integrationBackendRequestDTO,
-                appointment, appointmentRefundDetail, true);
+                appointment,
+                integrationBackendRequestDTO);
+
+        if (!Objects.isNull(response.getCode())) {
+            throw new BadRequestException(response.getMessage(), response.getMessage());
+        }
 
         switch (response.getStatus()) {
 
             case PARTIAL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment, appointmentRefundDetail, response.getStatus());
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        response.getStatus());
+                break;
+
+            case COMPLETE:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        response.getStatus());
                 break;
 
             case FULL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment, appointmentRefundDetail, response.getStatus());
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        response.getStatus());
                 break;
 
-            case AMBIGIOUS:
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(), requestDTO.getIntegrationBackendRequestDTO());
+            case AMBIGUOUS:
+                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(),
+                        requestDTO.getIntegrationBackendRequestDTO());
 
             default:
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(), requestDTO.getIntegrationBackendRequestDTO());
+                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(),
+                        requestDTO.getIntegrationBackendRequestDTO());
+
         }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
@@ -139,47 +152,36 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     * if Response returns COMPLETED our db should maintain 'A' status in Refund table
      * and 'RE' in Appointment table*/
     private ThirdPartyResponse checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO,
-                                          IntegrationBackendRequestDTO backendRequestDTO,
-                                          Appointment appointment,
-                                          AppointmentTransactionDetail transactionDetail,
-                                          AppointmentRefundDetail appointmentRefundDetail,
-                                          Boolean isRefund) throws IOException {
-
-        EsewaPayementStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
-
-        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
+                                                      Appointment appointment,
+                                                      IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
 
 
-        BackendIntegrationApiInfo integrationApiInfo = integrationThirdPartyImpl.getAppointmentModeApiIntegration(backendRequestDTO,
-                requestDTO.getAppointmentId(), null);
+        EsewaPayementStatus esewaPayementStatus = parseToEsewaPaymentStatus(requestDTO);
 
-//        EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
-//                transactionDetail,
-//                appointmentRefundDetail,
-//                isRefund);
+        String generatedEsewaHmac = getSignatureForEsewa.apply(esewaPayementStatus.getEsewa_id(),
+                esewaPayementStatus.getProduct_code());
 
-        Map<String, Object> esewaRefundRequestDTO = RequestBodyUtils.getDynamicEsewaRequestBodyLog(
-                integrationApiInfo.getRequestBody(),
-                appointment,
-                transactionDetail,
-                appointmentRefundDetail,
-                isRefund);
-
-        parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber());
+        BackendIntegrationApiInfo integrationApiInfo = integrationThirdPartyImpl.
+                getAppointmentModeApiIntegration(backendRequestDTO,
+                        appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 
 
-        ThirdPartyResponse response = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                esewaRefundRequestDTO);
+//        Map<String, Object> esewaRefundRequestDTO = RequestBodyUtils.getDynamicEsewaRequestBodyLog(
+//                integrationApiInfo.getRequestBody());
+
+//        parseApiUri(integrationApiInfo.getApiUri(), requestDTO.getTransactionNumber());
+
+
+        ThirdPartyResponse response = thirdPartyConnectorService.callEsewaRefundStatusService(integrationApiInfo,
+                esewaPayementStatus);
 
 
         return response;
     }
 
     private ThirdPartyResponse processRefundRequest(RefundStatusRequestDTO requestDTO,
-                                        IntegrationBackendRequestDTO integrationBackendRequestDTO,
-                                        Appointment appointment,
-                                        AppointmentRefundDetail appointmentRefundDetail,
-                                        Boolean isRefund) throws IOException {
+                                                    Appointment appointment,
+                                                    IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
 
         ThirdPartyResponse thirdPartyResponse = null;
 
@@ -187,11 +189,8 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
             case APPOINTMENT_MODE_ESEWA_CODE:
                 thirdPartyResponse = checkEsewaRefundStatus(requestDTO,
-                        integrationBackendRequestDTO,
                         appointment,
-                        null,
-                        appointmentRefundDetail,
-                        isRefund);
+                        integrationBackendRequestDTO);
                 break;
 
             default:

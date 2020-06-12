@@ -1,6 +1,7 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
+import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
@@ -84,6 +85,39 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         return response;
 
+    }
+
+    @Override
+    public ThirdPartyResponse callEsewaRefundStatusService(BackendIntegrationApiInfo integrationApiInfo,
+                                                           EsewaPayementStatus esewaPayementStatus) {
+        HttpMethod httpMethod = getHttpRequestMethod(integrationApiInfo.getHttpMethod());
+
+        String uri = "";
+        Map<String, String> queryParameter = integrationApiInfo.getQueryParameters();
+        if (queryParameter != null) {
+            uri = createQueryPamarameter(integrationApiInfo.getApiUri(), queryParameter).toUriString();
+        } else {
+            uri = integrationApiInfo.getApiUri();
+        }
+
+
+        ResponseEntity<?> response = restTemplateUtils.
+                requestAPI(httpMethod,
+                        uri,
+                        new HttpEntity<>(esewaPayementStatus, integrationApiInfo.getHttpHeaders()));
+
+        System.out.println(response);
+
+        ThirdPartyResponse thirdPartyResponse = null;
+        try {
+            thirdPartyResponse = map(response.getBody().toString(),
+                    ThirdPartyResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return thirdPartyResponse;
     }
 
     private ClientSaveRequestDTO getApiRequestBody() {

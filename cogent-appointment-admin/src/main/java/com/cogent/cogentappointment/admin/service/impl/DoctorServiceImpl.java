@@ -119,7 +119,9 @@ public class DoctorServiceImpl implements DoctorService {
             saveDoctorSalutation(doctor.getId(), requestDTO.getSalutationIds());
         }
 
-        saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
+        saveDoctorAppointmentCharge(doctor,
+                requestDTO.getAppointmentCharge(),
+                requestDTO.getAppointmentFollowUpCharge());
 
         saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds());
 

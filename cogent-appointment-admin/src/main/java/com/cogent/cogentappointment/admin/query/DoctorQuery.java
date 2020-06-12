@@ -234,7 +234,12 @@ public class DoctorQuery {
     public static String QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID =
             "SELECT" +
                     " d.id as value," +                                      //[0]
-                    " d.name as label," +                                    //[1]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as label," +                                  //[1]
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
@@ -251,13 +256,13 @@ public class DoctorQuery {
 
     public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
-                    " d.id as value," +
+                    " d.id as value," +                          //[0]
                     " CASE WHEN" +
-                    " (da.salutation is null)" +
+                    " (d.salutation is null)" +
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +       //[1]
-                    " END as label" + //[0]
+                    " END as label," +
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
@@ -276,7 +281,12 @@ public class DoctorQuery {
     public static final String QUERY_TO_FETCH_MIN_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
                     " d.id as value," +                                     //[0]
-                    " d.name as label," +                                   //[1]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as label," +                                  //[1]
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +

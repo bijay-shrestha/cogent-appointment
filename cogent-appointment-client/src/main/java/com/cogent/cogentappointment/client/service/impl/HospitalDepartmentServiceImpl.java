@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.*;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.ChargeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
@@ -25,8 +26,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
-import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
-import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_BILLING_MODE_INFO;
+import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.client.log.constants.RoomLog.AVAILABLE_ROOM;
 import static com.cogent.cogentappointment.client.log.constants.RoomLog.ROOM;
@@ -261,8 +261,23 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     }
 
-    public void saveBillingModeWithCharge(HospitalDepartmentRequestDTO hospitalRequestDTO,
-                                          HospitalDepartment hospitalDepartment) {
+    @Override
+    public List<DoctorDropdownDTO> fetchAssignedHospitalDepartmentDoctor(Long hospitalDepartmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DOCTOR_INFO);
+
+        List<DoctorDropdownDTO> assignedDoctors =
+                hospitalDepartmentDoctorInfoRepository.fetchAssignedHospitalDepartmentDoctor(hospitalDepartmentId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DOCTOR_INFO,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return assignedDoctors;
+    }
+
+    private void saveBillingModeWithCharge(HospitalDepartmentRequestDTO hospitalRequestDTO,
+                                           HospitalDepartment hospitalDepartment) {
 
         Long hospitalId = getLoggedInHospitalId();
 
@@ -280,9 +295,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         });
 
         saveHospitalDepartmentBillingModeInfoList(billingModeInfoList);
-
     }
-
 
     private void saveHospitalDepartmentDoctorInfo(HospitalDepartmentRequestDTO requestDTO,
                                                   HospitalDepartment hospitalDepartment) {
@@ -394,7 +407,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     }
 
-    public void deleteDoctor(DepartmentDoctorUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
+    private void deleteDoctor(DepartmentDoctorUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
@@ -409,7 +422,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public void deleteRoom(DepartmentRoomUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
+    private void deleteRoom(DepartmentRoomUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);

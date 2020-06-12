@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.Charge
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.ChargeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
@@ -35,6 +36,8 @@ public interface HospitalDepartmentService {
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
-    ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO );
+    ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO);
+
+    List<DoctorDropdownDTO> fetchAssignedHospitalDepartmentDoctor(Long hospitalDepartmentId);
 
 }

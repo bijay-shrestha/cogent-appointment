@@ -6,6 +6,7 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smriti on 27/11/2019
@@ -34,4 +35,7 @@ public class HospitalDeptWeekDaysDutyRosterUpdateRequestDTO implements Serializa
     private Long weekDaysId;
 
     private String weekDaysName;
+
+    private List<HospitalDeptWeekDaysDutyRosterDoctorInfoUpdateRequestDTO> weekDaysDoctorInfo;
+
 }

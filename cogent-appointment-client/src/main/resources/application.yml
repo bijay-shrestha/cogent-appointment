@@ -2,7 +2,6 @@
 ## Note: ENABLE THIS ONLY IN CASE OF EMBEDDED TOMCAT DEPLOYMENT  ###
 ######___ ***** ENTER PATH TO YOUR STAND-ALONE TOMCAT SERVER ***** ____ ############
 
-
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
 catalina:

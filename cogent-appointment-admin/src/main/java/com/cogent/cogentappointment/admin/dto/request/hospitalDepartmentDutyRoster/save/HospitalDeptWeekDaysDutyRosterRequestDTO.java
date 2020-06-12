@@ -6,6 +6,7 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smriti on 26/11/2019
@@ -29,4 +30,6 @@ public class HospitalDeptWeekDaysDutyRosterRequestDTO implements Serializable {
 
     @NotNull
     private Long weekDaysId;
+
+    private List<Long> hospitalDepartmentDoctorInfoIds;
 }

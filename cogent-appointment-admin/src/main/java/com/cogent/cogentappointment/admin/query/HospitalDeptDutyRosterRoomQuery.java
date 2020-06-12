@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
+import java.util.Objects;
+
 /**
  * @author smriti on 21/05/20
  */
@@ -16,17 +18,22 @@ public class HospitalDeptDutyRosterRoomQuery {
                     " AND hd.toDate >=:fromDate" +
                     " AND hd.fromDate <=:toDate";
 
-    public static String QUERY_TO_FETCH_ROOM_COUNT_EXCEPT_CURRENT_ID =
-            " SELECT COUNT(h.id)" +
-                    " FROM HospitalDepartmentDutyRosterRoomInfo h" +
-                    " LEFT JOIN HospitalDepartmentDutyRoster hd ON hd.id = h.hospitalDepartmentDutyRoster.id" +
-                    " WHERE" +
-                    " hd.status != 'D'" +
-                    " AND hd.id !=:id" +
-                    " AND hd.hospitalDepartment.id= :hospitalDepartmentId" +
-                    " AND h.hospitalDepartmentRoomInfo.id = :hospitalDepartmentRoomInfoId" +
-                    " AND hd.toDate >=:fromDate" +
-                    " AND hd.fromDate <=:toDate";
+    public static String QUERY_TO_FETCH_ROOM_COUNT_EXCEPT_CURRENT_ID(Long hospitalDepartmentRoomInfoId) {
+        String query = " SELECT COUNT(h.id)" +
+                " FROM HospitalDepartmentDutyRosterRoomInfo h" +
+                " LEFT JOIN HospitalDepartmentDutyRoster hd ON hd.id = h.hospitalDepartmentDutyRoster.id" +
+                " WHERE" +
+                " hd.status != 'D'" +
+                " AND hd.id !=:id" +
+                " AND hd.hospitalDepartment.id= :hospitalDepartmentId" +
+                " AND hd.toDate >=:fromDate" +
+                " AND hd.fromDate <=:toDate";
+
+        if (!Objects.isNull(hospitalDepartmentRoomInfoId))
+            query += " AND h.hospitalDepartmentRoomInfo.id = " + hospitalDepartmentRoomInfoId;
+
+        return query;
+    }
 
     public static String QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL =
             " SELECT" +

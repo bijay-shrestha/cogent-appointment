@@ -70,7 +70,6 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
 
-
     private final AppointmentServiceTypeService appointmentServiceTypeService;
 
     public HospitalServiceImpl(HospitalRepository hospitalRepository,

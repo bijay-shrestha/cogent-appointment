@@ -29,7 +29,13 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private String registrationNumber;
 
-    private String patientName;
+    private Long patientId;
+
+    private String patientName,age,address;
+
+    private Gender gender;
+
+    private Character isRegistered;
 
     private String hospitalNumber;
 

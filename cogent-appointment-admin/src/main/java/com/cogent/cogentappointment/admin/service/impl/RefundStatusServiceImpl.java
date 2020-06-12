@@ -123,16 +123,23 @@ public class RefundStatusServiceImpl implements RefundStatusService {
                 break;
 
             case AMBIGUOUS:
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(),
-                        requestDTO.getIntegrationBackendRequestDTO());
+                approveRefundAppointment(requestDTO);
+
 
             default:
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(),
-                        requestDTO.getIntegrationBackendRequestDTO());
+                approveRefundAppointment(requestDTO);
+
 
         }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void approveRefundAppointment(RefundStatusRequestDTO requestDTO) throws IOException {
+
+        requestDTO.getIntegrationBackendRequestDTO().setFeatureCode("REF_APPROVAL");
+        appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(),
+                requestDTO.getIntegrationBackendRequestDTO());
     }
 
     @Override

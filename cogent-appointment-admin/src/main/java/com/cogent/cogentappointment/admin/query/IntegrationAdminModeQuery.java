@@ -14,6 +14,7 @@ public class IntegrationAdminModeQuery {
     public static final String ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
+                    " aif.id as apiIntegrationFormatId,"+
                     " am.id as appointmentModeId," +
                     " am.name as appointmentModeName," +
                     " f.name as featureName," +
@@ -72,7 +73,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND aif.status='Y'" +
@@ -107,7 +108,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeQueryParameters amqp ON amqp.apiIntegrationFormatId =aif.id" +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND amqp.status='Y'" +

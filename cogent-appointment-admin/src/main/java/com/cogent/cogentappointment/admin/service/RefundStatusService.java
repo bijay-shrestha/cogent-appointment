@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service;
 
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
@@ -15,7 +16,7 @@ public interface RefundStatusService {
 
     RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable);
 
-    void checkRefundStatus(RefundStatusRequestDTO requestDTO) throws IOException;
+    void checkRefundStatus(RefundStatusRequestDTO requestDTO, IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException;
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long id);
 

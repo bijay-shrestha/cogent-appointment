@@ -433,10 +433,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 findAdminModeFeatureIntegration(id);
 
         List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
-                findAdminModeApiRequestHeaders(featureIntegrationResponse.getFeatureId());
+                findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
 
         List<ApiQueryParametersDetailResponse> queryParametersResponseDTO = adminModeQueryParametersRepository.
-                findAdminModeApiQueryParameters(featureIntegrationResponse.getFeatureId());
+                findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
 
         AdminModeIntegrationDetailResponseDTO responseDTO = new AdminModeIntegrationDetailResponseDTO();
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());

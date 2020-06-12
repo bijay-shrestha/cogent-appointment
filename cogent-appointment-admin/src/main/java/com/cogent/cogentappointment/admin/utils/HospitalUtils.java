@@ -91,6 +91,7 @@ public class HospitalUtils {
         hospital.setFollowUpIntervalDays(hospitalRequestDTO.getFollowUpIntervalDays());
         hospital.setAlias(hospitalRequestDTO.getAlias());
         hospital.setCompanyId(getLoggedInCompanyId());
+        hospital.setCode(hospitalRequestDTO.getAlias());
         return hospital;
     }
 

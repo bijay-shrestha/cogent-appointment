@@ -63,7 +63,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.ADMIN_MODE_API_FEAUTRES_HEADERS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
                 transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
@@ -79,7 +79,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, ADMIN_MODE_API_PARAMETERS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiQueryParametersResponseDTO> parametersResponseDTO =
                 transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);
@@ -131,10 +131,10 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long featureId) {
+    public List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long apiIntegrationFormatId) {
 
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderUpdateResponseDTO> apiRequestHeaderUpdateResponseDTOS =
                 transformQueryToResultList(query, ApiRequestHeaderUpdateResponseDTO.class);
@@ -150,9 +150,9 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long featureId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_PARAMETERS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+    public List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long apiIntegrationFormatId) {
+        Query query = createQuery.apply(entityManager, CLIENT_API_PARAMETERS_QUERY)
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiQueryParametersUpdateResponseDTO> apiQueryParametersUpdateResponseDTOS =
                 transformQueryToResultList(query, ApiQueryParametersUpdateResponseDTO.class);
@@ -225,9 +225,9 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public List<ApiRequestHeaderDetailResponse> findApiRequestHeaders(Long featureId) {
+    public List<ApiRequestHeaderDetailResponse> findApiRequestHeaders(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, CLIENT_API_FEATURES_HEADERS_DETAILS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO =
                 transformQueryToResultList(query, ApiRequestHeaderDetailResponse.class);
@@ -236,9 +236,9 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long featureId) {
+    public List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, CLIENT_API_PARAMETERS_DETAILS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiQueryParametersDetailResponse> parametersResponseDTO =
                 transformQueryToResultList(query, ApiQueryParametersDetailResponse.class);
@@ -264,7 +264,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     @Override
     public Map<String, String> findApiQueryParametersResponse(Long featureId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_PARAMETERS_QUERY)
+        Query query = createQuery.apply(entityManager, CLIENT_API_PARAMETERS_QUERY)
                 .setParameter(API_FEATURE_ID, featureId);
 
         List<ApiQueryParametersResponseDTO> parametersResponseDTO =

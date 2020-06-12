@@ -25,9 +25,9 @@ import java.util.Map;
 @Qualifier("integrationRepositoryCustom")
 public interface IntegrationRepositoryCustom {
 
-    List<ApiRequestHeaderDetailResponse> findApiRequestHeaders(Long featureId);
+    List<ApiRequestHeaderDetailResponse> findApiRequestHeaders(Long apiIntegrationFormatId);
 
-    List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long featureId);
+    List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long apiIntegrationFormatId);
 
     Map<String,String> findApiRequestHeadersResponse(Long featureId);
 
@@ -41,9 +41,9 @@ public interface IntegrationRepositoryCustom {
 
     ClientApiIntegrationResponseDTO findClientApiIntegration(Long id);
 
-    List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long featureId);
+    List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long apiIntegrationFormatId);
 
-    List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long featureId);
+    List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long apiIntegrationFormatId);
 
     List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTO();
 

@@ -13,7 +13,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_FEATURE_ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.CLIENT_API_INTEGRATION_FORMAT_ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_INTEGRATION_FORMAT_ID;
 import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_QUERY_PARAMETERS_DETAILS_QUERY;
 import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_QUERY_PARAMETERS_QUERY;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
@@ -34,7 +34,7 @@ public class AdminModeQueryParametersRepositoryCustomImpl implements AdminModeQu
     @Override
     public List<ApiQueryParametersDetailResponse> findAdminModeApiQueryParameters(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, ADMIN_MODE_QUERY_PARAMETERS_DETAILS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiQueryParametersDetailResponse> parametersResponseDTO =
                 transformQueryToResultList(query, ApiQueryParametersDetailResponse.class);
@@ -44,9 +44,9 @@ public class AdminModeQueryParametersRepositoryCustomImpl implements AdminModeQu
     }
 
     @Override
-    public List<ApiQueryParametersUpdateResponseDTO> findAdminModeApiQueryParameterForUpdate(Long featureId) {
+    public List<ApiQueryParametersUpdateResponseDTO> findAdminModeApiQueryParameterForUpdate(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, ADMIN_MODE_QUERY_PARAMETERS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiQueryParametersUpdateResponseDTO> apiQueryParametersUpdateResponseDTOS =
                 transformQueryToResultList(query, ApiQueryParametersUpdateResponseDTO.class);

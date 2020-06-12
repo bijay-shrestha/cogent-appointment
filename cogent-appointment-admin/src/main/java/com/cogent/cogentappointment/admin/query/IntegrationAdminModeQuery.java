@@ -56,7 +56,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND aif.status='Y'" +
@@ -92,7 +92,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeQueryParameters amqp ON amqp.apiIntegrationFormatId =aif.id" +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND amqp.status='Y'" +

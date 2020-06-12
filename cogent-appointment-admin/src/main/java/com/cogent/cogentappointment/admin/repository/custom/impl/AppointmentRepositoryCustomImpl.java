@@ -366,6 +366,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
+    public AppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
+                                                                             Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO,
                                                            Pageable pageable) {
 

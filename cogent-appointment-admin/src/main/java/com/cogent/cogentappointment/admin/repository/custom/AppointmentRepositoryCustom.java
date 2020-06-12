@@ -59,6 +59,9 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
 
+    AppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
+                                                                      Pageable pageable);
+
     TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable);
 
     AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,

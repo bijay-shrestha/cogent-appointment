@@ -38,18 +38,13 @@ public class HospitalDepartmentAppointmentLogDTO implements Serializable {
 
     private Gender patientGender;
 
-    private String patientAge;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
-    private Date patientDob;
+    private String age;
 
     private Character isRegistered;
 
     private String mobileNumber;
 
-    private String hospitalDepartmentId;
-
-    private String roomNumber;
+    private String hospitalDepartmentName;
 
     private String transactionNumber;
 

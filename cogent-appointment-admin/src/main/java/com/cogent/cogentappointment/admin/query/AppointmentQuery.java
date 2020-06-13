@@ -750,46 +750,41 @@ public class AppointmentQuery {
     public static Function<HospitalDepartmentAppointmentLogSearchDTO, String> QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOGS =
             (appointmentLogSearchDTO) ->
                     "SELECT" +
-                            " h.name as hospitalName," +
-                            " a.appointmentDate as appointmentDate," +
-                            " a.appointmentNumber as appointmentNumber," +
-                            " DATE_FORMAT(a.appointmentTime , '%h:%i %p') as appointmentTime," +
-                            " p.eSewaId as esewaId," +
+                            " h.name as hospitalName," +                                                         //[0]
+                            " a.appointmentDate as appointmentDate," +                                           //[1]
+                            " a.appointmentNumber as appointmentNumber," +                                       //[2]
+                            " DATE_FORMAT(a.appointmentTime , '%h:%i %p') as appointmentTime," +                 //[3]
+                            " p.eSewaId as esewaId," +                                                           //[4]
                             " CASE WHEN hpi.registrationNumber IS NULL " +
                             " THEN 'N/A'" +
-                            " ELSE hpi.registrationNumber END as registrationNumber," +
-                            " p.name as patientName," +
-                            " p.gender as patientGender," +
-                            " p.dateOfBirth as patientDob," +
-                            " hpi.isRegistered as isRegistered," +
-                            " p.mobileNumber as mobileNumber," +
-                            " atd.transactionNumber as transactionNumber," +
-                            " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +
-                            " hd.name as hospitalDepartmentName," +
-                            " r.roomNumber as roomNumber," +
-                            " a.status as status, " +
-                            " COALESCE(ard.refundAmount,0) as refundAmount," +
-                            " hpi.address as patientAddress," +
-                            " atd.transactionDate as transactionDate," +
-                            " am.name as appointmentMode," +
-                            " a.isFollowUp as isFollowUp," +
-                            " atd.appointmentAmount - COALESCE(ard.refundAmount ,0) as revenueAmount," +
-                            QUERY_TO_CALCULATE_PATIENT_AGE+
+                            " ELSE hpi.registrationNumber END as registrationNumber," +                          //[5]
+                            " p.name as patientName," +                                                          //[6]
+                            " p.gender as patientGender," +                                                      //[7]
+                            " hpi.isRegistered as isRegistered," +                                              //[8]
+                            " p.mobileNumber as mobileNumber," +                                                //[9]
+                            " atd.transactionNumber as transactionNumber," +                                    //[10]
+                            " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                        //[11]
+                            " hd.name as hospitalDepartmentName," +                                             //[12]
+                            " a.status as status, " +                                                           //[13]
+                            " COALESCE(ard.refundAmount,0) as refundAmount," +                                  //[14]
+                            " hpi.address as patientAddress," +                                                   //[15]
+                            " atd.transactionDate as transactionDate," +                                         //[16]
+                            " a.appointmentModeId.name as appointmentMode," +                                     //[17]
+                            " a.isFollowUp as isFollowUp," +                                                       //[18]
+                            " atd.appointmentAmount - COALESCE(ard.refundAmount ,0) as revenueAmount," +           //[19]
+                            QUERY_TO_CALCULATE_PATIENT_AGE+                                                        //[20]
                             " FROM Appointment a" +
                             " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                             " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
                             " LEFT JOIN HospitalBillingModeInfo hbm ON hbm.id = ahd.hospitalDepartmentBillingModeInfo.id" +
-                            " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.id = ahd.hospitalDepartmentRoomInfo.id" +
-                            " LEFT JOIN Room r ON r.id = hdri.room.id " +
-                            " LEFT JOIN AppointmentMode am On am.id = a.appointmentMode.id" +
-                            " LEFT JOIN Patient p ON a.patientId.id = p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId.id = p.id AND hpi.hospitalId.id = a.hospitalId.id" +
-                            " LEFT JOIN Hospital h ON apst.hospital.id = h.id" +
-                            " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id = p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointmentId.id" +
-                            " LEFT JOIN AppointmentRefundDetail ard ON a.id = ard.appointmentId.id" +
-                            " WHERE apst.appointmentServiceType.id = 2 "
+                            " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                            " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                            " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId"+
+                            " WHERE apst.appointmentServiceType.id = :appointmentServiceTypeId "
                             + GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(

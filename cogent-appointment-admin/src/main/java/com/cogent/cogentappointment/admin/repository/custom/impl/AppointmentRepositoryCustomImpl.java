@@ -371,24 +371,24 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
             Pageable pageable) {
 
-        HospitalDepartmentAppointmentLogResponseDTO results=new HospitalDepartmentAppointmentLogResponseDTO();
+        HospitalDepartmentAppointmentLogResponseDTO results = new HospitalDepartmentAppointmentLogResponseDTO();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOGS
-                .apply(searchRequestDTO));
+                .apply(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<HospitalDepartmentAppointmentLogDTO> appointmentLogs  = transformQueryToResultList
-                (query,HospitalDepartmentAppointmentLogDTO.class);
-        if (results.getAppointmentLogs().isEmpty())
+        List<HospitalDepartmentAppointmentLogDTO> appointmentLogs = transformQueryToResultList
+                (query, HospitalDepartmentAppointmentLogDTO.class);
+        if (appointmentLogs.isEmpty()) {
             throw APPOINTMENT_NOT_FOUND.get();
-
-        else {
+        } else {
             results.setTotalItems(totalItems);
             results.setAppointmentLogs(appointmentLogs);
-//            calculateAppointmentStatisticsForAppointmentLog(searchRequestDTO, results);
+            calculateAppointmentStatisticsForHospitalDepartmentAppointmentLog(searchRequestDTO, results);
             return results;
         }
 
@@ -471,6 +471,33 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         );
 
         calculateTotalAppointmentAmount(searchRequestDTO, appointmentLogResponse);
+    }
+
+    private void calculateAppointmentStatisticsForHospitalDepartmentAppointmentLog(
+            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
+            HospitalDepartmentAppointmentLogResponseDTO appointmentLogResponse) {
+
+//        BookedAppointmentResponseDTO bookedInfo = getBookedAppointmentDetails(searchRequestDTO);
+//
+//        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInAppointmentDetails(searchRequestDTO);
+//
+//        CancelledAppointmentResponseDTO cancelledInfo = getCancelledAppointmentDetails(searchRequestDTO);
+//
+//        RefundAppointmentResponseDTO refundInfo = getRefundedAppointmentDetails(searchRequestDTO);
+//
+//        RevenueFromRefundAppointmentResponseDTO revenueFromRefund =
+//                getRevenueFromRefundedAppointmentDetails(searchRequestDTO);
+//
+//        parseToAppointmentLogResponseDTO(
+//                appointmentLogResponse,
+//                bookedInfo,
+//                checkedInInfo,
+//                cancelledInfo,
+//                refundInfo,
+//                revenueFromRefund
+//        );
+//
+//        calculateTotalAppointmentAmount(searchRequestDTO, appointmentLogResponse);
     }
 
     private void calculateAppointmentStatisticsForTransactionLog(TransactionLogSearchDTO searchRequestDTO,

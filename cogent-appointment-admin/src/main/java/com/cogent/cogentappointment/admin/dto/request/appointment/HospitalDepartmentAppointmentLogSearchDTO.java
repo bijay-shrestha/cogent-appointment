@@ -35,4 +35,6 @@ public class HospitalDepartmentAppointmentLogSearchDTO implements Serializable {
 
     private String status;
 
+    private Long serviceTypeId;
+
 }

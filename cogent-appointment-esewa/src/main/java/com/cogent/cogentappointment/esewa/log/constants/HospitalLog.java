@@ -6,4 +6,6 @@ package com.cogent.cogentappointment.esewa.log.constants;
 public class HospitalLog {
 
     public final static String HOSPITAL = "HOSPITAL";
+
+    public final static String HOSPITAL_APPOINTMENT_SERVICE_TYPE = "HOSPITAL APPOINTMENT SERVICE TYPE";
 }

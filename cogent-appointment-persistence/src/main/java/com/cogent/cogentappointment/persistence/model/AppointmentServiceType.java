@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * @author smriti on 26/05/20
- * eg. Department wise, Doctor wise
+ * eg. Department Consultation, Doctor Consultation
  */
 @Entity
 @Table(name = "appointment_service_type")
@@ -33,7 +33,7 @@ public class AppointmentServiceType extends Auditable<String> implements Seriali
     @Column(name = "description")
     private String description;
 
-    @Column(name = "code")
+    @Column(name = "code", updatable = false)
     private String code;
 
     @Column(name = "is_default")

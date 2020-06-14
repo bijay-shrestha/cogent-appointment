@@ -33,6 +33,10 @@ public class NoContentFoundException extends RuntimeException {
                 .build();
     }
 
+    public NoContentFoundException(String errorMessage, String debugMessage) {
+        setErrorResponse(errorMessage, debugMessage);
+    }
+
     public NoContentFoundException(Class clazz, String... searchParamsMap) {
         super(generateMessage(clazz.getSimpleName(), toMap(String.class, String.class, searchParamsMap)));
         setErrorResponse(

@@ -74,4 +74,10 @@ public class AgeTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.println(dob.format(formatter));
     }
+
+    @Test
+    public void test() {
+        LocalDate date = LocalDate.now();
+        System.out.println(date.getDayOfWeek().toString().substring(0, 3));
+    }
 }

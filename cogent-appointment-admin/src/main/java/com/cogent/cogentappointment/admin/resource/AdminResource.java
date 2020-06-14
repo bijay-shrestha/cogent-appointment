@@ -1,7 +1,10 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.*;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminResetPasswordRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
@@ -16,10 +19,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminConstant.*;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyAdminConstant.FETCH_LOGGED_IN_ADMIN_INFO;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminConstants.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CompanyAdminConstants.INFO;
 import static java.net.URI.create;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;

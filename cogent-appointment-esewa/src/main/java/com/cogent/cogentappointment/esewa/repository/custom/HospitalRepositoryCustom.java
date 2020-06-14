@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalAppointmentServiceTypeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalFollowUpResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalMinResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,4 +19,6 @@ public interface HospitalRepositoryCustom {
     List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO);
 
     HospitalFollowUpResponseDTO fetchFollowUpDetails(Long hospitalId);
+
+    List<HospitalAppointmentServiceTypeResponseDTO> fetchHospitalAppointmentServiceType(Long hospitalId);
 }

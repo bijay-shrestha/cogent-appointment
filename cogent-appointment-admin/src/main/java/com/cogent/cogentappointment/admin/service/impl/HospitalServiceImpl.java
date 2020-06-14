@@ -96,7 +96,6 @@ public class HospitalServiceImpl implements HospitalService {
         this.appointmentServiceTypeService = appointmentServiceTypeService;
     }
 
-
     @Override
     public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner)
             throws NoSuchAlgorithmException {

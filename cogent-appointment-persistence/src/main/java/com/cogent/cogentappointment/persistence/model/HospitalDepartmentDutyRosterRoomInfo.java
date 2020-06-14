@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-public class HospitalDepartmentDutyRosterRoomInfo implements Serializable{
+public class HospitalDepartmentDutyRosterRoomInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

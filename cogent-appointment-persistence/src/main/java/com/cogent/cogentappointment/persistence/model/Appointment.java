@@ -13,6 +13,32 @@ import java.util.Date;
 
 /**
  * @author smriti on 2019-10-14
+ * <p>
+ *
+ * Connected Table
+ * 1. HospitalAppointmentService Type
+ *   Appointment Service Type can be
+ *      a. Doctor Consultation (AppointmentDoctorInfo)
+ *          i. Doctor
+ *          ii. Specialization
+ *
+ *      b. Department Consultation (AppointmentHospitalDepartmentInfo)
+ *          i. HospitalDepartment
+ *          ii. HospitalDepartmentRoomInfo
+ *          iii. HospitalDepartmentBillingModeInfo
+ *
+ * 2. AppointmentMode
+ * 3. AppointmentTransactionDetail
+ * 4. AppointmentFollowUpTracker/AppointmentHospitalDepartmentFollowUpTracker
+ * 5. AppointmentFollowUpRequestLog/AppointmentHospitalDepartmentFollowUpRequestLog
+ * 6. AppointmentFollowUpLog/AppointmentHospitalDepartmentFollowUpLog
+ * 7. AppointmentReservationLog/AppointmentHospitalDepartmentReservationLog
+ * 8. AppointmentStatistics
+ *
+ * RESCHEDULE -> AppointmentRescheduleLog
+ * REFUND -> AppointmentRefundDetail
+ *
+ *
  */
 @Entity
 @Table(name = "appointment")
@@ -27,6 +53,11 @@ public class Appointment extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_appointment_service_type_id")
+    private HospitalAppointmentServiceType hospitalAppointmentServiceType;
+
+    //todo : remove doctor and specialization from here
     /*eg.Specialization name like Surgeon, Physician,etc*/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id")
@@ -100,8 +131,6 @@ public class Appointment extends Auditable<String> implements Serializable {
     public String toString() {
         return "Appointment{" +
                 "id=" + id +
-                ", specializationId=" + specializationId.getName() +
-                ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
                 ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +

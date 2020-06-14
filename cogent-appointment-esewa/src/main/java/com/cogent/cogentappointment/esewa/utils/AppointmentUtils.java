@@ -102,25 +102,55 @@ public class AppointmentUtils {
     }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
-                                                 AppointmentReservationLog appointmentReservationLog,
+                                                 Date appointmentDate,
+                                                 Date appointmentTime,
                                                  String appointmentNumber,
                                                  Character isSelf,
                                                  Patient patient,
-                                                 Specialization specialization,
-                                                 Doctor doctor,
                                                  Hospital hospital,
-                                                 AppointmentMode appointmentMode) {
+                                                 AppointmentMode appointmentMode,
+                                                 HospitalAppointmentServiceType hospitalAppointmentServiceType) {
 
         Appointment appointment = new Appointment();
-        appointment.setAppointmentDate(appointmentReservationLog.getAppointmentDate());
-        appointment.setAppointmentTime(appointmentReservationLog.getAppointmentTime());
+        appointment.setAppointmentDate(appointmentDate);
+        appointment.setAppointmentTime(appointmentTime);
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
         appointment.setIsSelf(isSelf);
         appointment.setAppointmentModeId(appointmentMode);
-        parseToAppointment(patient, specialization, doctor, hospital, appointment);
+        appointment.setHospitalId(hospital);
+        appointment.setPatientId(patient);
+        appointment.setHospitalAppointmentServiceType(hospitalAppointmentServiceType);
+        appointment.setStatus(PENDING_APPROVAL);
+        appointment.setSerialNumber(generateRandomNumber(6));
         return appointment;
+    }
+
+    public static AppointmentDoctorInfo parseAppointmentDoctorInfo(Appointment appointment,
+                                                                   Doctor doctor,
+                                                                   Specialization specialization) {
+
+        AppointmentDoctorInfo appointmentDoctorInfo = new AppointmentDoctorInfo();
+        appointmentDoctorInfo.setAppointment(appointment);
+        appointmentDoctorInfo.setDoctor(doctor);
+        appointmentDoctorInfo.setSpecialization(specialization);
+
+        return appointmentDoctorInfo;
+    }
+
+    public static AppointmentHospitalDepartmentInfo parseAppointmentHospitalDepartmentInfo(
+            Appointment appointment,
+            HospitalDepartment hospitalDepartment,
+            HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo,
+            HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo) {
+
+        AppointmentHospitalDepartmentInfo appointmentHospitalDepartmentInfo = new AppointmentHospitalDepartmentInfo();
+        appointmentHospitalDepartmentInfo.setAppointment(appointment);
+        appointmentHospitalDepartmentInfo.setHospitalDepartment(hospitalDepartment);
+        appointmentHospitalDepartmentInfo.setHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfo);
+        appointmentHospitalDepartmentInfo.setHospitalDepartmentBillingModeInfo(hospitalDepartmentBillingModeInfo);
+        return appointmentHospitalDepartmentInfo;
     }
 
     private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
@@ -310,10 +340,10 @@ public class AppointmentUtils {
     }
 
     public static StatusResponseDTO parseToStatusResponseDTO() {
-        return StatusResponseDTO.builder()
-                .responseCode(OK.value())
-                .responseStatus(OK)
-                .build();
+        StatusResponseDTO statusResponseDTO = new StatusResponseDTO();
+        statusResponseDTO.setResponseCode(OK.value());
+        statusResponseDTO.setResponseStatus(OK);
+        return statusResponseDTO;
     }
 
     public static AppointmentMinResponseWithStatusDTO parseToAppointmentMinResponseWithStatusDTO(

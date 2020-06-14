@@ -24,18 +24,24 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ROOM_INFO_ID;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentQuery.QUERY_TO_VALIDATE_IF_APPOINTMENT_EXISTS_DEPT_WISE;
 import static com.cogent.cogentappointment.esewa.query.AppointmentQuery.*;
+import static com.cogent.cogentappointment.esewa.query.HospitalDepartmentRoomInfoQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_NUMBER;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.parseToAppointmentHistory;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
@@ -130,6 +136,33 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
+    public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
+            Date appointmentDate, Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE(hospitalDepartmentRoomInfoId))
+                .setParameter(DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        return transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
+    }
+
+    @Override
+    public Long validateIfAppointmentExistsDeptWise(Date appointmentDate,
+                                                    String appointmentTime,
+                                                    Long hospitalDepartmentId,
+                                                    Long hospitalDepartmentRoomInfoId) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_VALIDATE_IF_APPOINTMENT_EXISTS_DEPT_WISE(hospitalDepartmentRoomInfoId))
+                .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(APPOINTMENT_TIME, appointmentTime)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
     public AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_DETAILS_BY_ID)
@@ -159,13 +192,17 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(searchDTO))
+    public AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO,
+                                                                      String appointmentServiceTypeCode) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(searchDTO,
+                appointmentServiceTypeCode))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
                 .setParameter(NAME, searchDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchDTO.getDateOfBirth()));
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchDTO.getDateOfBirth()))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchDTO.getAppointmentServiceTypeId());
 
         List<AppointmentResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentResponseDTO.class);
@@ -173,11 +210,19 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
+        appointmentHistory.forEach(appointment -> {
+            if (!Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
+                String roomNumber = fetchRoomNumber(appointment.getHospitalDepartmentRoomInfoId());
+                appointment.setRoomNumber(roomNumber);
+            }
+        });
+
         return parseToAppointmentHistory(appointmentHistory);
     }
 
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO) {
+    public AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO,
+                                                                        String appointmentServiceTypeCode) {
 
         List<PatientRelationInfoResponseDTO> patientRelationInfo =
                 patientRepository.fetchPatientRelationInfoHospitalWise(
@@ -192,15 +237,23 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .collect(Collectors.joining(COMMA_SEPARATED));
 
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_OTHERS(searchDTO, childPatientIds))
+                QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_OTHERS(searchDTO, childPatientIds, appointmentServiceTypeCode))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchDTO.getAppointmentServiceTypeId());
 
         List<AppointmentResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentResponseDTO.class);
 
         if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
+
+        appointmentHistory.forEach(appointment -> {
+            if (!Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
+                String roomNumber = fetchRoomNumber(appointment.getHospitalDepartmentRoomInfoId());
+                appointment.setRoomNumber(roomNumber);
+            }
+        });
 
         return parseToAppointmentHistory(appointmentHistory);
     }
@@ -214,4 +267,15 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         log.error(CONTENT_NOT_FOUND, APPOINTMENT);
         throw new NoContentFoundException(Appointment.class);
     };
+
+    private String fetchRoomNumber(Long hospitalDepartmentRoomInfoId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_NUMBER)
+                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId);
+
+        try {
+            return (String) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

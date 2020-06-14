@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.Appoi
 /**
  * @author smriti on 18/02/20
  */
-public interface AppointmentReservationService {
+public interface AppointmentReservationLogService {
 
     Long saveAppointmentReservationLog(AppointmentFollowUpRequestDTO requestDTO);
 

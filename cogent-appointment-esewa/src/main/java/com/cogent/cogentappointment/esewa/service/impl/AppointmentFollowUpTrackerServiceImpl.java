@@ -10,7 +10,7 @@ import com.cogent.cogentappointment.esewa.repository.DoctorRepository;
 import com.cogent.cogentappointment.esewa.repository.HospitalRepository;
 import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;
-import com.cogent.cogentappointment.esewa.service.AppointmentReservationService;
+import com.cogent.cogentappointment.esewa.service.AppointmentReservationLogService;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import lombok.extern.slf4j.Slf4j;
@@ -43,19 +43,19 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
     private final DoctorRepository doctorRepository;
 
-    private final AppointmentReservationService appointmentReservationService;
+    private final AppointmentReservationLogService appointmentReservationLogService;
 
     private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
 
     public AppointmentFollowUpTrackerServiceImpl(AppointmentFollowUpTrackerRepository appointmentFollowUpTrackerRepository,
                                                  HospitalRepository hospitalRepository,
                                                  DoctorRepository doctorRepository,
-                                                 AppointmentReservationService appointmentReservationService,
+                                                 AppointmentReservationLogService appointmentReservationLogService,
                                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService) {
         this.appointmentFollowUpTrackerRepository = appointmentFollowUpTrackerRepository;
         this.hospitalRepository = hospitalRepository;
         this.doctorRepository = doctorRepository;
-        this.appointmentReservationService = appointmentReservationService;
+        this.appointmentReservationLogService = appointmentReservationLogService;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
     }
 
@@ -69,7 +69,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         /*TEMPORARILY HOLD SELECTED TIME SLOT
         * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOUSLY RESERVED FOR
         * SELECTED DOCTOR, SPECIALIZATION, DATE AND TIME */
-        Long savedAppointmentReservationId = appointmentReservationService.saveAppointmentReservationLog(requestDTO);
+        Long savedAppointmentReservationId = appointmentReservationLogService.saveAppointmentReservationLog(requestDTO);
 
         AppointmentFollowUpTracker appointmentFollowUpTracker =
                 appointmentFollowUpTrackerRepository.fetchAppointmentFollowUpTracker(
@@ -114,10 +114,10 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
          (SUPPOSE INITIALLY IT IS 3(AS PER HOSPITAL). NOW WHEN USER CHECKS IN, THAT COUNT IS DECREMENTED BY 1
          ie NOW ITS 2 AND DECREMENTS TILL 0)
 
-    2. IF FOLLOW UP REQUEST COUNT IN AppointmentFollowUpRequestLogConstant < ALLOWED numberOfFollowUps IN Hospital
+    2. IF FOLLOW UP REQUEST COUNT IN AppointmentFollowUpRequestLog < ALLOWED numberOfFollowUps IN Hospital
     (WHEN FIRST APPOINTMENT IS APPROVED ->
         PERSIST IN AppointmentFollowUpTracker AND
-        AppointmentFollowUpRequestLogConstant WITH REQUEST COUNT AS 0.
+        AppointmentFollowUpRequestLog WITH REQUEST COUNT AS 0.
     WHEN CONSECUTIVE FOLLOW UP APPOINTMENT IS TAKEN, REQUEST COUNT IS INCREMENTED BY 1 )
 
     3. IF REQUESTED APPOINTMENT DATE HAS NOT EXPIRED WHERE

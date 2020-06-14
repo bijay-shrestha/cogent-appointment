@@ -24,6 +24,18 @@ public class WebResourceKeyConstants {
         String TRANSACTION_STATUS = "/transaction-status";
     }
 
+    public interface AppointmentHospitalDepartmentConstants {
+        String BASE_APPOINTMENT = "/appointment";
+        String FETCH_AVAILABLE_TIMESLOTS = "/availableTimeSlots";
+        String ROOM_WISE = "/roomWise";
+        String AVAILABLE_DATES = "/availableDates";
+    }
+
+
+    public interface AppointmentServiceType {
+        String APPOINTMENT_SERVICE_TYPE = "/appointmentServiceType";
+    }
+
     //B
 
     //C
@@ -64,6 +76,13 @@ public class WebResourceKeyConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
+
+    public interface HospitalDepartmentConstants {
+        String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
+        String HOSPITAL_DEPARTMENT_ID = "/{hospitalDepartmentId}";
+        String BILLING_MODE = "/billingMode";
+    }
+
 
     //I
     public static final String INFO = "/info";

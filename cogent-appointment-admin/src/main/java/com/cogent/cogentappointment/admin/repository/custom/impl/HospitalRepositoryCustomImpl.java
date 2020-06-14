@@ -214,7 +214,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL);
-        throw new NoContentFoundException(NO_RECORD_FOUND, CLIENT);
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT));
     };
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

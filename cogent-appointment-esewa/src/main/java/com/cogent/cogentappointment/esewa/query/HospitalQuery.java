@@ -46,13 +46,24 @@ public class HospitalQuery {
         if (!ObjectUtils.isEmpty(requestDTO.getName()))
             query += " AND h.name LIKE '%" + requestDTO.getName() + "%'";
 
-        return query + " ORDER by h.name";
+        return query + " ORDER by h.name ASC";
     }
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_DETAILS =
+
             " SELECT h.numberOfFollowUps as numberOfFollowUps," +                   //[0]
                     " h.followUpIntervalDays as followUpIntervalDays" +             //[1]
                     " FROM Hospital h" +
                     " WHERE h.id =:hospitalId" +
-                    " AND h.status = 'Y' AND h.isCompany = 'N'";
+                    " AND h.status = 'Y'" +
+                    " AND h.isCompany = 'N'";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE_MIN_INFO =
+            " SELECT " +
+                    " h.id as hospitalAppointmentServiceTypeId," +                           //[0]
+                    " h.appointmentServiceType.name as appointmentServiceTypeName," +       //[1]
+                    " h.isPrimary as isPrimary" +                                           //[2]
+                    " FROM HospitalAppointmentServiceType h " +
+                    " WHERE h.status = 'Y'" +
+                    " AND h.hospital.id =:hospitalId";
 }

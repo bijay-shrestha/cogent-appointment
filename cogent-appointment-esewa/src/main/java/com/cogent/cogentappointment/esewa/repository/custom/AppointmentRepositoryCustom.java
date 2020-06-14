@@ -31,11 +31,21 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO);
 
-    AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO);
+    AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO,
+                                                               String appointmentServiceTypeCode);
 
-    AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO);
+    AppointmentResponseWithStatusDTO searchAppointmentsForOthers(
+            AppointmentSearchDTO searchDTO, String appointmentServiceTypeCode);
 
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     Double calculateRefundAmount(Long appointmentId);
+
+    /*department-wise*/
+    List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
+            Date appointmentDate, Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId);
+
+    Long validateIfAppointmentExistsDeptWise(Date appointmentDate, String appointmentTime,
+                                             Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId);
+
 }

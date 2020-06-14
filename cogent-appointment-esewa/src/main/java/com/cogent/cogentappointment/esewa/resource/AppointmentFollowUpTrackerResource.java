@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.FollowUpTrackerConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.FollowUpTrackerConstant.FETCH_FOLLOW_UP_DETAILS;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
@@ -33,7 +35,7 @@ public class AppointmentFollowUpTrackerResource {
 
     @PutMapping(FOLLOW_UP)
     @ApiOperation(FETCH_FOLLOW_UP_DETAILS)
-    public ResponseEntity<?> fetchFollowUpTrackerDetails(@RequestBody AppointmentFollowUpRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchFollowUpTrackerDetails(@Valid @RequestBody AppointmentFollowUpRequestDTO requestDTO) {
         return ok().body(followUpTrackerService.fetchAppointmentFollowUpDetails(requestDTO));
     }
 

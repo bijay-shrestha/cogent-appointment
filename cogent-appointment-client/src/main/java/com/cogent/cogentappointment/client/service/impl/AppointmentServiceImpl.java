@@ -87,8 +87,6 @@ import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
-import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.ESEWA_REFUND_API;
 import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 import static com.cogent.cogentthirdpartyconnector.api.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
 
@@ -176,7 +174,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   Validator validator,
                                   IntegrationRepository integrationRepository,
-                                  ThirdPartyConnectorService thirdPartyConnectorService, NepaliDateUtility nepaliDateUtility) {
+                                  ThirdPartyConnectorService thirdPartyConnectorService,
+                                  NepaliDateUtility nepaliDateUtility) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;

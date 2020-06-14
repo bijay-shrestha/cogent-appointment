@@ -390,7 +390,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         save(changeAppointmentStatus.apply(appointment, remarks));
 
         saveAppointmentRefundDetail(changeAppointmentRefundDetailStatus.apply(refundAppointmentDetail, remarks));
-
     }
 
     private void defaultAppointmentAndAppointmentRefundDetailStatusChanges(Appointment appointment,

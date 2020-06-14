@@ -92,7 +92,7 @@ public class AppointmentQuery {
                     " s.name as specializationName," +                                      //[6]
                     " h.name as hospitalName," +                                             //[7]
                     " atd.appointmentAmount as appointmentAmount," +                          //[8]
-                    " d.salutation as doctorSalutation"+
+                    " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -132,7 +132,7 @@ public class AppointmentQuery {
                     " atd.taxAmount as taxAmount," +                                        //[10]
                     " atd.discountAmount as discountAmount," +                             //[11]
                     " atd.serviceChargeAmount as serviceChargeAmount," +                    //[12]
-                    " d.salutation as doctorSalutation"+
+                    " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -166,7 +166,7 @@ public class AppointmentQuery {
                     " d.name as doctorName," +                                              //[12]
                     " s.id as specializationId," +                                          //[13]
                     " s.name as specializationName," +                                       //[14]
-                    " d.salutation as doctorSalutation"+
+                    " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -240,7 +240,7 @@ public class AppointmentQuery {
                             " arl.remarks as remarks," +                                               //[15]
                             " a.isFollowUp as isFollowUp," +                                           //[16]
                             " da.fileUri as fileUri," +                                                  //[17]
-                            " d.salutation as doctorSalutation"+
+                            " d.salutation as doctorSalutation" +
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
@@ -332,7 +332,7 @@ public class AppointmentQuery {
                 " hpi.isRegistered as isRegistered," +
                 QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                 " da.fileUri as fileUri," +
-                " d.salutation as doctorSalutation"+
+                " d.salutation as doctorSalutation" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                 " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -349,7 +349,7 @@ public class AppointmentQuery {
     private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentCancelApprovalSearchDTO searchDTO) {
         String whereClause = " WHERE ard.status = 'PA'" +
                 " AND s.status!='D'" +
-                " AND d.status!='D'"+
+                " AND d.status!='D'" +
                 " AND h.id =:hospitalId";
 
         if (!ObjectUtils.isEmpty(searchDTO.getFromDate()) && !ObjectUtils.isEmpty(searchDTO.getToDate()))
@@ -411,7 +411,7 @@ public class AppointmentQuery {
                             " a.appointmentModeId.name as appointmentMode," +
                             " atd.appointmentAmount as appointmentAmount," +
                             " da.fileUri as fileUri," +
-                            " d.salutation as doctorSalutation,"+
+//                            " d.salutation as doctorSalutation," +
                             " da.fileUri as fileUri," +
                             " a.isFollowUp as followUp," +
                             " hpi.hospitalNumber as hospitalNumber," +
@@ -421,11 +421,12 @@ public class AppointmentQuery {
                             " hpi.isRegistered as isRegistered," +
                             QUERY_TO_CALCULATE_PATIENT_AGE +
                             " FROM Appointment a" +
+                            " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                            " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                             " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                            " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
+                            " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
@@ -435,8 +436,7 @@ public class AppointmentQuery {
             AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
 
         String whereClause = " WHERE " +
-                " sp.status='Y' " +
-                " AND a.status='PA'" +
+                " a.status='PA'" +
                 " AND h.id =:hospitalId";
 
         if (!ObjectUtils.isEmpty(pendingApprovalSearchDTO.getFromDate())
@@ -499,14 +499,15 @@ public class AppointmentQuery {
                             " a.isFollowUp as isFollowUp," +                                        //[19]
                             " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[20]
                             " da.fileUri as fileUri," +                                                  //[21]
-                            " d.salutation as doctorSalutation"+                                         //[22]
+                            " d.salutation as doctorSalutation" +                                         //[22]
                             " FROM Appointment a" +
+                            " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN AppointmentMode am ON am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                            " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                             " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                            " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                            " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -620,28 +621,28 @@ public class AppointmentQuery {
                     " atd.transactionNumber as transactionNumber," +                            //[12]
                     " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                //[13]
                     " d.name as doctorName," +                                                  //[14]
-                    " a.isSelf as isSelf," +                                                     //[15]
+                    " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +                                                //[16]
                     " a.appointmentModeId.name as appointmentMode," +                          //[17]
-                    " da.fileUri as fileUri," +                                                  //[18]
-                    " d.salutation as doctorSalutation,"+
-                    " da.fileUri as fileUri," +
-                    " a.doctorId.id as doctorId," +
-                    " a.specializationId.id as specializationId," +
-                    " a.isFollowUp as followUp," +                                               //[18]
-                    " hpi.hospitalNumber as hospitalNumber"+
+                    " da.fileUri as fileUri," +                                                //[18]
+                    " d.salutation as doctorSalutation," +                                      //[19]
+                    " da.fileUri as fileUri," +                                                 //[20]
+                    " d.id as doctorId," +                                                      //[21]
+                    " sp.id as specializationId," +                                             //[22]
+                    " a.isFollowUp as followUp," +                                               //[23]
+                    " hpi.hospitalNumber as hospitalNumber" +
                     " FROM Appointment a" +
-                    " LEFT JOIN Patient p ON a.patientId=p.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                    " LEFT JOIN Patient p ON p.id = a.patientId" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                    " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
-                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN DoctorAvatar da ON d.id= da.doctorId.id" +
+                    " LEFT JOIN Specialization sp ON sp.id= ad.specialization.id" +
+                    " LEFT JOIN Hospital h ON h.id= a.hospitalId.id" +
+                    " LEFT JOIN PatientMetaInfo pi ON p.id= pi.patient.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " WHERE " +
-                    " sp.status='Y' " +
-                    " AND a.status='PA'" +
+                    " a.status='PA'" +
                     " AND a.id=:appointmentId";
 
     public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
@@ -675,7 +676,7 @@ public class AppointmentQuery {
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     " dv.fileUri as fileUri," +
-                    " d.salutation as doctorSalutation"+
+                    " d.salutation as doctorSalutation" +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -872,7 +873,7 @@ public class AppointmentQuery {
         return query;
     }
 
-    public static String QUERY_TO_GET_CANCELLED_APPOINTMENT=
+    public static String QUERY_TO_GET_CANCELLED_APPOINTMENT =
             "SELECT" +
                     " a" +
                     " FROM" +

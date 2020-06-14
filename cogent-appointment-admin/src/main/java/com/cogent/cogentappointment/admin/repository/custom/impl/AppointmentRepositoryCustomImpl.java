@@ -327,14 +327,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         addPagination.accept(pageable, query);
 
-
-
-
-
-
         List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS =
                 transformQueryToResultList(query, AppointmentPendingApprovalDTO.class);
-
 
         if (appointmentPendingApprovalDTOS.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();

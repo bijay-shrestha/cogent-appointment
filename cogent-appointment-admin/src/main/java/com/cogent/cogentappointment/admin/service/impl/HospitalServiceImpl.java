@@ -417,6 +417,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     private void updateBillingMode(HospitalUpdateRequestDTO requestDTO, Hospital hospital) {
         List<HospitalBillingModeUpdateRequestDTO
+
                 > billingModeIds = requestDTO.getBillingModeIds();
 
         List<Long> newBillingModeIds = new ArrayList<>();

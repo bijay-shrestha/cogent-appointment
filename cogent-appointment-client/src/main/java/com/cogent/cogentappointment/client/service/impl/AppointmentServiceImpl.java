@@ -76,7 +76,6 @@ import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*
 import static com.cogent.cogentappointment.client.log.constants.AppointmentMode.APPOINTMENT_MODE;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentReservationLogConstant.APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
-import static com.cogent.cogentappointment.client.security.hmac.HMACUtils.getSigatureForEsewa;
 import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpLogUtils.parseToAppointmentFollowUpLog;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionRequestLogUtils.parseToAppointmentTransactionStatusResponseDTO;
@@ -86,6 +85,9 @@ import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
+import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.ESEWA_REFUND_API;
+import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 
 /**
  * @author smriti on 2019-10-22
@@ -145,6 +147,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final ThirdPartyConnectorService thirdPartyConnectorService;
 
+    private final NepaliDateUtility nepaliDateUtility;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -195,6 +199,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.validator = validator;
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
+        this.restTemplateUtils = restTemplateUtils;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     @Override
@@ -323,6 +329,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentMode
         );
 
+        appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
+
         save(appointment);
 
         saveAppointmentStatistics(appointmentInfo, appointment, hospital);
@@ -402,6 +410,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital,
                 appointmentMode
         );
+
+        appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
 
         save(appointment);
 
@@ -761,7 +771,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail, null);
 
-
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
 
@@ -1112,19 +1121,18 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
 //        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
-//                getEsewaPaymentStatusAPIHeaders.apply(getSigatureForEsewa.apply(esewaRefundRequestDTO.getEsewa_id(),
-//                        esewaRefundRequestDTO.getProduct_code())));
+//                getEsewaHeader(parseToHmacRequestForEsewaDTO.apply("9841409090", "testBir")));
 
-//
-//        String url = String.format(ESEWA_REFUND_API, "5VO");
+        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
+                getEsewaPaymentStatusAPIHeaders());
 
-//        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-//                postRequest(url, request, EsewaResponseDTO.class);
+        String url = String.format(ESEWA_REFUND_API, "5VO");
 
-//        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
+        ResponseEntity<EsewaResponseDTO
+                > response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
+                postRequest(url, request, EsewaResponseDTO.class);
 
-        return null;
-
+        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
     }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,
@@ -1436,6 +1444,13 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
                     convert24HourTo12HourFormat(rescheduleRequestDTO.getRescheduleTime())));
         }
+    }
+
+    private String getNepaliDate(Date date) {
+
+        String nepaliDate = nepaliDateUtility.getNepaliDateFromDate(date);
+
+        return formatToDateString(nepaliDate);
     }
 
 }

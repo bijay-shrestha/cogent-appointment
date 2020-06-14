@@ -55,6 +55,8 @@ public class QueryConstants {
 
     public static final String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";
 
+    public static final String HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID = "hospitalDepartmentDutyRosterId";
+
     public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
 
     public static final String HOSPITAL_DEPARTMENT_ROOM_INFO_ID = "hospitalDepartmentRoomInfoId";
@@ -110,6 +112,7 @@ public class QueryConstants {
     //V
 
     //W
+    public static final String WEEK_DAY_NAME = "weekDayName";
 
 
     //X

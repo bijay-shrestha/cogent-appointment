@@ -30,6 +30,8 @@ public interface RoomRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveMinRoomByHospitalDepartmentId(Long hospitalDepartmentId);
 
+    List<DropDownResponseDTO> fetchActiveMinRoomForAppointmentStatus(Long hospitalDepartmentId);
+
     List<DropDownResponseDTO> fetchMinRoomByHospitalDepartmentId(Long hospitalDepartmentId);
 
 }

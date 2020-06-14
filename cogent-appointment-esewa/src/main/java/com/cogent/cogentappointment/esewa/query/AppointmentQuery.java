@@ -258,7 +258,7 @@ public class AppointmentQuery {
         return query + " ORDER BY a.appointmentDate DESC";
     }
 
-    public static String QUERY_TO_GET_CANCELLED_APPOINTMENT=
+    public static String QUERY_TO_GET_CANCELLED_APPOINTMENT =
             "SELECT" +
                     " a" +
                     " FROM" +

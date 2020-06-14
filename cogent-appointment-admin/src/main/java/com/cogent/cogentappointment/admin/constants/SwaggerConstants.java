@@ -58,10 +58,20 @@ public class SwaggerConstants {
         String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
         String FETCH_TRANSACTION_LOG = "Fetch Transaction Log";
     }
+    public interface HospitalDepartmentAppointmentLogConstant {
+        String BASE_API_VALUE = "This resource consists of APIs for  logs(transaction, appointment," +
+                " reschedule, transfer) based on hospital department ";
+        String FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG = "Fetch Appointment Log based on hospital department";
+        String FETCH_HOSPITAL_DEPARTMENT_TRANSACTION_LOG = "Fetch Transaction Log based on hospital department";
+        String FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_LOG = "Fetch Reschedule Log based on hospital department";
+
+    }
 
     public interface AppointmentStatusConstant {
         String BASE_API_VALUE = "This is Appointment Status Resource";
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS = "Fetch department appointment status.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "Fetch department appointment status by specific roomId.";
     }
 
     public interface AppointmentTransferConstant {

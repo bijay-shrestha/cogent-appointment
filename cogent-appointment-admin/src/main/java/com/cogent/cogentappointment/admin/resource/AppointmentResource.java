@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
@@ -55,6 +54,21 @@ public class AppointmentResource {
         return ok().body(appointmentService.fetchRefundDetailsById(appointmentId));
     }
 
+    @PutMapping(PENDING_APPROVAL)
+    @ApiOperation(FETCH_PENDING_APPOINTMENT_APPROVAL)
+    public ResponseEntity<?> search(@RequestBody AppointmentPendingApprovalSearchDTO searchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.searchPendingVisitApprovals(searchRequestDTO, pageable));
+    }
+
+    @GetMapping(PENDING_APPROVAL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_PENDING_APPOINTMENT_APPROVAL_DETAIL)
+    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("appointmentId") Long appointmentId) {
+        return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
+    }
+
     @PutMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
     public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId,
@@ -69,21 +83,6 @@ public class AppointmentResource {
                                                      IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
         appointmentService.rejectRefundAppointment(refundRejectDTO,integrationBackendRequestDTO);
         return ok().build();
-    }
-
-    @PutMapping(PENDING_APPROVAL)
-    @ApiOperation(FETCH_PENDING_APPOINTMENT_APPROVAL)
-    public ResponseEntity<?> search(@RequestBody AppointmentPendingApprovalSearchDTO searchRequestDTO,
-                                    @RequestParam("page") int page,
-                                    @RequestParam("size") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentService.searchPendingVisitApprovals(searchRequestDTO, pageable));
-    }
-
-    @GetMapping(PENDING_APPROVAL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_PENDING_APPOINTMENT_APPROVAL_DETAIL)
-    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("appointmentId") Long appointmentId) {
-        return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
     }
 
     @PutMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)

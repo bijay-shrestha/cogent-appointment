@@ -124,6 +124,17 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchActiveMinRoomForAppointmentStatus(Long hospitalDepartmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_ROOM_FOR_DROPDOWN_BY_HOSPITAL_DEPARTMENT_ID)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        return results;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchMinRoomByHospitalDepartmentId(Long hospitalDepartmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROOM_FOR_DROPDOWN_BY_HOSPITAL_DEPARTMENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)

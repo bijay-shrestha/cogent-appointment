@@ -151,10 +151,10 @@ public class HospitalDepartmentQuery {
             "SELECT" +
                     " hddi.doctor.id as value," +
                     " CASE WHEN" +
-                    " (hddi.salutation is null)" +
-                    " THEN hddi.name" +
+                    " (hddi.doctor.salutation is null)" +
+                    " THEN hddi.doctor.name" +
                     " ELSE" +
-                    " CONCAT_WS(' ',hddi.salutation, hddi.name)" +
+                    " CONCAT_WS(' ',hddi.doctor.salutation, hddi.doctor.name)" +
                     " END as label," +
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +

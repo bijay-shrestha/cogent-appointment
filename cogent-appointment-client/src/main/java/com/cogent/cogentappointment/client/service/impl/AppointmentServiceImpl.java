@@ -1101,7 +1101,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     private String requestEsewaForRefund(Appointment appointment,
                                          AppointmentTransactionDetail transactionDetail,
                                          AppointmentRefundDetail appointmentRefundDetail,
-                                         Boolean isRefund) {
+                                         Boolean isRefund,
+                                         IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+
         String esewaId = appointment.getPatientId().getESewaId();
 
         String merchentCode = appointment.getHospitalId().getEsewaMerchantCode();
@@ -1128,9 +1130,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         String url = String.format(ESEWA_REFUND_API, "5VO");
 
+
+//        BackendIntegrationApiInfo integrationApiInfo=new BackendIntegrationApiInfo();
+//        integrationApiInfo.setApiUri(url);
+//        integrationApiInfo.setHttpHeaders();
+
         ResponseEntity<EsewaResponseDTO
                 > response = (ResponseEntity<EsewaResponseDTO>) thirdPartyConnectorService.
-                getHospitalService(url, request, EsewaResponseDTO.class);
+                getHospitalService(integrationBackendRequestDTO);
 
         return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
     }

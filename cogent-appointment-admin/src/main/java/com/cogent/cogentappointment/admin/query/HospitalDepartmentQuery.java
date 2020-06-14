@@ -150,7 +150,12 @@ public class HospitalDepartmentQuery {
     public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
                     " hddi.doctor.id as value," +
-                    " hddi.doctor.name as label," +
+                    " CASE WHEN" +
+                    " (hddi.salutation is null)" +
+                    " THEN hddi.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',hddi.salutation, hddi.name)" +
+                    " END as label," +
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +

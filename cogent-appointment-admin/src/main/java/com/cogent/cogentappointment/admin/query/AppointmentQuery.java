@@ -354,7 +354,12 @@ public class AppointmentQuery {
                             " p.gender as patientGender," +                                             //[10]
                             " p.mobileNumber as mobileNumber," +                                         //[11]
                             " sp.name as specializationName," +                                         //[12]
-                            " d.name as doctorName," +                                                  //[13]
+                            " CASE WHEN" +
+                            " (d.salutation is null)" +
+                            " THEN d.name" +
+                            " ELSE" +
+                            " CONCAT_WS(' ',d.salutation, d.name)" +
+                            " END as doctorName," +                                                 //[13]
                             " atd.transactionNumber as transactionNumber," +                            //[14]
                             " atd.appointmentAmount as appointmentAmount," +                            //[15]
                             " arl.remarks as remarks," +                                                 //[16]

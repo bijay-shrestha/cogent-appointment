@@ -1,35 +1,37 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.EsewaPayementStatus;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.RefundStatusService;
-import com.cogent.cogentappointment.admin.utils.resttemplate.RestTemplateUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
+import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
+import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.RefundStatusLog.REFUND_STATUS;
+import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSignatureForEsewa;
 import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentappointment.admin.utils.resttemplate.IntegrationRequestURI.ESEWA_API_PAYMENT_STATUS;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
@@ -43,23 +45,27 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     private final AppointmentRefundDetailRepository refundDetailRepository;
 
     private final AppointmentRepository appointmentRepository;
-
-    private final RestTemplateUtils restTemplateUtils;
-
     private final AppointmentService appointmentService;
-
+    private final ThirdPartyConnectorService thirdPartyConnectorService;
+    private final IntegrationThirdPartyImpl integrationThirdPartyImpl;
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
-                                   AppointmentRepository appointmentRepository,
-                                   RestTemplateUtils restTemplateUtils, AppointmentService appointmentService) {
+                                   AppointmentRepository
+                                           appointmentRepository,
+                                   AppointmentService appointmentService,
+                                   ThirdPartyConnectorService thirdPartyConnectorService,
+                                   IntegrationThirdPartyImpl integrationThirdPartyImpl) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
-        this.restTemplateUtils = restTemplateUtils;
         this.appointmentService = appointmentService;
+        this.thirdPartyConnectorService = thirdPartyConnectorService;
+        this.integrationThirdPartyImpl = integrationThirdPartyImpl;
     }
 
+
     @Override
-    public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+    public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO,
+                                                            Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -73,7 +79,9 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     }
 
     @Override
-    public void checkRefundStatus(RefundStatusRequestDTO requestDTO) {
+    public void checkRefundStatus(RefundStatusRequestDTO requestDTO,
+                                  IntegrationBackendRequestDTO integrationBackendRequestDTO)
+            throws IOException {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, REFUND_STATUS);
@@ -82,30 +90,56 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         Appointment appointment = getAppointment(requestDTO);
 
-        requestDTO.setEsewaMerchantCode(appointment.getHospitalId().getEsewaMerchantCode());
+        requestDTO.setEsewaMerchantCode("testBir");
 
         requestDTO.setAppointmentMode(appointment.getAppointmentModeId().getCode());
 
-        String response = processRefundRequest(requestDTO);
+        ThirdPartyResponse response = processRefundRequest(requestDTO,
+                appointment,
+                integrationBackendRequestDTO);
 
-        switch (response) {
+        if (!Objects.isNull(response.getCode())) {
+            throw new BadRequestException(response.getMessage(), response.getMessage());
+        }
+
+        switch (response.getStatus()) {
 
             case PARTIAL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment, appointmentRefundDetail, response);
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        response.getStatus());
+                break;
+
+            case COMPLETE:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        response.getStatus());
                 break;
 
             case FULL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment, appointmentRefundDetail, response);
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        response.getStatus());
                 break;
 
-            case AMBIGIOUS :
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+            case AMBIGUOUS:
+                approveRefundAppointment(requestDTO);
+
 
             default:
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+                approveRefundAppointment(requestDTO);
+
+
         }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void approveRefundAppointment(RefundStatusRequestDTO requestDTO) throws IOException {
+
+        requestDTO.getIntegrationBackendRequestDTO().setFeatureCode("REF_APPROVAL");
+        appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(),
+                requestDTO.getIntegrationBackendRequestDTO());
     }
 
     @Override
@@ -124,27 +158,46 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     /* Requests esewa api to check the cancelled appointment's status in their side
     * if Response returns COMPLETED our db should maintain 'A' status in Refund table
      * and 'RE' in Appointment table*/
-    private String checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO) {
+    private ThirdPartyResponse checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO,
+                                                      Appointment appointment,
+                                                      IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
 
-        EsewaPayementStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
 
-        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
+        EsewaPayementStatus esewaPayementStatus = parseToEsewaPaymentStatus(requestDTO);
 
-        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-                postRequest(ESEWA_API_PAYMENT_STATUS,
-                        request, EsewaResponseDTO.class);
+        String generatedEsewaHmac = getSignatureForEsewa.apply(esewaPayementStatus.getEsewa_id(),
+                esewaPayementStatus.getProduct_code());
 
-        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
+        BackendIntegrationApiInfo integrationApiInfo = integrationThirdPartyImpl.
+                getAppointmentModeApiIntegration(backendRequestDTO,
+                        appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
+
+
+//        Map<String, Object> esewaRefundRequestDTO = RequestBodyUtils.getDynamicEsewaRequestBodyLog(
+//                integrationApiInfo.getRequestBody());
+
+//        parseApiUri(integrationApiInfo.getApiUri(), requestDTO.getTransactionNumber());
+
+
+        ThirdPartyResponse response = thirdPartyConnectorService.callEsewaRefundStatusService(integrationApiInfo,
+                esewaPayementStatus);
+
+
+        return response;
     }
 
-    private String processRefundRequest(RefundStatusRequestDTO requestDTO) {
+    private ThirdPartyResponse processRefundRequest(RefundStatusRequestDTO requestDTO,
+                                                    Appointment appointment,
+                                                    IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
 
-        String thirdPartyResponse = null;
+        ThirdPartyResponse thirdPartyResponse = null;
 
         switch (requestDTO.getAppointmentMode()) {
 
             case APPOINTMENT_MODE_ESEWA_CODE:
-                thirdPartyResponse = checkEsewaRefundStatus(requestDTO);
+                thirdPartyResponse = checkEsewaRefundStatus(requestDTO,
+                        appointment,
+                        integrationBackendRequestDTO);
                 break;
 
             default:

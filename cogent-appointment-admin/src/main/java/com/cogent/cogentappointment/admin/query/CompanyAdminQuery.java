@@ -156,8 +156,8 @@ public class CompanyAdminQuery {
                     " a.email as email," +                                                //[1]
                     " a.fullName as fullName," +
                     " CASE " +
-                    "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
-                    "    ELSE av.fileUri END as fileUri," +                                //[2]
+                    " WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
+                    " ELSE av.fileUri END as fileUri," +                                //[2]
                     " p.id as profileId," +                                                 //[3]
                     " p.name as profileName," +                                             //[4]
                     " h.id as hospitalId," +                                                //[5]

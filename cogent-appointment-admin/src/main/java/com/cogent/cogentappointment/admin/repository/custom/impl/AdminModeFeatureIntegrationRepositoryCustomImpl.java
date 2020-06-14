@@ -28,9 +28,7 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
-import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_API_INTEGRATION_SEARCH_QUERY;
-import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY;
-import static com.cogent.cogentappointment.admin.query.IntegrationQuery.ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY;
+import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -69,7 +67,7 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
 
     @Override
     public List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO() {
-        Query query = createQuery.apply(entityManager, ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY);
+        Query query = createQuery.apply(entityManager, APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY);
 
         List<AdminFeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, AdminFeatureIntegrationResponse.class);

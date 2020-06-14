@@ -365,10 +365,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                 findClientApiIntegration(id);
 
         List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO = integrationRepository.
-                findApiRequestHeaders(featureIntegrationResponse.getFeatureId());
+                findApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
 
         List<ApiQueryParametersDetailResponse> queryParametersResponseDTO = integrationRepository.
-                findApiQueryParameters(featureIntegrationResponse.getFeatureId());
+                findApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
 
         ClientApiIntegrationDetailResponseDTO responseDTO = new ClientApiIntegrationDetailResponseDTO();
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
@@ -411,10 +411,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                 findClientApiIntegration(id);
 
         List<ApiRequestHeaderUpdateResponseDTO> requestHeaderResponseDTO = integrationRepository.
-                findApiRequestHeadersForUpdate(featureIntegrationResponse.getFeatureId());
+                findApiRequestHeadersForUpdate(featureIntegrationResponse.getApiIntegrationFormatId());
 
         List<ApiQueryParametersUpdateResponseDTO> queryParametersResponseDTO = integrationRepository.
-                findApiQueryParametersForUpdate(featureIntegrationResponse.getFeatureId());
+                findApiQueryParametersForUpdate(featureIntegrationResponse.getApiIntegrationFormatId());
 
         ClientApiIntegrationUpdateResponseDTO responseDTO = new ClientApiIntegrationUpdateResponseDTO();
         responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());

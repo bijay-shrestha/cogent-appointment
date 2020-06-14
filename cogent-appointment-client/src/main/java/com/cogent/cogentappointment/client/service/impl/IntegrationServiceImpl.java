@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRefundRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRejectRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integrationClient.ApiIntegrationCheckInRequestDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.IntegrationService;
@@ -19,12 +17,9 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT_TRANSACTION_DETAIL;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.parseRefundRejectDetails;
 import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author rupak on 2020-05-19
@@ -35,9 +30,7 @@ import static com.cogent.cogentappointment.client.utils.commons.SecurityContextU
 public class IntegrationServiceImpl implements IntegrationService {
 
     private final IntegrationRepository integrationRepository;
-
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
-
     private final AppointmentRepository appointmentRepository;
 
     private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
@@ -77,59 +70,59 @@ public class IntegrationServiceImpl implements IntegrationService {
         save(appointment);
     }
 
-    @Override
-    public void approveRefund(ApiIntegrationApproveRefundRequestDTO requestDTO) {
+//    @Override
+//    public void approveRefund(ApiIntegrationApproveRefundRequestDTO requestDTO) {
+//
+//        Long startTime = getTimeInMillisecondsFromLocalDate();
+//
+//        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
+//
+//        Long appointmentId = requestDTO.getId();
+//
+//        AppointmentRefundDetail refundAppointmentDetail =
+//                appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
+//                        (appointmentId, getLoggedInHospitalId())
+//                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+//
+//        Appointment appointment = appointmentRepository.fetchRefundAppointmentByIdAndHospitalId
+//                (appointmentId, getLoggedInHospitalId())
+//                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+//
+//
+//        updateAppointmentAndAppointmentRefundDetails(requestDTO.getStatus(),
+//                appointment,
+//                refundAppointmentDetail,
+//                null);
+//
+//        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
+//    }
 
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
-
-        Long appointmentId = requestDTO.getId();
-
-        AppointmentRefundDetail refundAppointmentDetail =
-                appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
-                        (appointmentId, getLoggedInHospitalId())
-                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
-
-        Appointment appointment = appointmentRepository.fetchRefundAppointmentByIdAndHospitalId
-                (appointmentId, getLoggedInHospitalId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
-
-
-        updateAppointmentAndAppointmentRefundDetails(requestDTO.getStatus(),
-                appointment,
-                refundAppointmentDetail,
-                null);
-
-        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void rejectRefund(ApiIntegrationApproveRejectRequestDTO requestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(REJECT_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
-
-        Long appointmentId = requestDTO.getId();
-
-        AppointmentRefundDetail refundAppointmentDetail =
-                appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
-                        (appointmentId, getLoggedInHospitalId())
-                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
-
-        Appointment appointment = appointmentRepository.fetchRefundAppointmentByIdAndHospitalId
-                (appointmentId, getLoggedInHospitalId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
-
-        updateAppointmentAndAppointmentRefundDetails(requestDTO.getStatus(),
-                appointment,
-                refundAppointmentDetail,
-                requestDTO.getRemarks());
-
-        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
-
-    }
+//    @Override
+//    public void rejectRefund(ApiIntegrationApproveRejectRequestDTO requestDTO) {
+//
+//        Long startTime = getTimeInMillisecondsFromLocalDate();
+//
+//        log.info(REJECT_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
+//
+//        Long appointmentId = requestDTO.getId();
+//
+//        AppointmentRefundDetail refundAppointmentDetail =
+//                appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
+//                        (appointmentId, getLoggedInHospitalId())
+//                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+//
+//        Appointment appointment = appointmentRepository.fetchRefundAppointmentByIdAndHospitalId
+//                (appointmentId, getLoggedInHospitalId())
+//                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+//
+//        updateAppointmentAndAppointmentRefundDetails(requestDTO.getStatus(),
+//                appointment,
+//                refundAppointmentDetail,
+//                requestDTO.getRemarks());
+//
+//        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
+//
+//    }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,
                                                               Appointment appointment,

@@ -1,18 +1,17 @@
 package com.cogent.cogentappointment.client.security.hmac;
 
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.CANNOT_CREATE_SIGNATURE;
-import static com.cogent.cogentappointment.client.constants.HMACConstant.DELIMITER;
-import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_ALGORITHM;
+import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_ALGORITHM_ESEWA;
+import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_API_SECRET_ESEWA;
 
 /**
  * @author Sauravi Thapa २०/१/१९
@@ -20,65 +19,26 @@ import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_AL
 @Component
 public class HMACBuilderForEsewa {
 
-    private String esewaId;
-
-    private String merchantCode;
-
-    private String algorithm;
-
-    private String apiSecret;
-
-
-    public HMACBuilderForEsewa esewaId(String esewaId) {
-        this.esewaId = esewaId;
-        return this;
-    }
-
-
-    public HMACBuilderForEsewa algorithm(String algorithm) {
-        this.algorithm = algorithm;
-        return this;
-    }
-
-
-    public HMACBuilderForEsewa merchantCode(String merchantCode) {
-        this.merchantCode = merchantCode;
-        return this;
-    }
-
-    public HMACBuilderForEsewa apiSecret(String apiSecret) {
-        this.apiSecret = apiSecret;
-        return this;
-    }
-
-
-    public byte[] build() {
+    public static String hmacShaGenerator(String message) {
         try {
-            final Mac digest = Mac.getInstance(HMAC_ALGORITHM);
-            SecretKeySpec secretKey = new SecretKeySpec(apiSecret.getBytes(), HMAC_ALGORITHM);
-            digest.init(secretKey);
-            digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
-            digest.update(DELIMITER);
-            digest.update(esewaId.getBytes(StandardCharsets.UTF_8));
-            digest.update(DELIMITER);
-            digest.update(merchantCode.getBytes(StandardCharsets.UTF_8));
-            digest.update(DELIMITER);
-            final byte[] signatureBytes = digest.doFinal();
-            digest.reset();
-            return signatureBytes;
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            e.printStackTrace();
-            throw new RuntimeException(CANNOT_CREATE_SIGNATURE + e.getMessage(), e);
+            Key secretKeySpec = new SecretKeySpec(HMAC_API_SECRET_ESEWA.getBytes(), HMAC_ALGORITHM_ESEWA);
+            Mac msgAuthenticationCode = Mac.getInstance(secretKeySpec.getAlgorithm());
+            msgAuthenticationCode.init(secretKeySpec);
+            final byte[] hmac = msgAuthenticationCode.doFinal(message.getBytes());
+            StringBuilder stringBuilder = new StringBuilder(hmac.length * 2);
+            try (Formatter formatter = new Formatter(stringBuilder)) {
+                for (byte ba : hmac) {
+                    formatter.format("%02x", ba);
+                }
+            }
+            String hashMacAuthString = stringBuilder.toString();
+            return hashMacAuthString;
+        } catch (NoSuchAlgorithmException noSuchAlgEx) {
+            throw new BadRequestException("Error building the signature. No such authorization key. Error message : "
+                    + noSuchAlgEx.getMessage());
+        } catch (InvalidKeyException invalidKeyEx) {
+            throw new BadRequestException("Error building the signature. Invalid key. Error Message : "
+                    + invalidKeyEx.getMessage());
         }
     }
-
-    public boolean isHashEquals(byte[] expectedSignature) {
-        final byte[] signature = build();
-        return MessageDigest.isEqual(signature, expectedSignature);
-    }
-
-    public String buildAsBase64String() {
-        return DatatypeConverter.printBase64Binary(build());
-    }
-
 }

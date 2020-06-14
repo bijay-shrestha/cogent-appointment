@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_FEATURE_ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_INTEGRATION_FORMAT_ID;
 import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_FEATURES_HEADERS_DETAILS_QUERY;
 import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_FEATURES_HEADERS_QUERY;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
@@ -31,9 +31,9 @@ public class AdminModeRequestHeaderRepositoryCustomImpl implements AdminModeRequ
 
 
     @Override
-    public List<ApiRequestHeaderDetailResponse> findAdminModeApiRequestHeaders(Long featureId) {
+    public List<ApiRequestHeaderDetailResponse> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, ADMIN_MODE_FEATURES_HEADERS_DETAILS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO =
                 transformQueryToResultList(query, ApiRequestHeaderDetailResponse.class);
@@ -48,9 +48,9 @@ public class AdminModeRequestHeaderRepositoryCustomImpl implements AdminModeRequ
     }
 
     @Override
-    public List<ApiRequestHeaderUpdateResponseDTO> findAdminModeApiRequestHeaderForUpdate(Long featureId) {
+    public List<ApiRequestHeaderUpdateResponseDTO> findAdminModeApiRequestHeaderForUpdate(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, ADMIN_MODE_FEATURES_HEADERS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderUpdateResponseDTO> apiRequestHeaderUpdateResponseDTOS =
                 transformQueryToResultList(query, ApiRequestHeaderUpdateResponseDTO.class);

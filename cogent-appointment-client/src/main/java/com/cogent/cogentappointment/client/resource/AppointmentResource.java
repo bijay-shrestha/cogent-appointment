@@ -14,9 +14,8 @@ import com.cogent.cogentappointment.client.dto.request.appointment.log.Transacti
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRefundRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRejectRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integrationClient.ApiIntegrationCheckInRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.IntegrationService;
@@ -30,12 +29,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentConstant.*;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.APPROVE_REFUND_BY_CLIENT_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.FETCH_CLIENT_API_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.INTEGRATION;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -49,7 +46,6 @@ import static org.springframework.http.ResponseEntity.ok;
 public class AppointmentResource {
 
     private final AppointmentService appointmentService;
-
     private final IntegrationService integrationService;
 
     public AppointmentResource(AppointmentService appointmentService, IntegrationService integrationService) {
@@ -155,16 +151,17 @@ public class AppointmentResource {
         return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
     }
 
-    @GetMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(APPROVE)
     @ApiOperation(APPROVE_APPOINTMENT)
-    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId) {
-        appointmentService.approveAppointment(appointmentId);
+    public ResponseEntity<?> approveAppointment(@RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+        appointmentService.approveAppointment(integrationBackendRequestDTO);
         return ok().build();
     }
 
     @PutMapping(REJECT)
     @ApiOperation(REJECT_APPOINTMENT)
-    public ResponseEntity<?> rejectAppointment(@Valid @RequestBody AppointmentRejectDTO rejectDTO) {
+    public ResponseEntity<?> rejectAppointment(@Valid @RequestBody AppointmentRejectDTO rejectDTO,
+                                               @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
         appointmentService.rejectAppointment(rejectDTO);
         return ok().build();
     }
@@ -232,19 +229,19 @@ public class AppointmentResource {
         return ok().build();
     }
 
-    @PutMapping(INTEGRATION + REFUND + APPROVE)
-    @ApiOperation(APPROVE_REFUND_BY_CLIENT_INTEGRATION)
-    public ResponseEntity<?> approveRefund(@Valid @RequestBody ApiIntegrationApproveRefundRequestDTO requestDTO) {
-        integrationService.approveRefund(requestDTO);
-        return ok().build();
-    }
-
-    @PutMapping(INTEGRATION + REFUND + REJECT)
-    @ApiOperation(APPROVE_REFUND_BY_CLIENT_INTEGRATION)
-    public ResponseEntity<?> rejectRefund(@Valid @RequestBody ApiIntegrationApproveRejectRequestDTO requestDTO) {
-        integrationService.rejectRefund(requestDTO);
-        return ok().build();
-    }
+//    @PutMapping(INTEGRATION + REFUND + APPROVE)
+//    @ApiOperation(APPROVE_REFUND_BY_CLIENT_INTEGRATION)
+//    public ResponseEntity<?> approveRefund(@Valid @RequestBody ApiIntegrationApproveRefundRequestDTO requestDTO) {
+//        integrationService.approveRefund(requestDTO);
+//        return ok().build();
+//    }
+//
+//    @PutMapping(INTEGRATION + REFUND + REJECT)
+//    @ApiOperation(APPROVE_REFUND_BY_CLIENT_INTEGRATION)
+//    public ResponseEntity<?> rejectRefund(@Valid @RequestBody com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRejectRequestDTO requestDTO) {
+//        integrationService.rejectRefund(requestDTO);
+//        return ok().build();
+//    }
 
 
 }

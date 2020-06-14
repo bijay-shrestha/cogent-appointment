@@ -14,9 +14,10 @@ public class CogentAppointmentConstants {
     }
 
     public interface RefundResponseConstant {
+        String COMPLETE="COMPLETE";
         String PARTIAL_REFUND="PARTIAL_REFUND";
         String FULL_REFUND="FULL_REFUND";
         String SUCCESS="SUCCESS";
-        String AMBIGIOUS="AMBIGIOUS";
+        String AMBIGUOUS="AMBIGUOUS";
     }
 }

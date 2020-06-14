@@ -30,7 +30,7 @@ public class AppointmentQuery {
                     " FROM appointment a" +
                     " LEFT JOIN hospital h ON h.id =a.hospital_id" +
                     " WHERE" +
-                    " str_to_date(a.created_date_nepali,'%Y-%m-%d')" +
+                    " a.created_date_nepali" +
                     " BETWEEN :fromDate AND :toDate" +
                     " AND h.id =:hospitalId" +
                     " ORDER BY a.id DESC LIMIT 1";

@@ -6,13 +6,13 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * @author smriti on 28/05/20
+ * @author smriti on 14/06/20
  */
 @Getter
 @Setter
 public class HospitalAppointmentServiceTypeResponseDTO implements Serializable {
 
-    private Long hospitalAppointmentServiceTypeId;
+    private Long appointmentServiceTypeId;
 
     private String appointmentServiceTypeName;
 

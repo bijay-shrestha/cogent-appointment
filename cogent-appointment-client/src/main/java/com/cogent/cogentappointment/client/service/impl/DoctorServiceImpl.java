@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
-import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.*;
@@ -184,14 +183,9 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
     }
 
-
     private String updateDoctorSalutations(List<DoctorSalutationUpdateDTO> updateDTOS, Doctor doctor) {
 
-        String ids = updateDTOS.stream()
-                .map(request -> request.getDoctorSalutationId().toString())
-                .collect(Collectors.joining(COMMA_SEPARATED));
-
-        List<DoctorSalutation> doctorSalutationList = validateDoctorSalutations(ids);
+//        List<DoctorSalutation> doctorSalutationList = validateDoctorSalutations(ids);
 
         List<String> salutationList = new ArrayList<>();
         if (doctor.getSalutation() != null) {
@@ -202,30 +196,38 @@ public class DoctorServiceImpl implements DoctorService {
 
         updateDTOS.forEach(result -> {
 
+            if (result.getDoctorSalutationId() == null) {
 
-            DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
-                    .orElseThrow(() -> new NoContentFoundException(DoctorSalutation.class));
-
-            Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
-
-            if (result.getStatus().equals(INACTIVE)) {
-                salutationList.remove(salutation.getCode());
-                doctorSalutation.setStatus(INACTIVE);
-
-            }
-
-            if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())) {
+                Salutation salutation = findActiveSalutation(result.getSalutationId());
+                doctorSalutationRepository.save(parseToDoctorSalutation(doctor, salutation));
                 salutationList.add(salutation.getCode());
-                doctorSalutation.setStatus(ACTIVE);
 
+            } else {
+
+                DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
+                        .orElse(null);
+
+
+                Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
+
+                if (result.getStatus().equals(INACTIVE)) {
+                    salutationList.remove(salutation.getCode());
+                    doctorSalutation.setStatus(INACTIVE);
+
+                }
+
+                if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())) {
+                    salutationList.add(salutation.getCode());
+                    doctorSalutation.setStatus(ACTIVE);
+
+
+                }
+
+                doctorSalutationListToUpdate.add(doctorSalutation);
 
             }
-
-            doctorSalutationListToUpdate.add(doctorSalutation);
 
         });
-
-        updateDoctorSalutation(doctorSalutationListToUpdate);
 
         if (salutationList.size() == 0) {
             return null;

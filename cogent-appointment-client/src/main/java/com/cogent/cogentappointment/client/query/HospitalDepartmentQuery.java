@@ -176,7 +176,7 @@ public class HospitalDepartmentQuery {
                     " AND hdri.status='Y'" +
                     " AND hdri.hospitalDepartment.status!='D'";
 
-    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE=
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE =
             "SELECT " +
                     "  hb.id as id," +
                     "  hb.billingMode.id as billingModeId, " +

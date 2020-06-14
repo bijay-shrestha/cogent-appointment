@@ -25,7 +25,7 @@ import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.HospitalDepartmentDutyRosterMessages.HOSPITAL_DEPARTMENT_NOT_AVAILABLE_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentReservationLog.APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG;
+import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentReservationLog.APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_BILLING_MODE_INFO;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentReservationLogUtils.parseToAppointmentHospitalDepartmentReservation;
@@ -97,7 +97,7 @@ public class AppointmentHospitalDepartmentReservationLogServiceImpl implements
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG);
+        log.info(SAVING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS);
 
         validateRequestedAppointmentInfo(requestDTO);
 
@@ -106,7 +106,7 @@ public class AppointmentHospitalDepartmentReservationLogServiceImpl implements
         if (Objects.isNull(appointmentReservationLogId))
             appointmentReservationLogId = save(requestDTO);
 
-        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG,
+        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS,
                 getDifferenceBetweenTwoTime(startTime));
 
         return appointmentReservationLogId;
@@ -119,7 +119,7 @@ public class AppointmentHospitalDepartmentReservationLogServiceImpl implements
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(DELETING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG);
+        log.info(DELETING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS);
 
         List<AppointmentHospitalDepartmentReservationLog> appointmentReservations =
                 appointmentHospitalDepartmentReservationLogRepository.fetchAppointmentHospitalDepartmentReservationLog();
@@ -135,7 +135,7 @@ public class AppointmentHospitalDepartmentReservationLogServiceImpl implements
                 appointmentHospitalDepartmentReservationLogRepository.delete(appointmentReservation);
         });
 
-        log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG,
+        log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS,
                 getDifferenceBetweenTwoTime(startTime));
     }
 

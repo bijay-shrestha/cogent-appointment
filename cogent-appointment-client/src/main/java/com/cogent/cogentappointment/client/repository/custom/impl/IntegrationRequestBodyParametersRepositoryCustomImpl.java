@@ -36,7 +36,7 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
     public List<IntegrationBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId) {
         Query query = createQuery.apply(entityManager,
                 RequestBodyParametersQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID)
-                .setParameter(QueryConstants.API_FEATURE__ID,featureId);
+                .setParameter(QueryConstants.API_FEATURE__ID, featureId);
 
         List<IntegrationBodyAttributeResponse> bodyAttributeResponseList =
                 transformQueryToResultList(query, IntegrationBodyAttributeResponse.class);
@@ -44,7 +44,7 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
 //            error();
             return null;
 
-        }else {
+        } else {
             return bodyAttributeResponseList;
         }
     }
@@ -61,7 +61,7 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
 //            error();
             throw REQUEST_BODY_PARAMETERS.get();
 
-        }else {
+        } else {
             return bodyAttributeResponseList;
         }
     }
@@ -71,17 +71,10 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
         Query query = createQuery.apply(entityManager,
                 FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID(ids));
 
-        List<ApiIntegrationRequestBodyParameters> bodyParametersList=query.getResultList();
+        List<ApiIntegrationRequestBodyParameters> bodyParametersList = query.getResultList();
 
-        if (bodyParametersList.isEmpty()) {
-//            error();
-            throw REQUEST_BODY_PARAMETERS.get();
-
-        }else {
-            return bodyParametersList;
-        }
+        return bodyParametersList;
     }
-
 
     private Supplier<NoContentFoundException> REQUEST_BODY_PARAMETERS = () ->
             new NoContentFoundException(ApiIntegrationRequestBodyParameters.class);

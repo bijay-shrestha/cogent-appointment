@@ -139,12 +139,13 @@ public class AppointmentQuery {
                 " p.gender as gender," +                                                                //[6]
                 " p.mobile_number as mobileNumber," +                                                   //[7]
                 QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE + "," +                                           //[8]
-                " a.id as appointmentId," +                                                              //[9]
-                " a.is_follow_up as isFollowUp," +
-                " a.has_transferred as hastransferred" +                                                          //[10]
+                " a.id as appointmentId," +                                                             //[9]
+                " a.is_follow_up as isFollowUp," +                                                      //[10]
+                " a.has_transferred as hastransferred" +                                                //[11]
                 " FROM appointment a" +
-                " LEFT JOIN doctor d ON d.id = a.doctor_id" +
-                " LEFT JOIN specialization s ON s.id = a.specialization_id" +
+                " LEFT JOIN appointment_doctor_info ad ON a.id = ad.appointment_id" +
+                " LEFT JOIN doctor d ON d.id = ad.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = ad.specialization_id" +
                 " LEFT JOIN hospital h ON h.id = a.hospital_id" +
                 " LEFT JOIN patient p ON p.id = a.patient_id" +
                 " WHERE" +

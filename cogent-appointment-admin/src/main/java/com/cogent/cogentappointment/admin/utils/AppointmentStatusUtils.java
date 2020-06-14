@@ -147,7 +147,7 @@ public class AppointmentStatusUtils {
                                                             String status) {
 
         responseDTO.setAppointmentTime(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
-        responseDTO.setHasTimePassed(hasTimeHasPassed(availableDate, FORMAT.print(dateTime)));
+        responseDTO.setHasTimePassed(hasTimePassed(availableDate, FORMAT.print(dateTime)));
         responseDTO.setStatus(status);
     }
 
@@ -157,7 +157,7 @@ public class AppointmentStatusUtils {
                                                             String status) {
 
         responseDTO.setAppointmentTime(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
-        responseDTO.setHasTimePassed(hasTimeHasPassed(availableDate, FORMAT.print(dateTime)));
+        responseDTO.setHasTimePassed(hasTimePassed(availableDate, FORMAT.print(dateTime)));
         responseDTO.setStatus(status);
     }
 
@@ -188,7 +188,7 @@ public class AppointmentStatusUtils {
             responseDTO.setMobileNumber(appointmentStatusResponseDTO.getMobileNumber());
             responseDTO.setGender(appointmentStatusResponseDTO.getGender());
             responseDTO.setAppointmentId(appointmentStatusResponseDTO.getAppointmentId());
-            responseDTO.setHasTimePassed(hasTimeHasPassed(appointmentStatusResponseDTO.getDate(), appointmentTime));
+            responseDTO.setHasTimePassed(hasTimePassed(appointmentStatusResponseDTO.getDate(), appointmentTime));
             responseDTO.setIsFollowUp(appointmentStatusResponseDTO.getIsFollowUp());
             responseDTO.setHasTransferred(appointmentStatusResponseDTO.getHasTransferred());
         }
@@ -196,8 +196,8 @@ public class AppointmentStatusUtils {
         doctorTimeSlotResponseDTOS.add(responseDTO);
     }
 
-    private static boolean hasTimeHasPassed(java.time.LocalDate date,
-                                            String time) {
+    private static boolean hasTimePassed(java.time.LocalDate date,
+                                         String time) {
 
         Date availableDateTime = parseAppointmentTime(convertLocalDateToDate(date), time);
 
@@ -249,7 +249,7 @@ public class AppointmentStatusUtils {
             responseDTO.setMobileNumber(appointmentStatusResponseDTO.getMobileNumber());
             responseDTO.setGender(appointmentStatusResponseDTO.getGender());
             responseDTO.setAppointmentId(appointmentStatusResponseDTO.getAppointmentId());
-            responseDTO.setHasTimePassed(hasTimeHasPassed(appointmentStatusResponseDTO.getDate(), appointmentTime));
+            responseDTO.setHasTimePassed(hasTimePassed(appointmentStatusResponseDTO.getDate(), appointmentTime));
             responseDTO.setIsFollowUp(appointmentStatusResponseDTO.getIsFollowUp());
             responseDTO.setHasTransferred(appointmentStatusResponseDTO.getHasTransferred());
         }

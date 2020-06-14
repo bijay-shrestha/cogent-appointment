@@ -32,6 +32,8 @@ public class ErrorMessageConstants {
                 "actual hospital department appointment charge";
         String HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
                 "Hospital Department actual appointment charge/ follow-up appointment charge";
+
+        String APPOINTMENT_AVAILABLE_DATE_NOT_FOUND = "No available appointment date(s) found";
     }
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";

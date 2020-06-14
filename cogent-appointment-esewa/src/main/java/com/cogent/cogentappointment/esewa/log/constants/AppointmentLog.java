@@ -19,5 +19,9 @@ public class AppointmentLog {
 
     public static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
 
+    public final static String APPOINTMENT_DOCTOR_INFO = "APPOINTMENT DOCTOR INFO";
+
+    public final static String APPOINTMENT_HOSPITAL_DEPARTMENT_INFO = "APPOINTMENT HOSPITAL DEPARTMENT INFO";
+
 
 }

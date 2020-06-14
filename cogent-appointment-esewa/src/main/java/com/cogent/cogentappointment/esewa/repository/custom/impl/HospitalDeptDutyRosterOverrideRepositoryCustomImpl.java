@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
+import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterAvailableDateResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterTimeResponseTO;
 import com.cogent.cogentappointment.esewa.repository.custom.HospitalDeptDutyRosterOverrideRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
@@ -11,14 +12,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
+import java.util.List;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.DATE;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_DATE;
 import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformQueryToSingleResult;
+import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti on 29/05/20
@@ -49,5 +50,13 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements Hospi
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    @Override
+    public List<HospitalDeptDutyRosterAvailableDateResponseDTO> fetchOverrideRosterDates(Long hddRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_DATE)
+                .setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID, hddRosterId);
+
+        return transformQueryToResultList(query, HospitalDeptDutyRosterAvailableDateResponseDTO.class);
     }
 }

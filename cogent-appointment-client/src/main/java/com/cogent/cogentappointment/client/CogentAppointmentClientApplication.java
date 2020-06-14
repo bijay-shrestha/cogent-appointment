@@ -20,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
         "com.cogent.cogentthirdpartyconnector.service"})
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
         "com.cogent.cogentappointment.persistence.history"})
-@EnableJpaRepositories
 @PropertySource(
         factory = YamlPropertySourceFactory.class,
         value =

@@ -37,13 +37,13 @@ import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.Trans
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
@@ -51,7 +51,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -87,7 +86,6 @@ import static com.cogent.cogentappointment.client.utils.commons.DateConverterUti
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
-import static com.cogent.cogentthirdpartyconnector.api.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
 
 /**
  * @author smriti on 2019-10-22
@@ -173,7 +171,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   Validator validator,
                                   IntegrationRepository integrationRepository,
-                                  ThirdPartyConnectorService thirdPartyConnectorService) {
+                                  ThirdPartyConnectorService thirdPartyConnectorService,
+                                  NepaliDateUtility nepaliDateUtility) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -199,7 +198,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.validator = validator;
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
-        this.restTemplateUtils = restTemplateUtils;
         this.nepaliDateUtility = nepaliDateUtility;
     }
 
@@ -1101,8 +1099,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private String requestEsewaForRefund(Appointment appointment,
                                          AppointmentTransactionDetail transactionDetail,
                                          AppointmentRefundDetail appointmentRefundDetail,
-                                         Boolean isRefund,
-                                         IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+                                         Boolean isRefund) {
 
         String esewaId = appointment.getPatientId().getESewaId();
 
@@ -1125,21 +1122,23 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
 //                getEsewaHeader(parseToHmacRequestForEsewaDTO.apply("9841409090", "testBir")));
 
-        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
-                getEsewaPaymentStatusAPIHeaders());
+//        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
+//                getEsewaPaymentStatusAPIHeaders());
+//
+//        String url = String.format(ESEWA_REFUND_API, "5VO");
+//
+//
+////        BackendIntegrationApiInfo integrationApiInfo=new BackendIntegrationApiInfo();
+////        integrationApiInfo.setApiUri(url);
+////        integrationApiInfo.setHttpHeaders();
+//
+//        ResponseEntity<EsewaResponseDTO
+//                > response = (ResponseEntity<EsewaResponseDTO>) thirdPartyConnectorService.
+//                getHospitalService(integrationBackendRequestDTO);
 
-        String url = String.format(ESEWA_REFUND_API, "5VO");
+//        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
 
-
-//        BackendIntegrationApiInfo integrationApiInfo=new BackendIntegrationApiInfo();
-//        integrationApiInfo.setApiUri(url);
-//        integrationApiInfo.setHttpHeaders();
-
-        ResponseEntity<EsewaResponseDTO
-                > response = (ResponseEntity<EsewaResponseDTO>) thirdPartyConnectorService.
-                getHospitalService(integrationBackendRequestDTO);
-
-        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
+        return null;
     }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,

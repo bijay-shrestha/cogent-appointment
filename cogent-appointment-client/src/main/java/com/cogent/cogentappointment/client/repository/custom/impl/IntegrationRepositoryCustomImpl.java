@@ -25,6 +25,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_
 import static com.cogent.cogentappointment.client.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.client.query.IntegrationQuery.CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformNativeQueryToSingleResult;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
@@ -83,16 +84,16 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public List<FeatureIntegrationResponse> fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
+    public FeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY)
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
                 .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
                 .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());
 
-        List<FeatureIntegrationResponse> responseDTOList =
-                transformQueryToResultList(query, FeatureIntegrationResponse.class);
+        FeatureIntegrationResponse responseDTOList =
+                transformNativeQueryToSingleResult(query, FeatureIntegrationResponse.class);
 
-        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
+//        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
 
         return responseDTOList;
     }

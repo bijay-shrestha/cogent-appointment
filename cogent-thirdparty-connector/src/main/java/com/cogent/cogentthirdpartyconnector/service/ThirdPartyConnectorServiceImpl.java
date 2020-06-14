@@ -4,6 +4,7 @@ import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BheriHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import org.springframework.http.HttpEntity;
@@ -30,6 +31,39 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
     public ThirdPartyConnectorServiceImpl(RestTemplateUtils restTemplateUtils) {
         this.restTemplateUtils = restTemplateUtils;
+    }
+
+    @Override
+    public BheriHospitalResponse callBheriHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
+
+        HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
+
+        String uri = "";
+        Map<String, String> queryParameter = backendIntegrationApiInfo.getQueryParameters();
+        if (queryParameter != null) {
+            uri = createQueryPamarameter(backendIntegrationApiInfo.getApiUri(), queryParameter).toUriString();
+        } else {
+            uri = backendIntegrationApiInfo.getApiUri();
+        }
+
+        ResponseEntity<?> response = restTemplateUtils.
+                requestAPI(httpMethod,
+                        uri,
+                        new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
+
+        System.out.println(response);
+
+
+        BheriHospitalResponse bheriHospitalResponse = null;
+        try {
+            bheriHospitalResponse = map(response.getBody().toString(),
+                    BheriHospitalResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return bheriHospitalResponse;
     }
 
     @Override

@@ -36,7 +36,7 @@ public class AppointmentUtils {
     }
 
     public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment, Long newPatient,
-                                                                                 Long registeredPatient,Long followUp,
+                                                                                 Long registeredPatient, Long followUp,
                                                                                  Character pillType) {
         AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();
         countResponseDTO.setTotalAppointment(overAllAppointment);
@@ -80,8 +80,10 @@ public class AppointmentUtils {
             AppointmentStatusResponseDTO appointmentStatusResponseDTO = AppointmentStatusResponseDTO.builder()
                     .date(appointmentLocalDate)
                     .appointmentTimeDetails(result[TIME_WITH_STATUS_DETAILS_INDEX].toString())
-                    .doctorId(Long.parseLong(result[DOCTOR_ID_INDEX].toString()))
-                    .specializationId(Long.parseLong(result[SPECIALIZATION_ID_INDEX].toString()))
+                    .doctorId(Objects.isNull(result[DOCTOR_ID_INDEX]) ? null :
+                            Long.parseLong(result[DOCTOR_ID_INDEX].toString()))
+                    .specializationId(Objects.isNull(result[SPECIALIZATION_ID_INDEX]) ? null :
+                            Long.parseLong(result[SPECIALIZATION_ID_INDEX].toString()))
                     .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                     .patientName(result[PATIENT_NAME_INDEX].toString())
                     .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())
@@ -89,7 +91,7 @@ public class AppointmentUtils {
                     .gender(result[GENDER_INDEX].toString())
                     .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
                     .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
-                    .hasTransferred((Character)result[HAS_TRANSFERRED_INDEX])
+                    .hasTransferred((Character) result[HAS_TRANSFERRED_INDEX])
                     .build();
 
             appointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);

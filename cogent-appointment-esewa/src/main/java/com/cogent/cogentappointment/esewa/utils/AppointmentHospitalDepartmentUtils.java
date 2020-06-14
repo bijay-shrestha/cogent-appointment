@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.esewa.utils;
 
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.availableDate.AppointmentAvailableDateResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.HospitalDepartmentDoctorInfoResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterRoomInfoResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterTimeResponseTO;
 import org.joda.time.DateTime;
@@ -11,6 +13,7 @@ import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +38,8 @@ public class AppointmentHospitalDepartmentUtils {
             HospitalDeptDutyRosterRoomInfoResponseDTO roomInfo,
             String startTime,
             String endTime,
-            List<String> availableTimeSlots) {
+            List<String> availableTimeSlots,
+            List<HospitalDepartmentDoctorInfoResponseDTO> availableDoctors) {
 
         AppointmentHospitalDeptCheckAvailabilityResponseDTO responseDTO =
                 AppointmentHospitalDeptCheckAvailabilityResponseDTO.builder()
@@ -46,6 +50,7 @@ public class AppointmentHospitalDepartmentUtils {
                         .roomNumber(roomInfo.getRoomNumber())
                         .hospitalDepartmentAvailableTime(startTime + HYPHEN + endTime)
                         .availableTimeSlots(availableTimeSlots)
+                        .availableDoctors(availableDoctors)
                         .build();
 
         responseDTO.setResponseCode(OK.value());
@@ -57,7 +62,8 @@ public class AppointmentHospitalDepartmentUtils {
             Date queryDate,
             String startTime,
             String endTime,
-            List<String> availableTimeSlots) {
+            List<String> availableTimeSlots,
+            List<HospitalDepartmentDoctorInfoResponseDTO> availableDoctors) {
 
         AppointmentHospitalDeptCheckAvailabilityResponseDTO responseDTO =
                 AppointmentHospitalDeptCheckAvailabilityResponseDTO.builder()
@@ -66,6 +72,7 @@ public class AppointmentHospitalDepartmentUtils {
                         .roomInfo(new ArrayList<>())
                         .hospitalDepartmentAvailableTime(startTime + HYPHEN + endTime)
                         .availableTimeSlots(availableTimeSlots)
+                        .availableDoctors(availableDoctors)
                         .build();
 
         responseDTO.setResponseCode(OK.value());
@@ -162,4 +169,14 @@ public class AppointmentHospitalDepartmentUtils {
 
         return false;
     }
+
+    public static AppointmentAvailableDateResponseDTO parseAvailableAppointmentDates(List<LocalDate> availableDates) {
+        AppointmentAvailableDateResponseDTO responseDTO = new AppointmentAvailableDateResponseDTO();
+        responseDTO.setAvailableDates(availableDates);
+        responseDTO.setResponseCode(OK.value());
+        responseDTO.setResponseStatus(OK);
+
+        return responseDTO;
+    }
+
 }

@@ -13,12 +13,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.CODE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentDutyRosterLog.HOSPITAL_DEPARTMENT_DUTY_ROSTER;
+import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterWeekDaysQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_WEEK_DAYS_CODE;
 import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterWeekDaysQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_WEEK_DAYS_INFO;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
@@ -49,6 +51,15 @@ public class HospitalDeptWeekDaysDutyRosterRepositoryCustomImpl implements Hospi
         } catch (NoResultException e) {
             throw HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND.get();
         }
+    }
+
+    @Override
+    public List<String> fetchWeekDaysCode(Long hddRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_WEEK_DAYS_CODE)
+                .setParameter(ID, hddRosterId);
+
+        return query.getResultList();
     }
 
     private Supplier<NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND = () -> {

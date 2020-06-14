@@ -31,16 +31,12 @@ public class SwaggerConstants {
                 " for specific hospital department";
         String CHECK_APPOINTMENT_AVAILABILITY_ROOM_WISE = "Check available time schedules in requested date" +
                 " for specific hospital department and room";
+        String FETCH_AVAILABLE_HOSPITAL_DEPARTMENT_DATES = "Fetch available hospital department appointment dates";
+    }
 
-        String SAVE_OPERATION = "Save new appointment";
-        String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
-        String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
-        String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
-        String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
-        String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
-        String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
-                " If 'Y', then it is successful appointment, else it is failed appointment";
-        String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
+    public interface AppointmentServiceTypeConstant {
+        String BASE_API_VALUE = "This is Appointment Service Type Resource.";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Service Type details for dropdown";
     }
 
     public static final String[] AUTH_WHITELIST = {

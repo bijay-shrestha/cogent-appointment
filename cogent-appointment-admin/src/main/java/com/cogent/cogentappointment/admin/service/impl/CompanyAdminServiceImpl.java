@@ -420,8 +420,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
-        responseDTO.setApiIntegration(getApiIntegrations());
 
+        responseDTO.setApiIntegration(getApiIntegrations());
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -447,8 +447,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         }
 
         return map;
-
-
     }
 
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {

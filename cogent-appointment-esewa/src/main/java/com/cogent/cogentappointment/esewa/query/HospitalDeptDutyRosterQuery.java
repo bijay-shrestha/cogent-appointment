@@ -34,4 +34,13 @@ public class HospitalDeptDutyRosterQuery {
                     " AND :date BETWEEN h.fromDate AND h.toDate" +
                     " AND hd.id =:hospitalDepartmentId" +
                     " AND hr.hospitalDepartmentRoomInfo.id =:hospitalDepartmentRoomInfoId";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_BY_HOSPITAL_DEPARTMENT_ID =
+            " SELECT hddr FROM HospitalDepartmentDutyRoster hddr" +
+                    " LEFT JOIN HospitalDepartment hd ON hd.id = hddr.hospitalDepartment.id" +
+                    " WHERE" +
+                    " hddr.status = 'Y'" +
+                    " AND hddr.status = 'Y'" +
+                    " AND (hddr.fromDate>=CURDATE() OR hddr.toDate >=CURDATE())" +
+                    " AND hd.id =:hospitalDepartmentId";
 }

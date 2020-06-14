@@ -397,7 +397,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                     parseToHospitalDeptWeekDaysDutyRoster(requestDTO, hospitalDepartmentDutyRoster, weekDays)
             );
 
-            if (requestDTO.getHospitalDepartmentDoctorInfoIds().size() > 0)
+            if (requestDTO.getHospitalDepartmentDoctorInfoIds().size() > 0
+                    && !Objects.isNull(requestDTO.getHospitalDepartmentDoctorInfoIds()))
                 saveHospitalDepartmentWeekDaysDutyRosterDoctorInfo(weekDaysDutyRoster,
                         requestDTO.getHospitalDepartmentDoctorInfoIds());
         });

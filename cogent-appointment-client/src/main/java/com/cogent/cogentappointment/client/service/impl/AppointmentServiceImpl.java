@@ -593,8 +593,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveAppointment(Long appointmentId,
-                                   IntegrationBackendRequestDTO integrationRequestDTO) {
+    public void approveAppointment(IntegrationBackendRequestDTO integrationRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -603,8 +602,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         // isPatientStatus-->      true--> no hospital number | new registration patient
         // isPatientStatus-->      false--> hospital number   | registered patient
         Appointment appointment = appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(
-                appointmentId, getLoggedInHospitalId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+                integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationRequestDTO.getAppointmentId()));
 
         if (integrationRequestDTO.getIntegrationChannelCode()!=null || !integrationRequestDTO.getIntegrationChannelCode().isEmpty()) {
             apiIntegrationCheckpoint(appointment, integrationRequestDTO);

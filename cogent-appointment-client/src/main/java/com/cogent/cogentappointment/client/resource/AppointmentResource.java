@@ -153,9 +153,8 @@ public class AppointmentResource {
 
     @PutMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(APPROVE_APPOINTMENT)
-    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId,
-                                                @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
-        appointmentService.approveAppointment(appointmentId, integrationBackendRequestDTO);
+    public ResponseEntity<?> approveAppointment(@RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+        appointmentService.approveAppointment(integrationBackendRequestDTO);
         return ok().build();
     }
 

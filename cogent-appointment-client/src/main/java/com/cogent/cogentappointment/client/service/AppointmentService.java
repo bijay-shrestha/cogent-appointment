@@ -12,8 +12,8 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.Ap
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
@@ -72,7 +72,7 @@ public interface AppointmentService {
 
     AppointmentPendingApprovalDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 
-    void approveAppointment(Long appointmentId, IntegrationBackendRequestDTO integrationBackendRequestDTO);
+    void approveAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     void rejectAppointment(AppointmentRejectDTO rejectDTO);
 

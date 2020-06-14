@@ -30,8 +30,6 @@ public class DoctorUpdateRequestDTO implements Serializable {
     @NotEmpty
     private List<DoctorQualificationUpdateDTO> doctorQualificationInfo;
 
-    @Valid
-    @NotEmpty
     private List<DoctorSalutationUpdateDTO> doctorSalutationInfo;
 
 }

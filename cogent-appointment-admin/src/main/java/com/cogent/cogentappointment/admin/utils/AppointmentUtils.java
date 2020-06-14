@@ -77,10 +77,8 @@ public class AppointmentUtils {
             AppointmentStatusResponseDTO appointmentStatusResponseDTO = AppointmentStatusResponseDTO.builder()
                     .date(appointmentLocalDate)
                     .appointmentTimeDetails(result[TIME_WITH_STATUS_DETAILS_INDEX].toString())
-                    .doctorId(Objects.isNull(result[DOCTOR_ID_INDEX]) ? null :
-                            Long.parseLong(result[DOCTOR_ID_INDEX].toString()))
-                    .specializationId(Objects.isNull(result[SPECIALIZATION_ID_INDEX]) ? null :
-                            Long.parseLong(result[SPECIALIZATION_ID_INDEX].toString()))
+                    .doctorId(Long.parseLong(result[DOCTOR_ID_INDEX].toString()))
+                    .specializationId(Long.parseLong(result[SPECIALIZATION_ID_INDEX].toString()))
                     .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                     .patientName(result[PATIENT_NAME_INDEX].toString())
                     .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())

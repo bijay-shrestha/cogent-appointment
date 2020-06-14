@@ -557,8 +557,9 @@ public class AppointmentQuery {
                 " a.is_follow_up as isFollowUp," +                                                        //[10]
                 " a.has_transferred as hastransferred" +                                                   //[11]
                 " FROM appointment a" +
-                " LEFT JOIN doctor d ON d.id = a.doctor_id" +
-                " LEFT JOIN specialization s ON s.id = a.specialization_id" +
+                " LEFT JOIN appointment_doctor_info ad ON a.id = ad.appointment_id" +
+                " LEFT JOIN doctor d ON d.id = ad.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = ad.specialization_id" +
                 " LEFT JOIN hospital h ON h.id = a.hospital_id" +
                 " LEFT JOIN patient p ON p.id = a.patient_id" +
                 " WHERE" +
@@ -574,6 +575,9 @@ public class AppointmentQuery {
 
         if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
             SQL += " AND a.status='" + requestDTO.getStatus() + "'";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
+            SQL += " AND a.appointment_number='" + requestDTO.getAppointmentNumber() + "'";
 
         SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id" +
                 " ORDER BY appointment_date";

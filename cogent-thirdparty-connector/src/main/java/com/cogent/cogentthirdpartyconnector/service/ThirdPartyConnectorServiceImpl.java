@@ -2,6 +2,7 @@ package com.cogent.cogentthirdpartyconnector.service;
 
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
+import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
@@ -33,7 +34,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
     @Override
     public ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo hospitalApiInfo,
-                                                     Map<String, Object> esewaRefundRequestDTO) throws IOException {
+                                                     EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException {
 
 
         HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());

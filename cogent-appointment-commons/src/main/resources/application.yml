@@ -1,7 +1,7 @@
-
-catalina:
-  home: /home/f1soft/Softwares/tomcat
+#
+#catalina:
+#  home: /home/f1soft/Softwares/tomcat
 
 spring:
   profiles:
-    active: dev
+    active: uat

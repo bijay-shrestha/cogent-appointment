@@ -3,10 +3,10 @@
 ######___ ***** ENTER PATH TO YOUR STAND-ALONE TOMCAT SERVER ***** ____ ############
 
 ##### [END] CATALINA HOME CONFIG [/END] #########
-
-catalina:
-  home: /home/f1soft/Softwares/tomcat
+#
+#catalina:
+#  home: /home/f1soft/Softwares/tomcat
 
 spring:
   profiles:
-    active: dev
+    active: uat

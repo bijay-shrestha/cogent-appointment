@@ -6,4 +6,4 @@
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
 spring:
-  profiles.active: dev
+  profiles.active: uat

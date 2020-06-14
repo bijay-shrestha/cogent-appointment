@@ -9,7 +9,12 @@ public class HospitalDepartmentDoctorInfoQuery {
 
             " SELECT" +
                     " hd.id as value," +                                    //[0]
-                    " d.name as label," +                                   //[1]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as label," +                                   //[1]
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +

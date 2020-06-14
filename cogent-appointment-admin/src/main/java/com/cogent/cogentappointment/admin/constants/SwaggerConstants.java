@@ -421,6 +421,7 @@ public class SwaggerConstants {
     public interface SalutationConstant {
         String BASE_API_VALUE = "This is Salutation Resource";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Salutation details (id and code) for dropdown";
+        String DELETE_OPERATION = "Set Salutation status as 'D' when deleted";
     }
 
     public interface SpecializationConstant {

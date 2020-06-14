@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * @author smriti on 2019-09-30
@@ -21,6 +22,8 @@ public class DoctorDetailResponseDTO extends AuditableResponseDTO implements Ser
     private BigInteger id;
 
     private String doctorName;
+
+    private String doctorSalutation;
 
     private String mobileNumber;
 

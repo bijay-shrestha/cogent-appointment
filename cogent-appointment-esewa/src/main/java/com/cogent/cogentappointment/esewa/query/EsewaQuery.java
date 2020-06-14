@@ -185,6 +185,9 @@ public class EsewaQuery {
                 " THEN NULL" +
                 " ELSE" +
                 " da.file_uri" +
+                " END as fileUri," +                             //[5]
+                " tbl1.qualificationAlias as qualificationAlias," +  //[6]
+                " d.salutation as doctorSalutation,"+
                 " END as fileUri," +                                //[5]
                 " tbl1.qualificationAlias as qualificationAlias," + //[6]
                 " dc.appointment_charge as appointmentCharge"+      //[7]

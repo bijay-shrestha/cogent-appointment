@@ -6,7 +6,13 @@ package com.cogent.cogentappointment.esewa.query;
 public class HospitalDepartmentWeekDaysDutyRosterDoctorInfoQuery {
 
     public static final String QUERY_TO_FETCH_AVAILABLE_DOCTORS =
-            " SELECT d.name as doctorName," +
+            " SELECT " +
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as doctorName," +
                     " CASE WHEN" +
                     " (da.status IS NULL OR da.status = 'N')" +
                     " THEN null" +

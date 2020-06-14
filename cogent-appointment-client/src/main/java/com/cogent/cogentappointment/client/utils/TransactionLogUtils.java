@@ -47,6 +47,8 @@ public class TransactionLogUtils {
             final int TRANSACTION_TIME_INDEX = 20;
             final int REVENUE_AMOUNT_INDEX = 21;
             final int DOCTOR_AVATAR_INDEX = 22;
+            final int DOCTOR_SALUTATION_INDEX = 23;
+
 
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
@@ -63,6 +65,10 @@ public class TransactionLogUtils {
 
             String doctorAvatar = Objects.isNull(result[DOCTOR_AVATAR_INDEX]) ?
                     null : result[DOCTOR_AVATAR_INDEX].toString();
+
+            String doctorSalutation = Objects.isNull(result[DOCTOR_SALUTATION_INDEX]) ?
+                    null : result[DOCTOR_SALUTATION_INDEX].toString();
+
 
 
             TransactionLogDTO appointmentLogDTO =
@@ -94,6 +100,7 @@ public class TransactionLogUtils {
                                     result[TRANSACTION_TIME_INDEX].toString())
                             .revenueAmount(Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString()))
                             .fileUri(doctorAvatar)
+                            .doctorSalutation(doctorSalutation)
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

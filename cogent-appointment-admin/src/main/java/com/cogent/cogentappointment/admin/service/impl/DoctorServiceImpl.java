@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
-import com.cogent.cogentappointment.admin.utils.SalutationUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -249,16 +248,17 @@ public class DoctorServiceImpl implements DoctorService {
 
         updateDTOS.forEach(result -> {
 
-            if(result.getDoctorSalutationId()==null){
+            if (result.getDoctorSalutationId() == null) {
 
-                String ids = updateDTOS.stream()
-                        .map(request -> request.getDoctorSalutationId().toString())
-                        .collect(Collectors.joining(","));
+//                String ids = updateDTOS.stream()
+//                        .map(request -> request.getDoctorSalutationId().toString())
+//                        .collect(Collectors.joining(","));
 
                 Salutation salutation = findActiveSalutation(result.getSalutationId());
-                parseToDoctorSalutation(doctor, salutation);
+                doctorSalutationRepository.save(parseToDoctorSalutation(doctor, salutation));
+                salutationList.add(salutation.getCode());
 
-            }else{
+            } else {
 
                 DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
                         .orElse(null);
@@ -286,7 +286,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         });
 
-        updateDoctorSalutation(doctorSalutationListToUpdate);
+//        updateDoctorSalutation(doctorSalutationListToUpdate);
 
         if (salutationList.size() == 0) {
             return null;
@@ -303,9 +303,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     }
 
-    private void updateDoctorSalutation(List<DoctorSalutation> doctorSalutationListToUpdate) {
-        doctorSalutationRepository.saveAll(doctorSalutationListToUpdate);
-    }
 
     private Salutation findActiveSalutation(Long salutationId) {
 

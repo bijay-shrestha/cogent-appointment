@@ -151,7 +151,7 @@ public class AppointmentResource {
         return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
     }
 
-    @PutMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(APPROVE)
     @ApiOperation(APPROVE_APPOINTMENT)
     public ResponseEntity<?> approveAppointment(@RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
         appointmentService.approveAppointment(integrationBackendRequestDTO);

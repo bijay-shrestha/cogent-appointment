@@ -485,7 +485,12 @@ public class AppointmentQuery {
                             " sp.name as specializationName," +                                    //[10]
                             " atd.transactionNumber as transactionNumber," +                       //[11]
                             " atd.appointmentAmount as appointmentAmount," +                       //[12]
-                            " d.name as doctorName," +                                             //[13]
+                            " CASE WHEN" +
+                            " (d.salutation is null)" +
+                            " THEN d.name" +
+                            " ELSE" +
+                            " CONCAT_WS(' ',d.salutation, d.name)" +
+                            " END as doctorName," +                                                //[13]
                             " a.status as status," +                                               //[14]
                             " ard.refundAmount as refundAmount," +                                 //[15]
                             " hpi.address as patientAddress," +                                    //[16]

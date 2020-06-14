@@ -141,8 +141,18 @@ public class AppointmentTransferQuery {
                     "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%b %d,%Y')  as transferredFromDate, " +
                     "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%h:%i %p')  as transferredToTime, " +
                     "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%h:%i %p')  as transferredFromTime, " +
-                    "  apt.currentDoctor.name as transferredToDoctor, " +
-                    "  apt.previousDoctor.name as transferredFromDoctor, " +
+                    " CASE WHEN" +
+                    " (apt.currentDoctor.salutation is null)" +
+                    " THEN apt.currentDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.currentDoctor.salutation, apt.currentDoctor.name)" +
+                    " END as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.previousDoctor.salutation is null)" +
+                    " THEN apt.previousDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.previousDoctor.salutation, apt.previousDoctor.name)" +
+                    " END as transferredFromDoctor," +
                     "  apt.currentSpecialization.name as transferredToSpecialization, " +
                     "  apt.previousSpecialization.name as transferredFromSpecialization, " +
                     "  attd.currentAppointmentAmount  AS transferredToAmount, " +
@@ -270,8 +280,18 @@ public class AppointmentTransferQuery {
                     " attd.currentAppointmentAmount  as transferredToAmount," +
                     " attd.previousAppointmentAmount  as transferredFromAmount," +
                     " apt.remarks," +
-                    " apt.previousDoctor.name as transferredFromDoctor," +
-                    " apt.currentDoctor.name as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.currentDoctor.salutation is null)" +
+                    " THEN apt.currentDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.currentDoctor.salutation, apt.currentDoctor.name)" +
+                    " END as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.previousDoctor.salutation is null)" +
+                    " THEN apt.previousDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.previousDoctor.salutation, apt.previousDoctor.name)" +
+                    " END as transferredFromDoctor," +
                     " apt.previousSpecialization.name as transferredFromSpecialization," +
                     " apt.currentSpecialization.name as transferredToSpecialization," +
                     " atd.transactionNumber as transactionNumber," +
@@ -279,8 +299,8 @@ public class AppointmentTransferQuery {
                     "  hpi.isRegistered as patientType," +
                     "  pda.fileUri as transferredFromFileUri," +
                     "  cda.fileUri as transferredToFileUri," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE+"," +
-                    APPOINTMENT_TRANSFER_AUDITABLE_QUERY()+
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    APPOINTMENT_TRANSFER_AUDITABLE_QUERY() +
                     " FROM" +
                     " AppointmentTransfer apt" +
                     " LEFT JOIN Appointment a ON a.id=apt.appointment.id " +
@@ -300,7 +320,7 @@ public class AppointmentTransferQuery {
                 " apt.lastModifiedDate as lastModifiedDate";
     }
 
-    public static String QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID=
+    public static String QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID =
             "SELECT a.id FROM Appointment a WHERE a.hasTransferred='Y' AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID =

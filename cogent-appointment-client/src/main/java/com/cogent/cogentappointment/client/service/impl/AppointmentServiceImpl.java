@@ -18,6 +18,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.EsewaRefundRequestDTO;
@@ -34,22 +35,24 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
-import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
-import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
+import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,7 +143,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final Validator validator;
 
-    private final RestTemplateUtils restTemplateUtils;
+    private final IntegrationRepository integrationRepository;
+
+    private final ThirdPartyConnectorService thirdPartyConnectorService;
 
     private final NepaliDateUtility nepaliDateUtility;
 
@@ -167,7 +172,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   Validator validator,
-                                  RestTemplateUtils restTemplateUtils, NepaliDateUtility nepaliDateUtility) {
+                                  IntegrationRepository integrationRepository,
+                                  ThirdPartyConnectorService thirdPartyConnectorService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -191,6 +197,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
+        this.integrationRepository = integrationRepository;
+        this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.restTemplateUtils = restTemplateUtils;
         this.nepaliDateUtility = nepaliDateUtility;
     }
@@ -585,10 +593,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveAppointment(Long appointmentId) {
+    public void approveAppointment(Long appointmentId,
+                                   IntegrationBackendRequestDTO integrationBackendRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
+
+        if (integrationBackendRequestDTO != null) {
+            apiIntegrationCheckpoint(integrationBackendRequestDTO);
+        }
 
         Appointment appointment = appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(
                 appointmentId, getLoggedInHospitalId())
@@ -599,6 +612,59 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveAppointmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+
+    private void apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+
+        List<BackendIntegrationApiInfo> integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
+
+        integrationHospitalApiInfo.forEach(apiInfo -> {
+            ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(apiInfo);
+        });
+
+    }
+
+    private List<BackendIntegrationApiInfo> getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+
+        List<FeatureIntegrationResponse> featureIntegrationResponse = integrationRepository.
+                fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
+
+        List<BackendIntegrationApiInfo> integrationHospitalApiInfos = new ArrayList<>();
+
+        featureIntegrationResponse.forEach(integrationResponse -> {
+
+            Map<String, String> requestHeaderResponse = integrationRepository.
+                    findApiRequestHeaders(integrationResponse.getApiIntegrationFormatId());
+
+            Map<String, String> queryParametersResponse = integrationRepository.
+                    findApiQueryParameters(integrationResponse.getApiIntegrationFormatId());
+
+            //headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+
+            requestHeaderResponse.forEach((key, value) -> {
+                headers.add(key, value);
+            });
+
+            BackendIntegrationApiInfo hospitalApiInfo = new BackendIntegrationApiInfo();
+            hospitalApiInfo.setApiUri(integrationResponse.getUrl());
+            hospitalApiInfo.setHttpHeaders(headers);
+
+            if (!queryParametersResponse.isEmpty()) {
+                hospitalApiInfo.setQueryParameters(queryParametersResponse);
+            }
+            hospitalApiInfo.setHttpMethod(integrationResponse.getRequestMethod());
+
+            integrationHospitalApiInfos.add(hospitalApiInfo);
+
+        });
+
+        return integrationHospitalApiInfos;
+
     }
 
     @Override
@@ -1380,11 +1446,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    private String getNepaliDate(Date date){
+    private String getNepaliDate(Date date) {
 
-        String nepaliDate= nepaliDateUtility.getNepaliDateFromDate(date);
+        String nepaliDate = nepaliDateUtility.getNepaliDateFromDate(date);
 
-        return  formatToDateString(nepaliDate);
+        return formatToDateString(nepaliDate);
     }
 
 }

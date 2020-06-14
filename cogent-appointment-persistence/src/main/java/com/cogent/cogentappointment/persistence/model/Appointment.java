@@ -133,6 +133,9 @@ public class Appointment extends Auditable<String> implements Serializable {
         return "Appointment{" +
                 "id=" + id +
                 ", patientId=" + patientId.getName() +
+                ", specializationId=" + specializationId.getName() +
+                ", doctorId=" + doctorId +
+                ", patientId=" + patientId +
                 ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
@@ -141,7 +144,7 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", createdDateNepali='" + createdDateNepali + '\'' +
                 ", status='" + status + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", hospitalId=" + hospitalId.getName() +
+                ", hospitalId=" + hospitalId +
                 ", isFollowUp=" + isFollowUp +
                 ", isSelf=" + isSelf +
                 ", hasTransferred=" + hasTransferred +

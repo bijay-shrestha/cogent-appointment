@@ -12,6 +12,7 @@
 
     <modules>
         <module>cogent-appointment-persistence</module>
+        <module>cogent-thirdparty-connector</module>
         <module>cogent-appointment-commons</module>
         <module>cogent-appointment-admin</module>
         <module>cogent-appointment-client</module>

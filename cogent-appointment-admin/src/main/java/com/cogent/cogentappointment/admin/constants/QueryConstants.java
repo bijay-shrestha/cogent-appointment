@@ -46,6 +46,8 @@ public class QueryConstants {
 
     public static final String FROM_DATE = "fromDate";
 
+    public static final String FEATURE_CODE = "featureCode";
+
     //G
 
     //H
@@ -59,11 +61,11 @@ public class QueryConstants {
 
     public static final String HOSPITAL_DEPARTMENT_ROOM_INFO_ID = "hospitalDepartmentRoomInfoId";
 
-
     //I
     public static final String ID = "id";
-    public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
+    public static final String API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
     public static final String API_FEATURE_ID = "featureId";
+    public static final String INTEGRATION_CHANNEL_CODE = "integrationChannelCode";
     public static final String ADMIN_MODE_FEATURE_INTEGRATION_ID = "adminModeFeatureIntegrationId";
     public static final String CLIENT_FEATURE_INTEGRATION_ID = "clientFeatureIntegrationId";
     public static final String CLIENT_API_INTEGRATION_TYPE_ID = "apiIntegrationTypeId";

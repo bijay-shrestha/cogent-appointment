@@ -135,8 +135,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository;
 
-    private final NepaliDateUtility nepaliDateUtility;
-
     private final AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService;
 
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
@@ -145,40 +143,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository;
 
-    public AppointmentServiceImpl(
-            PatientService patientService,
-            DoctorService doctorService,
-            SpecializationService specializationService,
-            AppointmentRepository appointmentRepository,
-            DoctorDutyRosterRepository doctorDutyRosterRepository,
-            DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-            AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
-            HospitalService hospitalService,
-            AppointmentRefundDetailRepository appointmentRefundDetailRepository,
-            AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
-            AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
-            AppointmentReservationLogRepository appointmentReservationLogRepository,
-            AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
-            HospitalPatientInfoService hospitalPatientInfoService,
-            PatientMetaInfoService patientMetaInfoService,
-            PatientRelationInfoService patientRelationInfoService,
-            PatientRelationInfoRepository patientRelationInfoRepository,
-            AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
-            AppointmentTransactionRequestLogService appointmentTransactionRequestLogService,
-            AppointmentModeRepository appointmentModeRepository,
-            AppointmentStatisticsRepository appointmentStatisticsRepository,
-            HospitalPatientInfoRepository hospitalPatientInfoRepository,
-            AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository,
-            HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
-            Validator validator,
-            AppointmentDoctorInfoRepository appointmentDoctorInfoRepository,
-            AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository,
-            AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository,
-            NepaliDateUtility nepaliDateUtility,
-            AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService,
-            HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
-            AppointmentServiceTypeRepository appointmentServiceTypeRepository,
-            HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository) {
+    private final NepaliDateUtility nepaliDateUtility;
+
+    public AppointmentServiceImpl(PatientService patientService, DoctorService doctorService, SpecializationService specializationService, AppointmentRepository appointmentRepository, DoctorDutyRosterRepository doctorDutyRosterRepository, DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository, AppointmentTransactionDetailRepository appointmentTransactionDetailRepository, HospitalService hospitalService, AppointmentRefundDetailRepository appointmentRefundDetailRepository, AppointmentRescheduleLogRepository appointmentRescheduleLogRepository, AppointmentFollowUpLogRepository appointmentFollowUpLogRepository, AppointmentReservationLogRepository appointmentReservationLogRepository, AppointmentFollowUpTrackerService appointmentFollowUpTrackerService, HospitalPatientInfoService hospitalPatientInfoService, PatientMetaInfoService patientMetaInfoService, PatientRelationInfoService patientRelationInfoService, PatientRelationInfoRepository patientRelationInfoRepository, AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService, AppointmentTransactionRequestLogService appointmentTransactionRequestLogService, AppointmentModeRepository appointmentModeRepository, AppointmentStatisticsRepository appointmentStatisticsRepository, HospitalPatientInfoRepository hospitalPatientInfoRepository, AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository, HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository, Validator validator, AppointmentDoctorInfoRepository appointmentDoctorInfoRepository, AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository, AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository, AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService, HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository, AppointmentServiceTypeRepository appointmentServiceTypeRepository, HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository, NepaliDateUtility nepaliDateUtility) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -207,12 +174,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
         this.appointmentHospitalDepartmentInfoRepository = appointmentHospitalDepartmentInfoRepository;
         this.appointmentHospitalDepartmentFollowUpLogRepository = appointmentHospitalDepartmentFollowUpLogRepository;
-        this.nepaliDateUtility = nepaliDateUtility;
         this.appointmentHospitalDepartmentFollowUpRequestLogService = appointmentHospitalDepartmentFollowUpRequestLogService;
         this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
         this.appointmentServiceTypeRepository = appointmentServiceTypeRepository;
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
+
 
     @Override
     public AppointmentCheckAvailabilityResponseDTO fetchAvailableTimeSlots(AppointmentCheckAvailabilityRequestDTO requestDTO) {
@@ -331,9 +299,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         validateConstraintViolation(validator.validate(requestDTO));
 
-        validateEsewaId(requestDTO.getTransactionInfo().getAppointmentModeCode(),
-                requestDTO.getPatientInfo().getESewaId());
-
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
                         requestDTO.getTransactionInfo().getTransactionDate(),
@@ -343,6 +308,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentMode appointmentMode = fetchActiveAppointmentModeIdByCode
                 (requestDTO.getTransactionInfo().getAppointmentModeCode());
+
+        validateEsewaId(requestDTO.getTransactionInfo().getAppointmentModeCode(),
+                requestDTO.getPatientInfo().getESewaId());
 
 //        HospitalAppointmentServiceType hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(
 //                requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId()

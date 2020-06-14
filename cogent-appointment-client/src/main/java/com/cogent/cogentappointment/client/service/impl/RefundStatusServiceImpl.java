@@ -1,23 +1,18 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.RefundStatusService;
-import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +20,10 @@ import static com.cogent.cogentappointment.client.constants.CogentAppointmentCon
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
-import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
+import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.changeAppointmentRefundDetailStatus;
+import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.changeAppointmentStatus;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.ESEWA_API_PAYMENT_STATUS;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
@@ -44,17 +38,13 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private final AppointmentRepository appointmentRepository;
 
-    private final RestTemplateUtils restTemplateUtils;
-
     private final AppointmentService appointmentService;
-
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentRepository appointmentRepository,
-                                   RestTemplateUtils restTemplateUtils, AppointmentService appointmentService) {
+                                   AppointmentService appointmentService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
-        this.restTemplateUtils = restTemplateUtils;
         this.appointmentService = appointmentService;
     }
 
@@ -126,15 +116,17 @@ public class RefundStatusServiceImpl implements RefundStatusService {
      * and 'RE' in Appointment table*/
     private String checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO) {
 
-        EsewaPayementStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
+//        EsewaPayementStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
+//
+//        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
 
-        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
+//        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
+//                postRequest(ESEWA_API_PAYMENT_STATUS,
+//                        request, EsewaResponseDTO.class);
 
-        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-                postRequest(ESEWA_API_PAYMENT_STATUS,
-                        request, EsewaResponseDTO.class);
+//        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
 
-        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
+        return null;
     }
 
     private String processRefundRequest(RefundStatusRequestDTO requestDTO) {

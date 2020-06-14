@@ -5,8 +5,10 @@ package com.cogent.cogentappointment.admin.constants;
  */
 public class IntegrationApiConstants {
 
-    public static final String KEY_CLIENT_INTEGRATION= "e-c-allIntegrate";
-    public static final String KEY_ADMIN_INTEGRATION= "e-a-allIntegrate";
-    public static final String BACK_END_CODE= "BACK";
-    public static final String FRONT_END_CODE= "FRONT";
+    public static final String BACK_END_CODE = "BACK";
+    public static final String ESEWA_REFUND_REMARKS = "refund";
+    public static final String FRONT_END_CODE = "FRONT";
+    public static final String KEY_CLIENT_INTEGRATION = "e-c-allIntegrate";
+    public static final String KEY_ADMIN_INTEGRATION = "e-a-allIntegrate";
+
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.request.refund.refundStatus;
 
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import java.io.Serializable;
 
 @Setter
 @Getter
-public class RefundStatusRequestDTO implements Serializable{
+public class RefundStatusRequestDTO implements Serializable {
 
     @NotNull
     private Long appointmentId;
@@ -32,5 +33,8 @@ public class RefundStatusRequestDTO implements Serializable{
     private String transactionNumber;
 
     private String appointmentMode;
+
+    private IntegrationBackendRequestDTO integrationBackendRequestDTO;
+
 
 }

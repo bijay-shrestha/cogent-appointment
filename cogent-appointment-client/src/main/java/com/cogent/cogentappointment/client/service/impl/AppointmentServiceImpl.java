@@ -52,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -1103,6 +1102,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                          AppointmentTransactionDetail transactionDetail,
                                          AppointmentRefundDetail appointmentRefundDetail,
                                          Boolean isRefund) {
+
         String esewaId = appointment.getPatientId().getESewaId();
 
         String merchentCode = appointment.getHospitalId().getEsewaMerchantCode();
@@ -1124,16 +1124,23 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
 //                getEsewaHeader(parseToHmacRequestForEsewaDTO.apply("9841409090", "testBir")));
 
-        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
-                getEsewaPaymentStatusAPIHeaders());
+//        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
+//                getEsewaPaymentStatusAPIHeaders());
+//
+//        String url = String.format(ESEWA_REFUND_API, "5VO");
+//
+//
+////        BackendIntegrationApiInfo integrationApiInfo=new BackendIntegrationApiInfo();
+////        integrationApiInfo.setApiUri(url);
+////        integrationApiInfo.setHttpHeaders();
+//
+//        ResponseEntity<EsewaResponseDTO
+//                > response = (ResponseEntity<EsewaResponseDTO>) thirdPartyConnectorService.
+//                getHospitalService(integrationBackendRequestDTO);
 
-        String url = String.format(ESEWA_REFUND_API, "5VO");
+//        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
 
-        ResponseEntity<EsewaResponseDTO
-                > response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-                postRequest(url, request, EsewaResponseDTO.class);
-
-        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
+        return null;
     }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,

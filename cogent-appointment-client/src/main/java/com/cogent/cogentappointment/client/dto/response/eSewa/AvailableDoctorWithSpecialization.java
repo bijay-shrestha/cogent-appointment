@@ -19,6 +19,8 @@ public class AvailableDoctorWithSpecialization implements Serializable {
 
     private String doctorName;
 
+    private String doctorSalutation;
+
     private BigInteger specializationId;
 
     private String specializationName;

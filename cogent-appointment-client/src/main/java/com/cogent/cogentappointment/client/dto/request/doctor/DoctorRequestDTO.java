@@ -51,6 +51,9 @@ public class DoctorRequestDTO implements Serializable {
     private Double appointmentCharge;
 
     @NotEmpty
+    private List<Long> salutationIds;
+
+    @NotEmpty
     private List<Long> specializationIds;
 
     @NotEmpty

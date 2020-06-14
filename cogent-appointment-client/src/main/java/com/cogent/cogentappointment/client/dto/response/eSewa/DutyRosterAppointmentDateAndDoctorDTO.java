@@ -23,4 +23,6 @@ public class DutyRosterAppointmentDateAndDoctorDTO implements Serializable {
     private Long doctorId;
 
     private String doctorName;
+
+    private String doctorSalutation;
 }

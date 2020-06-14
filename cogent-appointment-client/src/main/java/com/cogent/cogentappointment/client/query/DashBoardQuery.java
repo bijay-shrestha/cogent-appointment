@@ -210,7 +210,8 @@ public class DashBoardQuery {
                             " THEN null" +
                             " ELSE" +
                             " dv.fileUri" +
-                            " END as doctorAvatar" +
+                            " END as doctorAvatar," +
+                            " d.salutation as doctorSalutation"+
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -250,7 +251,8 @@ public class DashBoardQuery {
                 " s.id as specializationId," +                                                   //[3]
                 " s.name as specializationName," +                                               //[4]
                 " COUNT(a.id) as successfulAppointments," +                                      //[5]
-                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
+                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue," +                     //
+                " d.salutation as doctorSalutation"+
                 " FROM Appointment a" +
                 " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +

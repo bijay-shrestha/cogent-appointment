@@ -20,6 +20,8 @@ public class DoctorQuery {
                     " s.name as specializationName," +                                  //[4]
                     " tbl1.qualificationAlias as qualificationAlias," +                 //[5]
                     " d.nmc_number as nmcNumber," +                                     //[6]
+                    " dc.appointment_charge as doctorCharge,"+                          //[7]
+                    " d.salutation as doctorSalutation,"+                                //[8]
                     " dc.appointment_charge as appointmentCharge"+                      //[7]
                     " FROM" +
                     " doctor d" +

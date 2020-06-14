@@ -16,6 +16,8 @@ public class AppointmentLog {
 
     public final static String TRANSACTION_LOG = "TRANSACTION LOG";
 
+    public final static String HOSPITAL_DEPARTMENT_TRANSACTION_LOG = "HOSPITAL DEPARTMENT TRANSACTION LOG";
+
     public final static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";
 
     public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";

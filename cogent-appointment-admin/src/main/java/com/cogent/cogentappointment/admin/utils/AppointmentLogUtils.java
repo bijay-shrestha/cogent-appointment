@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
+import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 
 /**
@@ -93,6 +94,20 @@ public class AppointmentLogUtils {
     }
 
     public static void parseToTxnLogResponseDTO(TransactionLogResponseDTO responseDTO,
+                                                BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
+                                                CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
+                                                CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
+                                                RefundAppointmentResponseDTO refundAppointmentResponseDTO,
+                                                RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
+
+        responseDTO.setBookedInfo(bookedAppointmentResponseDTO);
+        responseDTO.setCheckedInInfo(checkedInAppointmentResponseDTO);
+        responseDTO.setCancelledInfo(cancelledAppointmentResponseDTO);
+        responseDTO.setRefundInfo(refundAppointmentResponseDTO);
+        responseDTO.setRevenueFromRefundInfo(revenueFromRefundAppointmentResponseDTO);
+    }
+
+    public static void parseToHospitalDeptTxnLogResponseDTO(HospitalDepartmentTransactionLogResponseDTO responseDTO,
                                                 BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
                                                 CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
                                                 CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,

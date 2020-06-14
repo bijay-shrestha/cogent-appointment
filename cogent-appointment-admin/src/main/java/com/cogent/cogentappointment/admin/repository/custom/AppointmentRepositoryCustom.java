@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
@@ -21,6 +22,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
@@ -66,6 +68,10 @@ public interface AppointmentRepositoryCustom {
             Pageable pageable);
 
     TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable);
+
+    HospitalDepartmentTransactionLogResponseDTO searchHospitalDepartmentTransactionLogs(
+            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO,
+            Pageable pageable);
 
     AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
                                                                    Pageable pageable);

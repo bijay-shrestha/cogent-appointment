@@ -27,8 +27,6 @@ public class HospitalDepartmentTransactionLogSearchDTO implements Serializable {
 
     private Long hospitalDepartmentId;
 
-    private Long specializationId;
-
     /*NEW OR REGISTERED*/
     private Character patientType;
 
@@ -36,4 +34,6 @@ public class HospitalDepartmentTransactionLogSearchDTO implements Serializable {
     private Character appointmentCategory;
 
     private String transactionNumber;
+
+    private Long serviceTypeId;
 }

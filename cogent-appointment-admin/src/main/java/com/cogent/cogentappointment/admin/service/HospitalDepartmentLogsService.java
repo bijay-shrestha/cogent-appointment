@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.service;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.HospitalDepartmentAppointmentLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -12,5 +12,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface HospitalDepartmentLogsService {
 
-    HospitalDepartmentAppointmentLogResponseDTO searchAppointmentLogs(HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
+    HospitalDepartmentAppointmentLogResponseDTO searchAppointmentLogs(
+            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
+
+    HospitalDepartmentTransactionLogResponseDTO searchTransactionLogs(
+            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO, Pageable pageable);
 }

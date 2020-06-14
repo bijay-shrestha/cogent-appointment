@@ -238,11 +238,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     private String updateDoctorSalutations(List<DoctorSalutationUpdateDTO> updateDTOS, Doctor doctor) {
 
-        String ids = updateDTOS.stream()
-                .map(request -> request.getDoctorSalutationId().toString())
-                .collect(Collectors.joining(","));
-
-        List<DoctorSalutation> doctorSalutationList = validateDoctorSalutations(ids);
+//        List<DoctorSalutation> doctorSalutationList = validateDoctorSalutations(ids);
 
         List<String> salutationList = new ArrayList<>();
         if (doctor.getSalutation() != null) {
@@ -253,16 +249,20 @@ public class DoctorServiceImpl implements DoctorService {
 
         updateDTOS.forEach(result -> {
 
+            if(result.getDoctorSalutationId()==null){
 
-            DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
-                    .orElse(null);
-
-            if (doctorSalutation == null) {
+                String ids = updateDTOS.stream()
+                        .map(request -> request.getDoctorSalutationId().toString())
+                        .collect(Collectors.joining(","));
 
                 Salutation salutation = findActiveSalutation(result.getSalutationId());
                 parseToDoctorSalutation(doctor, salutation);
 
-            } else {
+            }else{
+
+                DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
+                        .orElse(null);
+
 
                 Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
 

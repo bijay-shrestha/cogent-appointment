@@ -47,6 +47,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -325,8 +327,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         addPagination.accept(pageable, query);
 
+
+
+
+
+
         List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS =
                 transformQueryToResultList(query, AppointmentPendingApprovalDTO.class);
+
 
         if (appointmentPendingApprovalDTOS.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
@@ -631,12 +639,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     private BookedAppointmentResponseDTO getBookedAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
 
-       /*BOOKED INFO WITHOUT FOLLOW UP*/
+        /*BOOKED INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
 
         List<Object[]> bookedResult = query.getResultList();
 
-         /*BOOKED INFO WITH FOLLOW UP*/
+        /*BOOKED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_BOOKED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
 
@@ -647,13 +655,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     private CheckedInAppointmentResponseDTO getCheckedInAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
 
-         /*CHECK IN INFO WITHOUT FOLLOW UP*/
+        /*CHECK IN INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
 
         List<Object[]> checkInResult = query.getResultList();
 
-         /*CHECK IN INFO WITH FOLLOW UP*/
+        /*CHECK IN INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
 
@@ -665,13 +673,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     private CancelledAppointmentResponseDTO getCancelledAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
 
-         /*CANCELLED INFO WITHOUT FOLLOW UP*/
+        /*CANCELLED INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CANCELLED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
 
         List<Object[]> cancelledResult = query.getResultList();
 
-         /*CANCELLED INFO WITH FOLLOW UP*/
+        /*CANCELLED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
 
@@ -682,13 +690,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     private RefundAppointmentResponseDTO getRefundedAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
 
-       /*REFUND INFO WITHOUT FOLLOW UP*/
+        /*REFUND INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REFUNDED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
 
         List<Object[]> refundResult = query.getResultList();
 
-         /*REFUND INFO WITH FOLLOW UP*/
+        /*REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
 
@@ -700,13 +708,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     private RevenueFromRefundAppointmentResponseDTO getRevenueFromRefundedAppointmentDetails
             (TransactionLogSearchDTO searchRequestDTO) {
 
-              /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
+        /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
 
         List<Object[]> refundResult = query.getResultList();
 
-         /*REVENUE FROM REFUND INFO WITH FOLLOW UP*/
+        /*REVENUE FROM REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
 
@@ -739,12 +747,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     private BookedAppointmentResponseDTO getBookedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO) {
 
-         /*BOOKED INFO WITHOUT FOLLOW UP*/
+        /*BOOKED INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT(searchRequestDTO));
 
         List<Object[]> bookedResult = query.getResultList();
 
-         /*BOOKED INFO WITH FOLLOW UP*/
+        /*BOOKED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_BOOKED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
 
@@ -760,7 +768,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<Object[]> checkInResult = query.getResultList();
 
-         /*CHECK IN INFO WITH FOLLOW UP*/
+        /*CHECK IN INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
 
@@ -771,12 +779,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     private CancelledAppointmentResponseDTO getCancelledAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO) {
 
-         /*CANCELLED INFO WITHOUT FOLLOW UP*/
+        /*CANCELLED INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT(searchRequestDTO));
 
         List<Object[]> cancelledResult = query.getResultList();
 
-         /*CANCELLED INFO WITH FOLLOW UP*/
+        /*CANCELLED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
 
@@ -787,12 +795,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     private RefundAppointmentResponseDTO getRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO) {
 
-         /*REFUND INFO WITHOUT FOLLOW UP*/
+        /*REFUND INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT(searchRequestDTO));
 
         List<Object[]> refundResult = query.getResultList();
 
-         /*REFUND INFO WITH FOLLOW UP*/
+        /*REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
 
@@ -804,12 +812,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     private RevenueFromRefundAppointmentResponseDTO getRevenueFromRefundedAppointmentDetails
             (AppointmentLogSearchDTO searchRequestDTO) {
 
-           /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
+        /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT(searchRequestDTO));
 
         List<Object[]> refundResult = query.getResultList();
 
-         /*REVENUE FROM REFUND INFO WITH FOLLOW UP*/
+        /*REVENUE FROM REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
 

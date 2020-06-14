@@ -61,7 +61,8 @@ public class DoctorDutyRosterOverrideQuery {
                 " dr.name as doctorName," +                                  //[6]
                 " dd.specializationId.id as specializationId," +            //[7]
                 " dd.specializationId.name as specializationName," +        //[8]
-                " dd.rosterGapDuration as rosterGapDuration" +             //[9]
+                " dd.rosterGapDuration as rosterGapDuration," +             //[9]
+                " dr.salutation as doctorSalutation"+
                 " FROM DoctorDutyRosterOverride d" +
                 " LEFT JOIN DoctorDutyRoster dd ON dd.id = d.doctorDutyRosterId.id" +
                 " LEFT JOIN Hospital h ON h.id = dd.hospitalId.id" +

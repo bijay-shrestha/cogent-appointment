@@ -31,4 +31,6 @@ public class AppointmentStatusRequestDTO implements Serializable {
      * ALL = EMPTY
      * */
     private String status;
+
+    private String appointmentNumber;
 }

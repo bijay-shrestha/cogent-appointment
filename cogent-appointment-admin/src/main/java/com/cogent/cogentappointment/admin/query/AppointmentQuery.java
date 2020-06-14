@@ -67,7 +67,8 @@ public class AppointmentQuery {
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
                 QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                " da.fileUri as fileUri" +
+                " da.fileUri as fileUri," +
+                " d.salutation as doctorSalutation" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                 " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -163,6 +164,9 @@ public class AppointmentQuery {
 
         if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
             SQL += " AND a.status='" + requestDTO.getStatus() + "'";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
+            SQL += " AND a.appointment_number='" + requestDTO.getAppointmentNumber() + "'";
 
         SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id" +
                 " ORDER BY appointment_date";
@@ -263,7 +267,12 @@ public class AppointmentQuery {
                             " sp.name as specializationName," +                             //[11]
                             " atd.transactionNumber as transactionNumber," +                //[12]
                             " atd.appointmentAmount as appointmentAmount," +                //[13]
-                            " d.name as doctorName," +                                     //[14]
+                            " CASE WHEN" +
+                            " (d.salutation is null)" +
+                            " THEN d.name" +
+                            " ELSE" +
+                            " CONCAT_WS(' ',d.salutation, d.name)" +
+                            " END as doctorName," +                                          //[14]
                             " a.status as status," +                                       //[15]
                             " ard.refundAmount as refundAmount," +                         //[16]
                             " hpi.address as patientAddress," +                            //[17]
@@ -356,7 +365,12 @@ public class AppointmentQuery {
                             " p.gender as patientGender," +                                             //[10]
                             " p.mobileNumber as mobileNumber," +                                         //[11]
                             " sp.name as specializationName," +                                         //[12]
-                            " d.name as doctorName," +                                                  //[13]
+                            " CASE WHEN" +
+                            " (d.salutation is null)" +
+                            " THEN d.name" +
+                            " ELSE" +
+                            " CONCAT_WS(' ',d.salutation, d.name)" +
+                            " END as doctorName," +                                                 //[13]
                             " atd.transactionNumber as transactionNumber," +                            //[14]
                             " atd.appointmentAmount as appointmentAmount," +                            //[15]
                             " arl.remarks as remarks," +                                                 //[16]
@@ -381,7 +395,7 @@ public class AppointmentQuery {
                 " AND arl.status='RES'" +
                 " AND sp.status!='D'" +
                 " AND d.status!='D'" +
-                " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate";
+                " AND (arl.rescheduleDate BETWEEN :fromDate AND :toDate)";
 
         if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentRescheduleLogSearchDTO.getAppointmentNumber() + "%'";

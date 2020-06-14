@@ -8,7 +8,12 @@ public class DoctorQuery {
     public static final String QUERY_TO_FETCH_MIN_DOCTOR_INFO =
             " SELECT" +
                     " d.id as doctorId," +                                              //[0]
-                    " d.name as doctorName," +                                          //[1]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as doctorName," +                                            //[1]
                     " CASE WHEN" +
                     " (da.status IS NULL" +
                     " OR da.status = 'N')" +
@@ -20,7 +25,9 @@ public class DoctorQuery {
                     " s.name as specializationName," +                                  //[4]
                     " tbl1.qualificationAlias as qualificationAlias," +                 //[5]
                     " d.nmc_number as nmcNumber," +                                     //[6]
-                    " dc.appointment_charge as appointmentCharge"+                      //[7]
+                    " dc.appointment_charge as doctorCharge," +                          //[7]
+                    " d.salutation as doctorSalutation," +                                //[8]
+                    " dc.appointment_charge as appointmentCharge" +                      //[7]
                     " FROM" +
                     " doctor d" +
                     " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
@@ -42,7 +49,7 @@ public class DoctorQuery {
                     " dq.doctor_id" +
                     " )tbl1 ON tbl1.doctorId = d.id" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
-                    " LEFT JOIN doctor_appointment_charge dc ON d.id = dc.doctor_id"+
+                    " LEFT JOIN doctor_appointment_charge dc ON d.id = dc.doctor_id" +
                     " WHERE" +
                     " d.status = 'Y'" +
                     " AND ds.status = 'Y'" +

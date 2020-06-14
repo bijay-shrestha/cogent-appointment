@@ -53,6 +53,7 @@ public class HospitalDepartmentLogsResource {
         return ok().body(hospitalDepartmentLogsService.searchTransactionLogs(searchRequestDTO, pageable));
     }
 
+//    todo: test left
     @PutMapping(BASE_HOSPITAL_DEPARTMENT + RESCHEDULE + LOG)
     @ApiOperation(FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_LOG)
     public ResponseEntity<?> fetchHospitalDepartmentRescheduleLog(

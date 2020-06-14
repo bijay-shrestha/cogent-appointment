@@ -37,6 +37,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.Trans
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -86,6 +87,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateConverterUti
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
+import static com.cogent.cogentthirdpartyconnector.api.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
 
 /**
  * @author smriti on 2019-10-22

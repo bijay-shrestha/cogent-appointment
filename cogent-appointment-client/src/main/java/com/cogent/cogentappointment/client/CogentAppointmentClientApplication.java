@@ -17,6 +17,8 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.cogent.cogentappointment.client",
+        "com.cogent.cogentappointment.commons.service",
+        "com.cogent.cogentappointment.commons.utils",
         "com.cogent.cogentthirdpartyconnector.service"})
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
         "com.cogent.cogentappointment.persistence.history"})
@@ -26,10 +28,6 @@ import org.springframework.web.client.RestTemplate;
                 {
                         "file:${catalina.home}/conf/client/application-${spring.profiles.active}.yml"
                 })
-@ComponentScan(basePackages = {
-        "com.cogent.cogentappointment.client",
-        "com.cogent.cogentappointment.commons.service",
-        "com.cogent.cogentappointment.commons.utils"})
 @EnableJpaRepositories(basePackages = {
         "com.cogent.cogentappointment.commons.repository",
         "com.cogent.cogentappointment.client.repository"})

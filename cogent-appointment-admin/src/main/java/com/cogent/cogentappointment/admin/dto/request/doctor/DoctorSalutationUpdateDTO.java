@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DoctorSalutationUpdateDTO {
 
+    private Long salutationId;
+
     private Long doctorSalutationId;
 
     private Character status;

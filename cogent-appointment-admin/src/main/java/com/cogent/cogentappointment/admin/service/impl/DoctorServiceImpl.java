@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
+import com.cogent.cogentappointment.admin.utils.SalutationUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -254,24 +255,34 @@ public class DoctorServiceImpl implements DoctorService {
 
 
             DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
-                    .orElseThrow(() -> new NoContentFoundException(DoctorSalutation.class));
+                    .orElse(null);
 
             Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
 
-            if (result.getStatus().equals(INACTIVE)) {
-                salutationList.remove(salutation.getCode());
-                doctorSalutation.setStatus(INACTIVE);
+            if (doctorSalutation == null) {
+
+                DoctorSalutation doctorSalutationToSave = new DoctorSalutation();
+                SalutationUtils.parseToDoctorSalutation(doctor, salutation);
+
+            } else {
+
+
+                if (result.getStatus().equals(INACTIVE)) {
+                    salutationList.remove(salutation.getCode());
+                    doctorSalutation.setStatus(INACTIVE);
+
+                }
+
+                if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())) {
+                    salutationList.add(salutation.getCode());
+                    doctorSalutation.setStatus(ACTIVE);
+
+
+                }
+
+                doctorSalutationListToUpdate.add(doctorSalutation);
 
             }
-
-            if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())) {
-                salutationList.add(salutation.getCode());
-                doctorSalutation.setStatus(ACTIVE);
-
-
-            }
-
-            doctorSalutationListToUpdate.add(doctorSalutation);
 
         });
 

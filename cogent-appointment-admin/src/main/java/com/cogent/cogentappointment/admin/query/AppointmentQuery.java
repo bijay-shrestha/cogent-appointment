@@ -201,11 +201,12 @@ public class AppointmentQuery {
                             " hpi.isRegistered as isRegistered," +
                             QUERY_TO_CALCULATE_PATIENT_AGE +
                             " FROM Appointment a" +
-                            " LEFT JOIN Patient p ON a.patientId=p.id" +
+                            " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                            " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                            " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                             " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                            " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
+                            " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
@@ -505,19 +506,20 @@ public class AppointmentQuery {
                     " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                //[13]
                     " d.name as doctorName," +                                                  //[14]
                     " a.isSelf as isSelf," +                                                    //[15]
-                    " h.name as hospitalName," +
-                    " a.appointmentModeId.name as appointmentMode," +                           //[16]
-                    " da.fileUri as fileUri," +
-                    " a.doctorId.id as doctorId," +
-                    " a.specializationId.id as specializationId," +
-                    " a.isFollowUp as followUp," +
-                    " h.id as hospitalId" +                                                   //[17]
+                    " h.name as hospitalName," +                                                //[16]
+                    " a.appointmentModeId.name as appointmentMode," +                           //[17]
+                    " da.fileUri as fileUri," +                                                 //[18]
+                    " d.id as doctorId," +                                                      //[19]
+                    " sp.id as specializationId," +                                             //[20]
+                    " a.isFollowUp as followUp," +                                              //[21]
+                    " h.id as hospitalId" +                                                   //[22]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                     " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -525,7 +527,6 @@ public class AppointmentQuery {
                     " sp.status='Y' " +
                     " AND a.status='PA'" +
                     " AND a.id=:appointmentId";
-
 
     public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
             "SELECT" +
@@ -908,7 +909,7 @@ public class AppointmentQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " hd.status!='D'"+
+                    " hd.status!='D'" +
                     " AND apst.appointmentServiceType.id = :appointmentServiceTypeId ";
 
     public static String QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT(HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
@@ -925,7 +926,7 @@ public class AppointmentQuery {
 
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='PA'" +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -935,17 +936,17 @@ public class AppointmentQuery {
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='A'" +
-                " AND a.isFollowUp = 'N'"+
+                " AND a.isFollowUp = 'N'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
-        return   query;
+        return query;
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='A'" +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -955,7 +956,7 @@ public class AppointmentQuery {
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='C'" +
-                " AND a.isFollowUp = 'N'"+
+                " AND a.isFollowUp = 'N'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -965,7 +966,7 @@ public class AppointmentQuery {
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='C'" +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -974,7 +975,7 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_HOSPITAL_DEPARTMENT_REFUNDED_APPOINTMENT +
-                " AND a.isFollowUp = 'N'"+
+                " AND a.isFollowUp = 'N'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -983,7 +984,7 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_HOSPITAL_DEPARTMENT_REFUNDED_APPOINTMENT +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -992,7 +993,7 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT +
-                " AND a.isFollowUp = 'N'"+
+                " AND a.isFollowUp = 'N'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -1001,7 +1002,7 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -1009,7 +1010,7 @@ public class AppointmentQuery {
 
     public static String QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT(
             HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
-        String query = SELECT_CLAUSE_TO_GET_TOTAL_HOSPITAL_DEPARTMENT_APPOINTMENT_AMOUNT+
+        String query = SELECT_CLAUSE_TO_GET_TOTAL_HOSPITAL_DEPARTMENT_APPOINTMENT_AMOUNT +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -1029,14 +1030,14 @@ public class AppointmentQuery {
                             " a.appointmentNumber as appointmentNumber," +                               //[6]
                             " hpi.registrationNumber as registrationNumber," +                           //[7]
                             " p.name as patientName," +                                                  //[8]
-                            QUERY_TO_CALCULATE_PATIENT_AGE+                                              // [9]
+                            QUERY_TO_CALCULATE_PATIENT_AGE +                                              // [9]
                             " p.gender as patientGender," +                                             //[10]
                             " p.mobileNumber as mobileNumber," +                                         //[11]                                                  //[13]
                             " atd.transactionNumber as transactionNumber," +                            //[12]
                             " atd.appointmentAmount as appointmentAmount," +                            //[13]
                             " arl.remarks as remarks," +                                                 //[14]
-                            " a.isFollowUp as isFollowUp,"+                                                //[16]
-                            " hd.name as hospitalDepartmentName"+
+                            " a.isFollowUp as isFollowUp," +                                                //[16]
+                            " hd.name as hospitalDepartmentName" +
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +

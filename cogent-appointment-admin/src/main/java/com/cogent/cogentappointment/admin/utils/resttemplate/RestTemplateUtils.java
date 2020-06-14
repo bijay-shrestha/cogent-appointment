@@ -35,9 +35,6 @@ public class RestTemplateUtils {
         return new ResponseEntity<>(response.getBody(), OK);
     }
 
-
-
-
     public ResponseEntity<?> postRequest(String uri, HttpEntity<?> request,Class responseDTO) {
 
         ResponseEntity<?> response = null;

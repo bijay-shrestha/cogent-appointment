@@ -1,10 +1,13 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiQueryParametersResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiRequestHeaderResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.query.IntegrationQuery;
 import com.cogent.cogentappointment.client.repository.custom.IntegrationRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +18,15 @@ import javax.persistence.Query;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.CLIENT_API_INTEGRATION_FORMAT_ID;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
+import static com.cogent.cogentappointment.client.query.IntegrationQuery.CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author rupak on 2020-05-20
@@ -40,10 +47,6 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         List<FeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, FeatureIntegrationResponse.class);
 
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
-
         return responseDTOList;
     }
 
@@ -59,10 +62,6 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         requestHeaderResponseDTO.forEach(response -> {
             map.put(response.getKeyParam(), response.getValueParam());
         });
-
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
 
         return map;
     }
@@ -80,10 +79,27 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
             map.put(response.getKeyParam(), response.getValueParam());
         });
 
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
-
         return map;
     }
+
+    @Override
+    public List<FeatureIntegrationResponse> fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
+        Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY)
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
+                .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
+                .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());
+
+        List<FeatureIntegrationResponse> responseDTOList =
+                transformQueryToResultList(query, FeatureIntegrationResponse.class);
+
+        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
+
+        return responseDTOList;
+    }
+
+    private Supplier<NoContentFoundException> CLIENT_API_INTEGRATION_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, CLIENT_FEATURE_INTEGRATION);
+        throw new NoContentFoundException(ClientFeatureIntegration.class);
+    };
+
 }

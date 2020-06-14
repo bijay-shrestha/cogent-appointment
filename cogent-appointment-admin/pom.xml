@@ -178,9 +178,16 @@
             <version>1.1</version>
         </dependency>
 
+        <!--DEPENDED MODULES-->
         <dependency>
             <groupId>com.cogent</groupId>
             <artifactId>cogent-appointment-persistence</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.cogent</groupId>
+            <artifactId>cogent-thirdparty-connector</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

@@ -53,7 +53,13 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getEmail());
 
-            if (userDetails.getIsCompany().equals(YES)) {
+            if (userDetails.getIsCompany().equals(YES) &&
+                    authHeader.getEmail().equals(userDetails.getEmail()) &&
+                    authHeader.getId().longValue() == userDetails.getId() &&
+                    authHeader.getCompanyId().longValue() == userDetails.getCompanyId() &&
+                    authHeader.getCompanyCode().equals(userDetails.getCompanyCode())
+                    && authHeader.getApiKey().equals(userDetails.getApiKey())) {
+
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
                         .id(authHeader.getId())

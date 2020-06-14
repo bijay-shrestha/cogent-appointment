@@ -59,18 +59,27 @@ public class DoctorDutyRoster extends Auditable<String> implements Serializable 
     @Column(name = "remarks")
     private String remarks;
 
+    @Column(name = "from_date_nepali")
+    private String fromDateInNepali;
+
+    @Column(name = "to_date_nepali")
+    private String toDateInNepali;
+
     @Override
     public String toString() {
         return "DoctorDutyRoster{" +
                 "id=" + id +
                 ", doctorId=" + doctorId.getName() +
                 ", specializationId=" + specializationId.getName() +
+                ", hospitalId=" + hospitalId.getName() +
                 ", rosterGapDuration=" + rosterGapDuration +
                 ", fromDate=" + fromDate +
                 ", toDate=" + toDate +
                 ", status=" + status +
                 ", hasOverrideDutyRoster=" + hasOverrideDutyRoster +
                 ", remarks='" + remarks + '\'' +
+                ", fromDateInNepali='" + fromDateInNepali + '\'' +
+                ", toDateInNepali='" + toDateInNepali + '\'' +
                 '}';
     }
 }

@@ -262,6 +262,7 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Integration Resource.";
         String FETCH_CLIENT_API_INTEGRATION = "Fetch client API integration detail";
         String SAVE_OPERATION = "Save new Client API Integration";
+        String APPROVE_REFUND_BY_CLIENT_INTEGRATION = "Refund approve through client integration";
     }
 
     //J
@@ -340,6 +341,13 @@ public class SwaggerConstants {
                 " by hospital department Id";
         String FETCH_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch room numbers for drop down " +
                 "by hospital department Id";
+    }
+
+    public interface RefundStatusConstant {
+        String BASE_API_VALUE = "This is Refund Status Resource";
+        String FETCH_APPOINTMENT_REFUND_DETAIL_LIST = "Fetch Appointment Refund Details List(status='PA','R','A')";
+        String FETCH_REFUND_DETAILS_TO_APPROVE="Fetch Appointment Refund Details To Approve(change status to A) ";
+        String FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
     }
 
     //S

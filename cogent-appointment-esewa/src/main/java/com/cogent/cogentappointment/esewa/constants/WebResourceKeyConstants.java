@@ -121,6 +121,10 @@ public class WebResourceKeyConstants {
 
 
     //R
+    public interface RefundStatusConstants {
+        String BASE_REFUND_STATUS = "/refund";
+        String APPROVE = "/approve";
+    }
 
 
     //S

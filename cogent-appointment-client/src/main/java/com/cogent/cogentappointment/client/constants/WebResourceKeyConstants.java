@@ -165,6 +165,7 @@ public class WebResourceKeyConstants {
         String BASE_INTEGRATION = "/integration";
         String CLIENT_API_INTEGRATION = "/client-api-integration";
         String CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE = "/integration/approve";
+        String INTEGRATION="/integration";
         String FEATURES="/features";
         String HTTP_REQUEST_METHODS="/request-methods";
     }
@@ -217,6 +218,12 @@ public class WebResourceKeyConstants {
     }
 
     //R
+    public interface RefundStatusConstants {
+        String BASE_REFUND_STATUS = "/refundStatus";
+        String CHECK="/check";
+    }
+
+
     public interface RoomConstants {
         String BASE_ROOM = "/room";
         String HOSPITAL_DEPARTMENT_WISE = "/hospitalDepartmentWise";

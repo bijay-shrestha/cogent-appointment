@@ -6,6 +6,10 @@ package com.cogent.cogentappointment.client.log.constants;
 public class AppointmentLog {
     public final static String APPOINTMENT = "APPOINTMENT";
 
+    public final static String APPOINTMENT_REFUND_DETAIL = "APPOINTMENT REFUND DETAIL";
+
+    public final static String APPOINTMENT_TRANSACTION_DETAIL = "APPOINTMENT TRANSACTION DETAIL";
+
     public static String CHECK_AVAILABILITY_PROCESS_STARTED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS STARTED ::::";
     public static String CHECK_AVAILABILITY_PROCESS_COMPLETED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS COMPLETED IN :::: {} ms";
 

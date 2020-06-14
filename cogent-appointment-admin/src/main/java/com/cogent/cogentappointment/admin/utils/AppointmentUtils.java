@@ -27,10 +27,12 @@ import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils
  */
 public class AppointmentUtils {
 
-    public static void parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
+    public static AppointmentRefundDetail parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
                                                 AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(refundRejectDTO.getRemarks());
+
+        return refundDetail;
     }
 
     public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment, Long newPatient,

@@ -9,11 +9,15 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
+@ComponentScan(basePackages={"com.cogent.cogentappointment.admin",
+        "com.cogent.cogentthirdpartyconnector.service"})
 @EntityScan(basePackages =
         {"com.cogent.cogentappointment.persistence.model",
                 "com.cogent.cogentappointment.persistence.history"})
@@ -54,6 +58,11 @@ public class CogentAppointmentAdminApplication extends SpringBootServletInitiali
     @Bean
     public BeanUtil beanUtil() {
         return new BeanUtil();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 }

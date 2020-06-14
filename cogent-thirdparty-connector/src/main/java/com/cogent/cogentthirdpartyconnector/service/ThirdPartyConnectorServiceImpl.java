@@ -68,7 +68,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
     @Override
     public ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo hospitalApiInfo,
-                                                     EsewaRefundRequestDTO esewaRefundRequestDTO) throws IOException {
+                                                     EsewaRefundRequestDTO esewaRefundRequestDTO) {
 
 
         HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
@@ -88,8 +88,13 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         System.out.println(response);
 
-        ThirdPartyResponse thirdPartyResponse = map(response.getBody().toString(),
-                ThirdPartyResponse.class);
+        ThirdPartyResponse thirdPartyResponse = null;
+        try {
+            thirdPartyResponse = map(response.getBody().toString(),
+                    ThirdPartyResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         return thirdPartyResponse;

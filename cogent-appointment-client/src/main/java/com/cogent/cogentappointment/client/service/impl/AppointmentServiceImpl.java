@@ -606,7 +606,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentId, getLoggedInHospitalId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
-        apiIntegrationCheckpoint(appointment, integrationRequestDTO);
+        if (integrationRequestDTO.getIntegrationChannelCode()!=null || !integrationRequestDTO.getIntegrationChannelCode().isEmpty()) {
+            apiIntegrationCheckpoint(appointment, integrationRequestDTO);
+        }
 
         appointment.setStatus(APPROVED);
         saveAppointmentFollowUpTracker(appointment);

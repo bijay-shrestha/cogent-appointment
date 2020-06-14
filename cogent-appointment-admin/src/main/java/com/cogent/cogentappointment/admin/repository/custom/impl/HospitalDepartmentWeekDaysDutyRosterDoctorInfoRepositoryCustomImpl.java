@@ -47,16 +47,11 @@ public class HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepositoryCustomImpl
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()) {
-            throw DOCTOR_NOT_FOUND.get();
-        }else{
+
             return HospitalDeptAndDoctorDTO.builder()
                     .doctorInfo(results)
                     .hospitalDepartmentId(hospitalDeptAndWeekdaysDTO.getHospitalDepartmentId())
                     .build();
-        }
-
-
     }
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () -> {

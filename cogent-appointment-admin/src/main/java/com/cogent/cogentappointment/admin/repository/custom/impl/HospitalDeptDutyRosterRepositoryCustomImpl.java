@@ -188,7 +188,8 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         Query query = createNativeQuery.apply(entityManager,
                 QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_ROOM_WISE(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID,requestDTO.getHospitalDepartmentRosterId());
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());

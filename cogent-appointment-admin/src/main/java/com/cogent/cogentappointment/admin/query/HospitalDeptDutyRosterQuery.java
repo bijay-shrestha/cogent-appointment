@@ -247,7 +247,8 @@ public class HospitalDeptDutyRosterQuery {
                 " hddr.status = 'Y'" +
                 " AND hd.status = 'Y'" +
                 " AND hddr.to_date >=:fromDate" +
-                " AND hddr.from_date <=:toDate" ;
+                " AND hddr.from_date <=:toDate" +
+                " AND hddr.id=:hospitalDepartmentDutyRosterId" ;
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND hd.id = :hospitalDepartmentId";

@@ -459,8 +459,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                                              HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
 
         return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
-                && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()))
-                || (appointment.getRoomId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
+                && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()));
     }
 
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatus

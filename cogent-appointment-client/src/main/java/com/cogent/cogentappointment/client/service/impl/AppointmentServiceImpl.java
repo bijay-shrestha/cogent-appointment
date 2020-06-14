@@ -43,6 +43,7 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
@@ -83,6 +84,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
 import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.ESEWA_REFUND_API;
+import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 
 /**
  * @author smriti on 2019-10-22
@@ -140,6 +142,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final RestTemplateUtils restTemplateUtils;
 
+    private final NepaliDateUtility nepaliDateUtility;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -163,7 +167,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   Validator validator,
-                                  RestTemplateUtils restTemplateUtils) {
+                                  RestTemplateUtils restTemplateUtils, NepaliDateUtility nepaliDateUtility) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -188,6 +192,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
         this.restTemplateUtils = restTemplateUtils;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     @Override
@@ -316,6 +321,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentMode
         );
 
+        appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
+
         save(appointment);
 
         saveAppointmentStatistics(appointmentInfo, appointment, hospital);
@@ -395,6 +402,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital,
                 appointmentMode
         );
+
+        appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
 
         save(appointment);
 
@@ -1369,6 +1378,13 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
                     convert24HourTo12HourFormat(rescheduleRequestDTO.getRescheduleTime())));
         }
+    }
+
+    private String getNepaliDate(Date date){
+
+        String nepaliDate= nepaliDateUtility.getNepaliDateFromDate(date);
+
+        return  formatToDateString(nepaliDate);
     }
 
 }

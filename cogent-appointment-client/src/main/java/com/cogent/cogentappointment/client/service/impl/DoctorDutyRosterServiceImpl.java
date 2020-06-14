@@ -39,6 +39,7 @@ import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverride
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 
 /**
  * @author smriti on 26/11/2019
@@ -570,7 +571,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     };
 
     private String getNepaliDate(Date date){
-        return   nepaliDateUtility.getNepaliDateFromDate(date);
+        String nepaliDate= nepaliDateUtility.getNepaliDateFromDate(date);
+
+        return  formatToDateString(nepaliDate);
     }
 
 }

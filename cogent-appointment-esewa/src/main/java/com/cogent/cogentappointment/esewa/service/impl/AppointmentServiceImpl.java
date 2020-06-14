@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
@@ -1296,6 +1297,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private String getNepaliDate(Date date){
-        return   nepaliDateUtility.getNepaliDateFromDate(date);
+
+        String nepaliDate= nepaliDateUtility.getNepaliDateFromDate(date);
+
+        return  formatToDateString(nepaliDate);
     }
 }

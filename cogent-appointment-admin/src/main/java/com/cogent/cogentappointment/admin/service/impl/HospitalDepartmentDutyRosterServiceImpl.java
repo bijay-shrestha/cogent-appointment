@@ -50,6 +50,7 @@ import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.Ho
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseToHospitalDeptWeekDaysDutyRoster;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseUpdatedWeekDaysDetails;
+import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 
 /**
  * @author smriti on 20/05/20
@@ -883,7 +884,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
     }
 
     private String getNepaliDate(Date date){
-        return   nepaliDateUtility.getNepaliDateFromDate(date);
+
+        String nepaliDate= nepaliDateUtility.getNepaliDateFromDate(date);
+
+        return  formatToDateString(nepaliDate);
     }
 }
 

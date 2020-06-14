@@ -20,12 +20,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
@@ -176,10 +176,14 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         responseDTOS.addAll(parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
                 resultsWithRoom, requestDTO.getFromDate(), requestDTO.getToDate()));
 
-        responseDTOS.addAll(parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
+        List<HospitalDeptDutyRosterStatusResponseDTO> list=responseDTOS.stream()
+                .filter(distinctByKeys(HospitalDeptDutyRosterStatusResponseDTO::getDate,
+                        HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentId)).collect(Collectors.toList());
+
+        list.addAll(parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
                 resultWithoutRoom, requestDTO.getFromDate(), requestDTO.getToDate()));
 
-        return responseDTOS;
+        return list;
     }
 
     @Override
@@ -215,9 +219,6 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
-
-        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
-            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
 
         if (!Objects.isNull(requestDTO.getHospitalId()))
             query.setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
@@ -323,5 +324,19 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
                 .setParameter(ID, hospitalDepartmentWeekDaysDutyRosterId);
 
         return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO.class);
+    }
+
+    private static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors)
+    {
+        final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
+
+        return t ->
+        {
+            final List<?> keys = Arrays.stream(keyExtractors)
+                    .map(ke -> ke.apply(t))
+                    .collect(Collectors.toList());
+
+            return seen.putIfAbsent(keys, Boolean.TRUE) == null;
+        };
     }
 }

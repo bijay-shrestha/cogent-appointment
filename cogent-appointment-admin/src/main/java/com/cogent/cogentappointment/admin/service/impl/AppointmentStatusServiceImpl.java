@@ -25,6 +25,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.ALL;
@@ -462,6 +463,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()));
     }
 
+    private boolean hasDepartmentAppointmentWithRoom(HospitalDeptAppointmentStatusResponseDTO appointment,
+                                             HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
+
+        return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
+                && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId())
+        && appointment.getRoomId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
+    }
+
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatus
             (HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
@@ -575,10 +584,29 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
              List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots,
              List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
 
-        List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster =
-                appointments.stream()
-                        .filter(appointment -> hasDepartmentAppointment(appointment, rosterStatusResponseDTO))
-                        .collect(Collectors.toList());
+//        List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster= new ArrayList<>();
+//
+//        List<HospitalDeptAppointmentStatusResponseDTO> withRoom=appointments.stream()
+//                .filter(appointment->Objects.nonNull(appointment.getRoomId()))
+//                .collect(Collectors.toList());
+//
+//        List<HospitalDeptAppointmentStatusResponseDTO> withoutRoom=appointments.stream()
+//                .filter(appointment->Objects.isNull(appointment.getRoomId()))
+//                .collect(Collectors.toList());
+
+//        if (withRoom.size()>0){
+//             appointmentMatchedWithRoster =
+//                    appointments.stream()
+//                            .filter(appointment -> hasDepartmentAppointmentWithRoom(appointment, rosterStatusResponseDTO))
+//                            .collect(Collectors.toList());
+//        }
+
+
+        List<HospitalDeptAppointmentStatusResponseDTO>   appointmentMatchedWithRoster =
+                    appointments.stream()
+                            .filter(appointment -> hasDepartmentAppointment(appointment, rosterStatusResponseDTO))
+                            .collect(Collectors.toList());
+
 
         if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
 

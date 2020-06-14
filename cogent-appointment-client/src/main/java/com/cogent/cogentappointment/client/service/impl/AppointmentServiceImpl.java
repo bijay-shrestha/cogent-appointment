@@ -37,6 +37,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.Trans
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -85,9 +86,8 @@ import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
-import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.ESEWA_REFUND_API;
 import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
+import static com.cogent.cogentthirdpartyconnector.api.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
 
 /**
  * @author smriti on 2019-10-22
@@ -1129,8 +1129,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         String url = String.format(ESEWA_REFUND_API, "5VO");
 
         ResponseEntity<EsewaResponseDTO
-                > response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-                postRequest(url, request, EsewaResponseDTO.class);
+                > response = (ResponseEntity<EsewaResponseDTO>) thirdPartyConnectorService.
+                getHospitalService(url, request, EsewaResponseDTO.class);
 
         return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
     }

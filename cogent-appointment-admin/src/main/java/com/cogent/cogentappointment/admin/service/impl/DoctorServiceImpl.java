@@ -257,14 +257,14 @@ public class DoctorServiceImpl implements DoctorService {
             DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
                     .orElse(null);
 
-            Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
-
             if (doctorSalutation == null) {
 
-                DoctorSalutation doctorSalutationToSave = new DoctorSalutation();
-                SalutationUtils.parseToDoctorSalutation(doctor, salutation);
+                Salutation salutation = findActiveSalutation(result.getSalutationId());
+                parseToDoctorSalutation(doctor, salutation);
 
             } else {
+
+                Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
 
 
                 if (result.getStatus().equals(INACTIVE)) {

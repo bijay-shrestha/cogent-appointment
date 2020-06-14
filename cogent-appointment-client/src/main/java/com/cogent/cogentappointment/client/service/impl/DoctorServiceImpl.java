@@ -185,8 +185,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     private String updateDoctorSalutations(List<DoctorSalutationUpdateDTO> updateDTOS, Doctor doctor) {
 
-//        List<DoctorSalutation> doctorSalutationList = validateDoctorSalutations(ids);
-
         List<String> salutationList = new ArrayList<>();
         if (doctor.getSalutation() != null) {
             salutationList.addAll(Arrays.asList(doctor.getSalutation().split("\\s+")));

@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.SPACE;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
@@ -182,9 +183,9 @@ public class DoctorServiceImpl implements DoctorService {
         return salutationRepository.validateSalutationCount(ids);
     }
 
-    private List<DoctorSalutation> validateDoctorSalutations(String ids) {
-        return doctorSalutationRepository.validateDoctorSalutationCount(ids);
-    }
+//    private List<DoctorSalutation> validateDoctorSalutations(String ids) {
+//        return doctorSalutationRepository.validateDoctorSalutationCount(ids);
+//    }
 
     @Override
     public void update(@Valid DoctorUpdateRequestDTO requestDTO, MultipartFile avatar) {
@@ -237,8 +238,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     private String updateDoctorSalutations(List<DoctorSalutationUpdateDTO> updateDTOS, Doctor doctor) {
 
-//        List<DoctorSalutation> doctorSalutationList = validateDoctorSalutations(ids);
-
         List<String> salutationList = new ArrayList<>();
         if (doctor.getSalutation() != null) {
             salutationList.addAll(Arrays.asList(doctor.getSalutation().split("\\s+")));
@@ -250,17 +249,14 @@ public class DoctorServiceImpl implements DoctorService {
 
             if (result.getDoctorSalutationId() == null) {
 
-//                String ids = updateDTOS.stream()
-//                        .map(request -> request.getDoctorSalutationId().toString())
-//                        .collect(Collectors.joining(","));
-
                 Salutation salutation = findActiveSalutation(result.getSalutationId());
                 doctorSalutationRepository.save(parseToDoctorSalutation(doctor, salutation));
                 salutationList.add(salutation.getCode());
 
             } else {
 
-                DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
+                DoctorSalutation doctorSalutation = doctorSalutationRepository.
+                        findDoctorSalutationById(result.getDoctorSalutationId())
                         .orElse(null);
 
                 Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
@@ -285,8 +281,6 @@ public class DoctorServiceImpl implements DoctorService {
 
         });
 
-//        updateDoctorSalutation(doctorSalutationListToUpdate);
-
         if (salutationList.size() == 0) {
             return null;
         }
@@ -297,9 +291,7 @@ public class DoctorServiceImpl implements DoctorService {
         }
 
         return salutationList.stream()
-                .collect(Collectors.joining(" "));
-
-
+                .collect(Collectors.joining(SPACE));
     }
 
 

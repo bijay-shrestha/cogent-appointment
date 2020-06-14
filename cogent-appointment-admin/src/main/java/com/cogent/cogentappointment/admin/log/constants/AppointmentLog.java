@@ -20,6 +20,9 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";
 
+    public final static String HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG = "HOSPITAL_DEPARTMENT APPOINTMENT " +
+            "RESCHEDULE LOG";
+
     public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
 
     public final static String DEPARTMENT_APPOINTMENT_STATUS = "DEPARTMENT APPOINTMENT STATUS";

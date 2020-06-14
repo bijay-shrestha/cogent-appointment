@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQue
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
@@ -997,6 +998,98 @@ public class AppointmentQuery {
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
+    }
+
+
+    public static Function<HospitalDepartmentAppointmentRescheduleLogSearchDTO, String>
+            QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_APPOINTMENT_LOGS =
+            (rescheduleLogSearchDTO) ->
+                    " SELECT" +
+                            " h.name as hospitalName," +                                                 //[0]
+                            " p.eSewaId as esewaId," +                                                   //[1]
+                            " arl.previousAppointmentDate as previousAppointmentDate," +                 //[2]
+                            " DATE_FORMAT(arl.previousAppointmentDate, '%h:%i %p') as previousAppointmentTime," +   //[3]
+                            " arl.rescheduleDate as rescheduleAppointmentDate," +                                   //[4]
+                            " DATE_FORMAT(arl.rescheduleDate, '%h:%i %p') as rescheduleAppointmentTime," +          //[5]
+                            " a.appointmentNumber as appointmentNumber," +                               //[6]
+                            " hpi.registrationNumber as registrationNumber," +                           //[7]
+                            " p.name as patientName," +                                                  //[8]
+                            QUERY_TO_CALCULATE_PATIENT_AGE+                                              // [9]
+                            " p.gender as patientGender," +                                             //[10]
+                            " p.mobileNumber as mobileNumber," +                                         //[11]                                                  //[13]
+                            " atd.transactionNumber as transactionNumber," +                            //[12]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[13]
+                            " arl.remarks as remarks," +                                                 //[14]
+                            " a.isFollowUp as isFollowUp,"+                                                //[16]
+                            " hd.name as hospitalDepartmentName"+
+                            " FROM AppointmentRescheduleLog arl" +
+                            " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                            " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
+                            " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                            " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                            " LEFT JOIN Patient p ON p.id=a.patientId" +
+                            " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                            " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
+                            " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                            GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG_DETAILS(rescheduleLogSearchDTO);
+
+    public static String QUERY_TO_CALCULATE_TOTAL_HOSPITAL_DEPARTMENT_APPT_RESCHEDULE_AMOUNT(
+            HospitalDepartmentAppointmentRescheduleLogSearchDTO searchDTO) {
+        return
+                "SELECT" +
+                        " COALESCE(SUM(atd.appointmentAmount),0)" +
+                        " FROM AppointmentRescheduleLog arl" +
+                        " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                        " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
+                        " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                        " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                        " LEFT JOIN Patient p ON p.id=a.patientId" +
+                        " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                        " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                        " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
+                        " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                        GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
+    }
+
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG_DETAILS(
+            HospitalDepartmentAppointmentRescheduleLogSearchDTO rescheduleLogSearchDTO) {
+
+        String whereClause = " WHERE " +
+                " hpi.status='Y' " +
+                " AND arl.status='RES'" +
+                " AND hd.status!='D'" +
+                " AND apst.appointmentServiceType.id = :appointmentServiceTypeId ";
+
+        if (!ObjectUtils.isEmpty(rescheduleLogSearchDTO.getFromDate())
+                && !ObjectUtils.isEmpty(rescheduleLogSearchDTO.getToDate()))
+            whereClause += " AND (arl.rescheduleDate BETWEEN '" + utilDateToSqlDate(rescheduleLogSearchDTO.getFromDate())
+                    + "' AND '" + utilDateToSqlDate(rescheduleLogSearchDTO.getToDate()) + "')";
+
+        if (!ObjectUtils.isEmpty(rescheduleLogSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + rescheduleLogSearchDTO.getAppointmentNumber() + "%'";
+
+        if (!Objects.isNull(rescheduleLogSearchDTO.getEsewaId()))
+            whereClause += " AND p.eSewaId = '" + rescheduleLogSearchDTO.getEsewaId() + "'";
+
+        if (!Objects.isNull(rescheduleLogSearchDTO.getAppointmentId()))
+            whereClause += " AND a.id = " + rescheduleLogSearchDTO.getAppointmentId();
+
+        if (!Objects.isNull(rescheduleLogSearchDTO.getHospitalId()))
+            whereClause += " AND h.id = " + rescheduleLogSearchDTO.getHospitalId();
+
+        if (!Objects.isNull(rescheduleLogSearchDTO.getPatientMetaInfoId()))
+            whereClause += " AND pmi.id = " + rescheduleLogSearchDTO.getPatientMetaInfoId();
+
+        if (!ObjectUtils.isEmpty(rescheduleLogSearchDTO.getPatientType()))
+            whereClause += " AND hpi.isRegistered = '" + rescheduleLogSearchDTO.getPatientType() + "'";
+
+        if (!Objects.isNull(rescheduleLogSearchDTO.getHospitalDepartmentId()))
+            whereClause += " AND hd.id = " + rescheduleLogSearchDTO.getHospitalDepartmentId();
+
+        whereClause += " ORDER BY arl.rescheduleDate";
+
+        return whereClause;
     }
 
 }

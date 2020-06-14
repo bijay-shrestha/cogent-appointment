@@ -37,6 +37,7 @@ public class WebResourceKeyConstants {
         String DETAILS = "/detail";
         String TRANSACTION_LOG = "/transaction-log";
         String TRANSACTION = "/transaction";
+        String RESCHEDULE = "/reschedule";
     }
 
     public interface AppointmentModeConstants {

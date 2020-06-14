@@ -263,7 +263,6 @@ public class DoctorServiceImpl implements DoctorService {
                 DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
                         .orElse(null);
 
-
                 Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
 
 

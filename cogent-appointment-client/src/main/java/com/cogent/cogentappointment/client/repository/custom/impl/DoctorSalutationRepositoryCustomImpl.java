@@ -39,8 +39,7 @@ public class DoctorSalutationRepositoryCustomImpl implements DoctorSalutationRep
         List<DoctorSalutationResponseDTO> results = transformQueryToResultList(query, DoctorSalutationResponseDTO.class);
 
         if (results.isEmpty()) {
-            error();
-            throw DOCTOR_SALUTATION_NOT_FOUND.get();
+        return null;
         } else {
             return results;
         }

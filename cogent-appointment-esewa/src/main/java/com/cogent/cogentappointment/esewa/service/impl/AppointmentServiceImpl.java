@@ -576,12 +576,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentTransactionStatusResponseDTO(appointmentTransactionRequestLogStatus);
     }
 
-    public void validateEsewaId(String appointmentModeCode, String esewaId) {
+    private void validateEsewaId(String appointmentModeCode, String esewaId) {
 
         if (appointmentModeCode.equals(APPOINTMENT_MODE_ESEWA_CODE) && ObjectUtils.isEmpty(esewaId)) {
             throw new BadRequestException(ESEWA_ID_CANNOT_BE_NULL);
         }
-
     }
 
     /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS

@@ -16,8 +16,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@ComponentScan(basePackages={"com.cogent.cogentappointment.admin",
-        "com.cogent.cogentthirdpartyconnector.service"})
+@ComponentScan(basePackages = {"com.cogent.cogentappointment.admin",
+        "com.cogent.cogentthirdpartyconnector.service",
+        "com.cogent.cogentappointment.commons.service",
+        "com.cogent.cogentappointment.commons.utils"})
 @EntityScan(basePackages =
         {"com.cogent.cogentappointment.persistence.model",
                 "com.cogent.cogentappointment.persistence.history"})
@@ -27,13 +29,11 @@ import org.springframework.web.client.RestTemplate;
                 {
                         "file:${catalina.home}/conf/admin/application-${spring.profiles.active}.yml"
                 })
-@ComponentScan(basePackages = {
-        "com.cogent.cogentappointment.admin",
-        "com.cogent.cogentappointment.commons.service",
-        "com.cogent.cogentappointment.commons.utils"})
+
 @EnableJpaRepositories(basePackages = {
-        "com.cogent.cogentappointment.commons.repository",
-        "com.cogent.cogentappointment.admin.repository"})
+        "com.cogent.cogentappointment.admin.repository",
+        "com.cogent.cogentappointment.commons.repository"
+})
 public class CogentAppointmentAdminApplication extends SpringBootServletInitializer {
 
     @Override

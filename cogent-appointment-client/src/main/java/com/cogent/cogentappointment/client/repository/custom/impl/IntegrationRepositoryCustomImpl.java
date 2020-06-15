@@ -24,9 +24,7 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.client.query.IntegrationQuery.CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformNativeQueryToSingleResult;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
@@ -91,7 +89,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
                 .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());
 
         FeatureIntegrationResponse responseDTOList =
-                transformNativeQueryToSingleResult(query, FeatureIntegrationResponse.class);
+                transformQueryToSingleResult(query, FeatureIntegrationResponse.class);
 
 //        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
 

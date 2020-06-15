@@ -34,7 +34,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public BheriHospitalResponse callBheriHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
+    public ResponseEntity<?> callBheriHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
 
         HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
@@ -54,16 +54,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         System.out.println(response);
 
 
-        BheriHospitalResponse bheriHospitalResponse = null;
-        try {
-            bheriHospitalResponse = map(response.getBody().toString(),
-                    BheriHospitalResponse.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        return bheriHospitalResponse;
+        return response;
     }
 
     @Override

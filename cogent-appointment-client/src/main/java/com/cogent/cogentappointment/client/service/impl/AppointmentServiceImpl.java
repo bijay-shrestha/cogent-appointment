@@ -41,6 +41,7 @@ import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRe
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
@@ -54,11 +55,13 @@ import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -88,6 +91,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateConverterUti
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
+import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 
 /**
  * @author smriti on 2019-10-22
@@ -605,7 +609,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationRequestDTO.getAppointmentId()));
 
-        if (integrationRequestDTO.getIntegrationChannelCode()!=null || !integrationRequestDTO.getIntegrationChannelCode().isEmpty()) {
+        if (integrationRequestDTO.getIntegrationChannelCode() != null || !integrationRequestDTO.getIntegrationChannelCode().isEmpty()) {
             apiIntegrationCheckpoint(appointment, integrationRequestDTO);
         }
 
@@ -632,7 +636,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             BheriHospitalResponse bheriHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO);
 
             if (integrationRequestDTO.isPatientStatus()) {
-                updateHospitalPatientInfo(appointment, bheriHospitalResponse.getHospitalNumber());
+                updateHospitalPatientInfo(appointment, bheriHospitalResponse.getResponseData());
             }
         }
 
@@ -655,8 +659,25 @@ public class AppointmentServiceImpl implements AppointmentService {
         BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
 //        integrationHospitalApiInfo.forEach(apiInfo -> {
-        BheriHospitalResponse bheriHospitalResponse = thirdPartyConnectorService.callBheriHospitalService(integrationHospitalApiInfo);
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callBheriHospitalService(integrationHospitalApiInfo);
 //        });
+
+        BheriHospitalResponse bheriHospitalResponse = null;
+        try {
+            bheriHospitalResponse = map(responseEntity.getBody().toString(),
+                    BheriHospitalResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (bheriHospitalResponse.getStatusCode().equalsIgnoreCase("500")) {
+            throw new OperationUnsuccessfulException("An error occurred while saving the patient record.");
+        }
+
+        if (bheriHospitalResponse.getStatusCode().equalsIgnoreCase("400")) {
+            throw new OperationUnsuccessfulException("Bad Third Party API Request.");
+        }
+
 
         return bheriHospitalResponse;
 

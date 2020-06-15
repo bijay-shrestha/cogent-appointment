@@ -103,6 +103,7 @@ public class HospitalDeptDutyRosterUtils {
             final int ROOM_ID_INDEX = 5;
             final int ROOM_NUMBER_INDEX = 6;
             final int DEPARTMENT_TIME_DETAILS_INDEX = 7;
+            final int DUTY_ROSTER_ID_INDEX = 8;
 
 
             LocalDate startLocalDate = convertDateToLocalDate((Date) result[START_DATE_INDEX]);
@@ -129,6 +130,9 @@ public class HospitalDeptDutyRosterUtils {
                                 String[] weekMatchedSplit = weekMatched.split(StringConstant.HYPHEN);
 
                                 HospitalDeptDutyRosterStatusResponseDTO responseDTO = HospitalDeptDutyRosterStatusResponseDTO.builder()
+                                        .uniqueIdentifier(Long.parseLong(result[DUTY_ROSTER_ID_INDEX].toString())
+                                                +"-"+
+                                                localDate)
                                         .date(localDate)
                                         .startTime(weekMatchedSplit[0])
                                         .endTime(weekMatchedSplit[1])
@@ -139,6 +143,7 @@ public class HospitalDeptDutyRosterUtils {
                                                 null : Long.parseLong(result[ROOM_ID_INDEX].toString()))
                                         .roomNumber(result[ROOM_NUMBER_INDEX].toString())
                                         .rosterGapDuration(Integer.parseInt(result[ROSTER_GAP_DURATION_INDEX].toString()))
+                                        .hospitalDepartmentDutyRosterId(Long.parseLong(result[DUTY_ROSTER_ID_INDEX].toString()))
                                         .build();
 
                                 hospitalDeptDutyRosterStatusResponseDTOS.add(responseDTO);

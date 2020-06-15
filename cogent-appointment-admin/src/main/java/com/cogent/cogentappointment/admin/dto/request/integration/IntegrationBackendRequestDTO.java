@@ -15,6 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class IntegrationBackendRequestDTO implements Serializable {
 
+    @NotNull
     private Long hospitalId;
 
     @NotNull

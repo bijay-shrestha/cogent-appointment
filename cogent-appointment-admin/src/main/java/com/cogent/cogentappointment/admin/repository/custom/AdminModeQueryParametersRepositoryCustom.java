@@ -15,5 +15,5 @@ public interface AdminModeQueryParametersRepositoryCustom {
 
     List<ApiQueryParametersDetailResponse> findAdminModeApiQueryParameters(Long featureId);
 
-    List<ApiQueryParametersUpdateResponseDTO> findAdminModeApiQueryParameterForUpdate(Long featureId);
+    List<ApiQueryParametersUpdateResponseDTO> findAdminModeApiQueryParameterForUpdate(Long apiIntegrationFormatId);
 }

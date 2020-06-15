@@ -18,6 +18,8 @@ public class AppointmentQueueDTO implements Serializable {
 
     private String doctorName;
 
+    private String doctorSalutation;
+
     private String specializationName;
 
     private String patientName;

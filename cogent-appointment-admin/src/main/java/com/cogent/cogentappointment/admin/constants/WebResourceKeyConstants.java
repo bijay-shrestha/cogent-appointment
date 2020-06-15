@@ -36,6 +36,8 @@ public class WebResourceKeyConstants {
         String RESCHEDULE_LOG = "/reschedule-log";
         String DETAILS = "/detail";
         String TRANSACTION_LOG = "/transaction-log";
+        String TRANSACTION = "/transaction";
+        String RESCHEDULE = "/reschedule";
     }
 
     public interface AppointmentModeConstants {
@@ -240,6 +242,11 @@ public class WebResourceKeyConstants {
     }
 
     //R
+    public interface RefundStatusConstants {
+        String BASE_REFUND_STATUS = "/refundStatus";
+        String CHECK="/check";
+    }
+
     public interface RoomConstants {
         String BASE_ROOM = "/room";
         String HOSPITAL_DEPARTMENT_WISE = "/hospitalDepartmentWise";

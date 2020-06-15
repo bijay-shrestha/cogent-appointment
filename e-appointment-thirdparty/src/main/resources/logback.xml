@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="PROD_HOME" value="${application.home:-logs}/logging"/>
+    <property name="PROD_HOME" value="${application.home:-logs}/esewa"/>
     <property name="COMMON_LOG" value="${application.home:-logs}/common"/>
     <!--console output-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -144,7 +144,7 @@
 
       while segregation of the level, error overrides all the other levels(ingo debug)
     -->
-    <logger name="com.cogent.cogentappointment.logging.service.impl" additivity="false">
+    <logger name="com.cogent.cogentappointment.esewa.service.impl" additivity="false">
         <Level value="INFO"/>
         <appender-ref ref="INFO_ERROR"/>
         <appender-ref ref="CONSOLE"/>
@@ -153,7 +153,7 @@
     </logger>
 
     <!--all the logs(info,warn,error..) of repositorycustom-imp is logged in this folder(info-error-repository)-->
-    <logger name="com.cogent.cogentappointment.logging.repository.custom.impl" additivity="false">
+    <logger name="com.cogent.cogentappointment.esewa.repository.custom.impl" additivity="false">
         <Level value="INFO"/>
         <appender-ref ref="FILE_INFO_ERROR_REPO"/>
         <appender-ref ref="CONSOLE"/>
@@ -161,7 +161,7 @@
         <appender-ref ref="COMMON"/>
     </logger>
 
-    <logger name="com.cogent.cogentappointment.logging" additivity="false">
+    <logger name="com.cogent.cogentappointment.esewa" additivity="false">
         <Level value="INFO"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>

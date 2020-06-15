@@ -1,15 +1,15 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.service.SalutationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.SalutationConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.SalutationConstant.FETCH_DETAILS_FOR_DROPDOWN;
+import javax.validation.Valid;
+
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.SalutationConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SalutationConstant.BASE_SALUTATION;
 import static org.springframework.http.ResponseEntity.ok;
@@ -30,4 +30,13 @@ public class SalutationResource {
     public ResponseEntity<?> fetchSalutationForDropDown() {
         return ok(salutationService.fetchActiveMinSalutation());
     }
+
+    @DeleteMapping
+    @ApiOperation(DELETE_OPERATION)
+    public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
+        salutationService.delete(deleteRequestDTO);
+        return ok().build();
+    }
+
+
 }

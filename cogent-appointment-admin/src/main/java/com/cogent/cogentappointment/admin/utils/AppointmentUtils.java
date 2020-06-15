@@ -4,10 +4,12 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Appointment;
@@ -26,10 +28,12 @@ import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils
  */
 public class AppointmentUtils {
 
-    public static void parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
+    public static AppointmentRefundDetail parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
                                                 AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(refundRejectDTO.getRemarks());
+
+        return refundDetail;
     }
 
     public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment, Long newPatient,
@@ -124,6 +128,7 @@ public class AppointmentUtils {
             final int APPOINTMENT_MODE_INDEX = 19;
             final int IS_FOLLOW_UP_INDEX = 20;
             final int REVENUE_AMOUNT_INDEX = 21;
+            final int DOCTOR_AVATAR_INDEX = 22;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -136,6 +141,9 @@ public class AppointmentUtils {
 
             String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
                     null : result[REGISTRATION_NUMBER_INDEX].toString();
+
+            String doctorAvatar = Objects.isNull(result[DOCTOR_AVATAR_INDEX]) ?
+                    null : result[DOCTOR_AVATAR_INDEX].toString();
 
 
             AppointmentLogDTO appointmentLogDTO =
@@ -165,6 +173,7 @@ public class AppointmentUtils {
                             .appointmentMode(result[APPOINTMENT_MODE_INDEX].toString())
                             .isFollowUp(result[IS_FOLLOW_UP_INDEX].toString().charAt(0))
                             .revenueAmount(Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString()))
+                            .fileUri(doctorAvatar)
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);
@@ -223,4 +232,50 @@ public class AppointmentUtils {
         return groupByPriceMap;
 
     }
+
+    public static List<HospitalDeptAppointmentStatusResponseDTO> parseQueryResultToHospitalDeptAppointmentStatusResponseDTOS
+            (List<Object[]> results) {
+
+        List<HospitalDeptAppointmentStatusResponseDTO> HospitalDeptAppointmentStatusResponseDTOS = new ArrayList<>();
+
+        results.forEach(result -> {
+            final int APPOINTMENT_DATE_INDEX = 0;
+            final int TIME_WITH_STATUS_DETAILS_INDEX = 1;
+            final int HOSPITAL_DEPARTMENT_ID_INDEX = 2;
+            final int HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX = 3;
+            final int APPOINTMENT_NUMBER_INDEX = 4;
+            final int PATIENT_NAME_INDEX = 5;
+            final int GENDER_INDEX = 6;
+            final int MOBILE_NUMBER_INDEX = 7;
+            final int AGE_INDEX = 8;
+            final int APPOINTMENT_ID_INDEX = 9;
+            final int IS_FOLLOW_UP_INDEX = 10;
+            final int HAS_TRANSFERRED_INDEX = 11;
+
+            Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
+
+            LocalDate appointmentLocalDate = new java.sql.Date(appointmentDate.getTime()).toLocalDate();
+
+            HospitalDeptAppointmentStatusResponseDTO appointmentStatusResponseDTO = HospitalDeptAppointmentStatusResponseDTO.builder()
+                    .date(appointmentLocalDate)
+                    .appointmentTimeDetails(result[TIME_WITH_STATUS_DETAILS_INDEX].toString())
+                    .departmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
+                    .roomId((Objects.isNull(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX]))?
+                            null:Long.parseLong(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX].toString()))
+                    .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
+                    .patientName(result[PATIENT_NAME_INDEX].toString())
+                    .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())
+                    .age(result[AGE_INDEX].toString())
+                    .gender(result[GENDER_INDEX].toString())
+                    .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
+                    .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
+                    .hasTransferred((Character) result[HAS_TRANSFERRED_INDEX])
+                    .build();
+
+            HospitalDeptAppointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);
+        });
+
+        return HospitalDeptAppointmentStatusResponseDTOS;
+    }
+
 }

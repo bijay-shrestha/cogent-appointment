@@ -14,19 +14,19 @@ import java.util.Date;
 /**
  * @author smriti on 2019-10-14
  * <p>
- *
+ * <p>
  * Connected Table
  * 1. HospitalAppointmentService Type
- *   Appointment Service Type can be
- *      a. Doctor Consultation (AppointmentDoctorInfo)
- *          i. Doctor
- *          ii. Specialization
- *
- *      b. Department Consultation (AppointmentHospitalDepartmentInfo)
- *          i. HospitalDepartment
- *          ii. HospitalDepartmentRoomInfo
- *          iii. HospitalDepartmentBillingModeInfo
- *
+ * Appointment Service Type can be
+ * a. Doctor Consultation (AppointmentDoctorInfo)
+ * i. Doctor
+ * ii. Specialization
+ * <p>
+ * b. Department Consultation (AppointmentHospitalDepartmentInfo)
+ * i. HospitalDepartment
+ * ii. HospitalDepartmentRoomInfo
+ * iii. HospitalDepartmentBillingModeInfo
+ * <p>
  * 2. AppointmentMode
  * 3. AppointmentTransactionDetail
  * 4. AppointmentFollowUpTracker/AppointmentHospitalDepartmentFollowUpTracker
@@ -34,11 +34,9 @@ import java.util.Date;
  * 6. AppointmentFollowUpLog/AppointmentHospitalDepartmentFollowUpLog
  * 7. AppointmentReservationLog/AppointmentHospitalDepartmentReservationLog
  * 8. AppointmentStatistics
- *
+ * <p>
  * RESCHEDULE -> AppointmentRescheduleLog
  * REFUND -> AppointmentRefundDetail
- *
- *
  */
 @Entity
 @Table(name = "appointment")
@@ -127,11 +125,17 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "has_transferred")
     private Character hasTransferred = 'N';
 
+    @Column(name = "appointment_date_in_nepali")
+    private String appointmentDateInNepali;
+
     @Override
     public String toString() {
         return "Appointment{" +
                 "id=" + id +
                 ", patientId=" + patientId.getName() +
+                ", specializationId=" + specializationId.getName() +
+                ", doctorId=" + doctorId +
+                ", patientId=" + patientId +
                 ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
@@ -140,10 +144,11 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", createdDateNepali='" + createdDateNepali + '\'' +
                 ", status='" + status + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", hospitalId=" + hospitalId.getName() +
+                ", hospitalId=" + hospitalId +
                 ", isFollowUp=" + isFollowUp +
                 ", isSelf=" + isSelf +
-                ", hasTransferred='" + hasTransferred + '\'' +
+                ", hasTransferred=" + hasTransferred +
+                ", appointmentDateInNepali='" + appointmentDateInNepali + '\'' +
                 '}';
     }
 }

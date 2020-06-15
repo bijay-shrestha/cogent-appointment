@@ -62,6 +62,12 @@ public class HospitalDepartmentDutyRosterOverride extends Auditable<String> impl
     @Column(name = "remarks")
     private String remarks;
 
+    @Column(name = "from_date_nepali")
+    private String fromDateInNepali;
+
+    @Column(name = "to_date_nepali")
+    private String toDateInNepali;
+
     @Override
     public String toString() {
         return "HospitalDepartmentDutyRosterOverride{" +
@@ -72,8 +78,11 @@ public class HospitalDepartmentDutyRosterOverride extends Auditable<String> impl
                 ", endTime=" + endTime +
                 ", dayOffStatus=" + dayOffStatus +
                 ", hospitalDepartmentDutyRoster=" + hospitalDepartmentDutyRoster.getId() +
+                ", hospitalDepartmentRoomInfo=" + hospitalDepartmentRoomInfo.getId() +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +
+                ", fromDateInNepali='" + fromDateInNepali + '\'' +
+                ", toDateInNepali='" + toDateInNepali + '\'' +
                 '}';
     }
 }

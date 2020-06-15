@@ -14,6 +14,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.esewa.histor
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
@@ -329,16 +330,20 @@ public class AppointmentUtils {
         return countResponseDTO;
     }
 
-    public static void parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
-                                                AppointmentRefundDetail refundDetail) {
+    public static AppointmentRefundDetail parseRefundRejectDetails(String remarks,
+                                                                   AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
-        refundDetail.setRemarks(refundRejectDTO.getRemarks());
+        refundDetail.setRemarks(remarks);
+
+        return refundDetail;
     }
 
-    public static void parseAppointmentRejectDetails(AppointmentRejectDTO rejectDTO,
+    public static Appointment parseAppointmentRejectDetails(AppointmentRejectDTO rejectDTO,
                                                      Appointment appointment) {
         appointment.setStatus(REJECTED);
         appointment.setRemarks(rejectDTO.getRemarks());
+
+        return appointment;
     }
 
     public static AppointmentLogResponseDTO parseQueryResultToAppointmentLogResponse(List<Object[]> results) {
@@ -369,6 +374,7 @@ public class AppointmentUtils {
             final int APPOINTMENT_MODE_INDEX = 18;
             final int IS_FOLLOW_UP_INDEX = 19;
             final int REVENUE_AMOUNT_INDEX = 20;
+            final int DOCTOR_AVATAR_INDEX=21;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -381,6 +387,9 @@ public class AppointmentUtils {
 
             String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
                     null : result[REGISTRATION_NUMBER_INDEX].toString();
+
+            String doctorAvatar = Objects.isNull(result[DOCTOR_AVATAR_INDEX]) ?
+                    null : result[DOCTOR_AVATAR_INDEX].toString();
 
             AppointmentLogDTO appointmentLogDTO =
                     AppointmentLogDTO.builder()
@@ -408,6 +417,7 @@ public class AppointmentUtils {
                             .appointmentMode(result[APPOINTMENT_MODE_INDEX].toString())
                             .isFollowUp(result[IS_FOLLOW_UP_INDEX].toString().charAt(0))
                             .revenueAmount(Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString()))
+                            .fileUri(doctorAvatar)
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);
@@ -562,6 +572,51 @@ public class AppointmentUtils {
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();
+    }
+
+    public static List<HospitalDeptAppointmentStatusResponseDTO> parseQueryResultToHospitalDeptAppointmentStatusResponseDTOS
+            (List<Object[]> results) {
+
+        List<HospitalDeptAppointmentStatusResponseDTO> HospitalDeptAppointmentStatusResponseDTOS = new ArrayList<>();
+
+        results.forEach(result -> {
+            final int APPOINTMENT_DATE_INDEX = 0;
+            final int TIME_WITH_STATUS_DETAILS_INDEX = 1;
+            final int HOSPITAL_DEPARTMENT_ID_INDEX = 2;
+            final int HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX = 3;
+            final int APPOINTMENT_NUMBER_INDEX = 4;
+            final int PATIENT_NAME_INDEX = 5;
+            final int GENDER_INDEX = 6;
+            final int MOBILE_NUMBER_INDEX = 7;
+            final int AGE_INDEX = 8;
+            final int APPOINTMENT_ID_INDEX = 9;
+            final int IS_FOLLOW_UP_INDEX = 10;
+            final int HAS_TRANSFERRED_INDEX = 11;
+
+            Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
+
+            LocalDate appointmentLocalDate = new java.sql.Date(appointmentDate.getTime()).toLocalDate();
+
+            HospitalDeptAppointmentStatusResponseDTO appointmentStatusResponseDTO = HospitalDeptAppointmentStatusResponseDTO.builder()
+                    .date(appointmentLocalDate)
+                    .appointmentTimeDetails(result[TIME_WITH_STATUS_DETAILS_INDEX].toString())
+                    .departmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
+                    .roomId((Objects.isNull(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX])) ?
+                            null : Long.parseLong(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX].toString()))
+                    .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
+                    .patientName(result[PATIENT_NAME_INDEX].toString())
+                    .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())
+                    .age(result[AGE_INDEX].toString())
+                    .gender(result[GENDER_INDEX].toString())
+                    .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
+                    .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
+                    .hasTransferred((Character) result[HAS_TRANSFERRED_INDEX])
+                    .build();
+
+            HospitalDeptAppointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);
+        });
+
+        return HospitalDeptAppointmentStatusResponseDTOS;
     }
 
 }

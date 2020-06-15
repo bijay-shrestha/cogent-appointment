@@ -160,6 +160,7 @@ public class RoomServiceImpl implements RoomService {
         return responseDTOS;
     }
 
+
     @Override
     public List<DropDownResponseDTO> fetchMinRoomByHospitalDepartmentId(Long hospitalDepartmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();

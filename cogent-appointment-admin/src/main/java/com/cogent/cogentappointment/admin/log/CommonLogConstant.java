@@ -12,7 +12,6 @@ public class CommonLogConstant {
     //B
 
     //C
-    public final static String CONTENT_NOT_FOUND_BY_CODE = BOLD + ":::: {} WITH CODE : {} NOT FOUND ::::";
     public final static String CONTENT_NOT_FOUND_BY_ID = BOLD + ":::: {} WITH ID : {} NOT FOUND ::::";
     public final static String CONTENT_NOT_FOUND = BOLD + ":::: {} NOT FOUND ::::";
 

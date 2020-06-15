@@ -58,6 +58,7 @@ import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderBy
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.lang.reflect.Array.get;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author smriti on 2019-08-05
@@ -428,32 +429,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         return responseDTO;
     }
 
-    private Map<String, List<?>> getApiIntegrations() {
-
-        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList =
-                getAdminModeApiIntegration();
-
-        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOList =
-                getHospitalApiIntegration();
-
-        Map<String, List<?>> map = new HashMap();
-
-        if (featureIntegrationResponseDTOList.size() != 0 || featureIntegrationResponseDTOList != null) {
-            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTOList);
-        }
-
-        if (clientIntegrationResponseDTOList.size() != 0 || clientIntegrationResponseDTOList != null) {
-            map.put(KEY_ADMIN_INTEGRATION, featureIntegrationResponseDTOList);
-        }
-
-        return map;
-    }
-
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
 
         Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.
                 fetchAdminModeIntegrationResponseDTO().stream()
-                .collect(Collectors.groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
+                .collect(groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
 
         List<AdminModeFeatureIntegrationResponseDTO> adminModeFeatureIntegrationResponseDTOS = new ArrayList<>();
 
@@ -469,10 +449,14 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 Map<String, String> queryParametersResponseDTO = integrationRepository.
                         findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(),
+                        responseDTO.getRequestMethod());
 
                 FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
-                        convertToAdminApiResponseDTO(responseDTO, requestBody, requestHeaderResponseDTO, queryParametersResponseDTO);
+                        convertToAdminApiResponseDTO(responseDTO,
+                                requestBody,
+                                requestHeaderResponseDTO,
+                                queryParametersResponseDTO);
 
                 features.add(featureIntegrationResponseDTO);
 
@@ -498,7 +482,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 fetchClientIntegrationResponseDTO();
 
         Map<Long, List<ClientFeatureIntegrationResponse>> integrationResponseMap = integrationResponseDTOList.stream()
-                .collect(Collectors.groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
+                .collect(groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
 
         List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS = new ArrayList<>();
 
@@ -514,7 +498,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 Map<String, String> queryParametersResponseDTO = integrationRepository.
                         findApiQueryParametersResponse(responseDTO.getApiIntegrationFormatId());
 
-                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(),
+                        responseDTO.getRequestMethod());
 
                 FeatureIntegrationResponseDTO featureIntegrationResponseDTO = convertToClientApiResponseDTO(responseDTO,
                         requestBody,
@@ -904,6 +889,30 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword()))
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
+    }
+
+
+    private Map<String, List<?>> getApiIntegrations() {
+
+        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList =
+                getAdminModeApiIntegration();
+
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOList =
+                getHospitalApiIntegration();
+
+        Map<String, List<?>> map = new HashMap();
+
+        if (featureIntegrationResponseDTOList.size() != 0 || featureIntegrationResponseDTOList != null) {
+            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTOList);
+        }
+
+        if (clientIntegrationResponseDTOList.size() != 0 || clientIntegrationResponseDTOList != null) {
+            map.put(KEY_ADMIN_INTEGRATION, featureIntegrationResponseDTOList);
+        }
+
+        return map;
+
+
     }
 
 

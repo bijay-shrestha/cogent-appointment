@@ -14,6 +14,7 @@ public class IntegrationAdminModeQuery {
     public static final String ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
+                    " aif.id as apiIntegrationFormatId,"+
                     " am.id as appointmentModeId," +
                     " am.name as appointmentModeName," +
                     " f.name as featureName," +
@@ -55,7 +56,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND aif.status='Y'" +
@@ -72,7 +73,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND aif.status='Y'" +
@@ -91,7 +92,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeQueryParameters amqp ON amqp.apiIntegrationFormatId =aif.id" +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND amqp.status='Y'" +
@@ -107,7 +108,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeQueryParameters amqp ON amqp.apiIntegrationFormatId =aif.id" +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND amqp.status='Y'" +
@@ -129,6 +130,37 @@ public class IntegrationAdminModeQuery {
                     " AND f.id=:featureId" +
                     " AND hrm.id=:requestMethodId" +
                     " AND amfi.appointmentModeId.id=:appointmentModeId";
+
+    public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY =
+            " SELECT" +
+                    " aif.id as apiIntegrationFormatId," +
+                    " amfi.id as appointmentModeId," +
+                    " ic.code as integrationChannelCode," +
+                    " f.id as featureId," +
+                    " f.code as featureCode," +
+                    " hrm.name as requestMethod," +
+                    " aif.url as url" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                    " WHERE aif.status='Y'" +
+                    " AND hrm.status='Y'" +
+                    " AND amafi.status='Y'" +
+                    " AND f.status='Y'" +
+                    " AND amfi.status='Y'" +
+                    " AND ic.status='Y'";
+
+    public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY =
+            APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY +
+                    " AND f.code=:featureCode" +
+                    " AND ic.code=:integrationChannelCode" +
+                    " AND amfi.appointmentModeId.id=:appointmentModeId";
+
+
+    //
 
     public static Function<AdminModeApiIntegrationSearchRequestDTO, String> ADMIN_MODE_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->

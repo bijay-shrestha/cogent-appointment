@@ -9,7 +9,12 @@ public class HospitalDeptWeekDaysDutyRosterDoctorInfoQuery {
             " SELECT" +
                     " h.id as hospitalDepartmentWeekDaysDutyRosterDoctorInfoId," +                  //[0]
                     " h.hospitalDepartmentDoctorInfo.id as value," +       //[1]
-                    " d.name as label," +                                                      //[2]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as label," +                     //[2]                                                    //[2]
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +

@@ -13,5 +13,5 @@ public interface AdminModeRequestHeaderRepositoryCustom {
 
     List<ApiRequestHeaderDetailResponse> findAdminModeApiRequestHeaders(Long featureId);
 
-    List<ApiRequestHeaderUpdateResponseDTO> findAdminModeApiRequestHeaderForUpdate(Long featureId);
+    List<ApiRequestHeaderUpdateResponseDTO> findAdminModeApiRequestHeaderForUpdate(Long integrationFormatId);
 }

@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.BillingModeLog.BILLING_MODE;
@@ -415,6 +417,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     private void updateBillingMode(HospitalUpdateRequestDTO requestDTO, Hospital hospital) {
         List<HospitalBillingModeUpdateRequestDTO
+
                 > billingModeIds = requestDTO.getBillingModeIds();
 
         List<Long> newBillingModeIds = new ArrayList<>();

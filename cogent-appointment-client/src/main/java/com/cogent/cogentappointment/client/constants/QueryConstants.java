@@ -35,9 +35,14 @@ public class QueryConstants {
 
 
     //E
+    public static final String ESEWA_ID = "esewaId";
     public static final String EMAIL = "email";
 
+
     //F
+
+    public static final String FEATURE_CODE = "featureCode";
+    
     public interface AppointmentFollowUpTrackerConstants {
         String PARENT_APPOINTMENT_ID = "parentAppointmentId";
     }
@@ -49,12 +54,18 @@ public class QueryConstants {
 
     //H
     public static final String HOSPITAL_ID = "hospitalId";
+
     public static final String HOSPITAL_CODE = "hospitalCode";
+
     public static final String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";
+
+    public static final String HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID = "hospitalDepartmentDutyRosterId";
+
     public static final String HOSPITAL_DEPARTMENT_ROOM_INFO_ID = "hospitalDepartmentRoomInfoId";
 
     //I
     public static final String ID = "id";
+    public static final String INTEGRATION_CHANNEL_CODE = "integrationChannelCode";
     public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
     public static final String API_FEATURE__ID = "featureId";
 
@@ -105,6 +116,7 @@ public class QueryConstants {
     //V
 
     //W
+    public static final String WEEK_DAY_NAME = "weekDayName";
 
 
     //X

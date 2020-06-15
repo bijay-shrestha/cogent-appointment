@@ -146,8 +146,18 @@ public class AppointmentTransferQuery {
                     "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%b %d,%Y')  as transferredFromDate, " +
                     "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%h:%i %p')  as transferredToTime, " +
                     "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%h:%i %p')  as transferredFromTime, " +
-                    "  apt.currentDoctor.name as transferredToDoctor, " +
-                    "  apt.previousDoctor.name as transferredFromDoctor, " +
+                    " CASE WHEN" +
+                    " (apt.currentDoctor.salutation is null)" +
+                    " THEN apt.currentDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.currentDoctor.salutation, apt.currentDoctor.name)" +
+                    " END as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.previousDoctor.salutation is null)" +
+                    " THEN apt.previousDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.previousDoctor.salutation, apt.previousDoctor.name)" +
+                    " END as transferredFromDoctor," +
                     "  apt.currentSpecialization.name as transferredToSpecialization, " +
                     "  apt.previousSpecialization.name as transferredFromSpecialization, " +
                     "  attd.currentAppointmentAmount  AS transferredToAmount, " +
@@ -277,8 +287,18 @@ public class AppointmentTransferQuery {
                     " attd.currentAppointmentAmount  as transferredToAmount," +
                     " attd.previousAppointmentAmount  as transferredFromAmount," +
                     " apt.remarks," +
-                    " apt.previousDoctor.name as transferredFromDoctor," +
-                    " apt.currentDoctor.name as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.currentDoctor.salutation is null)" +
+                    " THEN apt.currentDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.currentDoctor.salutation, apt.currentDoctor.name)" +
+                    " END as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.previousDoctor.salutation is null)" +
+                    " THEN apt.previousDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.previousDoctor.salutation, apt.previousDoctor.name)" +
+                    " END as transferredFromDoctor," +
                     " apt.previousSpecialization.name as transferredFromSpecialization," +
                     " apt.currentSpecialization.name as transferredToSpecialization," +
                     "  atd.transactionNumber as transactionNumber," +

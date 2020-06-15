@@ -1,0 +1,46 @@
+package com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus;
+
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
+import lombok.*;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
+
+/**
+ * @author Sauravi Thapa ON 6/5/20
+ */
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class HospitalDeptDutyRosterStatusResponseDTO implements Serializable {
+
+    private LocalDate date;
+
+    private String startTime;
+
+    private String endTime;
+
+    private Character dayOffStatus;
+
+    private Integer rosterGapDuration;
+
+    private Long hospitalDepartmentId;
+
+    private String hospitalDepartmentName;
+
+    private Long hospitalDepartmentRoomInfoId;
+
+    private String roomNumber;
+
+    private String weekDayName;
+
+    /*FOR FRONT-END CONVENIENCE TO SHOW DETAIL MODAL*/
+    private String patientDetails;
+
+    private List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots;
+
+    private List<DropDownResponseDTO> roomList;
+}

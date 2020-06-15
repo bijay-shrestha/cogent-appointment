@@ -21,6 +21,8 @@ public class AppointmentDetailResponseDTO implements Serializable {
 
     private String doctorName;
 
+    private String doctorSalutation;
+
     private String specializationName;
 
     private String appointmentNumber;

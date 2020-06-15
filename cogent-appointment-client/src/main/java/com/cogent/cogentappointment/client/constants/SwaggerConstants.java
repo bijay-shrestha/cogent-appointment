@@ -66,6 +66,8 @@ public class SwaggerConstants {
     public interface AppointmentStatusConstant {
         String BASE_API_VALUE = "This is Appointment Status Resource";
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS = "Fetch department appointment status.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "Fetch department appointment status by specific roomId.";
     }
 
     public interface AppointmentTransferConstant {
@@ -262,6 +264,7 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Integration Resource.";
         String FETCH_CLIENT_API_INTEGRATION = "Fetch client API integration detail";
         String SAVE_OPERATION = "Save new Client API Integration";
+        String APPROVE_REFUND_BY_CLIENT_INTEGRATION = "Refund approve through client integration";
     }
 
     //J
@@ -342,12 +345,20 @@ public class SwaggerConstants {
                 "by hospital department Id";
     }
 
+    public interface RefundStatusConstant {
+        String BASE_API_VALUE = "This is Refund Status Resource";
+        String FETCH_APPOINTMENT_REFUND_DETAIL_LIST = "Fetch Appointment Refund Details List(status='PA','R','A')";
+        String FETCH_REFUND_DETAILS_TO_APPROVE="Fetch Appointment Refund Details To Approve(change status to A) ";
+        String FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
+    }
+
     //S
 
 
     public interface SalutationConstant {
         String BASE_API_VALUE = "This is Salutation Resource";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Salutation details (id and code) for dropdown";
+        String DELETE_OPERATION = "Set Salutation status as 'D' when deleted";
     }
 
     public interface SpecializationConstant {

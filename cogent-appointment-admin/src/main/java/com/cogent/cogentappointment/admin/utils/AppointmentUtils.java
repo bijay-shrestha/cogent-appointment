@@ -29,7 +29,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils
 public class AppointmentUtils {
 
     public static AppointmentRefundDetail parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
-                                                AppointmentRefundDetail refundDetail) {
+                                                                   AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(refundRejectDTO.getRemarks());
 
@@ -256,21 +256,22 @@ public class AppointmentUtils {
 
             LocalDate appointmentLocalDate = new java.sql.Date(appointmentDate.getTime()).toLocalDate();
 
-            HospitalDeptAppointmentStatusResponseDTO appointmentStatusResponseDTO = HospitalDeptAppointmentStatusResponseDTO.builder()
-                    .date(appointmentLocalDate)
-                    .appointmentTimeDetails(result[TIME_WITH_STATUS_DETAILS_INDEX].toString())
-                    .departmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
-                    .roomId((Objects.isNull(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX]))?
-                            null:Long.parseLong(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX].toString()))
-                    .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
-                    .patientName(result[PATIENT_NAME_INDEX].toString())
-                    .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())
-                    .age(result[AGE_INDEX].toString())
-                    .gender(result[GENDER_INDEX].toString())
-                    .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
-                    .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
-                    .hasTransferred((Character) result[HAS_TRANSFERRED_INDEX])
-                    .build();
+            HospitalDeptAppointmentStatusResponseDTO appointmentStatusResponseDTO =
+                    HospitalDeptAppointmentStatusResponseDTO.builder()
+                            .date(appointmentLocalDate)
+                            .appointmentTimeDetails(result[TIME_WITH_STATUS_DETAILS_INDEX].toString())
+                            .departmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
+                            .roomId((Objects.isNull(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX])) ?
+                                    null : Long.parseLong(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX].toString()))
+                            .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
+                            .patientName(result[PATIENT_NAME_INDEX].toString())
+                            .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())
+                            .age(result[AGE_INDEX].toString())
+                            .gender(result[GENDER_INDEX].toString())
+                            .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
+                            .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
+                            .hasTransferred((Character) result[HAS_TRANSFERRED_INDEX])
+                            .build();
 
             HospitalDeptAppointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);
         });

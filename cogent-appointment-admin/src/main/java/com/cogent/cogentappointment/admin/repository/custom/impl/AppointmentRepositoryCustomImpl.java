@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLog
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
@@ -14,6 +15,7 @@ import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.Refund
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentHospitalDeptPendingApproval.AppointmentHospitalDepartmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDetailResponseDTO;
@@ -47,8 +49,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -56,12 +56,32 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS;
-import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS_ROOM_WISE;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentQuery.*;
 import static com.cogent.cogentappointment.admin.query.AppointmentQuery.*;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOGS;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.*;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT;
 import static com.cogent.cogentappointment.admin.utils.AppointmentLogUtils.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.admin.utils.TransactionLogUtils.parseQueryResultToTransactionLogResponse;
@@ -146,7 +166,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO) {
+    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(
+            AppointmentStatusRequestDTO requestDTO) {
 
         Query query = createNativeQuery.apply(entityManager,
                 QUERY_TO_FETCH_APPOINTMENT_FOR_APPOINTMENT_STATUS(requestDTO))
@@ -199,7 +220,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_OVER_ALL_APPOINTMENTS(dashBoardRequestDTO.getHospitalId()))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_OVER_ALL_APPOINTMENTS(dashBoardRequestDTO.getHospitalId()))
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
 
@@ -230,8 +252,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                                                   Pageable pageable) {
+    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
+            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
@@ -286,7 +309,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatusRoomwise(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatusRoomwise(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
         Query query = createNativeQuery.apply(entityManager,
                 QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS_ROOM_WISE(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
@@ -302,16 +327,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<Object[]> results = query.getResultList();
 
         return parseQueryResultToHospitalDeptAppointmentStatusResponseDTOS(results);
-    }
-
-    private Query getQueryToFetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO) {
-        return createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_CANCEL_APPROVALS(searchDTO));
-    }
-
-    private Double calculateTotalRefundAmount(AppointmentCancelApprovalSearchDTO searchDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO));
-
-        return (Double) query.getSingleResult();
     }
 
     @Override
@@ -504,7 +519,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             throw APPOINTMENT_NOT_FOUND.get();
 
         else {
-            Double totalRescheduleAmount =calculateTotalHospitalDepartmentApptRescheduleAmount(rescheduleDTO);
+            Double totalRescheduleAmount = calculateTotalHospitalDepartmentApptRescheduleAmount(rescheduleDTO);
 
             return HospitalDepartmentAppointmentRescheduleLogResponseDTO.builder()
                     .appointmentRescheduleLogDTOS(rescheduleAppointments)
@@ -512,6 +527,38 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                     .totalAmount(totalRescheduleAmount)
                     .build();
         }
+    }
+
+    @Override
+    public List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> searchPendingHospitalDeptAppointments(
+            AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
+            Pageable pageable) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENTS.apply(searchDTO));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> pendingAppointments =
+                transformQueryToResultList(query, AppointmentHospitalDepartmentPendingApprovalResponseDTO.class);
+
+        if (pendingAppointments.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        pendingAppointments.get(0).setTotalItems(totalItems);
+        return pendingAppointments;
+    }
+
+    private Query getQueryToFetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO) {
+        return createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_CANCEL_APPROVALS(searchDTO));
+    }
+
+    private Double calculateTotalRefundAmount(AppointmentCancelApprovalSearchDTO searchDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO));
+
+        return (Double) query.getSingleResult();
     }
 
     private void calculateAppointmentStatisticsForAppointmentLog(AppointmentLogSearchDTO searchRequestDTO,
@@ -918,7 +965,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private RevenueFromRefundAppointmentResponseDTO getRevenueFromRefundedHospitalDepartmentAppointmentDetails
-            ( HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
+            (HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
 
            /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
@@ -937,7 +984,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private void calculateTotalHospitalDepartmentAppointmentAmount(HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
-                                                 HospitalDepartmentAppointmentLogResponseDTO responseDTO) {
+                                                                   HospitalDepartmentAppointmentLogResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT(searchRequestDTO))
                 .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());

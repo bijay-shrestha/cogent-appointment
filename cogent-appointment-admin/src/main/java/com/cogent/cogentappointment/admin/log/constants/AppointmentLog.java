@@ -31,7 +31,7 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
 
-    public final static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
+    public final static String PENDING_APPOINTMENT_APPROVAL = "PENDING APPOINTMENT APPROVALS";
 
     public static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
 
@@ -42,7 +42,7 @@ public class AppointmentLog {
     public final static String REJECT_PROCESS_COMPLETED = ":::: REJECTING {} COMPLETED IN {} ms ::::";
 
     public final static String FETCHING_PROCESS_STARTED = ":::: FETCHING BOOKED APPOINTMENT PROCESS STARTED ::::";
-    public final  String FETCHING_PROCESS_COMPLETED = ":::: FETCHING BOOKED APPOINTMENT PROCESS COMPLETED" +
+    public final String FETCHING_PROCESS_COMPLETED = ":::: FETCHING BOOKED APPOINTMENT PROCESS COMPLETED" +
             " IN :::: {} ms";
 
 }

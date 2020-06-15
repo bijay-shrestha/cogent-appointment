@@ -2,7 +2,9 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentHospitalDeptPendingApproval.AppointmentHospitalDepartmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.HospitalDepartmentAppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
@@ -13,11 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.HOSPITAL_DEPARTMENT_APPOINTMENT_LOG;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.HOSPITAL_DEPARTMENT_TRANSACTION_LOG;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -37,7 +39,10 @@ public class HospitalDepartmentLogsServiceImpl implements HospitalDepartmentLogs
     }
 
     @Override
-    public HospitalDepartmentAppointmentLogResponseDTO searchAppointmentLogs(HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO, Pageable pageable) {
+    public HospitalDepartmentAppointmentLogResponseDTO searchAppointmentLogs(
+            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
+            Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_APPOINTMENT_LOG);
@@ -51,7 +56,8 @@ public class HospitalDepartmentLogsServiceImpl implements HospitalDepartmentLogs
     }
 
     @Override
-    public HospitalDepartmentTransactionLogResponseDTO searchTransactionLogs(HospitalDepartmentTransactionLogSearchDTO searchRequestDTO, Pageable pageable) {
+    public HospitalDepartmentTransactionLogResponseDTO searchTransactionLogs(
+            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO, Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -68,6 +74,7 @@ public class HospitalDepartmentLogsServiceImpl implements HospitalDepartmentLogs
     @Override
     public HospitalDepartmentAppointmentRescheduleLogResponseDTO searchRescheduleLogs(
             HospitalDepartmentAppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG);
@@ -75,8 +82,27 @@ public class HospitalDepartmentLogsServiceImpl implements HospitalDepartmentLogs
         HospitalDepartmentAppointmentRescheduleLogResponseDTO responseDTOS =
                 appointmentRepository.searchHospitalDepartmentRescheduleLogs(rescheduleDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG,
+                getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
+    }
+
+    @Override
+    public List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> searchPendingHospitalDeptAppointments(
+            AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
+            Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPOINTMENT_APPROVAL);
+
+        List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> pendingAppointments =
+                appointmentRepository.searchPendingHospitalDeptAppointments(searchDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPOINTMENT_APPROVAL,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return pendingAppointments;
     }
 }

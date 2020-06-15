@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Map;
@@ -25,6 +26,7 @@ import static org.springframework.http.HttpMethod.POST;
  * @author rupak ON 2020/06/09-11:41 AM
  */
 @Service
+@Transactional
 public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorService {
 
     private final RestTemplateUtils restTemplateUtils;

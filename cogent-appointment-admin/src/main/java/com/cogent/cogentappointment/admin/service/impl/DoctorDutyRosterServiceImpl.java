@@ -12,7 +12,7 @@ import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterOverrideRep
 import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.admin.repository.DoctorWeekDaysDutyRosterRepository;
 import com.cogent.cogentappointment.admin.service.*;
-import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
+import com.cogent.cogentappointment.admin.utils.commons.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +36,7 @@ import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterL
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
+import static com.cogent.cogentappointment.admin.utils.commons.NepaliDateUtility.formatToDateString;
 
 /**
  * @author smriti on 26/11/2019
@@ -545,11 +545,11 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         return originalOverride.getId().equals(updatedOverride.getDoctorDutyRosterOverrideId());
     }
 
-    private String getNepaliDate(Date date){
+    private String getNepaliDate(Date date) {
 
-        String nepaliDate= nepaliDateUtility.getNepaliDateFromDate(date);
+        String nepaliDate = nepaliDateUtility.getNepaliDateFromDate(date);
 
-        return  formatToDateString(nepaliDate);
+        return formatToDateString(nepaliDate);
     }
 
 }

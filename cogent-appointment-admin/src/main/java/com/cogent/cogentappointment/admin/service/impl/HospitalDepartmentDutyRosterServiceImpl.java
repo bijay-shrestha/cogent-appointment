@@ -17,7 +17,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.HospitalDepartmentDutyRosterService;
-import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
+import com.cogent.cogentappointment.admin.utils.commons.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +42,7 @@ import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIEN
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.log.constants.WeekDaysLog.WEEK_DAYS;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.NepaliDateUtility.formatToDateString;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDepartmentWeekDaysDutyRosterDoctorInfoUtils.parseWeekDaysDoctorDetails;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDepartmentWeekDaysDutyRosterDoctorInfoUtils.updateWeekDaysDoctorDetails;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterRoomUtils.parseHospitalDepartmentDutyRosterRoomDetails;
@@ -50,7 +51,6 @@ import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.Ho
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseToHospitalDeptWeekDaysDutyRoster;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseUpdatedWeekDaysDetails;
-import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 
 /**
  * @author smriti on 20/05/20

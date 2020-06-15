@@ -16,8 +16,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class BheriHospitalResponse implements Serializable{
 
-    private String hospitalNumber;
+    private String statusCode;
 
-    private String message;
+    private String responseMessage;
 
+    private String responseData;
 }

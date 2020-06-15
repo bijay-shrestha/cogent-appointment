@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.cogent.cogentappointment.client",
-        "com.cogent.cogentthirdpartyconnector.configuration",
         "com.cogent.cogentappointment.commons.service",
         "com.cogent.cogentappointment.commons.utils",
         "com.cogent.cogentthirdpartyconnector.service"})

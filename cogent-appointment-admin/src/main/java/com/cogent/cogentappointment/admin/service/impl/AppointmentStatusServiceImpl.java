@@ -458,17 +458,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private boolean hasDepartmentAppointment(HospitalDeptAppointmentStatusResponseDTO appointment,
                                              HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
-
-        return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
-                && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()));
-    }
-
-    private boolean hasDepartmentAppointmentWithRoom(HospitalDeptAppointmentStatusResponseDTO appointment,
-                                             HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
-
-        return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
-                && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId())
-        && appointment.getRoomId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
+        if(Objects.isNull(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId())) {
+            return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
+                    && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()));
+        } else {
+            return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
+                    && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId())
+                    && appointment.getRoomId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
+        }
     }
 
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatus

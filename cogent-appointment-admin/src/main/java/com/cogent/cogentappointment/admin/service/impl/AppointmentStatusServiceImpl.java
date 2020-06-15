@@ -17,6 +17,7 @@ import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
 import com.cogent.cogentappointment.admin.service.RoomService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -459,13 +460,13 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private boolean hasDepartmentAppointment(HospitalDeptAppointmentStatusResponseDTO appointment,
                                              HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
         if(Objects.isNull(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId())
-                && Objects.isNull(appointment.getRoomId())) {
+                && Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
             return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
                     && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()));
         } else {
             return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
                     && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId())
-                    && appointment.getRoomId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
+                    && appointment.getHospitalDepartmentRoomInfoId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
         }
     }
 
@@ -480,7 +481,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                         requestDTO,getRosterIdList(hospitalDeptDutyRosterStatus));
 
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
-            throw new NoContentFoundException(DoctorDutyRoster.class);
+            throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
 
         return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
     }
@@ -495,7 +496,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO,getRosterIdList(hospitalDeptDutyRosterStatus));
 
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
-            throw new NoContentFoundException(DoctorDutyRoster.class);
+            throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
 
         return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
     }

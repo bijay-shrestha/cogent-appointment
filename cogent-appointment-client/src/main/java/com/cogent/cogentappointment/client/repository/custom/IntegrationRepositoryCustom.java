@@ -21,5 +21,5 @@ public interface IntegrationRepositoryCustom {
 
     Map<String,String> findApiQueryParameters(Long apiIntegrationFormatId);
 
-    List<FeatureIntegrationResponse> fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO);
+    FeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 }

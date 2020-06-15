@@ -19,11 +19,15 @@ import java.io.Serializable;
 public class IntegrationBackendRequestDTO implements Serializable {
 
     @NotNull
-    @NotEmpty
+    private Long appointmentId;
+
     private String featureCode;
 
-    @NotNull
-    @NotEmpty
+    private boolean patientStatus;
+
     private String integrationChannelCode;
+
+    private String hospitalNumber;
+
 
 }

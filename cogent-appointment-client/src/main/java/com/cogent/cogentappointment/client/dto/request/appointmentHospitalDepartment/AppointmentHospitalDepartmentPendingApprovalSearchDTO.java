@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment;
+package com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment;
 
 import lombok.Getter;
 import lombok.Setter;

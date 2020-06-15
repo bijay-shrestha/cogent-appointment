@@ -130,7 +130,7 @@ public class HospitalDeptDutyRosterUtils {
                                 String[] weekMatchedSplit = weekMatched.split(StringConstant.HYPHEN);
 
                                 HospitalDeptDutyRosterStatusResponseDTO responseDTO = HospitalDeptDutyRosterStatusResponseDTO.builder()
-                                        .uniqueIdentifier(Long.parseLong(result[DUTY_ROSTER_ID_INDEX].toString())
+                                        .uniqueIdentifier(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString())
                                                 +"-"+
                                                 localDate)
                                         .date(localDate)

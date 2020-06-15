@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.cogent.cogentappointment.client",
+        "com.cogent.cogentthirdpartyconnector.configuration",
         "com.cogent.cogentappointment.commons.service",
         "com.cogent.cogentappointment.commons.utils",
         "com.cogent.cogentthirdpartyconnector.service"})
@@ -29,9 +30,8 @@ import org.springframework.web.client.RestTemplate;
                         "file:${catalina.home}/conf/client/application-${spring.profiles.active}.yml"
                 })
 @EnableJpaRepositories(basePackages = {
-        "com.cogent.cogentappointment.client.repository",
-        "com.cogent.cogentappointment.commons.repository"
-})
+        "com.cogent.cogentappointment.commons.repository",
+        "com.cogent.cogentappointment.client.repository"})
 public class CogentAppointmentClientApplication extends SpringBootServletInitializer {
 
     @Override

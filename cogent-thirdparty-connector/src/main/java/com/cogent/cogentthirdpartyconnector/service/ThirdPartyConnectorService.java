@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public interface ThirdPartyConnectorService {
 
-    BheriHospitalResponse callBheriHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
+    ResponseEntity<?> callBheriHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
 
 
     ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,

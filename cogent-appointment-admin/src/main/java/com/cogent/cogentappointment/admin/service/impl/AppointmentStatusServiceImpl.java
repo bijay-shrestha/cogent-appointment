@@ -584,29 +584,11 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
              List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots,
              List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
 
-//        List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster= new ArrayList<>();
-//
-//        List<HospitalDeptAppointmentStatusResponseDTO> withRoom=appointments.stream()
-//                .filter(appointment->Objects.nonNull(appointment.getRoomId()))
-//                .collect(Collectors.toList());
-//
-//        List<HospitalDeptAppointmentStatusResponseDTO> withoutRoom=appointments.stream()
-//                .filter(appointment->Objects.isNull(appointment.getRoomId()))
-//                .collect(Collectors.toList());
 
-//        if (withRoom.size()>0){
-//             appointmentMatchedWithRoster =
-//                    appointments.stream()
-//                            .filter(appointment -> hasDepartmentAppointmentWithRoom(appointment, rosterStatusResponseDTO))
-//                            .collect(Collectors.toList());
-//        }
-
-
-        List<HospitalDeptAppointmentStatusResponseDTO>   appointmentMatchedWithRoster =
+        List<HospitalDeptAppointmentStatusResponseDTO>  appointmentMatchedWithRoster =
                     appointments.stream()
                             .filter(appointment -> hasDepartmentAppointment(appointment, rosterStatusResponseDTO))
                             .collect(Collectors.toList());
-
 
         if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
 

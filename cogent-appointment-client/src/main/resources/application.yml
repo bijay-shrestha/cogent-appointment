@@ -3,6 +3,9 @@
 ######___ ***** ENTER PATH TO YOUR STAND-ALONE TOMCAT SERVER ***** ____ ############
 
 ##### [END] CATALINA HOME CONFIG [/END] #########
+catalina:
+  home: /home/rupak/Softwares/tomcat
+
 
 spring:
   profiles:

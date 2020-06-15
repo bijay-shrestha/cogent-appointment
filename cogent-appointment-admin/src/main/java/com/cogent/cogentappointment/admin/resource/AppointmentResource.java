@@ -69,11 +69,11 @@ public class AppointmentResource {
         return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
     }
 
-    @PutMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(REFUND + APPROVE)
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId,
+    public ResponseEntity<?> approveRefundAppointment(
                                                       @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
-        appointmentService.approveRefundAppointment(appointmentId,integrationBackendRequestDTO);
+        appointmentService.approveRefundAppointment(integrationBackendRequestDTO);
         return ok().build();
     }
 
@@ -85,11 +85,10 @@ public class AppointmentResource {
         return ok().build();
     }
 
-    @PutMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(APPROVE)
     @ApiOperation(APPROVE_APPOINTMENT)
-    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId,
-                                                @RequestBody IntegrationBackendRequestDTO backendRequestDTO) {
-        appointmentService.approveAppointment(appointmentId, backendRequestDTO);
+    public ResponseEntity<?> approveAppointment(@RequestBody IntegrationBackendRequestDTO backendRequestDTO) {
+        appointmentService.approveAppointment(backendRequestDTO);
         return ok().build();
     }
 

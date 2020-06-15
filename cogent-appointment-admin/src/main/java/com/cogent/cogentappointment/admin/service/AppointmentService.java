@@ -35,8 +35,7 @@ public interface AppointmentService {
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId);
 
-    void approveRefundAppointment(Long appointmentId,
-                                  IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException;
+    void approveRefundAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException;
 
     void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO,
                                  IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException;
@@ -48,7 +47,7 @@ public interface AppointmentService {
 
     AppointmentPendingApprovalDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 
-    void approveAppointment(Long appointmentId, IntegrationBackendRequestDTO backendRequestDTO);
+    void approveAppointment(IntegrationBackendRequestDTO backendRequestDTO);
 
     void rejectAppointment(AppointmentRejectDTO rejectDTO);
 

@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.admin.dto.request.integration;
 
 import lombok.*;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -19,11 +18,15 @@ public class IntegrationBackendRequestDTO implements Serializable {
     private Long hospitalId;
 
     @NotNull
-    @NotEmpty
+    private Long appointmentId;
+
     private String featureCode;
 
-    @NotNull
-    @NotEmpty
+    private boolean patientStatus;
+
     private String integrationChannelCode;
+
+    private String hospitalNumber;
+
 
 }

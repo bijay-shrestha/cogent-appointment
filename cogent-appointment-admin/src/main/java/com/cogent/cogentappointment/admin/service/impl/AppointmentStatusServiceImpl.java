@@ -458,7 +458,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private boolean hasDepartmentAppointment(HospitalDeptAppointmentStatusResponseDTO appointment,
                                              HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
-        if(Objects.isNull(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId())) {
+        if(Objects.isNull(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId())
+                && Objects.isNull(appointment.getRoomId())) {
             return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
                     && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()));
         } else {

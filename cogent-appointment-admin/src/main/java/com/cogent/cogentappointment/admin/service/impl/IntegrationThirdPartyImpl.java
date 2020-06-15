@@ -114,8 +114,8 @@ public class IntegrationThirdPartyImpl {
         Map<String, String> queryParametersResponse = integrationRepository.
                 findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
 
-        List<String> requestBody = getRequestBodyByFeature(featureIntegrationResponse.getFeatureId(), featureIntegrationResponse.getRequestMethod());
-
+        List<String> requestBody = getRequestBodyByFeature(featureIntegrationResponse.getFeatureId(),
+                featureIntegrationResponse.getRequestMethod());
 
         BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
         integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());

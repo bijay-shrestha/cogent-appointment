@@ -649,10 +649,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> HOSPITAL_PATIENT_INFO_NOT_FOUND.apply(appointment.getPatientId().getId()));
 
         hospitalPatientInfo.setHospitalNumber(hospitalNumber);
-
-
     }
-
 
     private BheriHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 

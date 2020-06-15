@@ -166,7 +166,7 @@ public class AdminQuery {
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
-                    " a.email as email," +                                            //[1]
+                    " a.email as email," +                                                 //[1]
                     " a.fullName as fullName," +
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
@@ -178,8 +178,11 @@ public class AdminQuery {
                     " d.name as departmentName," +
                     " h.name as hospitalName," +                                           //[6]
                     " p.isAllRoleAssigned as isAllRoleAssigned," +                         //[7]
-                    " af.isSideBarCollapse as isSideBarCollapse," +                         //[8]
-                    " hl.fileUri as hospitalLogo"+
+                    " af.isSideBarCollapse as isSideBarCollapse," +                        //[8]
+                    " CASE " +
+                    "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
+                    "    ELSE hl.fileUri" +
+                    " END as hospitalLogo" +                                              //[9]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -189,7 +192,6 @@ public class AdminQuery {
                     " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
-                    " AND hl.status='Y'"+
                     " AND a.status='Y'" +
                     " AND h.id=:hospitalId";
 

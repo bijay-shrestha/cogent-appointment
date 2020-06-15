@@ -73,7 +73,7 @@ public class AppointmentResource {
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
     public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId,
                                                       @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
-        appointmentService.approveRefundAppointment(appointmentId,integrationBackendRequestDTO);
+        appointmentService.approveRefundAppointment(appointmentId, integrationBackendRequestDTO);
         return ok().build();
     }
 
@@ -81,7 +81,7 @@ public class AppointmentResource {
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
     public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO,
                                                      IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
-        appointmentService.rejectRefundAppointment(refundRejectDTO,integrationBackendRequestDTO);
+        appointmentService.rejectRefundAppointment(refundRejectDTO, integrationBackendRequestDTO);
         return ok().build();
     }
 

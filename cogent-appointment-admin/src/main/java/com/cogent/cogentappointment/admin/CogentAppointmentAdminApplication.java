@@ -26,10 +26,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
                 })
 @ComponentScan(basePackages = {
         "com.cogent.cogentappointment.admin",
-        "com.cogent.cogentappointment.commons.service",
+        "com.cogent.cogentappointment.admin.service",
+        "com.cogent.cogentappointment.commons.service.impl",
         "com.cogent.cogentappointment.commons.utils"})
 @EnableJpaRepositories(basePackages = {
         "com.cogent.cogentappointment.commons.repository",
+        "com.cogent.cogentappointment.commons.repository.custom",
         "com.cogent.cogentappointment.admin.repository"})
 public class CogentAppointmentAdminApplication extends SpringBootServletInitializer {
 

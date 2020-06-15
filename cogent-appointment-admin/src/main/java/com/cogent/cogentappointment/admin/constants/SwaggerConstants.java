@@ -18,6 +18,11 @@ public class SwaggerConstants {
             // other public endpoints of your API may be appended to this array
     };
 
+    public interface AddressConstant {
+        String BASE_API_VALUE = "This resource is used to fetch address details ";
+        String FETCH_ZONE_LIST="Fetch Zones for dropdown";
+    }
+
     public interface AdminConstant {
         String BASE_API_VALUE = "This is Admin Resource";
         String SAVE_OPERATION = "Save new admin";

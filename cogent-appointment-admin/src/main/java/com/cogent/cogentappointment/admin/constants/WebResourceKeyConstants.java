@@ -9,6 +9,10 @@ public class WebResourceKeyConstants {
     public static final String API_V1 = "/api/v1";
     public static final String ACTIVE = "/active";
 
+    public interface AddressConstants {
+        String BASE_ADDRESS = "/address";
+    }
+
     public interface AdminConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";

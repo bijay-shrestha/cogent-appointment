@@ -1,18 +1,20 @@
-package com.cogent.cogentappointment.admin.service.impl;
+package com.cogent.cogentappointment.commons.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.repository.AddressRepository;
-import com.cogent.cogentappointment.admin.service.AddressService;
+import com.cogent.cogentappointment.commons.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.commons.repository.AddressRepository;
+import com.cogent.cogentappointment.commons.service.AddressService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.AddressLog.ZONE;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.log.CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED;
+import static com.cogent.cogentappointment.commons.log.CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN;
+import static com.cogent.cogentappointment.commons.log.constants.AddressLog.ZONE;
+import static com.cogent.cogentappointment.commons.utils.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.commons.utils.DateUtils.getTimeInMillisecondsFromLocalDate;
+
 
 /**
  * @author Sauravi Thapa ON 6/16/20
@@ -21,7 +23,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
 @Service
 @Transactional(readOnly = true)
 @Slf4j
-public class AddressServiceImpl implements AddressService{
+public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
 

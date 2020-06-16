@@ -1,6 +1,6 @@
-package com.cogent.cogentappointment.admin.service;
+package com.cogent.cogentappointment.commons.service;
 
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.commons.dto.commons.DropDownResponseDTO;
 
 import java.util.List;
 

@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.admin.security.hmac;
 
 import com.cogent.cogentappointment.admin.service.impl.UserDetailsImpl;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.function.BiFunction;

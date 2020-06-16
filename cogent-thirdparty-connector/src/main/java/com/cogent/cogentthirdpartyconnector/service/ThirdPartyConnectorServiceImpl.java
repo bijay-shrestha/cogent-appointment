@@ -4,7 +4,6 @@ import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BheriHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import org.springframework.http.HttpEntity;
@@ -17,7 +16,7 @@ import java.util.Map;
 
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
-import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryPamarameter;
+import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryParameter;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
@@ -41,7 +40,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         String uri = "";
         Map<String, String> queryParameter = backendIntegrationApiInfo.getQueryParameters();
         if (queryParameter != null) {
-            uri = createQueryPamarameter(backendIntegrationApiInfo.getApiUri(), queryParameter).toUriString();
+            uri = createQueryParameter(backendIntegrationApiInfo.getApiUri(), queryParameter).toUriString();
         } else {
             uri = backendIntegrationApiInfo.getApiUri();
         }
@@ -53,29 +52,28 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         System.out.println(response);
 
-
         return response;
     }
 
     @Override
-    public ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo hospitalApiInfo,
+    public ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
                                                      EsewaRefundRequestDTO esewaRefundRequestDTO) {
 
 
-        HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
+        HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
         String uri = "";
-        Map<String, String> queryParameter = hospitalApiInfo.getQueryParameters();
+        Map<String, String> queryParameter = backendIntegrationApiInfo.getQueryParameters();
         if (queryParameter != null) {
-            uri = createQueryPamarameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
+            uri = createQueryParameter(backendIntegrationApiInfo.getApiUri(), queryParameter).toUriString();
         } else {
-            uri = hospitalApiInfo.getApiUri();
+            uri = backendIntegrationApiInfo.getApiUri();
         }
 
         ResponseEntity<?> response = restTemplateUtils.
                 requestAPI(httpMethod,
                         uri,
-                        new HttpEntity<>(esewaRefundRequestDTO, hospitalApiInfo.getHttpHeaders()));
+                        new HttpEntity<>(esewaRefundRequestDTO, backendIntegrationApiInfo.getHttpHeaders()));
 
         System.out.println(response);
 
@@ -86,7 +84,6 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         return thirdPartyResponse;
     }
@@ -101,7 +98,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
             Map<String, String> queryParameter = hospitalApiInfo.getQueryParameters();
             if (!queryParameter.isEmpty()) {
-                uri = createQueryPamarameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
+                uri = createQueryParameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
             }
         } else {
             uri = hospitalApiInfo.getApiUri();
@@ -125,12 +122,12 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         String uri = "";
         Map<String, String> queryParameter = integrationApiInfo.getQueryParameters();
+
         if (queryParameter != null) {
-            uri = createQueryPamarameter(integrationApiInfo.getApiUri(), queryParameter).toUriString();
+            uri = createQueryParameter(integrationApiInfo.getApiUri(), queryParameter).toUriString();
         } else {
             uri = integrationApiInfo.getApiUri();
         }
-
 
         ResponseEntity<?> response = restTemplateUtils.
                 requestAPI(httpMethod,
@@ -146,7 +143,6 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         return thirdPartyResponse;
     }

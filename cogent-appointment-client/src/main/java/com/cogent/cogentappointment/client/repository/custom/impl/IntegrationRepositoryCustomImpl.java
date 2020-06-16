@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
-import static com.cogent.cogentappointment.client.query.IntegrationQuery.CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY;
+import static com.cogent.cogentappointment.client.query.IntegrationQuery.CLIENT_FEATURES_INTEGRATION_BACKEND_API_QUERY;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
@@ -40,7 +40,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     @Override
     public List<FeatureIntegrationResponse> fetchClientIntegrationResponseDTO(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_FEAUTRES_INTEGRATION_API_QUERY)
+        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_FEATURES_INTEGRATION_API_QUERY)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         List<FeatureIntegrationResponse> responseDTOList =
@@ -83,7 +83,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     @Override
     public FeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
-        Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY)
+        Query query = createQuery.apply(entityManager, CLIENT_FEATURES_INTEGRATION_BACKEND_API_QUERY)
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
                 .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
                 .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());

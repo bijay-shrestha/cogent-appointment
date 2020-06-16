@@ -41,9 +41,14 @@ public class HospitalDeptDutyRosterQuery {
                 " dr.toDate as toDate," +                                              //[4]
                 " dr.status as status," +                                              //[5],
                 " dr.hospital.name as hospitalName," +                                 //[6]
-                " dr.isRoomEnabled as isRoomEnabled"+                                 //[7]
+                " dr.isRoomEnabled as isRoomEnabled,"+                                 //[7]
+                " CASE WHEN dr.isRoomEnabled = 'N' THEN null" +
+                " WHEN dr.isRoomEnabled = 'Y' THEN hri.room.roomNumber" +
+                " END AS roomNumber" +                                                 //[8]
                 " FROM HospitalDepartmentDutyRoster dr" +
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
+                " LEFT OUTER JOIN HospitalDepartmentDutyRosterRoomInfo hr ON dr.id = hr.hospitalDepartmentDutyRoster.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hri ON hri.id = hr.hospitalDepartmentRoomInfo.id" +
                 " WHERE" +
                 " dr.status !='D'" +
                 " AND dr.toDate >=:fromDate AND dr.fromDate <=:toDate";

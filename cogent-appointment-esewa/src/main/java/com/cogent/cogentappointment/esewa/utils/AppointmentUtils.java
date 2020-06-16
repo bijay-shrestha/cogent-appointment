@@ -157,19 +157,6 @@ public class AppointmentUtils {
         return datePlusTime(utilDateToSqlDate(appointmentDate), Objects.requireNonNull(parseTime(appointmentTime)));
     }
 
-    private static void parseToAppointment(Patient patient,
-                                           Specialization specialization,
-                                           Doctor doctor,
-                                           Hospital hospital,
-                                           Appointment appointment) {
-        appointment.setDoctorId(doctor);
-        appointment.setSpecializationId(specialization);
-        appointment.setHospitalId(hospital);
-        appointment.setPatientId(patient);
-        appointment.setStatus(PENDING_APPROVAL);
-        appointment.setSerialNumber(generateRandomNumber(6));
-    }
-
     public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber,
                                                                                      Character transactionStatus,
                                                                                      Double refundPercentage) {

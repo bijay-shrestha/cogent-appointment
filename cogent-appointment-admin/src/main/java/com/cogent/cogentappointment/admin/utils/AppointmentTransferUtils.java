@@ -126,7 +126,8 @@ public class AppointmentTransferUtils {
                                                              Doctor doctor) {
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
         appointment.setAppointmentTime(parseAppointmentTime(appointment.getAppointmentDate(), requestDTO.getAppointmentTime()));
-        appointment.setDoctorId(doctor);
+        //todo : fix this
+//        appointment.setDoctorId(doctor);
         appointment.setRemarks(requestDTO.getRemarks());
         appointment.setHasTransferred(YES);
         return appointment;
@@ -139,7 +140,8 @@ public class AppointmentTransferUtils {
         parseAppointmentTransferDetail(appointment,
                 requestDTO,
                 doctor);
-        appointment.setSpecializationId(specialization);
+        //todo : fix this
+//        appointment.setSpecializationId(specialization);
         return appointment;
     }
 

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.HospitalDepartmentLogsService;
 import io.swagger.annotations.Api;
@@ -20,7 +21,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author Sauravi Thapa ON 6/12/20
  */
-@RequestMapping(API_V1)
+@RequestMapping(API_V1 + BASE_HOSPITAL_DEPARTMENT)
 @RestController
 @Api(BASE_API_VALUE)
 public class HospitalDepartmentLogsResource {
@@ -31,7 +32,7 @@ public class HospitalDepartmentLogsResource {
         this.hospitalDepartmentLogsService = hospitalDepartmentLogsService;
     }
 
-    @PutMapping(BASE_HOSPITAL_DEPARTMENT + BASE_APPOINTMENT + LOG)
+    @PutMapping(BASE_APPOINTMENT + LOG)
     @ApiOperation(FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG)
     public ResponseEntity<?> fetchHospitalDepartmentAppointmentLog(
             @RequestBody HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
@@ -42,7 +43,7 @@ public class HospitalDepartmentLogsResource {
         return ok().body(hospitalDepartmentLogsService.searchAppointmentLogs(searchRequestDTO, pageable));
     }
 
-    @PutMapping(BASE_HOSPITAL_DEPARTMENT + TRANSACTION + LOG)
+    @PutMapping(TRANSACTION + LOG)
     @ApiOperation(FETCH_HOSPITAL_DEPARTMENT_TRANSACTION_LOG)
     public ResponseEntity<?> fetchHospitalDepartmentTransactionLog(
             @RequestBody HospitalDepartmentTransactionLogSearchDTO searchRequestDTO,
@@ -53,8 +54,8 @@ public class HospitalDepartmentLogsResource {
         return ok().body(hospitalDepartmentLogsService.searchTransactionLogs(searchRequestDTO, pageable));
     }
 
-//    todo: test left
-    @PutMapping(BASE_HOSPITAL_DEPARTMENT + RESCHEDULE + LOG)
+    //    todo: test left
+    @PutMapping(RESCHEDULE + LOG)
     @ApiOperation(FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_LOG)
     public ResponseEntity<?> fetchHospitalDepartmentRescheduleLog(
             @RequestBody HospitalDepartmentAppointmentRescheduleLogSearchDTO searchRequestDTO,
@@ -65,5 +66,13 @@ public class HospitalDepartmentLogsResource {
         return ok().body(hospitalDepartmentLogsService.searchRescheduleLogs(searchRequestDTO, pageable));
     }
 
-
+    @PutMapping(PENDING_APPROVAL)
+    @ApiOperation(FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT)
+    public ResponseEntity<?> fetchHospitalDepartmentRescheduleLog(
+            @RequestBody AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(hospitalDepartmentLogsService.searchPendingHospitalDeptAppointments(searchDTO, pageable));
+    }
 }

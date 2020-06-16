@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.OK;
 
 /**
@@ -39,6 +37,4 @@ public class RestTemplateUtils {
 
         return new ResponseEntity<>(response.getBody(), OK);
     }
-
-
 }

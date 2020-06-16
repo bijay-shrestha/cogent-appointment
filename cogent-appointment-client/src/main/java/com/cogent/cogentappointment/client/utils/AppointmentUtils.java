@@ -339,7 +339,7 @@ public class AppointmentUtils {
     }
 
     public static Appointment parseAppointmentRejectDetails(AppointmentRejectDTO rejectDTO,
-                                                     Appointment appointment) {
+                                                            Appointment appointment) {
         appointment.setStatus(REJECTED);
         appointment.setRemarks(rejectDTO.getRemarks());
 
@@ -374,7 +374,7 @@ public class AppointmentUtils {
             final int APPOINTMENT_MODE_INDEX = 18;
             final int IS_FOLLOW_UP_INDEX = 19;
             final int REVENUE_AMOUNT_INDEX = 20;
-            final int DOCTOR_AVATAR_INDEX=21;
+            final int DOCTOR_AVATAR_INDEX = 21;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];

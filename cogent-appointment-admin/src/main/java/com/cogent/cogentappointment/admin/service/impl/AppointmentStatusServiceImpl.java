@@ -75,7 +75,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                                         AppointmentRepository appointmentRepository,
                                         HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
                                                 hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository,
-                                         RoomRepository roomRepository) {
+                                        RoomRepository roomRepository) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.deptDutyRosterOverrideRepository = deptDutyRosterOverrideRepository;
         this.deptDutyRosterRepository = deptDutyRosterRepository;
@@ -128,14 +128,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         hospitalDeptDutyRosterStatus = setDepartmentAppointmentTimeSlot(requestDTO.getStatus(),
                 hospitalDeptDutyRosterStatus, appointments);
 
-        List<HospitalDeptAndWeekdaysDTO> hospitalDepartmentIdsAndWeekDaysList=getHospitalDepartmentIdsAndWeekDays
+        List<HospitalDeptAndWeekdaysDTO> hospitalDepartmentIdsAndWeekDaysList = getHospitalDepartmentIdsAndWeekDays
                 (hospitalDeptDutyRosterStatus);
 
-        List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorDTOS=fetchHospitalDeptAndDoctorInfo
+        List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorDTOS = fetchHospitalDeptAndDoctorInfo
                 (hospitalDepartmentIdsAndWeekDaysList);
 
         HospitalDeptAppointmentStatusDTO appointmentStatusDTO = parseToHospitalDeptAppointmentStatusDTO
-                (hospitalDeptDutyRosterStatus,hospitalDeptAndDoctorDTOS);
+                (hospitalDeptDutyRosterStatus, hospitalDeptAndDoctorDTOS);
 
         log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_APPOINTMENT_STATUS, getDifferenceBetweenTwoTime(startTime));
 
@@ -163,43 +163,43 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
 
-    private void fetchRoomByDepartmentId(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS){
+    private void fetchRoomByDepartmentId(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS) {
 
         rosterStatusResponseDTOS.forEach(rosterStatusResponseDTO -> {
-            List<DropDownResponseDTO> roomList=roomRepository.fetchActiveMinRoomForAppointmentStatus(
+            List<DropDownResponseDTO> roomList = roomRepository.fetchActiveMinRoomForAppointmentStatus(
                     rosterStatusResponseDTO.getHospitalDepartmentId());
 
-        rosterStatusResponseDTO.setRoomList(roomList);
+            rosterStatusResponseDTO.setRoomList(roomList);
         });
 
     }
 
     private List<HospitalDeptAndDoctorDTO> fetchHospitalDeptAndDoctorInfo
-            (List<HospitalDeptAndWeekdaysDTO> deptAndWeekdaysDTOS){
+            (List<HospitalDeptAndWeekdaysDTO> deptAndWeekdaysDTOS) {
 
-        List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorDTOS=new ArrayList<>();
+        List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorDTOS = new ArrayList<>();
 
         deptAndWeekdaysDTOS.forEach(hospitalDeptAndWeekdaysDTO -> {
-            HospitalDeptAndDoctorDTO hospitalDeptAndDoctorDTO= hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
+            HospitalDeptAndDoctorDTO hospitalDeptAndDoctorDTO = hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
                     .fetchHospitalDeptAndDoctorInfo(hospitalDeptAndWeekdaysDTO);
-            hospitalDeptAndDoctorDTOS.add(hospitalDeptAndDoctorDTO) ;
+            hospitalDeptAndDoctorDTOS.add(hospitalDeptAndDoctorDTO);
         });
 
         return hospitalDeptAndDoctorDTOS;
     }
 
     private List<HospitalDeptAndWeekdaysDTO> getHospitalDepartmentIdsAndWeekDays
-            (List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus){
-        List<HospitalDeptAndWeekdaysDTO> hospitalDeptAndWeekdaysDTOS=new ArrayList<>();
+            (List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus) {
+        List<HospitalDeptAndWeekdaysDTO> hospitalDeptAndWeekdaysDTOS = new ArrayList<>();
 
-       hospitalDeptDutyRosterStatus.forEach(rosterStatusResponseDTO -> {
-           HospitalDeptAndWeekdaysDTO hospitalDeptAndWeekdaysDTO=new HospitalDeptAndWeekdaysDTO();
-           hospitalDeptAndWeekdaysDTO.setHospitalDepartmentId(rosterStatusResponseDTO.getHospitalDepartmentId());
-           hospitalDeptAndWeekdaysDTO.setWeekDay(rosterStatusResponseDTO.getDate().getDayOfWeek().toString());
-           hospitalDeptAndWeekdaysDTOS.add(hospitalDeptAndWeekdaysDTO);
-       });
+        hospitalDeptDutyRosterStatus.forEach(rosterStatusResponseDTO -> {
+            HospitalDeptAndWeekdaysDTO hospitalDeptAndWeekdaysDTO = new HospitalDeptAndWeekdaysDTO();
+            hospitalDeptAndWeekdaysDTO.setHospitalDepartmentId(rosterStatusResponseDTO.getHospitalDepartmentId());
+            hospitalDeptAndWeekdaysDTO.setWeekDay(rosterStatusResponseDTO.getDate().getDayOfWeek().toString());
+            hospitalDeptAndWeekdaysDTOS.add(hospitalDeptAndWeekdaysDTO);
+        });
 
-       return hospitalDeptAndWeekdaysDTOS;
+        return hospitalDeptAndWeekdaysDTOS;
     }
 
     /*IN CASE OF PAST DATE ->
@@ -471,7 +471,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus =
                 deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(
-                        requestDTO,getRosterIdList(hospitalDeptDutyRosterStatus));
+                        requestDTO, getRosterIdList(hospitalDeptDutyRosterStatus));
 
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(DoctorDutyRoster.class);
@@ -486,7 +486,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 deptDutyRosterRepository.fetchHospitalDeptDutyRosterStatusRoomWise(requestDTO);
 
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus =
-                deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO,getRosterIdList(hospitalDeptDutyRosterStatus));
+                deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO, getRosterIdList(hospitalDeptDutyRosterStatus));
 
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(DoctorDutyRoster.class);
@@ -494,7 +494,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
     }
 
-    private List<Long> getRosterIdList(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS){
+    private List<Long> getRosterIdList(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS) {
         return rosterStatusResponseDTOS
                 .stream()
                 .map(HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentRoomInfoId)

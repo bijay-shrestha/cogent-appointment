@@ -47,8 +47,6 @@ public class TransactionLogDTO implements Serializable{
 
     private String mobileNumber;
 
-    private String doctorSalutation;
-
     private String doctorName;
 
     private String specializationName;

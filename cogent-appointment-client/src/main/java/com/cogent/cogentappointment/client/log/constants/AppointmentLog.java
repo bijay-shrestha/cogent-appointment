@@ -47,8 +47,6 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
 
-    public final static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
-
     public final static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
 
 

@@ -233,22 +233,27 @@ public class AppointmentQuery {
                             " p.gender as patientGender," +                                               //[9]
                             " p.mobileNumber as mobileNumber," +                                         //[10]
                             " sp.name as specializationName," +                                         //[11]
-                            " d.name as doctorName," +                                                  //[12]
+                            " CASE WHEN" +
+                            " (d.salutation is null)" +
+                            " THEN d.name" +
+                            " ELSE" +
+                            " CONCAT_WS(' ',d.salutation, d.name)" +
+                            " END as doctorName," +                                                     //[12]
                             " atd.transactionNumber as transactionNumber," +                            //[13]
                             " atd.appointmentAmount as appointmentAmount," +                            //[14]
                             " arl.remarks as remarks," +                                               //[15]
                             " a.isFollowUp as isFollowUp," +                                           //[16]
-                            " da.fileUri as fileUri," +                                                  //[17]
-                            " d.salutation as doctorSalutation" +
+                            " da.fileUri as fileUri" +                                                 //[17]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                            " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
                             " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
-                            " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
+                            " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
-                            " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                            " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                             " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                             GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(appointmentRescheduleLogSearchDTO);
 
@@ -295,13 +300,14 @@ public class AppointmentQuery {
                         " COALESCE(SUM(atd.appointmentAmount),0)" +
                         " FROM AppointmentRescheduleLog arl" +
                         " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                        " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                         " LEFT JOIN Patient p ON p.id=a.patientId" +
                         " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                         " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                        " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
-                        " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
+                        " LEFT JOIN Hospital h ON h.id = a.hospitalId" +
+                        " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                         " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
-                        " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                        " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                         GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
     }
 

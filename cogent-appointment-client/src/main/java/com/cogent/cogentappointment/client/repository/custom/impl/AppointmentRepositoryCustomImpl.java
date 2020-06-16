@@ -349,7 +349,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                         Pageable pageable,
                                                                         Long hospitalId) {
 
-        Query query = getQueryToFetchfetchAppointmentCancelApprovals(searchDTO, hospitalId);
+        Query query = getQueryToFetchAppointmentCancelApprovals(searchDTO, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -629,8 +629,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         throw new NoContentFoundException(Appointment.class);
     };
 
-    private Query getQueryToFetchfetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,
-                                                                 Long hospitalId) {
+    private Query getQueryToFetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,
+                                                            Long hospitalId) {
 
         return createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENTS_CANCEL_APPROVALS(searchDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);

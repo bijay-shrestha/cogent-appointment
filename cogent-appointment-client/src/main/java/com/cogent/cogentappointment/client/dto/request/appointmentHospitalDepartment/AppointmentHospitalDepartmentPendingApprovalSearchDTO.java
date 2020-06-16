@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval;
+package com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,13 +7,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author Rupak
+ * @author smriti on 14/06/20
  */
 @Getter
 @Setter
-public class AppointmentPendingApprovalSearchDTO implements Serializable {
-
-    private Long hospitalId;
+public class AppointmentHospitalDepartmentPendingApprovalSearchDTO implements Serializable {
 
     private Date fromDate;
 
@@ -23,9 +21,7 @@ public class AppointmentPendingApprovalSearchDTO implements Serializable {
 
     private Long patientMetaInfoId;
 
-    private Long doctorId;
-
-    private Long specializationId;
+    private Long hospitalDepartmentId;
 
     private Character patientType;
 

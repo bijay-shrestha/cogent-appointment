@@ -467,10 +467,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(responseMap.getKey());
 
             adminModeFeatureIntegrationResponseDTOS.add(adminModeFeatureIntegrationResponseDTO);
-
-
         });
-
 
         return adminModeFeatureIntegrationResponseDTOS;
 
@@ -536,7 +533,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                         .map(request -> request.getName())
                         .collect(Collectors.toList()).toArray();
             }
-
         }
 
         return requestBody;
@@ -570,7 +566,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
 
         return featureIntegrationResponseDTO;
-
     }
 
     private FeatureIntegrationResponseDTO convertToClientApiResponseDTO(ClientFeatureIntegrationResponse responseDTO,
@@ -596,7 +591,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
 
         return featureIntegrationResponseDTO;
-
     }
 
     @Override
@@ -911,8 +905,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         }
 
         return map;
-
-
     }
 
 

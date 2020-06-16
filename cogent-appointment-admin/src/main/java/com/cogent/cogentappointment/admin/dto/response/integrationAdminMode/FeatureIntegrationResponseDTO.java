@@ -21,5 +21,4 @@ public class FeatureIntegrationResponseDTO implements Serializable {
 
     private ApiInfoResponseDTO apiInfo;
 
-
 }

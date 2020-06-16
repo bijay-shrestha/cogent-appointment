@@ -124,11 +124,8 @@ public class RefundStatusServiceImpl implements RefundStatusService {
             case AMBIGUOUS:
                 approveRefundAppointment(requestDTO);
 
-
             default:
                 approveRefundAppointment(requestDTO);
-
-
         }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
@@ -179,7 +176,6 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         ThirdPartyResponse response = thirdPartyConnectorService.callEsewaRefundStatusService(integrationApiInfo,
                 esewaPayementStatus);
-
 
         return response;
     }

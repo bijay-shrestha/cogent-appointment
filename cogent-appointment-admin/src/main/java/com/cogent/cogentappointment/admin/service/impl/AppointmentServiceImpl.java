@@ -60,7 +60,7 @@ import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
+import static com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils.map;
 
 /**
  * @author smriti on 2019-10-22
@@ -86,22 +86,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final ThirdPartyConnectorService thirdPartyConnectorService;
 
-    private final IntegrationRepository integrationRepository;
-
     private final IntegrationThirdPartyImpl integrationEsewaService;
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
-                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository,
-                                  AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
-                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
-                                  PatientService patientService,
-                                  AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
-                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
-                                  ThirdPartyConnectorService thirdPartyConnectorService,
-                                  IntegrationRepository integrationRepository,
-                                  IntegrationThirdPartyImpl integrationEsewaService, HospitalPatientInfoRepository hospitalPatientInfoRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentRefundDetailRepository appointmentRefundDetailRepository, AppointmentTransactionDetailRepository appointmentTransactionDetailRepository, AppointmentFollowUpTrackerService appointmentFollowUpTrackerService, PatientService patientService, AppointmentFollowUpLogRepository appointmentFollowUpLogRepository, AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService, ThirdPartyConnectorService thirdPartyConnectorService, IntegrationThirdPartyImpl integrationEsewaService, HospitalPatientInfoRepository hospitalPatientInfoRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
@@ -110,13 +99,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
-        this.integrationRepository = integrationRepository;
         this.integrationEsewaService = integrationEsewaService;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
     }
-
-
-//    private final RestTemplateUtils restTemplateUtils;
 
 
     @Override
@@ -242,12 +227,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPROVAL_LIST);
+        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPOINTMENT_APPROVAL);
 
         AppointmentPendingApprovalResponseDTO responseDTOS =
                 appointmentRepository.searchPendingVisitApprovals(searchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPOINTMENT_APPROVAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -581,7 +566,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                         refundAppointmentDetail,
                         response);
                 throw new BadRequestException(response, response);
-
         }
     }
 

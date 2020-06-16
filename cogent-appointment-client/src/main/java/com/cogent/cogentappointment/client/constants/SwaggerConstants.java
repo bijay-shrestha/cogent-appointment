@@ -99,6 +99,15 @@ public class SwaggerConstants {
             // other public endpoints of your API may be appended to this array
     };
 
+    public interface AppointmentHospitalDepartmentConstant {
+        String BASE_API_VALUE = "This resource consists of APIs for  logs(transaction, appointment," +
+                " reschedule, transfer) based on hospital department ";
+        String FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG = "Fetch Appointment Log based on hospital department";
+        String FETCH_HOSPITAL_DEPARTMENT_TRANSACTION_LOG = "Fetch Transaction Log based on hospital department";
+        String FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_LOG = "Fetch Reschedule Log based on hospital department";
+        String FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT = "Fetch pending hospital department appointments";
+    }
+
     //B
     public interface BillingModeConstant {
         String BASE_API_VALUE = "This is Billing Mode Resource.";
@@ -348,7 +357,7 @@ public class SwaggerConstants {
     public interface RefundStatusConstant {
         String BASE_API_VALUE = "This is Refund Status Resource";
         String FETCH_APPOINTMENT_REFUND_DETAIL_LIST = "Fetch Appointment Refund Details List(status='PA','R','A')";
-        String FETCH_REFUND_DETAILS_TO_APPROVE="Fetch Appointment Refund Details To Approve(change status to A) ";
+        String FETCH_REFUND_DETAILS_TO_APPROVE = "Fetch Appointment Refund Details To Approve(change status to A) ";
         String FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
     }
 

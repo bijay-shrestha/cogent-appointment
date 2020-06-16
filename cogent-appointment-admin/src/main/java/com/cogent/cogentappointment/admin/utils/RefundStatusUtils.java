@@ -15,22 +15,21 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.Appoi
  */
 public class RefundStatusUtils {
 
-
-    public static BiFunction<Appointment,String,Appointment> changeAppointmentStatus=(appointment,remarks) -> {
+    public static BiFunction<Appointment, String, Appointment> changeAppointmentStatus = (appointment, remarks) -> {
         appointment.setStatus(REFUNDED);
         appointment.setRemarks(remarks);
 
         return appointment;
     };
 
-    public static BiFunction<Appointment,String,Appointment> defaultAppointmentStatusChange=(appointment,remarks) -> {
+    public static BiFunction<Appointment, String, Appointment> defaultAppointmentStatusChange = (appointment, remarks) -> {
         appointment.setRemarks(remarks);
 
         return appointment;
     };
 
-    public static BiFunction<AppointmentRefundDetail,String,AppointmentRefundDetail> changeAppointmentRefundDetailStatus
-            =(refundDetail,remarks) -> {
+    public static BiFunction<AppointmentRefundDetail, String, AppointmentRefundDetail> changeAppointmentRefundDetailStatus
+            = (refundDetail, remarks) -> {
         refundDetail.setRefundedDate(new Date());
         refundDetail.setStatus(APPROVED);
         refundDetail.setRemarks(remarks);
@@ -38,19 +37,18 @@ public class RefundStatusUtils {
         return refundDetail;
     };
 
-    public static BiFunction<AppointmentRefundDetail,String,AppointmentRefundDetail>
-            defaultAppointmentRefundDetailStatusChange=(refundDetail,remarks) -> {
+    public static BiFunction<AppointmentRefundDetail, String, AppointmentRefundDetail>
+            defaultAppointmentRefundDetailStatusChange = (refundDetail, remarks) -> {
         refundDetail.setRemarks(remarks);
 
         return refundDetail;
     };
 
-    public static EsewaPayementStatus parseToEsewaPaymentStatus(RefundStatusRequestDTO requestDTO){
-        return  EsewaPayementStatus.builder()
+    public static EsewaPayementStatus parseToEsewaPaymentStatus(RefundStatusRequestDTO requestDTO) {
+        return EsewaPayementStatus.builder()
                 .esewa_id("9841409090")
                 .product_code("testBir")
                 .transaction_code("5VP")
                 .build();
-
     }
 }

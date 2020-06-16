@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class QueryParameterUtils {
 
-    public static UriComponentsBuilder createQueryPamarameter(String uri, Map<String, String> queryParameter) {
+    public static UriComponentsBuilder createQueryParameter(String uri, Map<String, String> queryParameter) {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(uri);
         queryParameter.forEach((key, value) -> {

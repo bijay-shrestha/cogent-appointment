@@ -20,7 +20,7 @@ public class ClientSaveRequestDTO implements Serializable {
     private int ageDay;
     private String sex;
     private String district;
-    private String  vdc;
+    private String vdc;
     private String wardNo;
     private String address;
     private String phoneNo;
@@ -29,7 +29,6 @@ public class ClientSaveRequestDTO implements Serializable {
     private String section;
     private String roomNo;
     private String appointmentNo;
-
 
 
 }

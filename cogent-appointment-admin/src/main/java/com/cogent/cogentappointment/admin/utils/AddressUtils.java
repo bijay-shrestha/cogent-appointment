@@ -1,6 +1,6 @@
-package com.cogent.cogentappointment.commons.utils;
+package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.commons.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.function.Function;
  */
 public class AddressUtils {
 
-    public static Function<List<Object[]> ,List<DropDownResponseDTO>> parseToZoneDropDown=results -> {
+    public static Function<List<Object[]> ,List<DropDownResponseDTO>> parseToZoneDropDown= results -> {
         List<DropDownResponseDTO> responseDTOS=new ArrayList<>();
 
         results.forEach(result->{

@@ -1,6 +1,6 @@
-package com.cogent.cogentappointment.commons.repository.custom;
+package com.cogent.cogentappointment.admin.repository.custom;
 
-import com.cogent.cogentappointment.commons.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 

@@ -14,12 +14,13 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.App
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.PENDING_APPROVAL;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * @author smriti on 16/06/20
  */
-@RequestMapping(API_V1 + BASE_HOSPITAL_DEPARTMENT)
+@RequestMapping(API_V1 + APPOINTMENT + BASE_HOSPITAL_DEPARTMENT)
 @RestController
 @Api(BASE_API_VALUE)
 public class AppointmentHospitalDepartmentResource {

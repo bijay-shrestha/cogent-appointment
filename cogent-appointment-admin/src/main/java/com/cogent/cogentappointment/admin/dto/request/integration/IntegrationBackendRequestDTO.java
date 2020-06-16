@@ -18,10 +18,10 @@ public class IntegrationBackendRequestDTO implements Serializable {
     @NotNull
     private Long hospitalId;
 
+    private String featureCode;
+
     @NotNull
     private Long appointmentId;
-
-    private String featureCode;
 
     private boolean patientStatus;
 

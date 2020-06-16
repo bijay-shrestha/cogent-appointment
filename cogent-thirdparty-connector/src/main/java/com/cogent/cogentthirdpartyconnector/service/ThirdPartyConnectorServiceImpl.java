@@ -33,7 +33,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> callBheriHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
+    public ResponseEntity<?> callThirdPartyHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
 
         HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
@@ -45,10 +45,13 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
             uri = backendIntegrationApiInfo.getApiUri();
         }
 
-        ResponseEntity<?> response = restTemplateUtils.
-                requestAPI(httpMethod,
-                        uri,
-                        new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
+            ResponseEntity<?> response = restTemplateUtils.
+                    requestAPI(httpMethod,
+                            uri,
+                            new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
+
+        //todo
+        //exceptions to be handled
 
         System.out.println(response);
 

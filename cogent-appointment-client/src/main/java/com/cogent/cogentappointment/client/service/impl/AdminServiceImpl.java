@@ -14,6 +14,8 @@ import com.cogent.cogentappointment.client.dto.response.clientIntegration.Featur
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.integration.IntegrationBodyAttributeResponse;
+import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
+import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -39,7 +41,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
+import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
@@ -89,6 +91,9 @@ public class AdminServiceImpl implements AdminService {
 
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
 
+    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
+    private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
+
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -100,7 +105,11 @@ public class AdminServiceImpl implements AdminService {
                             MinioFileService minioFileService,
                             EmailService emailService,
                             ProfileService profileService,
-                            AdminFeatureService adminFeatureService, IntegrationRepository integrationRepository, IntegrationRequestBodyParametersRepository requestBodyParametersRepository) {
+                            AdminFeatureService adminFeatureService,
+                            IntegrationRepository integrationRepository,
+                            IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
+                            AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
+                            AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -115,6 +124,8 @@ public class AdminServiceImpl implements AdminService {
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
+        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
+        this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
     }
 
     @Override
@@ -420,13 +431,78 @@ public class AdminServiceImpl implements AdminService {
             map.put(response.getName(), "");
         });
 
-        ClientIntegrationResponseDTO integrationResponseDTO = getHospitalApiIntegration(getLoggedInHospitalId());
-        responseDTO.setECIntegrate(integrationResponseDTO);
+        responseDTO.setECIntegrate(getApiIntegrations());
         responseDTO.setRequestBody(map);
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+
+    private Map<String, ?> getApiIntegrations() {
+
+        AdminModeFeatureIntegrationResponseDTO featureIntegrationResponseDTO =
+                getAdminModeApiIntegration();
+
+        ClientIntegrationResponseDTO clientIntegrationResponseDTO =
+                getHospitalApiIntegration(getLoggedInHospitalId());
+
+        Map<String, ?> map = new HashMap();
+
+        Map<String, FeatureIntegrationResponseDTO> appointmentModeMap = new HashMap();
+        Map<String, ClientIntegrationResponseDTO> clientMap = new HashMap();
+
+        if (clientIntegrationResponseDTO != null) {
+            clientMap.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTO);
+        }
+
+        if (featureIntegrationResponseDTO != null) {
+            appointmentModeMap.put(KEY_APPOINTMENT_MODE_INTEGRATION, featureIntegrationResponseDTO);
+        }
+
+        return map;
+    }
+
+    private AdminModeFeatureIntegrationResponseDTO getAdminModeApiIntegration() {
+
+        AdminFeatureIntegrationResponse integrationResponse = adminModeFeatureIntegrationRepository.
+                fetchAdminModeIntegrationResponseDTO();
+
+        List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                        findAdminModeApiRequestHeaders(integrationResponse.getApiIntegrationFormatId());
+
+                Map<String, String> queryParametersResponseDTO = integrationRepository.
+                        findAdminModeApiQueryParameters(integrationResponse.getApiIntegrationFormatId());
+
+        Object[] requestBody = getRequestBodyByFeature(integrationResponse.getFeatureId(),
+                integrationResponse.getRequestMethod());
+
+
+        FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
+        if (integrationResponse.getIntegrationChannelCode() != null ||
+                !integrationResponse.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+            ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+
+            apiInfoResponseDTO.setUrl(integrationResponse.getUrl());
+            apiInfoResponseDTO.setRequestMethod(integrationResponse.getRequestMethod());
+            apiInfoResponseDTO.setRequestBody(requestBody);
+//            apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+//            apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+            featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+        }
+
+        features.add(featureIntegrationResponseDTO);
+
+        AdminModeFeatureIntegrationResponseDTO adminModeFeatureIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
+        adminModeFeatureIntegrationResponseDTO.setFeatures(features);
+
+
+        return adminModeFeatureIntegrationResponseDTO;
+
     }
 
     private ClientIntegrationResponseDTO getHospitalApiIntegration(Long hospitalId) {

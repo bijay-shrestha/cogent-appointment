@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface ThirdPartyConnectorService {
 
-    ResponseEntity<?> callBheriHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
+    ResponseEntity<?> callThirdPartyHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
 
 
     ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,

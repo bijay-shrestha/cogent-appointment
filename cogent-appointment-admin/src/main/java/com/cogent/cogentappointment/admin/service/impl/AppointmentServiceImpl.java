@@ -29,7 +29,7 @@ import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BheriHospitalResponse;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
@@ -280,33 +280,33 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private BheriHospitalResponse apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    private ThirdPartyHospitalResponse apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = integrationEsewaService.getHospitalApiIntegration(integrationBackendRequestDTO);
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
 
 
-        BheriHospitalResponse bheriHospitalResponse = null;
+        ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;
         try {
-            bheriHospitalResponse = map(responseEntity.getBody().toString(),
-                    BheriHospitalResponse.class);
+            thirdPartyHospitalResponse = map(responseEntity.getBody().toString(),
+                    ThirdPartyHospitalResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        validateBheriHospitalResponse(bheriHospitalResponse);
+        validateBheriHospitalResponse(thirdPartyHospitalResponse);
 
-        return bheriHospitalResponse;
+        return thirdPartyHospitalResponse;
 
     }
 
-    private void validateBheriHospitalResponse(BheriHospitalResponse bheriHospitalResponse) {
+    private void validateBheriHospitalResponse(ThirdPartyHospitalResponse thirdPartyHospitalResponse) {
 
-        if (parseInt(bheriHospitalResponse.getStatusCode()) == 500) {
+        if (parseInt(thirdPartyHospitalResponse.getStatusCode()) == 500) {
             throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_ERROR);
         }
 
-        if (parseInt(bheriHospitalResponse.getStatusCode()) == 400) {
+        if (parseInt(thirdPartyHospitalResponse.getStatusCode()) == 400) {
             throw new OperationUnsuccessfulException(INTEGRATION_API_BAD_REQUEST);
         }
 
@@ -327,10 +327,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         //backend integration
         if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-            BheriHospitalResponse bheriHospitalResponse = apiIntegrationCheckpoint(integrationRequestDTO);
+            ThirdPartyHospitalResponse thirdPartyHospitalResponse = apiIntegrationCheckpoint(integrationRequestDTO);
 
             if (integrationRequestDTO.isPatientStatus()) {
-                updateHospitalPatientInfo(appointment, bheriHospitalResponse.getResponseData());
+                updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
             }
         }
     }

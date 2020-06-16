@@ -47,7 +47,7 @@ import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BheriHospitalResponse;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
@@ -633,10 +633,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         //backend integration
         if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-            BheriHospitalResponse bheriHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO);
+            ThirdPartyHospitalResponse thirdPartyHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO);
 
             if (integrationRequestDTO.isPatientStatus()) {
-                updateHospitalPatientInfo(appointment, bheriHospitalResponse.getResponseData());
+                updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
             }
         }
 
@@ -651,30 +651,30 @@ public class AppointmentServiceImpl implements AppointmentService {
         hospitalPatientInfo.setHospitalNumber(hospitalNumber);
     }
 
-    private BheriHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    private ThirdPartyHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
-        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callBheriHospitalService(integrationHospitalApiInfo);
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callThirdPartyHospitalService(integrationHospitalApiInfo);
 
-        BheriHospitalResponse bheriHospitalResponse = null;
+        ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;
         try {
-            bheriHospitalResponse = map(responseEntity.getBody().toString(),
-                    BheriHospitalResponse.class);
+            thirdPartyHospitalResponse = map(responseEntity.getBody().toString(),
+                    ThirdPartyHospitalResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (bheriHospitalResponse.getStatusCode().equalsIgnoreCase("500")) {
-            throw new OperationUnsuccessfulException("An error occurred while saving the patient record.");
+        if (thirdPartyHospitalResponse.getStatusCode().equalsIgnoreCase("500")) {
+            throw new OperationUnsuccessfulException(thirdPartyHospitalResponse.getResponseMessage());
         }
 
-        if (bheriHospitalResponse.getStatusCode().equalsIgnoreCase("400")) {
+        if (thirdPartyHospitalResponse.getStatusCode().equalsIgnoreCase("400")) {
             throw new OperationUnsuccessfulException("Bad Third Party API Request.");
         }
 
 
-        return bheriHospitalResponse;
+        return thirdPartyHospitalResponse;
     }
 
     private BackendIntegrationApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {

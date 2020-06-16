@@ -22,7 +22,7 @@ import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOv
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.parseQueryResultToHospitalDeptDutyRosterStatusResponseDTO;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.*;
 
 /**
  * @author smriti on 20/05/20

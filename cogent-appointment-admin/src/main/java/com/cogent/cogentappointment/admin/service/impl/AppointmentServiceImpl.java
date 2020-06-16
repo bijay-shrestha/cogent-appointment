@@ -133,7 +133,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveRefundAppointment(IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+    public void approveRefundAppointment(IntegrationBackendRequestDTO backendRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
@@ -163,7 +163,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO,
-                                        IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+                                        IntegrationBackendRequestDTO backendRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -503,7 +503,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                     AppointmentTransactionDetail transactionDetail,
                                                     AppointmentRefundDetail appointmentRefundDetail,
                                                     Boolean isRefund,
-                                                    IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+                                                    IntegrationBackendRequestDTO backendRequestDTO) {
 
         ThirdPartyResponse thirdPartyResponse = null;
         switch (appointment.getAppointmentModeId().getCode()) {

@@ -57,15 +57,14 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.*;
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
-import static com.cogent.cogentappointment.client.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS;
-import static com.cogent.cogentappointment.client.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS_ROOM_WISE;
-import static com.cogent.cogentappointment.client.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENTS;
+import static com.cogent.cogentappointment.client.query.AppointmentHospitalDepartmentQuery.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_REFUND_AMOUNT;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
@@ -389,10 +388,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             Pageable pageable,
             Long hospitalId) {
 
-        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO = new AppointmentPendingApprovalResponseDTO();
+        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO =
+                new AppointmentPendingApprovalResponseDTO();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
 
         int totalItems = query.getResultList().size();
 
@@ -448,7 +449,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                            Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_LOGS.apply(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
 
         int totalItems = query.getResultList().size();
 

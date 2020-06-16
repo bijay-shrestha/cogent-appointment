@@ -215,14 +215,15 @@ public class AppointmentQuery {
                             " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
-                            + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                            " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
+                            GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
             AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
 
         String whereClause = " WHERE " +
-                " sp.status='Y' " +
+                " has.appointmentServiceType.code =:appointmentServiceTypeCode" +
                 " AND a.status='PA'";
 
         if (!ObjectUtils.isEmpty(pendingApprovalSearchDTO.getFromDate())

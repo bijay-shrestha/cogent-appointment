@@ -12,6 +12,7 @@ public class QueryConstants {
     public static final String ALIAS = "alias";
 
     public static final String APPOINTMENT_SERVICE_TYPE_ID = "appointmentServiceTypeId";
+    public static final String APPOINTMENT_SERVICE_TYPE_CODE = "appointmentServiceTypeCode";
 
     //B
     public static final String BILLING_MODE_ID = "billingModeId";

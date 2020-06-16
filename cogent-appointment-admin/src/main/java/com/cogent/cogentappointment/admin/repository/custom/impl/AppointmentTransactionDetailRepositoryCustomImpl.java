@@ -210,7 +210,6 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
             doctorRevenueDTO.setDoctorRevenue(doctorRevenueDTO.getDoctorRevenue() + doctorFollowUpResponse.getAmount());
         });
 
-
         return doctorRevenueDTOList;
     }
 
@@ -225,12 +224,14 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         addPagination.accept(pageable, query);
 
         List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
+
         doctorRevenueDTOList.forEach(doctorRevenueDTO -> {
             Query queryToGetCancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE_CANCELLED)
                     .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
                     .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId())
                     .setParameter(SPECIALIZATION_ID, doctorRevenueDTO.getSpecializationId());
+
             DoctorFollowUpResponse doctorFollowUpResponse = transformQueryToSingleResult(queryToGetCancelled,
                     DoctorFollowUpResponse.class);
             doctorRevenueDTO.setCancelledAppointments(doctorRevenueDTO.getCancelledAppointments() + doctorFollowUpResponse.getCount());

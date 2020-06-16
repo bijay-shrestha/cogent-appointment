@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -201,7 +201,12 @@ public class DashBoardQuery {
             (searchDTO) ->
                     "SELECT" +
                             " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
-                            " d.name as doctorName," +
+                            " CASE WHEN" +
+                            " (d.salutation is null)" +
+                            " THEN d.name" +
+                            " ELSE" +
+                            " CONCAT_WS(' ',d.salutation, d.name)" +
+                            " END as doctorName," +
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
                             " s.name as specializationName," +
@@ -210,14 +215,14 @@ public class DashBoardQuery {
                             " THEN null" +
                             " ELSE" +
                             " dv.fileUri" +
-                            " END as doctorAvatar," +
-                            " d.salutation as doctorSalutation"+
+                            " END as doctorAvatar" +
                             " FROM Appointment a" +
+                            " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                            " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                             " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id = d.id" +
                             " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
-                            " LEFT JOIN Specialization s ON s.id = a.specializationId.id AND s.status='Y'" +
+                            " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(searchDTO);
 
@@ -252,7 +257,7 @@ public class DashBoardQuery {
                 " s.name as specializationName," +                                               //[4]
                 " COUNT(a.id) as successfulAppointments," +                                      //[5]
                 " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue," +                     //
-                " d.salutation as doctorSalutation"+
+                " d.salutation as doctorSalutation" +
                 " FROM Appointment a" +
                 " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +

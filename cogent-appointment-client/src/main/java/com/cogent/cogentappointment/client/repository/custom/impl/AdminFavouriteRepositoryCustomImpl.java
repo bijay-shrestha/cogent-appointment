@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
-import static com.cogent.cogentappointment.client.query.AdminFavouriteQuery.QUERY_TO_FETCH_ACTIVE_ADMIN_FAVOURITE_FOR_DROPDOWN;
+import static com.cogent.cogentappointment.client.query.AdminFavouriteQuery.QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -34,7 +34,7 @@ public class AdminFavouriteRepositoryCustomImpl implements AdminFavouriteReposit
     @Override
     public List<DropDownResponseDTO> fetchAdminFavouriteForDropDown() {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_ADMIN_FAVOURITE_FOR_DROPDOWN);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN);
 
         List<DropDownResponseDTO> list = transformQueryToResultList(query, DropDownResponseDTO.class);
 

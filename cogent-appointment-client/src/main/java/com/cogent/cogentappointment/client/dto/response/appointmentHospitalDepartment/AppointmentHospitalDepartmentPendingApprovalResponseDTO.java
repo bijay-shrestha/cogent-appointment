@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentHospitalDeptPendingApproval;
+package com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -53,6 +53,8 @@ public class AppointmentHospitalDepartmentPendingApprovalResponseDTO implements 
     private String roomNumber;
 
     private String billingModeName;
+
+    private Long roomId;
 
     private int totalItems;
 }

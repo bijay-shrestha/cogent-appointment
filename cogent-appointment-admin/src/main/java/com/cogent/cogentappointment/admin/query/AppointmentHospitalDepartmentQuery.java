@@ -132,7 +132,6 @@ public class AppointmentHospitalDepartmentQuery {
                             " hpi.isRegistered as isRegistered," +                                      //[13]
                             " hd.name as hospitalDepartmentName," +                                     //[14]
                             " hb.billingMode.name as billingModeName," +                                //[15]
-                            " hr.id as roomId," +
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
                             " end as roomNumber," +                                                      //[16]

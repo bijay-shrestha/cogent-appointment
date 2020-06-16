@@ -569,12 +569,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPROVAL_LIST);
+        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPOINTMENTS);
 
         AppointmentPendingApprovalResponseDTO responseDTOS =
                 appointmentRepository.searchPendingVisitApprovals(searchRequestDTO, pageable, getLoggedInHospitalId());
 
-        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPOINTMENTS, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

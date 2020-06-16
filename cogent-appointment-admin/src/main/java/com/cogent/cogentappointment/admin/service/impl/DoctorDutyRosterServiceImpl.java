@@ -124,7 +124,6 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(updateRequestDTO.getDoctorDutyRosterId());
 
-        //todo; refactor this
         List<DoctorWeekDaysDutyRoster> weekDaysDutyRosters =
                 doctorWeekDaysDutyRosterRepository.fetchByDoctorDutyRosterId(doctorDutyRoster.getId());
 

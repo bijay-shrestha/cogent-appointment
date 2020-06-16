@@ -19,7 +19,11 @@ public interface AddressRepositoryCustom {
 
     List<DropDownResponseDTO> getListOfProvince();
 
-    List<DropDownResponseDTO> getListOfDistrictByZoneId(BigInteger zoneId);
+    List<DropDownResponseDTO> getListOfDistrictByZoneId(Long zoneId);
 
-    List<DropDownResponseDTO> getListOfDistrictByProvinceId(BigInteger provinceId);
+    List<DropDownResponseDTO> getListOfDistrictByProvinceId(Long provinceId);
+
+    List<DropDownResponseDTO> getListOfStreetByDistrictId(Long districtId);
+
+    List<DropDownResponseDTO> getListOfMunicipalityByDistrictId(Long districtId);
 }

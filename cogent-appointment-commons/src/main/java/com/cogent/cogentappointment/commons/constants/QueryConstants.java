@@ -12,6 +12,7 @@ public class QueryConstants {
     //C
 
     //D
+    public static final String DISTRICT_ID = "districtId";
 
     //E
 

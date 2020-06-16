@@ -14,7 +14,11 @@ public interface AddressService {
 
     List<DropDownResponseDTO> fetchProvinceDropDown();
 
-    List<DropDownResponseDTO> fetchDistrictDropDownByZoneId(BigInteger zoneId);
+    List<DropDownResponseDTO> fetchDistrictDropDownByZoneId(Long zoneId);
 
-    List<DropDownResponseDTO> fetchDistrictDropDownByProvinceId(BigInteger provinceId);
+    List<DropDownResponseDTO> fetchDistrictDropDownByProvinceId(Long provinceId);
+
+    List<DropDownResponseDTO> fetchStreetDropDownByDistrictId(Long districtId);
+
+    List<DropDownResponseDTO> fetchMunicipalityDropDownByDistrictId(Long districtId);
 }

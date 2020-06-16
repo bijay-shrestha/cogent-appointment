@@ -54,7 +54,7 @@ public class AddressRepositoryCustomImpl implements AddressRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> getListOfDistrictByZoneId(BigInteger zoneId) {
+    public List<DropDownResponseDTO> getListOfDistrictByZoneId(Long zoneId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_LIST_OF_DISTRICT_BY_ZONE_ID)
                 .setParameter(ZONE_ID,zoneId);
 
@@ -64,9 +64,29 @@ public class AddressRepositoryCustomImpl implements AddressRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> getListOfDistrictByProvinceId(BigInteger provinceId) {
+    public List<DropDownResponseDTO> getListOfDistrictByProvinceId(Long provinceId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_LIST_OF_DISTRICT_BY_PROVINCE_ID)
                 .setParameter(PROVINCE_ID,provinceId);
+
+        List<DropDownResponseDTO> response = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        return response;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> getListOfStreetByDistrictId(Long districtId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_LIST_STREET_BY_DISTRICT_ID)
+                .setParameter(DISTRICT_ID,districtId);
+
+        List<DropDownResponseDTO> response = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        return response;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> getListOfMunicipalityByDistrictId(Long districtId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_LIST_MUNICIPALITY_BY_DISTRICT_ID)
+                .setParameter(DISTRICT_ID,districtId);
 
         List<DropDownResponseDTO> response = transformQueryToResultList(query, DropDownResponseDTO.class);
 

@@ -60,7 +60,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchDistrictDropDownByZoneId(BigInteger zoneId) {
+    public List<DropDownResponseDTO> fetchDistrictDropDownByZoneId(Long zoneId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DISTRICT_BY_ZONE_ID);
@@ -73,7 +73,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchDistrictDropDownByProvinceId(BigInteger provinceId) {
+    public List<DropDownResponseDTO> fetchDistrictDropDownByProvinceId(Long provinceId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DISTRICT_BY_PROVINCE_ID);
@@ -81,6 +81,34 @@ public class AddressServiceImpl implements AddressService {
         List<DropDownResponseDTO> response=addressRepository.getListOfDistrictByProvinceId(provinceId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DISTRICT_BY_PROVINCE_ID, getDifferenceBetweenTwoTime(startTime));
+
+        return response;
+
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchStreetDropDownByDistrictId(Long districtId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, STREET_BY_DISTRICT_ID);
+
+        List<DropDownResponseDTO> response=addressRepository.getListOfStreetByDistrictId(districtId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, STREET_BY_DISTRICT_ID, getDifferenceBetweenTwoTime(startTime));
+
+        return response;
+
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMunicipalityDropDownByDistrictId(Long districtId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, MUNICIPALITY_BY_DISTRICT_ID);
+
+        List<DropDownResponseDTO> response=addressRepository.getListOfMunicipalityByDistrictId(districtId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, MUNICIPALITY_BY_DISTRICT_ID, getDifferenceBetweenTwoTime(startTime));
 
         return response;
 

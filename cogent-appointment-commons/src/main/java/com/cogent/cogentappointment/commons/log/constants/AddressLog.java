@@ -13,4 +13,8 @@ public class AddressLog {
 
     public static String DISTRICT_BY_PROVINCE_ID="DISTRICT BY PROVINCE ID";
 
+    public static String MUNICIPALITY_BY_DISTRICT_ID="MUNICIPALITY BY DISTRICT ID";
+
+    public static String STREET_BY_DISTRICT_ID="STREET BY DISTRICT ID";
+
 }

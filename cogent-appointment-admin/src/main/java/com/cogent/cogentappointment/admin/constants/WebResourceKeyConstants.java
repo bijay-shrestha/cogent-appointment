@@ -11,13 +11,16 @@ public class WebResourceKeyConstants {
 
     public interface AddressConstants {
         String BASE_ADDRESS = "/address";
+        String NEW = "/new";
+        String OLD = "/old";
         String ZONE = "/zone";
         String PROVINCE = "/province";
         String DISTRICT = "/district";
         String MUNICIPALITY = "/municipality";
-        String VDC = "/vdc";
+        String STREET = "/street";
         String ZONE_ID_PATH_VARIABLE_BASE = "/{zoneId}";
         String PROVINCE_ID_PATH_VARIABLE_BASE = "/{provinceId}";
+        String DISTRICT_ID_PATH_VARIABLE_BASE = "/{districtId}";
     }
 
     public interface AdminConstants {
@@ -183,11 +186,11 @@ public class WebResourceKeyConstants {
         String CLIENT_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
         String CLIENT_INTEGRATION_TYPE_ID_PATH_VARIABLE_BASE = "/{apiIntegrationTypeId}";
         String CLIENT_INTEGRATION_UPDATE_DETAILS = "/updateDetails";
-        String FEATURES="/features";
-        String HTTP_REQUEST_METHODS="/request-methods";
-        String API_INTEGRATION_TYPE="/api-integration-type";
-        String INTEGRATION_CHANNEL="/integration-channel";
-        String REQUEST_BODY_PARAMETERS="/request-body-parameters";
+        String FEATURES = "/features";
+        String HTTP_REQUEST_METHODS = "/request-methods";
+        String API_INTEGRATION_TYPE = "/api-integration-type";
+        String INTEGRATION_CHANNEL = "/integration-channel";
+        String REQUEST_BODY_PARAMETERS = "/request-body-parameters";
     }
 
     public interface IntegrationAdminModeConstants {
@@ -255,7 +258,7 @@ public class WebResourceKeyConstants {
     //R
     public interface RefundStatusConstants {
         String BASE_REFUND_STATUS = "/refundStatus";
-        String CHECK="/check";
+        String CHECK = "/check";
     }
 
     public interface RoomConstants {

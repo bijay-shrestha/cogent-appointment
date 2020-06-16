@@ -29,9 +29,9 @@ public interface IntegrationRepositoryCustom {
 
     List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long apiIntegrationFormatId);
 
-    Map<String,String> findApiRequestHeadersResponse(Long featureId);
+    Map<String, String> findApiRequestHeadersResponse(Long apiIntegrationFormatId);
 
-    Map<String,String> findApiQueryParametersResponse(Long featureId);
+    Map<String, String> findApiQueryParametersResponse(Long apiIntegrationFormatId);
 
     Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId);
 
@@ -53,5 +53,5 @@ public interface IntegrationRepositoryCustom {
     List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId);
 
     AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO,
-            Long appointmentModeId);
+                                                                                                    Long appointmentModeId);
 }

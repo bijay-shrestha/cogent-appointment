@@ -133,7 +133,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long apiIntegrationFormatId) {
 
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
+        Query query = createQuery.apply(entityManager, CLIENT_API_FEATURES_HEADERS_QUERY)
                 .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderUpdateResponseDTO> apiRequestHeaderUpdateResponseDTOS =
@@ -168,7 +168,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     @Override
     public List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTO() {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_FEAUTRES_INTEGRATION_API_QUERY);
+        Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_API_QUERY);
 
         List<ClientFeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, ClientFeatureIntegrationResponse.class);
@@ -247,9 +247,9 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public Map<String, String> findApiRequestHeadersResponse(Long featureId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+    public Map<String, String> findApiRequestHeadersResponse(Long apiIntegrationFormatId) {
+        Query query = createQuery.apply(entityManager, CLIENT_API_FEATURES_HEADERS_QUERY)
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
                 transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
@@ -263,9 +263,9 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public Map<String, String> findApiQueryParametersResponse(Long featureId) {
+    public Map<String, String> findApiQueryParametersResponse(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, CLIENT_API_PARAMETERS_QUERY)
-                .setParameter(API_FEATURE_ID, featureId);
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiQueryParametersResponseDTO> parametersResponseDTO =
                 transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);

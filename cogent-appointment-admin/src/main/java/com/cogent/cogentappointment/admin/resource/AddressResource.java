@@ -23,15 +23,15 @@ import static org.springframework.http.ResponseEntity.ok;
 @Api(BASE_API_VALUE)
 public class AddressResource {
 
-    private final AddressService addressService;
-
-    public AddressResource(AddressService addressService) {
-        this.addressService = addressService;
-    }
-
-    @GetMapping
-    @ApiOperation(FETCH_ZONE_LIST)
-    public ResponseEntity<?> fetchZoneDropDown() {
-        return ok(addressService.fetchZoneDropDown());
-    }
+//    private final AddressService addressService;
+//
+//    public AddressResource(AddressService addressService) {
+//        this.addressService = addressService;
+//    }
+//
+//    @GetMapping
+//    @ApiOperation(FETCH_ZONE_LIST)
+//    public ResponseEntity<?> fetchZoneDropDown() {
+//        return ok(addressService.fetchZoneDropDown());
+//    }
 }

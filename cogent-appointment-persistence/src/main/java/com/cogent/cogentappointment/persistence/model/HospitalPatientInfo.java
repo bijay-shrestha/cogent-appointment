@@ -56,6 +56,8 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     @Column(name = "address")
     private String address;
 
+    //todo : VDC or Municipality, District, Ward, province
+
     /*PATIENT STATUS
     * Y = ACTIVE
     * N = INACTIVE (CAN BE UPDATED BY HOSPITAL ADMIN)

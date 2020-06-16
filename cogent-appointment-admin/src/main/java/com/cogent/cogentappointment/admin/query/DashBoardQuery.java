@@ -251,7 +251,12 @@ public class DashBoardQuery {
 
         return "SELECT" +
                 " d.id as doctorId," +                                                           //[0]
-                " d.name as doctorName," +                                                       //[1]
+                " CASE WHEN" +
+                " (d.salutation is null)" +
+                " THEN d.name" +
+                " ELSE" +
+                " CONCAT_WS(' ',d.salutation, d.name)" +
+                " END as doctorName," +                                                           //[1]
                 " CASE WHEN" +
                 " (da.status is null OR da.status = 'N')" +
                 " THEN null" +

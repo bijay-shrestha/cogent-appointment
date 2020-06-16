@@ -35,10 +35,10 @@ public interface AppointmentService {
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId);
 
-    void approveRefundAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException;
+    void approveRefundAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO,
-                                 IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException;
+                                 IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 

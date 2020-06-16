@@ -20,4 +20,10 @@ public class CogentAppointmentConstants {
         String SUCCESS = "SUCCESS";
         String AMBIGUOUS = "AMBIGUOUS";
     }
+
+    public interface AppointmentServiceTypeConstant {
+        String DOCTOR_CONSULTATION_CODE = "DOC";
+        String DEPARTMENT_CONSULTATION_CODE = "DEP";
+    }
+
 }

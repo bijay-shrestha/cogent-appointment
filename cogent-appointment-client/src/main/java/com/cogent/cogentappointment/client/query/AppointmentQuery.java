@@ -427,7 +427,8 @@ public class AppointmentQuery {
                             " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                            " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
@@ -435,7 +436,8 @@ public class AppointmentQuery {
 
         String whereClause = " WHERE " +
                 " a.status='PA'" +
-                " AND h.id =:hospitalId";
+                " AND h.id =:hospitalId" +
+                " AND has.appointmentServiceType.code =:appointmentServiceTypeCode";
 
         if (!ObjectUtils.isEmpty(pendingApprovalSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getToDate()))
@@ -508,8 +510,9 @@ public class AppointmentQuery {
                             " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'"
-                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
+                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                            " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
+                            GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(
             AppointmentLogSearchDTO appointmentLogSearchDTO) {
@@ -517,7 +520,8 @@ public class AppointmentQuery {
         String whereClause = " WHERE" +
                 " sp.status!='D'" +
                 " AND d.status!='D'" +
-                " AND h.id=:hospitalId";
+                " AND h.id=:hospitalId" +
+                " AND has.appointmentServiceType.code =:appointmentServiceTypeCode";
 
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getToDate()))

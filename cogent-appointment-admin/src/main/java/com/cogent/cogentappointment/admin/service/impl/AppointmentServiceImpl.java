@@ -273,7 +273,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointment.setStatus(APPROVED);
 
-        saveAppointmentFollowUpTracker(appointment);
+//        saveAppointmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }

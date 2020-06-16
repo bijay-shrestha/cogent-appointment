@@ -36,13 +36,13 @@ public class AddressResource {
         return ok(addressService.fetchZoneDropDown());
     }
 
-    @GetMapping(OLD + ZONE + DISTRICT + ZONE_ID_PATH_VARIABLE_BASE)
+    @GetMapping(OLD + DISTRICT + ZONE_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DISTRICT_LIST_BY_ZONE_ID)
     public ResponseEntity<?> fetchDistrictDropDownByZoneId(@PathVariable("zoneId") Long zoneId) {
         return ok(addressService.fetchDistrictDropDownByZoneId(zoneId));
     }
 
-    @GetMapping(OLD + ZONE + DISTRICT + STREET + DISTRICT_ID_PATH_VARIABLE_BASE)
+    @GetMapping(OLD + STREET + DISTRICT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_STREET_LIST_BY_DISTRICT_ID)
     public ResponseEntity<?> fetchStreetDropDownByDistrictId(@PathVariable("districtId") Long districtId) {
         return ok(addressService.fetchStreetDropDownByDistrictId(districtId));
@@ -55,13 +55,13 @@ public class AddressResource {
     }
 
 
-    @GetMapping(NEW + PROVINCE + DISTRICT + PROVINCE_ID_PATH_VARIABLE_BASE)
+    @GetMapping(NEW + DISTRICT + PROVINCE_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DISTRICT_LIST_BY_PROVINCE_ID)
     public ResponseEntity<?> fetchDistrictDropDownByProvinceId(@PathVariable("provinceId") Long provinceId) {
         return ok(addressService.fetchDistrictDropDownByProvinceId(provinceId));
     }
 
-    @GetMapping(NEW + PROVINCE + DISTRICT + MUNICIPALITY + DISTRICT_ID_PATH_VARIABLE_BASE)
+    @GetMapping(NEW + MUNICIPALITY + DISTRICT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID)
     public ResponseEntity<?> fetchMunicipalityDropDownByDistrictId(@PathVariable("districtId") Long districtId) {
         return ok(addressService.fetchMunicipalityDropDownByDistrictId(districtId));

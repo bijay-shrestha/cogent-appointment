@@ -26,7 +26,6 @@ public class SwaggerConstants {
         String FETCH_DISTRICT_LIST_BY_PROVINCE_ID="Fetch District for dropdown by province id ";
         String FETCH_STREET_LIST_BY_DISTRICT_ID="Fetch Street for dropdown by district id ";
         String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID="Fetch Municipality for dropdown by district id ";
-
     }
 
     public interface AdminConstant {

@@ -10,6 +10,20 @@ public class WebResourceKeyConstants {
     public static final String ACTIVE = "/active";
 
 
+    public interface AddressConstants {
+        String BASE_ADDRESS = "/address";
+        String NEW = "/new";
+        String OLD = "/old";
+        String ZONE = "/zone";
+        String PROVINCE = "/province";
+        String DISTRICT = "/district";
+        String MUNICIPALITY = "/municipality";
+        String STREET = "/street";
+        String ZONE_ID_PATH_VARIABLE_BASE = "/{zoneId}";
+        String PROVINCE_ID_PATH_VARIABLE_BASE = "/{provinceId}";
+        String DISTRICT_ID_PATH_VARIABLE_BASE = "/{districtId}";
+    }
+
     public interface AdminConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";

@@ -47,6 +47,8 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_MODE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
@@ -61,6 +63,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils.map;
+import static java.lang.Integer.parseInt;
 
 /**
  * @author smriti on 2019-10-22
@@ -198,7 +201,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     refundRejectDTO);
 
         } else {
-            throw new BadRequestException("Integration parameters not found", "Integration parameter return null");
+            throw new BadRequestException(INTEGRATION_PARAMETER_NOT_FOUND, INTEGRATION_PARAMETER_IS_NULL);
         }
 
 
@@ -291,16 +294,21 @@ public class AppointmentServiceImpl implements AppointmentService {
             e.printStackTrace();
         }
 
-        if (bheriHospitalResponse.getStatusCode().equalsIgnoreCase("500")) {
-            throw new OperationUnsuccessfulException("An error occurred while saving the patient record.");
-        }
-
-        if (bheriHospitalResponse.getStatusCode().equalsIgnoreCase("400")) {
-            throw new OperationUnsuccessfulException("Bad Third Party API Request.");
-        }
-
+        validateBheriHospitalResponse(bheriHospitalResponse);
 
         return bheriHospitalResponse;
+
+    }
+
+    private void validateBheriHospitalResponse(BheriHospitalResponse bheriHospitalResponse) {
+
+        if (parseInt(bheriHospitalResponse.getStatusCode()) == 500) {
+            throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_ERROR);
+        }
+
+        if (parseInt(bheriHospitalResponse.getStatusCode()) == 400) {
+            throw new OperationUnsuccessfulException(INTEGRATION_API_BAD_REQUEST);
+        }
 
     }
 
@@ -510,22 +518,17 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             case APPOINTMENT_MODE_ESEWA_CODE:
 
-                //api integration
+                //esewa integration
                 thirdPartyResponse = integrationEsewaService.processEsewaRefundRequest(appointment,
                         transactionDetail,
                         appointmentRefundDetail,
                         isRefund, backendRequestDTO);
                 break;
             case APPOINTMENT_MODE_FONEPAY_CODE:
-                //api integration
-//                thirdPartyResponse = integrationEsewaService.processEsewaRefundRequest(appointment,
-//                        transactionDetail,
-//                        appointmentRefundDetail,
-//                        isRefund, backendRequestDTO);
                 break;
 
             default:
-                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+                throw new BadRequestException(INVALID_APPOINTMENT_MODE);
         }
 
 

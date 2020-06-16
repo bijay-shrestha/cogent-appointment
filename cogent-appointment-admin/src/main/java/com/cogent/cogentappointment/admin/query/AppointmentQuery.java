@@ -570,10 +570,11 @@ public class AppointmentQuery {
             "SELECT" +
                     " COALESCE (SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -587,10 +588,11 @@ public class AppointmentQuery {
                     " COUNT(a.id)," +
                     " COALESCE(SUM(atd.appointmentAmount ),0)" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -659,10 +661,11 @@ public class AppointmentQuery {
                     " COUNT(a.id)," +
                     " COALESCE (SUM(ard.refundAmount ),0) as amount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -691,10 +694,11 @@ public class AppointmentQuery {
                     " COUNT(a.id)," +
                     " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +

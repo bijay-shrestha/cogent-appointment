@@ -37,7 +37,7 @@ public class TransactionLogQuery {
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as doctorName," +                                    //[14]
+                    " END as doctorName," +                                         //[14]
                     " a.status as status," +                                       //[15]
                     " ard.refundAmount as refundAmount," +                         //[16]
                     " atd.transactionDate as transactionDate," +                    //[17]
@@ -46,19 +46,19 @@ public class TransactionLogQuery {
                     " hpi.address as patientAddress," +                            //[20]
                     " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," + //[21]
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[22]
-                    " da.fileUri as fileUri," +
-                    " d.salutation as doctorSalutation"+
+                    " da.fileUri as fileUri" +                                                     //[23]
                     " FROM Appointment a" +
-                    " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
-                    " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                    " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
-                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                    " LEFT JOIN AppointmentMode am ON am.id = a.appointmentModeId.id" +
+                    " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
+                    " LEFT JOIN Hospital h ON a.hospitalId.id = h.id" +
+                    " LEFT JOIN PatientMetaInfo pi ON p.id = pi.patient.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId";
+                    " LEFT JOIN AppointmentRefundDetail ard ON a.id = ard.appointmentId";
 
     public static Function<TransactionLogSearchDTO, String> QUERY_TO_FETCH_TRANSACTION_LOGS =
             (transactionLogSearchDTO) ->
@@ -111,10 +111,11 @@ public class TransactionLogQuery {
             "SELECT" +
                     " COALESCE (SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -128,10 +129,11 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " COALESCE(SUM(atd.appointmentAmount ),0)" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -201,10 +203,11 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " COALESCE (SUM(ard.refundAmount ),0) as amount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -233,10 +236,11 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -443,7 +447,7 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " hd.status!='D'"+
+                    " hd.status!='D'" +
                     " AND apst.appointmentServiceType.id = :appointmentServiceTypeId ";
 
     public static String QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT(
@@ -461,7 +465,7 @@ public class TransactionLogQuery {
 
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='PA'" +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -471,17 +475,17 @@ public class TransactionLogQuery {
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='A'" +
-                " AND a.isFollowUp = 'N'"+
+                " AND a.isFollowUp = 'N'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
-        return   query;
+        return query;
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='A'" +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -491,7 +495,7 @@ public class TransactionLogQuery {
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='C'" +
-                " AND a.isFollowUp = 'N'"+
+                " AND a.isFollowUp = 'N'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -501,7 +505,7 @@ public class TransactionLogQuery {
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_HOSPITAL_DEPARTMENT_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='C'" +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -510,7 +514,7 @@ public class TransactionLogQuery {
     public static String QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_HOSPITAL_DEPARTMENT_REFUNDED_APPOINTMENT +
-                " AND a.isFollowUp = 'N'"+
+                " AND a.isFollowUp = 'N'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -519,7 +523,7 @@ public class TransactionLogQuery {
     public static String QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_HOSPITAL_DEPARTMENT_REFUNDED_APPOINTMENT +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -528,7 +532,7 @@ public class TransactionLogQuery {
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT +
-                " AND a.isFollowUp = 'N'"+
+                " AND a.isFollowUp = 'N'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -537,7 +541,7 @@ public class TransactionLogQuery {
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT +
-                " AND a.isFollowUp = 'Y'"+
+                " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;
@@ -545,7 +549,7 @@ public class TransactionLogQuery {
 
     public static String QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT(
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
-        String query = SELECT_CLAUSE_TO_GET_TOTAL_HOSPITAL_DEPARTMENT_APPOINTMENT_AMOUNT+
+        String query = SELECT_CLAUSE_TO_GET_TOTAL_HOSPITAL_DEPARTMENT_APPOINTMENT_AMOUNT +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);
 
         return query;

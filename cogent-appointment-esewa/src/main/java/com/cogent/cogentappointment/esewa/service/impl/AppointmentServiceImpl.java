@@ -349,11 +349,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 //                requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId()
 //        );
 
-        String code = ObjectUtils.isEmpty(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode()) ?
-                DOCTOR_CONSULTATION_CODE : requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
+        String code = Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode())
+                ? DOCTOR_CONSULTATION_CODE : requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
 
-        AppointmentSuccessResponseDTO responseDTO = new AppointmentSuccessResponseDTO();
-        switch (code) {
+        AppointmentSuccessResponseDTO responseDTO;
+        switch (code.toUpperCase()) {
 
             case DOCTOR_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForSelfDoctorWise(
@@ -364,6 +364,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 responseDTO = saveAppointmentForSelfDepartmentWise(
                         requestDTO, appointmentMode, transactionRequestLog, null);
                 break;
+
+            default:
+                throw new BadRequestException("Invalid Appointment Service Type Code");
         }
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
@@ -439,11 +442,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 //                requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId()
 //        );
 
-        String code = ObjectUtils.isEmpty(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode()) ?
-                DOCTOR_CONSULTATION_CODE : requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
+        String code = Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode())
+                ? DOCTOR_CONSULTATION_CODE :
+                requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
 
-        AppointmentSuccessResponseDTO responseDTO = new AppointmentSuccessResponseDTO();
-        switch (code) {
+        AppointmentSuccessResponseDTO responseDTO;
+        switch (code.toUpperCase()) {
 
             case DOCTOR_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForOthersDoctorWise(
@@ -454,13 +458,15 @@ public class AppointmentServiceImpl implements AppointmentService {
                 responseDTO = saveAppointmentForOthersDepartmentWise(
                         requestDTO, appointmentMode, transactionRequestLog, null);
                 break;
+
+            default:
+                throw new BadRequestException("Invalid Appointment Service Type Code");
         }
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
-
 
     @Override
     public AppointmentMinResponseWithStatusDTO fetchPendingAppointments(AppointmentHistorySearchDTO searchDTO) {

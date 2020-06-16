@@ -364,8 +364,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                                                   Pageable pageable) {
+    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
+            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

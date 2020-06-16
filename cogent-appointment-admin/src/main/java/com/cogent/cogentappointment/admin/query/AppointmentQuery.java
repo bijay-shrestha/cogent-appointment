@@ -58,22 +58,27 @@ public class AppointmentQuery {
                 "  ELSE" +
                 "  hpi.registrationNumber" +
                 "  END as registrationNumber," +
-                "  d.name as doctorName," +
-                "  s.name as specializationName," +
-                "  atd.transactionNumber as transactionNumber," +
-                "  DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
-                "  p.gender as gender," +
+                " CASE WHEN" +
+                " (d.salutation is null)" +
+                " THEN d.name" +
+                " ELSE" +
+                " CONCAT_WS(' ',d.salutation, d.name)" +
+                " END as doctorName," +
+                " s.name as specializationName," +
+                " atd.transactionNumber as transactionNumber," +
+                " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
+                " p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
                 QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                " da.fileUri as fileUri," +
-                " d.salutation as doctorSalutation" +
+                " da.fileUri as fileUri" +
                 " FROM Appointment a" +
+                " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                 " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
@@ -116,9 +121,10 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentCancelApprovalSearchDTO searchDTO) {
         return " SELECT SUM(ard.refundAmount)" +
                 " FROM Appointment a" +
+                " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                 " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
@@ -545,7 +551,12 @@ public class AppointmentQuery {
                     " p.gender as gender," +
                     " p.eSewaId  as eSewaId," +
                     " p.mobileNumber as mobileNumber," +
-                    " d.name as doctorName," +
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as doctorName," +
                     " s.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
                     " ard.refundAmount as refundAmount," +
@@ -558,12 +569,13 @@ public class AppointmentQuery {
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                     " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
-                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " WHERE ard.appointmentId.id=:appointmentId" +
                     " AND ard.status='PA'";

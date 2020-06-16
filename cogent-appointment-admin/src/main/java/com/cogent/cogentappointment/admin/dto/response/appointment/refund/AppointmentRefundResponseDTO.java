@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 @Builder
 public class AppointmentRefundResponseDTO implements Serializable {
+
     private Double totalRefundAmount;
 
     private int totalItems;

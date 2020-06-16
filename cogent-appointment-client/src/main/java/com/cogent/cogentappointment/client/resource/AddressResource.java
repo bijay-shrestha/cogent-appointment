@@ -62,7 +62,7 @@ public class AddressResource {
     }
 
     @GetMapping(NEW + PROVINCE + DISTRICT + MUNICIPALITY + DISTRICT_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_STREET_LIST_BY_DISTRICT_ID)
+    @ApiOperation(FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID)
     public ResponseEntity<?> fetchMunicipalityDropDownByDistrictId(@PathVariable("districtId") Long districtId) {
         return ok(addressService.fetchMunicipalityDropDownByDistrictId(districtId));
     }

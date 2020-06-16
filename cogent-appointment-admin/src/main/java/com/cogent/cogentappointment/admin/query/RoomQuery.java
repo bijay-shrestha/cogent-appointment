@@ -99,7 +99,7 @@ public class RoomQuery {
 
     public static final String QUERY_TO_FETCH_ROOM_LIST_FOR_APPOINTMENT_STATUS =
             "SELECT hdri.id as value," +                                                  //[0]
-                    " CONCAT('Room No' ,' - ',r.roomNumber) AS label" +                                            //[1]
+                    " r.roomNumber AS label" +                                            //[1]
                     " FROM Room r" +
                     " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.room.id=r.id" +
                     " WHERE hdri.hospitalDepartment.id=:hospitalDepartmentId " +

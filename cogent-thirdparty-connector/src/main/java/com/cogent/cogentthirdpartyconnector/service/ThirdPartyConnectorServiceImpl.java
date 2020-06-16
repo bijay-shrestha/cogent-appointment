@@ -52,7 +52,6 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         System.out.println(response);
 
-
         return response;
     }
 
@@ -85,7 +84,6 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         return thirdPartyResponse;
     }
@@ -124,12 +122,12 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         String uri = "";
         Map<String, String> queryParameter = integrationApiInfo.getQueryParameters();
+
         if (queryParameter != null) {
             uri = createQueryParameter(integrationApiInfo.getApiUri(), queryParameter).toUriString();
         } else {
             uri = integrationApiInfo.getApiUri();
         }
-
 
         ResponseEntity<?> response = restTemplateUtils.
                 requestAPI(httpMethod,
@@ -145,7 +143,6 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         return thirdPartyResponse;
     }

@@ -159,9 +159,6 @@ public class IntegrationAdminModeQuery {
                     " AND ic.code=:integrationChannelCode" +
                     " AND amfi.appointmentModeId.id=:appointmentModeId";
 
-
-    //
-
     public static Function<AdminModeApiIntegrationSearchRequestDTO, String> ADMIN_MODE_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
@@ -206,8 +203,6 @@ public class IntegrationAdminModeQuery {
 
         if (!ObjectUtils.isEmpty(requestSearchDTO.getUrl()))
             whereClause += " AND aif.url LIKE '%" + requestSearchDTO.getUrl() + "%'";
-
-
 
         return whereClause;
     }

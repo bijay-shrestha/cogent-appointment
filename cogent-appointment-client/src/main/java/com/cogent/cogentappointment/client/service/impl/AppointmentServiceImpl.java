@@ -655,9 +655,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
-//        integrationHospitalApiInfo.forEach(apiInfo -> {
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.callBheriHospitalService(integrationHospitalApiInfo);
-//        });
 
         BheriHospitalResponse bheriHospitalResponse = null;
         try {
@@ -677,17 +675,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
         return bheriHospitalResponse;
-
     }
 
     private BackendIntegrationApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         FeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
                 fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
-
-//        List<BackendIntegrationApiInfo> integrationHospitalApiInfos = new ArrayList<>();
-
-//        featureIntegrationResponse.forEach(integrationResponse -> {
 
         Map<String, String> requestHeaderResponse = integrationRepository.
                 findApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
@@ -699,27 +692,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.add("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)" +
+                        " Chrome/54.0.2840.99 Safari/537.36");
 
         requestHeaderResponse.forEach((key, value) -> {
             headers.add(key, value);
         });
 
-        BackendIntegrationApiInfo hospitalApiInfo = new BackendIntegrationApiInfo();
-        hospitalApiInfo.setApiUri(featureIntegrationResponse.getUrl());
-        hospitalApiInfo.setHttpHeaders(headers);
+        BackendIntegrationApiInfo backendIntegrationApiInfo = new BackendIntegrationApiInfo();
+        backendIntegrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
+        backendIntegrationApiInfo.setHttpHeaders(headers);
 
-        if (!queryParametersResponse.isEmpty()) {
-            hospitalApiInfo.setQueryParameters(queryParametersResponse);
-        }
-        hospitalApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
+        if (!queryParametersResponse.isEmpty())
+            backendIntegrationApiInfo.setQueryParameters(queryParametersResponse);
 
-//            integrationHospitalApiInfos.add(hospitalApiInfo);
+        backendIntegrationApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
 
-//        });
-
-        return hospitalApiInfo;
-
+        return backendIntegrationApiInfo;
     }
 
     @Override

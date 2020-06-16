@@ -21,7 +21,10 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLo
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.*;
+import com.cogent.cogentappointment.admin.repository.AppointmentFollowUpLogRepository;
+import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
+import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
@@ -81,8 +84,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final ThirdPartyConnectorService thirdPartyConnectorService;
 
-    private final IntegrationRepository integrationRepository;
-
     private final IntegrationThirdPartyImpl integrationEsewaService;
 
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
@@ -93,7 +94,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
                                   ThirdPartyConnectorService thirdPartyConnectorService,
-                                  IntegrationRepository integrationRepository,
                                   IntegrationThirdPartyImpl integrationEsewaService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
@@ -103,13 +103,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
-        this.integrationRepository = integrationRepository;
         this.integrationEsewaService = integrationEsewaService;
     }
-
-
-//    private final RestTemplateUtils restTemplateUtils;
-
 
     @Override
     public AppointmentRefundResponseDTO fetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,
@@ -164,7 +159,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new BadRequestException(response.getMessage(), response.getMessage());
         }
 
-        updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail, null);
+        updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail,
+                null);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
@@ -289,7 +285,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
 
         return responseEntity;
-
     }
 
     @Override
@@ -520,7 +515,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                         refundAppointmentDetail,
                         response);
                 throw new BadRequestException(response, response);
-
         }
     }
 

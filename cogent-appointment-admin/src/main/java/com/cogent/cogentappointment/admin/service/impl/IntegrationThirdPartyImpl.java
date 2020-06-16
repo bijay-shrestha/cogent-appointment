@@ -71,9 +71,7 @@ public class IntegrationThirdPartyImpl {
 
         return thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
                 esewaRefundRequestDTO);
-
     }
-
 
     public BackendIntegrationApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO backendRequestDTO) {
 

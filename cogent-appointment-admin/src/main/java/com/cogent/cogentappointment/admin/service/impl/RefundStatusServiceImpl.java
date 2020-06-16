@@ -50,8 +50,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     private final IntegrationThirdPartyImpl integrationThirdPartyImpl;
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
-                                   AppointmentRepository
-                                           appointmentRepository,
+                                   AppointmentRepository appointmentRepository,
                                    AppointmentService appointmentService,
                                    ThirdPartyConnectorService thirdPartyConnectorService,
                                    IntegrationThirdPartyImpl integrationThirdPartyImpl) {
@@ -138,8 +137,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     private void approveRefundAppointment(RefundStatusRequestDTO requestDTO) throws IOException {
 
         requestDTO.getIntegrationBackendRequestDTO().setFeatureCode("REF_APPROVAL");
-        appointmentService.approveRefundAppointment(requestDTO.getAppointmentId(),
-                requestDTO.getIntegrationBackendRequestDTO());
+        appointmentService.approveRefundAppointment(requestDTO.getIntegrationBackendRequestDTO());
     }
 
     @Override

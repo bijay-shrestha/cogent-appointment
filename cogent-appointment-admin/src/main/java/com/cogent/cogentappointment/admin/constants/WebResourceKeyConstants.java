@@ -11,6 +11,13 @@ public class WebResourceKeyConstants {
 
     public interface AddressConstants {
         String BASE_ADDRESS = "/address";
+        String ZONE = "/zone";
+        String PROVINCE = "/province";
+        String DISTRICT = "/district";
+        String MUNICIPALITY = "/municipality";
+        String VDC = "/vdc";
+        String ZONE_ID_PATH_VARIABLE_BASE = "/{zoneId}";
+        String PROVINCE_ID_PATH_VARIABLE_BASE = "/{provinceId}";
     }
 
     public interface AdminConstants {

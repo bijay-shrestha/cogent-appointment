@@ -36,6 +36,11 @@ public class SwaggerConstants {
         String FETCH_ADMIN_META_INFO_BY_CLIENT_ID = "Fetch active admin meta info by client for dropdown";
     }
 
+    public interface AdminFavouriteConstant {
+        String BASE_API_VALUE = "This is Admin Favourite Resource";
+
+    }
+
     public interface AdminFeatureConstant {
         String BASE_API_VALUE = "This is Admin Feature Resource";
         String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";

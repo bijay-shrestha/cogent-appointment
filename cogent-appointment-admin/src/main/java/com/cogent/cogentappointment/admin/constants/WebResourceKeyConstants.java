@@ -20,6 +20,10 @@ public class WebResourceKeyConstants {
         String EMAIL = "/email";
     }
 
+    public interface AdminFavouriteConstants {
+        String BASE_ADMIN_FAVOURITE = "/adminFavourite";
+    }
+
     public interface AdminFeatureConstants {
         String BASE_ADMIN_FEATURE = "/adminFeature";
     }

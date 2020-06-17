@@ -40,7 +40,6 @@ public class AppointmentRequestDTO implements Serializable {
 //    @NotNull
 //    private Long hospitalAppointmentServiceTypeId;
 
-    @NotNull
     private String appointmentServiceTypeCode;
 
 }

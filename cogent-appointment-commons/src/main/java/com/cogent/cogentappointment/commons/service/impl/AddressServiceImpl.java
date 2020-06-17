@@ -39,7 +39,7 @@ public class AddressServiceImpl implements AddressService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, ZONE);
 
-        List<DropDownResponseDTO> response=addressRepository.getListOfZone();
+        List<DropDownResponseDTO> response = addressRepository.getListOfZone();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, ZONE,
                 getDifferenceBetweenTwoTime(startTime));
@@ -55,7 +55,7 @@ public class AddressServiceImpl implements AddressService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROVINCE);
 
-        List<DropDownResponseDTO> response=addressRepository.getListOfProvince();
+        List<DropDownResponseDTO> response = addressRepository.getListOfProvince();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROVINCE,
                 getDifferenceBetweenTwoTime(startTime));
@@ -70,7 +70,7 @@ public class AddressServiceImpl implements AddressService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DISTRICT_BY_ZONE_ID);
 
-        List<DropDownResponseDTO> response=addressRepository.getListOfDistrictByZoneId(zoneId);
+        List<DropDownResponseDTO> response = addressRepository.getListOfDistrictByZoneId(zoneId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DISTRICT_BY_ZONE_ID,
                 getDifferenceBetweenTwoTime(startTime));
@@ -85,7 +85,7 @@ public class AddressServiceImpl implements AddressService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DISTRICT_BY_PROVINCE_ID);
 
-        List<DropDownResponseDTO> response=addressRepository.getListOfDistrictByProvinceId(provinceId);
+        List<DropDownResponseDTO> response = addressRepository.getListOfDistrictByProvinceId(provinceId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DISTRICT_BY_PROVINCE_ID,
                 getDifferenceBetweenTwoTime(startTime));
@@ -101,7 +101,7 @@ public class AddressServiceImpl implements AddressService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, STREET_BY_DISTRICT_ID);
 
-        List<DropDownResponseDTO> response=addressRepository.getListOfStreetByDistrictId(districtId);
+        List<DropDownResponseDTO> response = addressRepository.getListOfStreetByDistrictId(districtId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, STREET_BY_DISTRICT_ID,
                 getDifferenceBetweenTwoTime(startTime));
@@ -117,7 +117,7 @@ public class AddressServiceImpl implements AddressService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, MUNICIPALITY_BY_DISTRICT_ID);
 
-        List<DropDownResponseDTO> response=addressRepository.getListOfMunicipalityByDistrictId(districtId);
+        List<DropDownResponseDTO> response = addressRepository.getListOfMunicipalityByDistrictId(districtId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, MUNICIPALITY_BY_DISTRICT_ID,
                 getDifferenceBetweenTwoTime(startTime));

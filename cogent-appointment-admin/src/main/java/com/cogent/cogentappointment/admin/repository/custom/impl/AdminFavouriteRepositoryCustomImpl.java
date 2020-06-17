@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.favourite.FavouriteDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminFavouriteRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminFavourite;
@@ -32,11 +32,11 @@ public class AdminFavouriteRepositoryCustomImpl implements AdminFavouriteReposit
     private EntityManager entityManager;
 
     @Override
-    public List<DropDownResponseDTO> fetchAdminFavouriteForDropDown() {
+    public List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDown() {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN);
 
-        List<DropDownResponseDTO> list = transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<FavouriteDropDownResponseDTO> list = transformQueryToResultList(query, FavouriteDropDownResponseDTO.class);
 
         if (list.isEmpty()) {
             error();

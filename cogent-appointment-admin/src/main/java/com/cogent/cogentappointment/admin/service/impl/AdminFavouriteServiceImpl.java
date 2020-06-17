@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.favourite.FavouriteDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.repository.AdminFavouriteRepository;
 import com.cogent.cogentappointment.admin.service.AdminFavouriteService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,13 +32,13 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService{
 
 
     @Override
-    public List<DropDownResponseDTO> fetchAdminFavouriteForDropDown() {
+    public List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDown() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, ADMIN_FAVOURITE);
 
-        List<DropDownResponseDTO> responseDTOList= adminFavouriteRepository.fetchAdminFavouriteForDropDown();
+        List<FavouriteDropDownResponseDTO> responseDTOList= adminFavouriteRepository.fetchAdminFavouriteForDropDown();
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 

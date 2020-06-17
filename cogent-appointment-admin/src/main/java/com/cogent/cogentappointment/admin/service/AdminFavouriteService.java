@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.admin.service;
 
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.favourite.FavouriteDropDownResponseDTO;
 
 import java.util.List;
 
 public interface AdminFavouriteService {
 
-    List<DropDownResponseDTO> fetchAdminFavouriteForDropDown();
+    List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDown();
 }

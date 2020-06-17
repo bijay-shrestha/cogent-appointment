@@ -53,8 +53,11 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     @Column(name = "email", length = 50)
     private String email;
 
-
-    private Character hasAddress;
+    /*Y -> IN CASE OF DEPT WISE APPOINTMENT
+    * N -> IN CASE OF SELF APPOINTMENT
+    * */
+    @Column(name = "has_address")
+    private Character hasAddress = 'N';
 
     @Column(name = "address")
     private String address;

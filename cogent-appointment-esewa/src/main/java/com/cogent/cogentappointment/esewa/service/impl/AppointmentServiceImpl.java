@@ -643,7 +643,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Patient fetchPatientForSelf(Boolean isNewRegistration,
                                         Long patientId,
                                         Hospital hospital,
-                                        PatientRequestByDTO patientRequestDTO) {
+                                        PatientRequestByDTO patientRequestDTO,
+                                        Character hasAddress) {
 
         Patient patient;
 
@@ -655,7 +656,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         hospitalPatientInfoService.saveHospitalPatientInfoForSelf(
                 hospital, patient,
-                patientRequestDTO
+                patientRequestDTO,
+                hasAddress
         );
 
         return patient;
@@ -682,7 +684,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                           Long patientId,
                                           Hospital hospital,
                                           PatientRequestByDTO requestByPatientInfo,
-                                          PatientRequestForDTO requestForPatientInfo) {
+                                          PatientRequestForDTO requestForPatientInfo,
+                                          Character hasAddress) {
 
         Patient parentPatient;
         Patient childPatient;
@@ -705,7 +708,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         hospitalPatientInfoService.saveHospitalPatientInfoForOthers(
                 hospital, childPatient,
-                requestForPatientInfo
+                requestForPatientInfo,
+                hasAddress
         );
 
         return childPatient;
@@ -1081,7 +1085,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getIsNewRegistration(),
                 appointmentInfo.getPatientId(),
                 hospital,
-                requestDTO.getPatientInfo()
+                requestDTO.getPatientInfo(),
+                NO
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -1134,7 +1139,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getIsNewRegistration(),
                 appointmentInfo.getPatientId(),
                 hospital,
-                requestDTO.getPatientInfo()
+                requestDTO.getPatientInfo(),
+                YES
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -1265,7 +1271,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getPatientId(),
                 hospital,
                 requestDTO.getRequestBy(),
-                requestDTO.getRequestFor()
+                requestDTO.getRequestFor(),
+                NO
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -1320,7 +1327,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getPatientId(),
                 hospital,
                 requestDTO.getRequestBy(),
-                requestDTO.getRequestFor()
+                requestDTO.getRequestFor(),
+                YES
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(

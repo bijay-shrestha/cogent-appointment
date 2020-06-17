@@ -32,8 +32,10 @@ public class HospitalPatientInfoUtils {
                                                   Address vdcOrMunicipality,
                                                   Address district,
                                                   Address ward,
-                                                  HospitalPatientInfo hospitalPatientInfo) {
+                                                  HospitalPatientInfo hospitalPatientInfo,
+                                                  Character hasAddress) {
 
+        hospitalPatientInfo.setHasAddress(hasAddress);
         hospitalPatientInfo.setProvince(province);
         hospitalPatientInfo.setVdcOrMunicipality(vdcOrMunicipality);
         hospitalPatientInfo.setDistrict(district);

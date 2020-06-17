@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.HOSPITAL_PATIENT_INFO;
 import static com.cogent.cogentappointment.esewa.utils.HospitalPatientInfoUtils.*;
@@ -43,7 +44,8 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
 
     @Override
     public void saveHospitalPatientInfoForSelf(Hospital hospital, Patient patient,
-                                               PatientRequestByDTO patientRequestByDTO) {
+                                               PatientRequestByDTO patientRequestByDTO,
+                                               Character hasAddress) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -55,6 +57,7 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
             saveHospitalPatientInfo(hospital, patient,
                     patientRequestByDTO.getEmail(),
                     patientRequestByDTO.getAddress(),
+                    hasAddress,
                     patientRequestByDTO.getProvinceId(),
                     patientRequestByDTO.getVdcOrMunicipalityId(),
                     patientRequestByDTO.getDistrictId(),
@@ -66,7 +69,8 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
 
     @Override
     public void saveHospitalPatientInfoForOthers(Hospital hospital, Patient patient,
-                                                 PatientRequestForDTO patientRequestForDTO) {
+                                                 PatientRequestForDTO patientRequestForDTO,
+                                                 Character hasAddress) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -79,6 +83,7 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
                     hospital, patient,
                     patientRequestForDTO.getEmail(),
                     patientRequestForDTO.getAddress(),
+                    hasAddress,
                     patientRequestForDTO.getProvinceId(),
                     patientRequestForDTO.getVdcOrMunicipalityId(),
                     patientRequestForDTO.getDistrictId(),
@@ -95,20 +100,24 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
 
     private void saveHospitalPatientInfo(Hospital hospital, Patient patient,
                                          String email, String address,
+                                         Character hasAddress,
                                          Long provinceId,
                                          Long vdcOrMunicipalityId,
                                          Long districtId,
                                          Long wardId) {
 
-        Address province = Objects.isNull(provinceId) ? null : fetchAddress(provinceId);
-        Address vdcOrMunicipality = Objects.isNull(vdcOrMunicipalityId) ? null : fetchAddress(vdcOrMunicipalityId);
-        Address district = Objects.isNull(districtId) ? null : fetchAddress(districtId);
-        Address ward = Objects.isNull(wardId) ? null : fetchAddress(wardId);
-
         HospitalPatientInfo hospitalPatientInfo = parseHospitalPatientInfo
                 (hospital, patient, email, address);
 
-        parsePatientAddressDetails(province, vdcOrMunicipality, district, ward, hospitalPatientInfo);
+        if (hasAddress.equals(YES)) {
+
+            Address province = Objects.isNull(provinceId) ? null : fetchAddress(provinceId);
+            Address vdcOrMunicipality = Objects.isNull(vdcOrMunicipalityId) ? null : fetchAddress(vdcOrMunicipalityId);
+            Address district = Objects.isNull(districtId) ? null : fetchAddress(districtId);
+            Address ward = Objects.isNull(wardId) ? null : fetchAddress(wardId);
+
+            parsePatientAddressDetails(province, vdcOrMunicipality, district, ward, hospitalPatientInfo, hasAddress);
+        }
 
         hospitalPatientInfoRepository.save(hospitalPatientInfo);
     }

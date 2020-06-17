@@ -115,6 +115,7 @@ public class AppointmentHospitalDepartmentQuery {
                             " p.name as patientName," +                                                 //[5]
                             " p.mobileNumber as mobileNumber," +                                        //[6]
                             " p.gender as gender," +                                                    //[11]
+                            " hpi.isRegistered as isRegistered," +                                      //[13]
                             " CASE WHEN" +
                             " (hpi.registrationNumber IS NULL)" +
                             " THEN 'N/A'" +
@@ -123,9 +124,7 @@ public class AppointmentHospitalDepartmentQuery {
                             " END as registrationNumber," +                                             //[4]
                             " hpi.hospitalNumber as hospitalNumber," +                                  //[9]
                             " hpi.address as address," +                                                //[12]
-                            " hpi.isRegistered as isRegistered," +                                      //[13]
                             " hd.name as hospitalDepartmentName," +                                     //[14]
-                            " hb.billingMode.name as billingModeName," +                                //[15]
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
                             " end as roomNumber," +                                                      //[16]

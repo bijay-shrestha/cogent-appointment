@@ -11,8 +11,10 @@ import com.cogent.cogentappointment.persistence.model.Patient;
 public interface HospitalPatientInfoService {
 
     void saveHospitalPatientInfoForSelf(Hospital hospital, Patient patient,
-                                        PatientRequestByDTO patientRequestByDTO);
+                                        PatientRequestByDTO patientRequestByDTO,
+                                        Character hasAddress);
 
     void saveHospitalPatientInfoForOthers(Hospital hospital, Patient patient,
-                                          PatientRequestForDTO patientRequestForDTO);
+                                          PatientRequestForDTO patientRequestForDTO,
+                                          Character hasAddress);
 }

@@ -142,7 +142,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
                     " WHERE" +
                     " amfi.hospitalId.id=:hospitalId"+
-                    " aif.status='Y'" +
+                    " AND aif.status='Y'" +
                     " AND hrm.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND f.status='Y'" +

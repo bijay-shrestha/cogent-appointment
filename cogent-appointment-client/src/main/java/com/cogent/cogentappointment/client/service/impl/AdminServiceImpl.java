@@ -446,7 +446,7 @@ public class AdminServiceImpl implements AdminService {
     private Map<String, List<?>> getApiIntegrations() {
 
         List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTO =
-                getAdminModeApiIntegration();
+                getAdminModeApiIntegration(getLoggedInHospitalId());
 
         List<ClientIntegrationResponseDTO> clientIntegrationResponseDTO =
                 getHospitalApiIntegration(getLoggedInHospitalId());
@@ -464,10 +464,10 @@ public class AdminServiceImpl implements AdminService {
         return map;
     }
 
-    private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
+    private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration(Long hospitalId) {
 
         List<AdminFeatureIntegrationResponse> integrationResponse = adminModeFeatureIntegrationRepository.
-                fetchAdminModeIntegrationResponseDTO();
+                fetchAdminModeIntegrationResponseDTO(hospitalId);
 
         List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOS = new ArrayList<>();
         List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
@@ -522,7 +522,7 @@ public class AdminServiceImpl implements AdminService {
         List<FeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
                 fetchClientIntegrationResponseDTO(hospitalId);
 
-        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS=new ArrayList<>();
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS = new ArrayList<>();
         List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
 
         integrationResponseDTOList.forEach(response -> {

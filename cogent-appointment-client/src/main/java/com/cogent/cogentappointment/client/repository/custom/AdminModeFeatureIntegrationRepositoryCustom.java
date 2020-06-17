@@ -15,7 +15,7 @@ import java.util.List;
 public interface AdminModeFeatureIntegrationRepositoryCustom {
 
 
-    List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO();
+    List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO(Long hospitalId);
 
     AdminModeApiIntegrationResponseDTO findAdminModeFeatureIntegration(Long id);
 }

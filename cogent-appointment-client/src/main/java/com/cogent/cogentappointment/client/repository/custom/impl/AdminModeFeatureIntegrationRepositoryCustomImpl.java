@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.ADMIN_MODE_FEATURE_INTEGRATION_ID;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.client.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
@@ -38,11 +39,10 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
     @PersistenceContext
     private EntityManager entityManager;
 
-
-
     @Override
-    public List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO() {
-        Query query = createQuery.apply(entityManager, APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY);
+    public List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY)
+                .setParameter(HOSPITAL_ID,hospitalId);
 
         List<AdminFeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, AdminFeatureIntegrationResponse.class);

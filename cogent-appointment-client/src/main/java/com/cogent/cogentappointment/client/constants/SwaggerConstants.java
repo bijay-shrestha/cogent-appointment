@@ -38,6 +38,11 @@ public class SwaggerConstants {
         String VERIFY_EMAIL_ADMIN = "Verify if the confirmation token sent in email (after successful email update by admin) is valid.";
     }
 
+    public interface AdminFavouriteConstant {
+        String BASE_API_VALUE = "This is Admin Favourite Resource";
+
+    }
+
     public interface AdminFeatureConstant {
         String BASE_API_VALUE = "This is Admin Feature Resource";
         String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";

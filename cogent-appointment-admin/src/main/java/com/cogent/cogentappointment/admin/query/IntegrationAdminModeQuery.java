@@ -207,6 +207,34 @@ public class IntegrationAdminModeQuery {
         return whereClause;
     }
 
+    public static final String ADMIN_MODE_API_FEAUTRES_HEADERS_QUERY =
+            " SELECT " +
+                    " arh.keyName as keyParam," +
+                    " arh.value as valueParam" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN ApiRequestHeader arh ON arh.apiIntegrationFormatId=aif.id" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
+                    " AND aif.status='Y'" +
+                    " AND arh.status='Y'" +
+                    " AND amfi.status='Y'" +
+                    " AND amafi.status='Y'";
+
+    public static final String ADMIN_MODE_API_PARAMETERS_QUERY =
+            " SELECT " +
+                    " aqp.param as keyParam," +
+                    " aqp.value as valueParam" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN ApiQueryParameters aqp ON aqp.apiIntegrationFormatId =aif.id" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
+                    " AND aif.status='Y'" +
+                    " AND amfi.status='Y'" +
+                    " AND amafi.status='Y'" +
+                    " AND aqp.status='Y'";
+
     public static String ADMIN_MODE_API_INTEGRATION_AUDITABLE_QUERY() {
         return " amfi.createdBy as createdBy," +
                 " amfi.createdDate as createdDate," +

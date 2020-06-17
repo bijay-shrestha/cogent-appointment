@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
@@ -69,27 +68,26 @@ public class AppointmentResource {
         return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
     }
 
-    @PutMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(REFUND + APPROVE)
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId,
-                                                      @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
-        appointmentService.approveRefundAppointment(appointmentId, integrationBackendRequestDTO);
+    public ResponseEntity<?> approveRefundAppointment(
+                                                      @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO){
+        appointmentService.approveRefundAppointment(integrationBackendRequestDTO);
         return ok().build();
     }
 
     @PutMapping(REFUND + REJECT)
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
     public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO,
-                                                     IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
-        appointmentService.rejectRefundAppointment(refundRejectDTO, integrationBackendRequestDTO);
+                                                     IntegrationBackendRequestDTO integrationBackendRequestDTO){
+        appointmentService.rejectRefundAppointment(refundRejectDTO,integrationBackendRequestDTO);
         return ok().build();
     }
 
-    @PutMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(APPROVE)
     @ApiOperation(APPROVE_APPOINTMENT)
-    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId,
-                                                @RequestBody IntegrationBackendRequestDTO backendRequestDTO) {
-        appointmentService.approveAppointment(appointmentId, backendRequestDTO);
+    public ResponseEntity<?> approveAppointment(@RequestBody IntegrationBackendRequestDTO backendRequestDTO) {
+        appointmentService.approveAppointment(backendRequestDTO);
         return ok().build();
     }
 

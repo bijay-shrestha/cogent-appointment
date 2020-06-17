@@ -25,6 +25,4 @@ public interface IntegrationService {
     void delete(DeleteRequestDTO deleteRequestDTO);
 
     ClientApiIntegrationUpdateResponseDTO fetchDetailsForUpdate(Long id);
-
-//    ClientApiIntegrationRequestDTO fetchClientIntegrationResponseDTO(ClientApiIntegrationRequestDTO );
 }

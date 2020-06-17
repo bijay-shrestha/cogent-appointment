@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BheriHospitalResponse implements Serializable{
+public class ThirdPartyHospitalResponse implements Serializable{
 
     private String statusCode;
 

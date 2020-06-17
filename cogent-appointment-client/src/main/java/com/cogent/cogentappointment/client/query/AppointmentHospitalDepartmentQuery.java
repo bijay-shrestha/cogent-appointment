@@ -109,21 +109,19 @@ public class AppointmentHospitalDepartmentQuery {
                     "SELECT" +
                             " a.id as appointmentId," +                                                  //[0]
                             " a.appointmentDate as appointmentDate," +                                   //[1]
-                            " a.appointmentNumber as appointmentNumber," +                               //[2]
                             " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
+                            " a.appointmentNumber as appointmentNumber," +                               //[2]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[8]
+                            " p.name as patientName," +                                                 //[5]
+                            " p.mobileNumber as mobileNumber," +                                        //[6]
+                            " p.gender as gender," +                                                    //[11]
                             " CASE WHEN" +
                             " (hpi.registrationNumber IS NULL)" +
                             " THEN 'N/A'" +
                             " ELSE" +
                             " hpi.registrationNumber" +
                             " END as registrationNumber," +                                             //[4]
-                            " p.name as patientName," +                                                 //[5]
-                            " p.mobileNumber as mobileNumber," +                                        //[6]
-                            " a.appointmentModeId.name as appointmentMode," +                           //[7]
-                            " atd.appointmentAmount as appointmentAmount," +                            //[8]
                             " hpi.hospitalNumber as hospitalNumber," +                                  //[9]
-                            " p.id as patientId," +                                                     //[10]
-                            " p.gender as gender," +                                                    //[11]
                             " hpi.address as address," +                                                //[12]
                             " hpi.isRegistered as isRegistered," +                                      //[13]
                             " hd.name as hospitalDepartmentName," +                                     //[14]

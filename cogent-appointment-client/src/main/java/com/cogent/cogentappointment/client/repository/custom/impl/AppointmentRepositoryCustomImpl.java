@@ -29,7 +29,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientRelationInfoResponseDTO;
@@ -598,7 +598,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> searchPendingHospitalDeptAppointments(
+    public List<AppointmentHospitalDepartmentCheckInResponseDTO> searchPendingHospitalDeptAppointments(
             AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
             Pageable pageable,
             Long hospitalId) {
@@ -611,8 +611,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         addPagination.accept(pageable, query);
 
-        List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> pendingAppointments =
-                transformQueryToResultList(query, AppointmentHospitalDepartmentPendingApprovalResponseDTO.class);
+        List<AppointmentHospitalDepartmentCheckInResponseDTO> pendingAppointments =
+                transformQueryToResultList(query, AppointmentHospitalDepartmentCheckInResponseDTO.class);
 
         if (pendingAppointments.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.service.AppointmentHospitalDepartmentService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     }
 
     @Override
-    public List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> searchPendingHospitalDeptAppointments(
+    public List<AppointmentHospitalDepartmentCheckInResponseDTO> searchPendingHospitalDeptAppointments(
             AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
             Pageable pageable) {
 
@@ -41,7 +41,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         log.info(SEARCHING_PROCESS_STARTED, PENDING_APPOINTMENTS);
 
-        List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> pendingAppointments =
+        List<AppointmentHospitalDepartmentCheckInResponseDTO> pendingAppointments =
                 appointmentRepository.searchPendingHospitalDeptAppointments(searchDTO, pageable,
                         getLoggedInHospitalId());
 

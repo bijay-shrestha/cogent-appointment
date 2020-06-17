@@ -1,13 +1,10 @@
 package com.cogent.cogentappointment.client.dto.response.integrationAdminMode;
 
-import com.cogent.cogentappointment.client.dto.response.integration.ApiQueryParametersDetailResponse;
-import com.cogent.cogentappointment.client.dto.response.integration.ApiRequestHeaderDetailResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author rupak on 2020-05-25
@@ -35,9 +32,9 @@ public class AdminModeIntegrationDetailResponseDTO implements Serializable {
 
     private String url;
 
-    private List<ApiRequestHeaderDetailResponse> headers;
-
-    private List<ApiQueryParametersDetailResponse> queryParameters;
+//    private List<ApiRequestHeaderDetailResponse> headers;
+//
+//    private List<ApiQueryParametersDetailResponse> queryParameters;
 
     private String createdBy;
 

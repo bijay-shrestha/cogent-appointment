@@ -303,8 +303,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateEsewaId(requestDTO.getTransactionInfo().getAppointmentModeCode(),
                 requestDTO.getPatientInfo().getESewaId());
 
-        String code = Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode())
-                ? DOCTOR_CONSULTATION_CODE : requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
+        if (Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode()))
+            requestDTO.getAppointmentInfo().setAppointmentServiceTypeCode(DOCTOR_CONSULTATION_CODE);
+
+        String code = requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
 
         AppointmentSuccessResponseDTO responseDTO;
         switch (code.trim().toUpperCase()) {
@@ -350,9 +352,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentMode appointmentMode = fetchActiveAppointmentModeIdByCode
                 (requestDTO.getTransactionInfo().getAppointmentModeCode());
 
-        String code = Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode())
-                ? DOCTOR_CONSULTATION_CODE :
-                requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
+        if (Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode()))
+            requestDTO.getAppointmentInfo().setAppointmentServiceTypeCode(DOCTOR_CONSULTATION_CODE);
+
+        String code = requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
 
         AppointmentSuccessResponseDTO responseDTO;
         switch (code.trim().toUpperCase()) {
@@ -477,7 +480,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentMinResponseWithStatusDTO(appointmentHistory);
     }
 
-//    todo: serviceType Code must be dynamic
+    //    todo: serviceType Code must be dynamic
     @Override
     public AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -487,9 +490,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        AppointmentServiceType appointmentServiceType =
 //                fetchAppointmentServiceType(searchDTO.getAppointmentServiceTypeId());
 
+        if (Objects.isNull(searchDTO.getAppointmentServiceTypeCode()))
+            searchDTO.setAppointmentServiceTypeCode(DOCTOR_CONSULTATION_CODE);
+
         AppointmentResponseWithStatusDTO appointments = searchDTO.getIsSelf().equals(YES)
-                ? appointmentRepository.searchAppointmentsForSelf(searchDTO, "DOC")
-                : appointmentRepository.searchAppointmentsForOthers(searchDTO, "DOC");
+                ? appointmentRepository.searchAppointmentsForSelf(searchDTO)
+                : appointmentRepository.searchAppointmentsForOthers(searchDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 

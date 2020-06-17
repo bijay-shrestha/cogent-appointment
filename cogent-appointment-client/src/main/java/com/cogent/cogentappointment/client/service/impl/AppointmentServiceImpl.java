@@ -153,6 +153,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final NepaliDateUtility nepaliDateUtility;
 
+    private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -178,7 +180,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   Validator validator,
                                   IntegrationRepository integrationRepository,
                                   ThirdPartyConnectorService thirdPartyConnectorService,
-                                  NepaliDateUtility nepaliDateUtility) {
+                                  NepaliDateUtility nepaliDateUtility,
+                                  AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -205,6 +208,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.nepaliDateUtility = nepaliDateUtility;
+        this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
     }
 
     @Override
@@ -614,7 +618,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         appointment.setStatus(APPROVED);
-//        saveAppointmentFollowUpTracker(appointment);
+
+        saveAppointmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -1230,14 +1235,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> APPOINTMENT_MODE_WITH_GIVEN_CODE_NOT_FOUND.apply(appointmentModeCode));
     }
 
-    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
-        throw new NoContentFoundException(Appointment.class, "id", id.toString());
+    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
     };
 
-    private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
-        throw new NoContentFoundException(AppointmentTransactionDetail.class, "id", id.toString());
+    private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException(AppointmentTransactionDetail.class, "appointmentId", appointmentId.toString());
     };
 
     private Function<String, NoContentFoundException> APPOINTMENT_MODE_WITH_GIVEN_CODE_NOT_FOUND = (code) -> {
@@ -1330,6 +1335,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void saveAppointmentFollowUpTracker(Appointment appointment) {
 
         if (appointment.getIsFollowUp().equals(YES)) {
+
             AppointmentFollowUpLog appointmentFollowUpLog =
                     appointmentFollowUpLogRepository.findByFollowUpAppointmentId(appointment.getId())
                             .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointment.getId()));
@@ -1338,13 +1344,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         } else {
 
+            AppointmentDoctorInfo appointmentDoctorInfo = fetchAppointmentDoctorInfo(appointment.getId());
 
             AppointmentFollowUpTracker appointmentFollowUpTracker =
                     appointmentFollowUpTrackerService.save(
                             appointment.getId(),
                             appointment.getHospitalId(),
-                            appointment.getDoctorId(),
-                            appointment.getSpecializationId(),
+                            appointmentDoctorInfo.getDoctor(),
+                            appointmentDoctorInfo.getSpecialization(),
                             appointment.getPatientId()
                     );
 
@@ -1500,7 +1507,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private String getNepaliDate(Date date) {
-
         String nepaliDate = nepaliDateUtility.getNepaliDateFromDate(date);
 
         return formatToDateString(nepaliDate);
@@ -1510,5 +1516,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         throw new NoContentFoundException(HospitalPatientInfo.class);
     };
 
+    private AppointmentDoctorInfo fetchAppointmentDoctorInfo(Long appointmentId) {
+        return appointmentDoctorInfoRepository.fetchAppointmentDoctorInfo(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_DOCTOR_INFO_NOT_FOUND.apply(appointmentId));
+    }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_DOCTOR_INFO_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_DOCTOR_INFO);
+        throw new NoContentFoundException(AppointmentDoctorInfo.class, "appointmentId", appointmentId.toString());
+    };
 }
 

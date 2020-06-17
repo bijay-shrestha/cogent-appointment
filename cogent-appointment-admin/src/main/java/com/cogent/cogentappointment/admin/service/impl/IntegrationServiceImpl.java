@@ -428,6 +428,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setIntegrationChannelId(featureIntegrationResponse.getIntegrationChannelId());
         responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
+        responseDTO.setHospitalId(featureIntegrationResponse.getHospitalId());
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);

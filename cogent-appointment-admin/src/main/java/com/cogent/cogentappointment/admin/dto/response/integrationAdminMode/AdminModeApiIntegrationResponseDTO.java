@@ -15,6 +15,11 @@ import java.util.Date;
 @NoArgsConstructor
 public class AdminModeApiIntegrationResponseDTO implements Serializable {
 
+
+    private Long hospitalId;
+
+    private String hospitalName;
+
     private Long featureId;
 
     private Long apiIntegrationFormatId;

@@ -15,6 +15,8 @@ public class IntegrationAdminModeQuery {
             "SELECT" +
                     " f.id as featureId," +
                     " aif.id as apiIntegrationFormatId,"+
+                    " h.id as hospitalId,"+
+                    " h.name as hospitalName,"+
                     " am.id as appointmentModeId," +
                     " am.name as appointmentModeName," +
                     " f.name as featureName," +
@@ -34,6 +36,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
                     " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
                     " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
+                    " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id"+
                     " WHERE amfi.id= :adminModeFeatureIntegrationId" +
                     " AND aif.status='Y'" +
                     " AND hrm.status='Y'" +

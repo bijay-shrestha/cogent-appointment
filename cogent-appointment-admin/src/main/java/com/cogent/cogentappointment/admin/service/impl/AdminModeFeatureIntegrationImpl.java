@@ -340,6 +340,8 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 findAdminModeApiQueryParameterForUpdate(featureIntegrationResponse.getApiIntegrationFormatId());
 
         AdminModeIntegrationUpdateResponseDTO responseDTO = new AdminModeIntegrationUpdateResponseDTO();
+        responseDTO.setHospitalId(featureIntegrationResponse.getHospitalId());
+        responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
@@ -461,6 +463,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
         responseDTO.setIntegrationType(featureIntegrationResponse.getIntegrationType());
         responseDTO.setAppointmentMode(featureIntegrationResponse.getAppointmentModeName());
+        responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);

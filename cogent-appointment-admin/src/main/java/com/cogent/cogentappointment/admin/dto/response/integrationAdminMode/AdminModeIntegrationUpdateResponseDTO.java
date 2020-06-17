@@ -22,6 +22,10 @@ public class AdminModeIntegrationUpdateResponseDTO implements Serializable {
 
     private Long appointmentModeId;
 
+    private Long hospitalId;
+
+    private String hospitalName;
+
     private Long featureId;
 
     private String featureName;

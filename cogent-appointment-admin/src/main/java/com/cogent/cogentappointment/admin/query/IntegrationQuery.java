@@ -120,6 +120,7 @@ public class IntegrationQuery {
             "SELECT" +
                     " f.id as featureId," +
                     " aif.id as apiIntegrationFormatId,"+
+                    " h.id as hospitalId,"+
                     " h.name as hospitalName," +
                     " f.name as featureName," +
                     " hrm.id as requestMethodId," +

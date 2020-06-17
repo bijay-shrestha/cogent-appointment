@@ -197,7 +197,9 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         Query query = createQuery.apply(entityManager, queryByFilter)
                 .setParameter(TO_DATE, dashBoardRequestDTO.getToDate())
                 .setParameter(FROM_DATE, dashBoardRequestDTO.getFromDate())
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, dashBoardRequestDTO.getAppointmentServiceTypeId());
+
         List<Object[]> objects = query.getResultList();
 
         RevenueTrendResponseDTO responseDTO = revenueStatisticsResponseDTO(objects, filter);

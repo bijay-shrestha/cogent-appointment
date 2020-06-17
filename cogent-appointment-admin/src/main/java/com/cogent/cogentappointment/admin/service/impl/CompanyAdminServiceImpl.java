@@ -427,11 +427,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 requestBodyParametersRepository.fetchRequestBodyAttributes();
 
         Map<String, String> map = new HashMap<>();
-        responses.forEach(response -> {
-            map.put(response.getName(), "");
-        });
 
-
+        if(responses!=null) {
+            responses.forEach(response -> {
+                map.put(response.getName(), "");
+            });
+        }
 
         responseDTO.setApiIntegration(getApiIntegrations());
 

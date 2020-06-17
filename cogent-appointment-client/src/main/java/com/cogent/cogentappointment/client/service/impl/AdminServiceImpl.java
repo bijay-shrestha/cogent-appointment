@@ -427,9 +427,12 @@ public class AdminServiceImpl implements AdminService {
                 requestBodyParametersRepository.fetchRequestBodyAttributes();
 
         Map<String, String> map = new HashMap<>();
-        responses.forEach(response -> {
-            map.put(response.getName(), "");
-        });
+
+        if(responses!=null) {
+            responses.forEach(response -> {
+                map.put(response.getName(), "");
+            });
+        }
 
         responseDTO.setECIntegrate(getApiIntegrations());
         responseDTO.setRequestBody(map);

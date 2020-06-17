@@ -563,6 +563,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
 
+        if (!Objects.isNull(requestDTO.getAppointmentNumber()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getAppointmentNumber());
+
         if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, requestDTO.getHospitalDepartmentRoomInfoId());
 

@@ -48,6 +48,9 @@ public class AppointmentHospitalDepartmentQuery {
         if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
             SQL += " AND  ahdi.hospital_department_room_info_id = :hospitalDepartmentRoomInfoId ";
 
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
+            SQL += " AND a.appointment_number LIKE '%" + requestDTO.getAppointmentNumber() + "%'";
+
         if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
             SQL += " AND a.status='" + requestDTO.getStatus() + "'";
 

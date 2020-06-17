@@ -113,7 +113,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     @Override
-    public HospitalDeptAppointmentStatusDTO fetchHospitalDeptAppointmentStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public HospitalDeptAppointmentStatusDTO fetchHospitalDeptAppointmentStatus(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

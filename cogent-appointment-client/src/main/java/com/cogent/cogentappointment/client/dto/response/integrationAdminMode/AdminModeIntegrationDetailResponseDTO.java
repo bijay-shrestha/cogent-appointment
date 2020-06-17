@@ -35,6 +35,7 @@ public class AdminModeIntegrationDetailResponseDTO implements Serializable {
 
     private String url;
 
+
     private List<ApiRequestHeaderDetailResponse> headers;
 
     private List<ApiQueryParametersDetailResponse> queryParameters;

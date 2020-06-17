@@ -21,10 +21,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLo
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.AppointmentFollowUpLogRepository;
-import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
-import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
-import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
+import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
@@ -86,6 +83,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final IntegrationThirdPartyImpl integrationEsewaService;
 
+    private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
+
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                   AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
@@ -94,7 +93,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
                                   ThirdPartyConnectorService thirdPartyConnectorService,
-                                  IntegrationThirdPartyImpl integrationEsewaService) {
+                                  IntegrationThirdPartyImpl integrationEsewaService,
+                                  AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
@@ -104,6 +104,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.integrationEsewaService = integrationEsewaService;
+        this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
     }
 
     @Override
@@ -273,7 +274,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointment.setStatus(APPROVED);
 
-//        saveAppointmentFollowUpTracker(appointment);
+        saveAppointmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -427,11 +428,14 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentFollowUpTrackerService.updateFollowUpTracker(appointmentFollowUpLog.getParentAppointmentId());
 
         } else {
+
+            AppointmentDoctorInfo appointmentDoctorInfo = fetchAppointmentDoctorInfo(appointment.getId());
+
             AppointmentFollowUpTracker appointmentFollowUpTracker = appointmentFollowUpTrackerService.save(
                     appointment.getId(),
                     appointment.getHospitalId(),
-                    appointment.getDoctorId(),
-                    appointment.getSpecializationId(),
+                    appointmentDoctorInfo.getDoctor(),
+                    appointmentDoctorInfo.getSpecialization(),
                     appointment.getPatientId()
             );
 
@@ -518,6 +522,16 @@ public class AppointmentServiceImpl implements AppointmentService {
                 throw new BadRequestException(response, response);
         }
     }
+
+    private AppointmentDoctorInfo fetchAppointmentDoctorInfo(Long appointmentId) {
+        return appointmentDoctorInfoRepository.fetchAppointmentDoctorInfo(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_DOCTOR_INFO_NOT_FOUND.apply(appointmentId));
+    }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_DOCTOR_INFO_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_DOCTOR_INFO);
+        throw new NoContentFoundException(AppointmentDoctorInfo.class, "appointmentId", appointmentId.toString());
+    };
 
 }
 

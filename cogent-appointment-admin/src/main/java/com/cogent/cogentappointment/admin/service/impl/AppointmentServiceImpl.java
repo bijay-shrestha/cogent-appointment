@@ -295,7 +295,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private ThirdPartyHospitalResponse apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = integrationEsewaService.getHospitalApiIntegration(integrationBackendRequestDTO);
-        ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callThirdPartyHospitalService(integrationHospitalApiInfo);
 
 
         ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;

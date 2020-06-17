@@ -295,7 +295,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private ThirdPartyHospitalResponse apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = integrationEsewaService.getHospitalApiIntegration(integrationBackendRequestDTO);
-        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callThirdPartyHospitalService(integrationHospitalApiInfo);
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
 
 
         ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;
@@ -316,6 +316,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         if (parseInt(thirdPartyHospitalResponse.getStatusCode()) == 500) {
             throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_ERROR);
+        }
+
+        if (parseInt(thirdPartyHospitalResponse.getStatusCode()) == 403) {
+            throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR);
         }
 
         if (parseInt(thirdPartyHospitalResponse.getStatusCode()) == 400) {

@@ -30,6 +30,10 @@ public class AdminModeFeatureIntegration extends Auditable<String> implements Se
     @JoinColumn(name =  "appointment_mode_id")
     private AppointmentMode appointmentModeId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name =  "hospital_id")
+    private Hospital hospitalId;
+
     @Column(name = "feature_id")
     private Long featureId;
 
@@ -49,6 +53,7 @@ public class AdminModeFeatureIntegration extends Auditable<String> implements Se
                 "id=" + id +
                 ", appointmentModeId=" + appointmentModeId.getId() +
                 ", integrationChannelId=" + integrationChannelId.getId() +
+                ", hospitalId=" + hospitalId.getId() +
                 ", featureId=" + featureId +
                 ", remarks='" + remarks + '\'' +
                 ", status=" + status +

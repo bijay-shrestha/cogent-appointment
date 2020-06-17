@@ -19,12 +19,14 @@ public class IntegrationAdminModeFeatureUtils {
 
     public static AdminModeFeatureIntegration parseToAdminModeFeatureIntegration(AppointmentMode appointmentMode,
                                                                                  Long featureTypeId,
-                                                                                 IntegrationChannel integrationChannelId) {
+                                                                                 IntegrationChannel integrationChannelId,
+                                                                                 Hospital hospital) {
 
         AdminModeFeatureIntegration adminModeFeatureIntegration = new AdminModeFeatureIntegration();
         adminModeFeatureIntegration.setFeatureId(featureTypeId);
         adminModeFeatureIntegration.setAppointmentModeId(appointmentMode);
         adminModeFeatureIntegration.setIntegrationChannelId(integrationChannelId);
+        adminModeFeatureIntegration.setHospitalId(hospital);
         adminModeFeatureIntegration.setStatus(ACTIVE);
 
         return adminModeFeatureIntegration;

@@ -192,17 +192,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO,
-                                                                      String appointmentServiceTypeCode) {
+    public AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(searchDTO,
-                appointmentServiceTypeCode))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(searchDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
                 .setParameter(NAME, searchDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchDTO.getMobileNumber())
                 .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchDTO.getDateOfBirth()))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchDTO.getAppointmentServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, searchDTO.getAppointmentServiceTypeCode());
 
         List<AppointmentResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentResponseDTO.class);
@@ -221,8 +220,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO,
-                                                                        String appointmentServiceTypeCode) {
+    public AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO) {
 
         List<PatientRelationInfoResponseDTO> patientRelationInfo =
                 patientRepository.fetchPatientRelationInfoHospitalWise(
@@ -237,10 +235,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .collect(Collectors.joining(COMMA_SEPARATED));
 
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_OTHERS(searchDTO, childPatientIds, appointmentServiceTypeCode))
+                QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_OTHERS(searchDTO, childPatientIds))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchDTO.getAppointmentServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, searchDTO.getAppointmentServiceTypeCode());
 
         List<AppointmentResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentResponseDTO.class);

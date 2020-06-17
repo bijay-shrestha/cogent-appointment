@@ -44,6 +44,8 @@ public class AdminModeApiIntegrationResponseDTO implements Serializable {
 
     private String url;
 
+    private Character status;
+
     private String createdBy;
 
     private Date createdDate;

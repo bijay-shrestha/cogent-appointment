@@ -41,6 +41,8 @@ public class AdminModeIntegrationDetailResponseDTO implements Serializable {
 
     private List<ApiQueryParametersDetailResponse> queryParameters;
 
+    private Character status;
+
     private String createdBy;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY 'at' hh:mm a", timezone = "Asia/Kathmandu")

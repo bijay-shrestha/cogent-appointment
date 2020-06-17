@@ -355,6 +355,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         responseDTO.setAppointmentModeId(featureIntegrationResponse.getAppointmentModeId());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+        responseDTO.setStatus(responseDTO.getStatus());
 
         return responseDTO;
 
@@ -467,6 +468,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         //autitable data
         responseDTO.setCreatedBy(featureIntegrationResponse.getCreatedBy());

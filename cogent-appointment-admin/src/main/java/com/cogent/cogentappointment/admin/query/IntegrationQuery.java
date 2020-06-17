@@ -130,6 +130,7 @@ public class IntegrationQuery {
                     " ic.name as integrationChannel," +
                     " ait.id as integrationTypeId," +
                     " ait.name as integrationType," +
+                    " cfi.status as status,"+
                     CLIENT_API_INTEGRATION_AUDITABLE_QUERY() +
                     " from ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +

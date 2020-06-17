@@ -27,6 +27,7 @@ public class IntegrationAdminModeQuery {
                     " ic.name as integrationChannel," +
                     " ait.id as integrationTypeId," +
                     " ait.name as integrationType," +
+                    " amfi.status as status,"+
                     ADMIN_MODE_API_INTEGRATION_AUDITABLE_QUERY() +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +

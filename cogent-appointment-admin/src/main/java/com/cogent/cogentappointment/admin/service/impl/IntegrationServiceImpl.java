@@ -383,6 +383,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         //autitable data
         responseDTO.setCreatedBy(featureIntegrationResponse.getCreatedBy());
@@ -432,6 +433,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         return responseDTO;
     }

@@ -93,7 +93,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentRefundDetailRepository appointmentRefundDetailRepository, AppointmentTransactionDetailRepository appointmentTransactionDetailRepository, AppointmentFollowUpTrackerService appointmentFollowUpTrackerService, PatientService patientService, AppointmentFollowUpLogRepository appointmentFollowUpLogRepository, AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService, ThirdPartyConnectorService thirdPartyConnectorService, IntegrationThirdPartyImpl integrationEsewaService, HospitalPatientInfoRepository hospitalPatientInfoRepository) {
     private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
 
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
@@ -105,6 +104,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
                                   ThirdPartyConnectorService thirdPartyConnectorService,
                                   IntegrationThirdPartyImpl integrationEsewaService,
+                                  HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
@@ -113,14 +113,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.patientService = patientService;
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
-        this.thirdPartyConnectorService = thirdPartyal"
-hospitalLogo: "http://uat-adminapi-appointment.cogenthealth.com.np/admin/api/v1/file/Bheri Hospital/1591943313784.jpeg"
-hospitalName: "BherConnectorService;
+        this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.integrationEsewaService = integrationEsewaService;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
     }
-
 
     @Override
     public AppointmentRefundResponseDTO fetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,

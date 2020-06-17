@@ -34,13 +34,13 @@ public class AppointmentHospitalDepartmentQuery {
                 "  a.id as appointmentId, " +                                                                      //[9]
                 "  a.is_follow_up as isFollowUp, " +                                                              //[10]
                 "  a.has_transferred as hasTransferred " +                                                        //[1]
-                "FROM appointment_hospital_department_info ahdi " +
-                "LEFT JOIN appointment a ON a.id = ahdi.appointment_id " +
-                "LEFT JOIN hospital_department hd ON hd.id=ahdi.hospital_department_id  " +
-                "LEFT JOIN hospital_department_room_info hdri ON hdri.id=ahdi.hospital_department_room_info_id  " +
-                "LEFT JOIN room r ON r.id=hdri.room_id  " +
-                "LEFT JOIN patient p ON p.id=a.patient_id  " +
-                "LEFT JOIN hospital h ON h.id=a.hospital_id  " +
+                " FROM appointment_hospital_department_info ahdi " +
+                " LEFT JOIN appointment a ON a.id = ahdi.appointment_id " +
+                " LEFT JOIN hospital_department hd ON hd.id=ahdi.hospital_department_id  " +
+                " LEFT JOIN hospital_department_room_info hdri ON hdri.id=ahdi.hospital_department_room_info_id  " +
+                " LEFT JOIN room r ON r.id=hdri.room_id  " +
+                " LEFT JOIN patient p ON p.id=a.patient_id  " +
+                " LEFT JOIN hospital h ON h.id=a.hospital_id  " +
                 " WHERE " +
                 " a.appointment_date BETWEEN :fromDate AND :toDate " +
                 " AND a.status IN ('PA', 'A', 'C') ";

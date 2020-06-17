@@ -150,9 +150,9 @@ public class AppointmentQuery {
                 " a.is_follow_up as isFollowUp," +                                                      //[10]
                 " a.has_transferred as hastransferred" +                                                //[11]
                 " FROM appointment a" +
-                " LEFT JOIN appointment_doctor_info ad ON a.id = ad.appointment_id" +
-                " LEFT JOIN doctor d ON d.id = ad.doctor_id" +
-                " LEFT JOIN specialization s ON s.id = ad.specialization_id" +
+                " INNER JOIN appointment_doctor_info ad ON a.id = ad.appointment_id" +
+                " INNER JOIN doctor d ON d.id = ad.doctor_id" +
+                " INNER JOIN specialization s ON s.id = ad.specialization_id" +
                 " LEFT JOIN hospital h ON h.id = a.hospital_id" +
                 " LEFT JOIN patient p ON p.id = a.patient_id" +
                 " WHERE" +

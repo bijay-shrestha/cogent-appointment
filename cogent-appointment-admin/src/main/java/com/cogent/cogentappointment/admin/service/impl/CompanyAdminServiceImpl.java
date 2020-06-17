@@ -435,6 +435,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         }
 
         responseDTO.setApiIntegration(getApiIntegrations());
+        responseDTO.setRequestBody(map);
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 

@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiRequestBodySearchDTO;
@@ -27,6 +28,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_ATTRIBUTE;
 import static com.cogent.cogentappointment.admin.query.RequestBodyAttributesQuery.API_REQUEST_BODY_ATTRIBUTES_SEARCH_QUERY;
 import static com.cogent.cogentappointment.admin.query.RequestBodyAttributesQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID;
+import static com.cogent.cogentappointment.admin.query.RequestBodyParametersQuery.FETCH_REQUEST_BODY_ATTRIBUTES;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -90,6 +92,23 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
     }
 
     @Override
+    public List<IntegrationBodyAttributeResponse> fetchRequestBodyAttributes() {
+        Query query = createQuery.apply(entityManager,
+                FETCH_REQUEST_BODY_ATTRIBUTES);
+
+        List<IntegrationBodyAttributeResponse> bodyAttributeResponseList =
+                transformQueryToResultList(query, IntegrationBodyAttributeResponse.class);
+
+        if (bodyAttributeResponseList.isEmpty()) {
+//            error();
+            throw REQUEST_BODY_PARAMETERS.get();
+
+        } else {
+            return bodyAttributeResponseList;
+        }
+    }
+
+    @Override
     public ApiRequestBodySearchDTO searchApiRequestBodyAtrributes(ApiIntegrationRequestBodySearchRequestDTO searchRequestDTO, Pageable pageable) {
         Query query = createNativeQuery.apply(entityManager, API_REQUEST_BODY_ATTRIBUTES_SEARCH_QUERY.apply(searchRequestDTO));
 
@@ -126,8 +145,10 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
 
     }
 
-
     private Supplier<NoContentFoundException> REQUEST_BODY_ATTRIBUTES_NOT_FOUND = () ->
+            new NoContentFoundException(ApiIntegrationRequestBodyParameters.class);
+
+    private Supplier<NoContentFoundException> REQUEST_BODY_PARAMETERS = () ->
             new NoContentFoundException(ApiIntegrationRequestBodyParameters.class);
 
     private void error() {

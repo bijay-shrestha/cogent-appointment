@@ -13,6 +13,7 @@ public class QueryConstants {
     }
 
     public static final String APPOINTMENT_SERVICE_TYPE_ID = "appointmentServiceTypeId";
+    public static final String APPOINTMENT_SERVICE_TYPE_CODE = "appointmentServiceTypeCode";
 
     public static final String API_KEY = "apiKey";
 
@@ -48,6 +49,7 @@ public class QueryConstants {
     public static final String HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID = "hddRosterId";
 
     public static final String HOSPITAL_APPOINTMENT_SERVICE_TYPE_ID = "hospitalAppointmentServiceTypeId";
+
 
     public interface HospitalDepartmentConstants {
         String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";

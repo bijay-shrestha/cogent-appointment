@@ -118,7 +118,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient,followUpPatient, pillType);
+        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient, followUpPatient, pillType);
     }
 
     @Override
@@ -194,10 +194,10 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
         List<DoctorRevenueDTO> doctorRevenue =
-                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO,pageable);
+                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
 
         List<DoctorRevenueDTO> cancelledRevenue =
-                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO,pageable);
+                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO, pageable);
 
         validateDoctorRevenue(doctorRevenue, cancelledRevenue);
 
@@ -240,6 +240,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     private void validateDoctorRevenue(List<DoctorRevenueDTO> doctorRevenue,
                                        List<DoctorRevenueDTO> cancelledRevenue) {
+
         if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
             log.error(CONTENT_NOT_FOUND, DOCTOR_REVENUE);
             throw new NoContentFoundException(DOCTOR_REVENUE_NOT_FOUND);

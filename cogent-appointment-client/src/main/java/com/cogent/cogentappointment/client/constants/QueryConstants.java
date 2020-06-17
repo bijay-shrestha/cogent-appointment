@@ -17,6 +17,12 @@ public class QueryConstants {
 
     public static final String API_KEY = "apiKey";
 
+    public static final String ADMIN_MODE_FEATURE_INTEGRATION_ID = "adminModeFeatureIntegrationId";
+    public static final String API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
+    public static final String API_FEATURE_ID = "featureId";
+
+    public static final String APPOINTMENT_SERVICE_TYPE_CODE = "appointmentServiceTypeCode";
+
     //B
     public static final String BILLING_MODE_ID = "billingModeId";
 

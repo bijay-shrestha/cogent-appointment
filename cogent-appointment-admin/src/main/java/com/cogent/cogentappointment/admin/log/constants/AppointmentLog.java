@@ -45,4 +45,6 @@ public class AppointmentLog {
     public final String FETCHING_PROCESS_COMPLETED = ":::: FETCHING BOOKED APPOINTMENT PROCESS COMPLETED" +
             " IN :::: {} ms";
 
+    public final static String APPOINTMENT_DOCTOR_INFO = "APPOINTMENT DOCTOR INFO";
+
 }

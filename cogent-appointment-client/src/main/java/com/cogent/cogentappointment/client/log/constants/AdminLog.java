@@ -10,6 +10,8 @@ public class AdminLog {
 
     public static final String ADMIN_AVATAR = "ADMIN AVATAR";
 
+    public static final String ADMIN_FAVOURITE ="ADMIN FAVOURITE" ;
+
     public static final String ADMIN_META_INFO = "ADMIN META INFO";
 
     public static final String FORGOT_PASSWORD_PROCESS_STARTED = ":::: FORGOT PASSWORD PROCESS STARTED ::::";
@@ -37,6 +39,5 @@ public class AdminLog {
     public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH EMAIL : {} NOT FOUND ::::";
 
     public final static String CONFORMATION_TOKEN_NOT_FOUND=":::: CONFORMATION TOKEN : {} NOT FOUND  ::::";
-
 
 }

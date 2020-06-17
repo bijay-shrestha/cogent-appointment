@@ -23,6 +23,8 @@ public class ErrorMessageConstants {
         String INVALID_TRANSACTION_NUMBER = "Transaction number '%s' and patient '%s' not found";
 
         String ESEWA_ID_CANNOT_BE_NULL = "eSewa Id cannot be null";
+
+        String INVALID_APPOINTMENT_SERVICE_TYPE_CODE = "Invalid Appointment Service Type Code : '%s'";
     }
 
     public interface AppointmentHospitalDepartmentMessage {

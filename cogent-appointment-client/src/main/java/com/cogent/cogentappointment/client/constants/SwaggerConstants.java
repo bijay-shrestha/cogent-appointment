@@ -5,6 +5,16 @@ public class SwaggerConstants {
 
     public static String PATH_REGEX = "/api.*";
 
+    public interface AddressConstant {
+        String BASE_API_VALUE = "This resource is used to fetch address details ";
+        String FETCH_ZONE_LIST="Fetch Zones for dropdown";
+        String FETCH_PROVINCE_LIST="Fetch Province for dropdown";
+        String FETCH_DISTRICT_LIST_BY_ZONE_ID="Fetch District for dropdown by zone id ";
+        String FETCH_DISTRICT_LIST_BY_PROVINCE_ID="Fetch District for dropdown by province id ";
+        String FETCH_STREET_LIST_BY_DISTRICT_ID="Fetch Street for dropdown by district id ";
+        String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID="Fetch Municipality for dropdown by district id ";
+    }
+
     //A
     public interface AdminConstant {
         String BASE_API_VALUE = "This is Admin Resource";
@@ -26,6 +36,11 @@ public class SwaggerConstants {
                 " Used to show in top-bar and to validate if the admin updates its own profile";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
         String VERIFY_EMAIL_ADMIN = "Verify if the confirmation token sent in email (after successful email update by admin) is valid.";
+    }
+
+    public interface AdminFavouriteConstant {
+        String BASE_API_VALUE = "This is Admin Favourite Resource";
+
     }
 
     public interface AdminFeatureConstant {

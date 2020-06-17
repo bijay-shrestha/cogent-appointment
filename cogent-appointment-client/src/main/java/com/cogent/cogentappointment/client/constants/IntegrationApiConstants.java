@@ -7,4 +7,6 @@ public class IntegrationApiConstants {
 
     public static final String FRONT_END_CODE= "FRONT";
     public static final String BACK_END_CODE= "BACK";
+    public static final String KEY_CLIENT_INTEGRATION = "e-c-Integrate";
+    public static final String KEY_APPOINTMENT_MODE_INTEGRATION = "e-a-Integrate";
 }

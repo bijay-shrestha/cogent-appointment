@@ -23,6 +23,8 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
+import static com.cogent.cogentappointment.client.query.IntegrationAdminModeQuery.ADMIN_MODE_API_FEAUTRES_HEADERS_QUERY;
+import static com.cogent.cogentappointment.client.query.IntegrationAdminModeQuery.ADMIN_MODE_API_PARAMETERS_QUERY;
 import static com.cogent.cogentappointment.client.query.IntegrationQuery.CLIENT_FEATURES_INTEGRATION_BACKEND_API_QUERY;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -51,7 +53,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     @Override
     public Map<String, String> findApiRequestHeaders(Long apiIntegrationFormatId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEAUTRES_HEADERS_QUERY)
+        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
                 .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
@@ -69,6 +71,38 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     public Map<String, String> findApiQueryParameters(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_PARAMETERS_QUERY)
                 .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+
+        List<ApiQueryParametersResponseDTO> parametersResponseDTO =
+                transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);
+
+        Map<String, String> map = new HashMap<>();
+        parametersResponseDTO.forEach(response -> {
+            map.put(response.getKeyParam(), response.getValueParam());
+        });
+
+        return map;
+    }
+
+    @Override
+    public Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId) {
+        Query query = createQuery.apply(entityManager, ADMIN_MODE_API_FEAUTRES_HEADERS_QUERY)
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+
+        List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
+                transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
+
+        Map<String, String> map = new HashMap<>();
+        requestHeaderResponseDTO.forEach(response -> {
+            map.put(response.getKeyParam(), response.getValueParam());
+        });
+
+        return map;
+    }
+
+    @Override
+    public Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId) {
+        Query query = createQuery.apply(entityManager, ADMIN_MODE_API_PARAMETERS_QUERY)
+                .setParameter(API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiQueryParametersResponseDTO> parametersResponseDTO =
                 transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);

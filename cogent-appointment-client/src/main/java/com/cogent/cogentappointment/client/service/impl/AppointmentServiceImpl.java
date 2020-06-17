@@ -47,7 +47,7 @@ import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
-import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BheriHospitalResponse;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
@@ -153,6 +153,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final NepaliDateUtility nepaliDateUtility;
 
+    private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -178,7 +180,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   Validator validator,
                                   IntegrationRepository integrationRepository,
                                   ThirdPartyConnectorService thirdPartyConnectorService,
-                                  NepaliDateUtility nepaliDateUtility) {
+                                  NepaliDateUtility nepaliDateUtility,
+                                  AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -205,6 +208,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.nepaliDateUtility = nepaliDateUtility;
+        this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
     }
 
     @Override
@@ -614,6 +618,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         appointment.setStatus(APPROVED);
+
         saveAppointmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
@@ -633,13 +638,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         //backend integration
         if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-            BheriHospitalResponse bheriHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO);
+            ThirdPartyHospitalResponse thirdPartyHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO);
 
             if (integrationRequestDTO.isPatientStatus()) {
-                updateHospitalPatientInfo(appointment, bheriHospitalResponse.getResponseData());
+                updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
             }
         }
-
     }
 
     private void updateHospitalPatientInfo(Appointment appointment, String hospitalNumber) {
@@ -651,30 +655,30 @@ public class AppointmentServiceImpl implements AppointmentService {
         hospitalPatientInfo.setHospitalNumber(hospitalNumber);
     }
 
-    private BheriHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    private ThirdPartyHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
-        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callBheriHospitalService(integrationHospitalApiInfo);
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callThirdPartyHospitalService(integrationHospitalApiInfo);
 
-        BheriHospitalResponse bheriHospitalResponse = null;
+        ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;
         try {
-            bheriHospitalResponse = map(responseEntity.getBody().toString(),
-                    BheriHospitalResponse.class);
+            thirdPartyHospitalResponse = map(responseEntity.getBody().toString(),
+                    ThirdPartyHospitalResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (bheriHospitalResponse.getStatusCode().equalsIgnoreCase("500")) {
-            throw new OperationUnsuccessfulException("An error occurred while saving the patient record.");
+        if (thirdPartyHospitalResponse.getStatusCode().equalsIgnoreCase("500")) {
+            throw new OperationUnsuccessfulException(thirdPartyHospitalResponse.getResponseMessage());
         }
 
-        if (bheriHospitalResponse.getStatusCode().equalsIgnoreCase("400")) {
+        if (thirdPartyHospitalResponse.getStatusCode().equalsIgnoreCase("400")) {
             throw new OperationUnsuccessfulException("Bad Third Party API Request.");
         }
 
 
-        return bheriHospitalResponse;
+        return thirdPartyHospitalResponse;
     }
 
     private BackendIntegrationApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
@@ -1223,7 +1227,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private AppointmentTransactionDetail fetchAppointmentTransactionDetail(Long appointmentId) {
         return appointmentTransactionDetailRepository.fetchByAppointmentId(appointmentId)
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+                .orElseThrow(() -> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
     private AppointmentMode fetchActiveAppointmentModeIdByCode(String appointmentModeCode) {
@@ -1231,14 +1235,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> APPOINTMENT_MODE_WITH_GIVEN_CODE_NOT_FOUND.apply(appointmentModeCode));
     }
 
-    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_TRANSACTION_DETAIL, id);
-        throw new NoContentFoundException(AppointmentTransactionDetail.class, "id", id.toString());
+    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
     };
 
-    private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
-        throw new NoContentFoundException(Appointment.class, "id", id.toString());
+    private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException(AppointmentTransactionDetail.class, "appointmentId", appointmentId.toString());
     };
 
     private Function<String, NoContentFoundException> APPOINTMENT_MODE_WITH_GIVEN_CODE_NOT_FOUND = (code) -> {
@@ -1331,6 +1335,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void saveAppointmentFollowUpTracker(Appointment appointment) {
 
         if (appointment.getIsFollowUp().equals(YES)) {
+
             AppointmentFollowUpLog appointmentFollowUpLog =
                     appointmentFollowUpLogRepository.findByFollowUpAppointmentId(appointment.getId())
                             .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointment.getId()));
@@ -1338,12 +1343,15 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentFollowUpTrackerService.updateFollowUpTracker(appointmentFollowUpLog.getParentAppointmentId());
 
         } else {
+
+            AppointmentDoctorInfo appointmentDoctorInfo = fetchAppointmentDoctorInfo(appointment.getId());
+
             AppointmentFollowUpTracker appointmentFollowUpTracker =
                     appointmentFollowUpTrackerService.save(
                             appointment.getId(),
                             appointment.getHospitalId(),
-                            appointment.getDoctorId(),
-                            appointment.getSpecializationId(),
+                            appointmentDoctorInfo.getDoctor(),
+                            appointmentDoctorInfo.getSpecialization(),
                             appointment.getPatientId()
                     );
 
@@ -1499,7 +1507,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private String getNepaliDate(Date date) {
-
         String nepaliDate = nepaliDateUtility.getNepaliDateFromDate(date);
 
         return formatToDateString(nepaliDate);
@@ -1509,5 +1516,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         throw new NoContentFoundException(HospitalPatientInfo.class);
     };
 
+    private AppointmentDoctorInfo fetchAppointmentDoctorInfo(Long appointmentId) {
+        return appointmentDoctorInfoRepository.fetchAppointmentDoctorInfo(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_DOCTOR_INFO_NOT_FOUND.apply(appointmentId));
+    }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_DOCTOR_INFO_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_DOCTOR_INFO);
+        throw new NoContentFoundException(AppointmentDoctorInfo.class, "appointmentId", appointmentId.toString());
+    };
 }
 

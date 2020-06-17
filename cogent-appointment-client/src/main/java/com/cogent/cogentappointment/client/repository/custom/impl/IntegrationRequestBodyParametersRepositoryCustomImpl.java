@@ -59,7 +59,7 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
 
         if (bodyAttributeResponseList.isEmpty()) {
 //            error();
-            throw REQUEST_BODY_PARAMETERS.get();
+            throw null;
 
         } else {
             return bodyAttributeResponseList;

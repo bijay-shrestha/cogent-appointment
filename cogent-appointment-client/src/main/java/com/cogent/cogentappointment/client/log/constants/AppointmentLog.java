@@ -49,5 +49,8 @@ public class AppointmentLog {
 
     public final static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
 
+    public final static String APPOINTMENT_DOCTOR_INFO = "APPOINTMENT DOCTOR INFO";
+
+
 
 }

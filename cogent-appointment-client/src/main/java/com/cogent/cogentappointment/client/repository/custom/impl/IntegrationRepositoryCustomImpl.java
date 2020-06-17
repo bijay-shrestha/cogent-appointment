@@ -51,7 +51,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     @Override
     public Map<String, String> findApiRequestHeaders(Long apiIntegrationFormatId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEAUTRES_HEADERS_QUERY)
+        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
                 .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =

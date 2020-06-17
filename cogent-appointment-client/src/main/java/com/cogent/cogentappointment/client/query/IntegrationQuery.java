@@ -26,7 +26,7 @@ public class IntegrationQuery {
                     " AND f.status='Y'" +
                     " AND cfi.status='Y'";
 
-    public static final String CLIENT_API_FEAUTRES_HEADERS_QUERY =
+    public static final String CLIENT_API_FEATURES_HEADERS_QUERY =
             " SELECT " +
                     " arh.keyName as keyParam," +
                     " arh.value as valueParam" +

@@ -353,7 +353,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 ? DOCTOR_CONSULTATION_CODE : requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
 
         AppointmentSuccessResponseDTO responseDTO;
-        switch (code.toUpperCase()) {
+        switch (code.trim().toUpperCase()) {
 
             case DOCTOR_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForSelfDoctorWise(

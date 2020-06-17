@@ -639,7 +639,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 updateHospitalPatientInfo(appointment, bheriHospitalResponse.getResponseData());
             }
         }
-
     }
 
     private void updateHospitalPatientInfo(Appointment appointment, String hospitalNumber) {
@@ -1223,7 +1222,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private AppointmentTransactionDetail fetchAppointmentTransactionDetail(Long appointmentId) {
         return appointmentTransactionDetailRepository.fetchByAppointmentId(appointmentId)
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+                .orElseThrow(() -> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
     private AppointmentMode fetchActiveAppointmentModeIdByCode(String appointmentModeCode) {
@@ -1232,13 +1231,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_TRANSACTION_DETAIL, id);
-        throw new NoContentFoundException(AppointmentTransactionDetail.class, "id", id.toString());
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
+        throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
-        throw new NoContentFoundException(Appointment.class, "id", id.toString());
+        throw new NoContentFoundException(AppointmentTransactionDetail.class, "id", id.toString());
     };
 
     private Function<String, NoContentFoundException> APPOINTMENT_MODE_WITH_GIVEN_CODE_NOT_FOUND = (code) -> {
@@ -1338,6 +1337,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentFollowUpTrackerService.updateFollowUpTracker(appointmentFollowUpLog.getParentAppointmentId());
 
         } else {
+
+
             AppointmentFollowUpTracker appointmentFollowUpTracker =
                     appointmentFollowUpTrackerService.save(
                             appointment.getId(),

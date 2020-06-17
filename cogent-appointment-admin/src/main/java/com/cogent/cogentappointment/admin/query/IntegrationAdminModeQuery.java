@@ -163,6 +163,8 @@ public class IntegrationAdminModeQuery {
             (searchRequestDTO) ->
                     " SELECT" +
                             " amfi.id as id," +
+                            " amfi.status as status," +
+                            " h.name as hospitalName,"+
                             " am.name as appointmentMode," +
                             " ic.name as integrationChannel," +
                             " f.name as featureName," +
@@ -176,7 +178,8 @@ public class IntegrationAdminModeQuery {
                             " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                             " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id"
+                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id"+
+                            " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(

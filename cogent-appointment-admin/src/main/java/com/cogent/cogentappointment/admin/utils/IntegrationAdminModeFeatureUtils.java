@@ -106,12 +106,15 @@ public class IntegrationAdminModeFeatureUtils {
     public static void parseToUpdateAdminModeFeatureIntegration(AppointmentMode appointmentMode,
                                                                 IntegrationChannel integrationChannel,
                                                                 AdminModeIntegrationUpdateRequestDTO requestDTO,
-                                                                AdminModeFeatureIntegration adminModeFeatureIntegration) {
+                                                                AdminModeFeatureIntegration adminModeFeatureIntegration,
+                                                                Hospital hospital) {
 
         adminModeFeatureIntegration.setAppointmentModeId(appointmentMode);
         adminModeFeatureIntegration.setFeatureId(requestDTO.getFeatureId());
         adminModeFeatureIntegration.setIntegrationChannelId(integrationChannel);
         adminModeFeatureIntegration.setRemarks(requestDTO.getRemarks());
+        adminModeFeatureIntegration.setHospitalId(hospital);
+        adminModeFeatureIntegration.setStatus(requestDTO.getStatus());
 
 
     }

@@ -208,6 +208,7 @@ public class IntegrationQuery {
             (searchRequestDTO) ->
                     " SELECT" +
                             " cfi.id as id," +
+                            " cfi.status as status,"+
                             " ic.name as integrationChannel," +
                             " h.name as hospitalName," +
                             " f.name as featureName," +

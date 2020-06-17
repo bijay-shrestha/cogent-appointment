@@ -111,8 +111,8 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         AppointmentMode appointmentMode = findAppointmentMode(requestDTO.getAppointmentModeId());
 
-        Hospital hospital=hospitalRepository.findActiveHospitalById(requestDTO.getHospitalId())
-                .orElseThrow(()->HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getHospitalId()));
+        Hospital hospital = hospitalRepository.findActiveHospitalById(requestDTO.getHospitalId())
+                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getHospitalId()));
 
 
         IntegrationChannel integrationChannel = integrationChannelRepository.
@@ -122,7 +122,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         AdminModeFeatureIntegration adminModeFeatureIntegration =
                 parseToAdminModeFeatureIntegration(appointmentMode,
                         requestDTO.getFeatureTypeId(),
-                        integrationChannel,hospital);
+                        integrationChannel, hospital);
 
         saveAdminModeFeatureIntegration(adminModeFeatureIntegration);
 
@@ -277,15 +277,19 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         AppointmentMode appointmentMode = appointmentModeRepository.fetchAppointmentModeById(requestDTO.getAppointmentModeId())
                 .orElseThrow(() -> APPOINTMENT_MODE_NOT_FOUND.apply(requestDTO.getAppointmentModeId()));
 
-
         IntegrationChannel integrationChannel = integrationChannelRepository.
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
 
 
+        Hospital hospital = hospitalRepository.findActiveHospitalById(requestDTO.getHospitalId())
+                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getHospitalId()));
+
         parseToUpdateAdminModeFeatureIntegration(appointmentMode,
                 integrationChannel,
-                requestDTO, adminModeFeatureIntegration);
+                requestDTO,
+                adminModeFeatureIntegration,
+                hospital);
 
         List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList =
                 adminModeApiFeatureIntegrationRepository.

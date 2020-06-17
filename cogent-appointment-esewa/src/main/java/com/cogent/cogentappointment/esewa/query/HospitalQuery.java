@@ -62,8 +62,10 @@ public class HospitalQuery {
             " SELECT " +
                     " h.id as hospitalAppointmentServiceTypeId," +                           //[0]
                     " h.appointmentServiceType.name as appointmentServiceTypeName," +       //[1]
-                    " h.isPrimary as isPrimary" +                                           //[2]
+                    " h.appointmentServiceType.code as appointmentServiceTypeCode," +       //[2]
+                    " h.isPrimary as isPrimary" +                                           //[3]
                     " FROM HospitalAppointmentServiceType h " +
                     " WHERE h.status = 'Y'" +
+                    " AND h.appointmentServiceType.status = 'Y'" +
                     " AND h.hospital.id =:hospitalId";
 }

@@ -38,7 +38,7 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
 
     private Character isSideBarCollapse;
 
-    private ClientIntegrationResponseDTO eCIntegrate;
+    private Map<String,?> eCIntegrate;
 
     Map<String, String> requestBody;
 }

@@ -11,8 +11,17 @@ import java.sql.Date;
 
 /**
  * @author Sauravi Thapa ON 6/16/20
+ *
+ * isNew:
+ *       0 = old Structure
+ *       1 = new Structure
+ *
+ * geographyType :
+ *  0 = ZONE
+ *  1 = DISTRICT
+ *  2 = VDC_MUNICIPALITY
+ *  3 = PROVINCE
  */
-
 @Getter
 @Entity
 @Table(name = "address")

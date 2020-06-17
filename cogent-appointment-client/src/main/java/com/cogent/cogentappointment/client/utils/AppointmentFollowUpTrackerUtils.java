@@ -27,7 +27,6 @@ public class AppointmentFollowUpTrackerUtils {
                 .parentAppointmentId(parentAppointmentId)
                 .appointmentReservationId(savedAppointmentReservationId)
                 .build();
-
     }
 
     public static void updateNumberOfFollowUps(AppointmentFollowUpTracker followUpTracker) {

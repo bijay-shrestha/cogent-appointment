@@ -8,8 +8,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
-import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
-import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
+import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -109,28 +108,38 @@ public class AppointmentHospitalDepartmentQuery {
                     "SELECT" +
                             " a.id as appointmentId," +                                                  //[0]
                             " a.appointmentDate as appointmentDate," +                                   //[1]
-                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
-                            " a.appointmentNumber as appointmentNumber," +                               //[2]
-                            " atd.appointmentAmount as appointmentAmount," +                            //[8]
-                            " p.name as patientName," +                                                 //[5]
-                            " p.mobileNumber as mobileNumber," +                                        //[6]
-                            " p.gender as gender," +                                                    //[11]
-                            " hpi.isRegistered as isRegistered," +                                      //[13]
+                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[2]
+                            " a.appointmentNumber as appointmentNumber," +                               //[3]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[4]
+                            " atd.transactionNumber as transactionNumber," +                             //[5]
+                            " p.name as patientName," +                                                 //[6]
+                            " p.mobileNumber as mobileNumber," +                                        //[7]
+                            " p.gender as gender," +                                                    //[8]
+                            " hpi.isRegistered as isRegistered," +                                      //[9]
                             " CASE WHEN" +
                             " (hpi.registrationNumber IS NULL)" +
                             " THEN 'N/A'" +
                             " ELSE" +
                             " hpi.registrationNumber" +
-                            " END as registrationNumber," +                                             //[4]
-                            " hpi.hospitalNumber as hospitalNumber," +                                  //[9]
+                            " END as registrationNumber," +                                             //[10]
+                            " hpi.hospitalNumber as hospitalNumber," +                                  //[11]
                             " hpi.address as address," +                                                //[12]
-                            " hd.name as hospitalDepartmentName," +                                     //[14]
+                            " hd.name as hospitalDepartmentName," +                                     //[13]
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
-                            " end as roomNumber," +                                                      //[16]
-                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[17]
+                            " end as roomNumber," +                                                      //[14]
+                            " pr.value as province," +
+                            " d.value as district," +
+                            " CASE WHEN" +
+                            " hpi.hasAddress  = 'Y'" +
+                            " THEN" +
+                            " CONCAT_WS(', ',COALESCE(pr.value, ' ')," +
+                            " COALESCE(d.value,','),COALESCE(vm.value,','),COALESCE(w.value,'') )" +
+                            " ELSE" +
+                            " hpi.address" +
+                            " end as address " +                                                         //[15]
                             " FROM Appointment a" +
-                            " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                            " INNER JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN HospitalDepartment hd ON hd.id = ad.hospitalDepartment.id" +
                             " LEFT JOIN HospitalDepartmentBillingModeInfo hb ON hb.id = ad.hospitalDepartmentBillingModeInfo.id" +
                             " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ad.hospitalDepartmentRoomInfo.id" +
@@ -139,7 +148,11 @@ public class AppointmentHospitalDepartmentQuery {
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                            " LEFT JOIN Address pr ON pr.id = hpi.province.id" +
+                            " LEFT JOIN Address d ON d.id = hpi.district.id" +
+                            " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
+                            " LEFT JOIN Address w ON w.id = hpi.ward.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
@@ -174,4 +187,58 @@ public class AppointmentHospitalDepartmentQuery {
         return whereClause;
     }
 
+    public static String QUERY_TO_FETCH_PENDING_APPOINTMENT_DETAIL =
+            "SELECT" +
+                    " a.id as appointmentId," +                                                  //[0]
+                    " a.appointmentDate as appointmentDate," +                                   //[1]
+                    " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[2]
+                    " a.appointmentNumber as appointmentNumber," +                               //[3]
+                    " atd.appointmentAmount as appointmentAmount," +                            //[4]
+                    " atd.transactionNumber as transactionNumber," +                             //[5]
+                    " p.name as patientName," +                                                 //[6]
+                    " p.mobileNumber as mobileNumber," +                                        //[7]
+                    " p.gender as gender," +                                                    //[8]
+                    " hpi.isRegistered as isRegistered," +                                      //[9]
+                    " CASE WHEN" +
+                    " (hpi.registrationNumber IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " hpi.registrationNumber" +
+                    " END as registrationNumber," +                                             //[10]
+                    " hpi.hospitalNumber as hospitalNumber," +                                  //[11]
+                    " hpi.address as address," +                                                //[12]
+                    " hd.name as hospitalDepartmentName," +                                     //[13]
+                    " case when hr.id is null then null" +
+                    " when hr.id is not null then r.roomNumber" +
+                    " end as roomNumber," +                                                      //[14]
+                    " pr.value as province," +
+                    " d.value as district," +
+                    " vm.value as vdcOrMunicipality," +
+                    " w.value as ward," +
+                    " hpi.address AS address," +                                                  //[15]
+                    QUERY_TO_CALCULATE_PATIENT_AGE_YEAR + "," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE_MONTH + "," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE_DAY + "," +
+                    " p.eSewaId as eSewaId," +
+                    " a.isSelf as isSelf," +
+                    " a.appointmentModeId.name as appointmentMode," +                                               //[16]
+                    " hb.billingMode.name as billingModeName" +
+                    " FROM Appointment a" +
+                    " INNER JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                    " LEFT JOIN HospitalDepartment hd ON hd.id = ad.hospitalDepartment.id" +
+                    " LEFT JOIN HospitalDepartmentBillingModeInfo hb ON hb.id = ad.hospitalDepartmentBillingModeInfo.id" +
+                    " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ad.hospitalDepartmentRoomInfo.id" +
+                    " LEFT JOIN Room r ON r.id = hr.room.id" +
+                    " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
+                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                    " LEFT JOIN Address pr ON pr.id = hpi.province.id" +
+                    " LEFT JOIN Address d ON d.id = hpi.district.id" +
+                    " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
+                    " LEFT JOIN Address w ON w.id = hpi.ward.id" +
+                    " WHERE a.id =:appointmentId" +
+                    " AND a.status='PA'" +
+                    " AND h.id =:hospitalId";
 }

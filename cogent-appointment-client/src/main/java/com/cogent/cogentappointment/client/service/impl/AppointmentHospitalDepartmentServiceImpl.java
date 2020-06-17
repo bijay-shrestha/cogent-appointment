@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.service.AppointmentHospitalDepartmentService;
@@ -11,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.SEARCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.SEARCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.PENDING_APPOINTMENTS;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -49,5 +49,22 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 getDifferenceBetweenTwoTime(startTime));
 
         return pendingAppointments;
+    }
+
+    @Override
+    public AppointmentHospitalDepartmentCheckInDetailResponseDTO fetchPendingHospitalDeptAppointmentDetail(
+            Long appointmentId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, PENDING_APPOINTMENTS);
+
+        AppointmentHospitalDepartmentCheckInDetailResponseDTO appointmentDetails =
+                appointmentRepository.fetchPendingHospitalDeptAppointmentDetail(appointmentId, getLoggedInHospitalId());
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PENDING_APPOINTMENTS,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return appointmentDetails;
     }
 }

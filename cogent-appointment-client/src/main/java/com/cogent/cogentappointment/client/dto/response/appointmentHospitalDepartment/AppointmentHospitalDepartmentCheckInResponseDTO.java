@@ -26,6 +26,8 @@ public class AppointmentHospitalDepartmentCheckInResponseDTO implements Serializ
 
     private String appointmentNumber;
 
+    private String transactionNumber;
+
     private Double appointmentAmount;
 
     private String patientName;
@@ -43,6 +45,11 @@ public class AppointmentHospitalDepartmentCheckInResponseDTO implements Serializ
     private String hospitalNumber;
 
     /*Province, District, VDC/Municipality, Ward*/
+
+    private String province;
+
+    private String district;
+
     private String address;
 
     private String hospitalDepartmentName;

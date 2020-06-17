@@ -278,7 +278,6 @@ public class PatientQuery {
         return query;
     }
 
-
     public static final String QUERY_TO_FETCH_ESEWA_ID =
             " SELECT p.id as value," +                                      //[0]
                     " p.eSewaId as label" +                                 //[1]
@@ -286,5 +285,17 @@ public class PatientQuery {
                     " LEFT JOIN HospitalPatientInfo hp ON p.id = hp.patient.id " +
                     " WHERE p.eSewaId IS NOT NULL" +
                     " AND hp.hospital.id =:hospitalId";
+
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE_YEAR =
+            " FLOOR(TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))" +
+                    " AS age";
+
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE_MONTH =
+            " FLOOR(TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)" +
+                    " AS ageMonth";
+
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE_DAY =
+            " FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)" +
+                    " AS ageDay";
 
 }

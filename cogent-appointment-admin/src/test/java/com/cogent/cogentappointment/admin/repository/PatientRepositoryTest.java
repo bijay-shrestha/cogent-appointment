@@ -14,8 +14,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 public class PatientRepositoryTest {
+
     @Autowired
     TestEntityManager testEntityManager;
 
-
+//    @Test
+//    public void test() {
+//        String query = " SELECT (TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))" +
+//                " AS age" +
+//                " FROM Patient p WHERE p.id = 43";
+//
+//        Query query1 = testEntityManager.getEntityManager().createQuery(query);
+//
+//        Integer a = (Integer) query1.getSingleResult();
+//
+//        System.out.println(a);
+//
+//    }
 }

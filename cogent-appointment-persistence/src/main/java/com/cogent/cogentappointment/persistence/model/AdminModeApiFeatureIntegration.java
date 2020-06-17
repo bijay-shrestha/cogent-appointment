@@ -13,6 +13,9 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-24
  */
+
+/* This table is only relation table between AdminModeFeatureIntegration & ApiIntegrationFormat
+*/
 @Table(name = "admin_mode_api_feature_integration")
 @Entity
 @Getter
@@ -27,11 +30,11 @@ public class AdminModeApiFeatureIntegration extends Auditable<String> implements
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name =  "admin_mode_feature_integration_id")
+    @JoinColumn(name = "admin_mode_feature_integration_id")
     private AdminModeFeatureIntegration adminModeFeatureIntegrationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name =  "api_integration_format_id")
+    @JoinColumn(name = "api_integration_format_id")
     private ApiIntegrationFormat apiIntegrationFormatId;
 
     @Column(name = "status")
@@ -42,7 +45,7 @@ public class AdminModeApiFeatureIntegration extends Auditable<String> implements
         return "AdminModeApiFeatureIntegration{" +
                 "id=" + id +
                 ", adminModeFeatureIntegrationId=" + adminModeFeatureIntegrationId.getId() +
-                ", apiIntegrationFormatId=" + apiIntegrationFormatId .getId()+
+                ", apiIntegrationFormatId=" + apiIntegrationFormatId.getId() +
                 ", status=" + status +
                 '}';
     }

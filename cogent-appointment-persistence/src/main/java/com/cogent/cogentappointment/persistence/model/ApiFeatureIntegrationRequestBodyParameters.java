@@ -13,7 +13,8 @@ import java.io.Serializable;
 /**
  * @author rupak ON 2020/05/29-11:35 AM
  */
-
+/* It consists of request body parameters assigned to features.
+*/
 @Table(name = "api_feature_integration_request_body_parameters")
 @Entity
 @Getter

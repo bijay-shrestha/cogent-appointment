@@ -13,6 +13,11 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-21
  */
+
+/* AdminModeFeatureIntegration table is API Integration of Appointment Mode
+Appointment Mode is integrated by appointment mode & hospital wise with integration channel.
+Integration Channel can be FRONTEND OR BACKEND.
+ */
 @Table(name = "admin_mode_feature_integration")
 @Entity
 @Getter

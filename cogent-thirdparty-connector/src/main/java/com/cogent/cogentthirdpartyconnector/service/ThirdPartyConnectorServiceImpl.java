@@ -17,8 +17,6 @@ import java.util.Map;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryParameter;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 
 /**
  * @author rupak ON 2020/06/09-11:41 AM
@@ -92,25 +90,23 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo hospitalApiInfo) {
+    public ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo integrationApiInfo) {
 
-        HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
+        HttpMethod httpMethod = getHttpRequestMethod(integrationApiInfo.getHttpMethod());
 
         String uri = "";
-        if ((httpMethod == GET) || (httpMethod == POST)) {
+        Map<String, String> queryParameter = integrationApiInfo.getQueryParameters();
 
-            Map<String, String> queryParameter = hospitalApiInfo.getQueryParameters();
-            if (!queryParameter.isEmpty()) {
-                uri = createQueryParameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
-            }
+        if (queryParameter != null) {
+            uri = createQueryParameter(integrationApiInfo.getApiUri(), queryParameter).toUriString();
         } else {
-            uri = hospitalApiInfo.getApiUri();
+            uri = integrationApiInfo.getApiUri();
         }
 
         ResponseEntity<?> response = restTemplateUtils.
                 requestAPI(httpMethod,
                         uri,
-                        new HttpEntity<>(getApiRequestBody(), hospitalApiInfo.getHttpHeaders()));
+                        new HttpEntity<>(getApiRequestBody(), integrationApiInfo.getHttpHeaders()));
 
         System.out.println(response);
 

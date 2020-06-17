@@ -120,6 +120,7 @@ public class IntegrationQuery {
             "SELECT" +
                     " f.id as featureId," +
                     " aif.id as apiIntegrationFormatId,"+
+                    " h.id as hospitalId,"+
                     " h.name as hospitalName," +
                     " f.name as featureName," +
                     " hrm.id as requestMethodId," +
@@ -129,6 +130,7 @@ public class IntegrationQuery {
                     " ic.name as integrationChannel," +
                     " ait.id as integrationTypeId," +
                     " ait.name as integrationType," +
+                    " cfi.status as status,"+
                     CLIENT_API_INTEGRATION_AUDITABLE_QUERY() +
                     " from ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
@@ -208,6 +210,7 @@ public class IntegrationQuery {
             (searchRequestDTO) ->
                     " SELECT" +
                             " cfi.id as id," +
+                            " cfi.status as status,"+
                             " ic.name as integrationChannel," +
                             " h.name as hospitalName," +
                             " f.name as featureName," +

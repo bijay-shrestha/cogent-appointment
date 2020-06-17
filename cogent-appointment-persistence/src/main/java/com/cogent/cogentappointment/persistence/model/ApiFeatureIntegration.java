@@ -13,6 +13,9 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-18
  */
+/*
+This is join table for ClientFeatureIntegration and ApiIntegrationFormat for Client(Hospital) APIs.
+ */
 @Table(name = "api_feature_integration")
 @Entity
 @Getter

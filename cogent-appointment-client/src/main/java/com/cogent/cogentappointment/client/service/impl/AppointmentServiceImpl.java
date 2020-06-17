@@ -659,6 +659,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
+        //dynamic requestBOdy
+        //Esewa
+        //call thirdparty requestbody utils if not create one.....
+
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.callThirdPartyHospitalService(integrationHospitalApiInfo);
 
         ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;

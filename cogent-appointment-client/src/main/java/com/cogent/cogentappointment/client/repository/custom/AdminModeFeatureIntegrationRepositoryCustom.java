@@ -5,8 +5,6 @@ import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.Adm
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
  * @author rupak ON 2020/06/03-1:58 PM
  */
@@ -15,11 +13,7 @@ import java.util.List;
 public interface AdminModeFeatureIntegrationRepositoryCustom {
 
 
-    List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO();
+    AdminFeatureIntegrationResponse fetchAdminModeIntegrationResponseDTO();
 
     AdminModeApiIntegrationResponseDTO findAdminModeFeatureIntegration(Long id);
-
-    Long findAppointmentModeWiseFeatureAndRequestMethod(Long appointmentModeId,
-                                                        Long featureTypeId,
-                                                        Long requestMethodId);
 }

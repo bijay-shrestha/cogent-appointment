@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.admin.repository.custom.AdminModeApiFeatureIntegrationRepositoryCustom;
+import com.cogent.cogentappointment.client.repository.custom.AdminModeApiFeatureIntegrationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminModeApiFeatureIntegration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

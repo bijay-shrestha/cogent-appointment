@@ -37,7 +37,8 @@ public interface IntegrationRepositoryCustom {
 
     Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId);
 
-    ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable);
+    ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO,
+                                                             Pageable pageable);
 
     ClientApiIntegrationResponseDTO findClientApiIntegration(Long id);
 

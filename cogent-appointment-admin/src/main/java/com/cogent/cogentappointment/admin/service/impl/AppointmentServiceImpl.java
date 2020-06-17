@@ -298,6 +298,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
 
 
+        if (responseEntity.getStatusCode().value() == 403) {
+            throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR);
+        }
+
         ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;
         try {
             thirdPartyHospitalResponse = map(responseEntity.getBody().toString(),

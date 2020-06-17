@@ -70,6 +70,8 @@ import static com.cogent.cogentappointment.client.constants.CogentAppointmentCon
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.IntegrationApiMessages.INTEGRATION_API_BAD_REQUEST;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.IntegrationApiMessages.INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.FRONT_END_CODE;
@@ -661,6 +663,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.callThirdPartyHospitalService(integrationHospitalApiInfo);
 
+        if (responseEntity.getStatusCode().value() == 403) {
+            throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR);
+        }
+
         ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;
         try {
             thirdPartyHospitalResponse = map(responseEntity.getBody().toString(),
@@ -669,16 +675,21 @@ public class AppointmentServiceImpl implements AppointmentService {
             e.printStackTrace();
         }
 
+        validateBheriHospitalResponse(thirdPartyHospitalResponse);
+
+        return thirdPartyHospitalResponse;
+    }
+
+    private void validateBheriHospitalResponse(ThirdPartyHospitalResponse thirdPartyHospitalResponse) {
+
         if (thirdPartyHospitalResponse.getStatusCode().equalsIgnoreCase("500")) {
             throw new OperationUnsuccessfulException(thirdPartyHospitalResponse.getResponseMessage());
         }
 
         if (thirdPartyHospitalResponse.getStatusCode().equalsIgnoreCase("400")) {
-            throw new OperationUnsuccessfulException("Bad Third Party API Request.");
+            throw new OperationUnsuccessfulException(INTEGRATION_API_BAD_REQUEST);
         }
 
-
-        return thirdPartyHospitalResponse;
     }
 
     private BackendIntegrationApiInfo getHospitalApiIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO) {

@@ -29,4 +29,6 @@ public class GenerateRevenueRequestDTO implements Serializable {
     private Date previousFromDate;
 
     private Character filterType;
+
+    private Long appointmentServiceTypeId;
 }

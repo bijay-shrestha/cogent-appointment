@@ -17,6 +17,7 @@ import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
 import com.cogent.cogentappointment.admin.service.RoomService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.ALL;
@@ -111,7 +113,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     @Override
-    public HospitalDeptAppointmentStatusDTO fetchHospitalDeptAppointmentStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public HospitalDeptAppointmentStatusDTO fetchHospitalDeptAppointmentStatus(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -457,10 +460,15 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private boolean hasDepartmentAppointment(HospitalDeptAppointmentStatusResponseDTO appointment,
                                              HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
-
-        return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
-                && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()))
-                || (appointment.getRoomId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
+        if(Objects.isNull(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId())
+                && Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
+            return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
+                    && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()));
+        } else {
+            return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
+                    && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId())
+                    && appointment.getHospitalDepartmentRoomInfoId().equals(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId()));
+        }
     }
 
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatus
@@ -474,7 +482,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                         requestDTO, getRosterIdList(hospitalDeptDutyRosterStatus));
 
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
-            throw new NoContentFoundException(DoctorDutyRoster.class);
+            throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
 
         return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
     }
@@ -489,7 +497,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO, getRosterIdList(hospitalDeptDutyRosterStatus));
 
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
-            throw new NoContentFoundException(DoctorDutyRoster.class);
+            throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
 
         return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
     }
@@ -576,10 +584,11 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
              List<AppointmentTimeSlotResponseDTO> appointmentTimeSlots,
              List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
 
-        List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster =
-                appointments.stream()
-                        .filter(appointment -> hasDepartmentAppointment(appointment, rosterStatusResponseDTO))
-                        .collect(Collectors.toList());
+
+        List<HospitalDeptAppointmentStatusResponseDTO>  appointmentMatchedWithRoster =
+                    appointments.stream()
+                            .filter(appointment -> hasDepartmentAppointment(appointment, rosterStatusResponseDTO))
+                            .collect(Collectors.toList());
 
         if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
 

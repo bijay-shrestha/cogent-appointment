@@ -129,12 +129,8 @@ public class HospitalDeptDutyRosterQuery {
                 " hddr.roster_gap_duration as gapDuration," +
                 " hd.id as hospitalDepartmentId," +
                 " hd.name as hospitalDepartmentName," +
-                " CASE WHEN hddr.is_room_enabled='N' " +
-                " THEN null" +
-                " ELSE hdri.id END as roomId," +
-                " CASE WHEN hddr.is_room_enabled='N' " +
-                " THEN 'N/A'" +
-                " ELSE r.room_number END as roomNumber," +
+                " hdri.id  as roomId," +
+                " r.room_number as roomNumber," +
                 " GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i'), '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails," +
                 " hddr.id as rosterId" +
                 " FROM" +
@@ -149,28 +145,17 @@ public class HospitalDeptDutyRosterQuery {
                 " WHERE" +
                 " hddr.status = 'Y'" +
                 " AND hd.status = 'Y'" +
+                " AND hddr.is_room_enabled='Y'" +
                 " AND hddr.to_date >=:fromDate" +
-                " AND hddr.from_date <=:toDate" +
-                " AND hdri.last_modified_date IN (" +
-                " SELECT MIN(hdri.last_modified_date) FROM hospital_department_room_info hdri  " +
-                " LEFT JOIN hospital_department hd ON hd.id=hdri.hospital_department_id  " +
-                " WHERE hdri.status!='D' " +
-                " AND hd.status!='D' " +
-                " AND hd.id IN (" +
-                " SELECT DISTINCT(hdri.hospital_department_id) " +
-                " from hospital_department_room_info hdri ) " +
-                " GROUP  BY hd.id )";
+                " AND hddr.from_date <=:toDate";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND hd.id = :hospitalDepartmentId";
 
-        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
-            SQL += " AND hdri.id = :hospitalDepartmentRoomInfoId";
-
         if (!Objects.isNull(requestDTO.getHospitalId()))
             SQL += " AND h.id = :hospitalId";
 
-        SQL += " GROUP BY hddr.id";
+        SQL += " GROUP BY hddr.to_date,hddr.from_date ";
 
         return SQL;
 

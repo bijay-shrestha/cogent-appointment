@@ -126,48 +126,31 @@ public class HospitalDeptDutyRosterQuery {
                 " hddr.roster_gap_duration as gapDuration," +
                 " hd.id as hospitalDepartmentId," +
                 " hd.name as hospitalDepartmentName," +
-                " CASE WHEN hddr.is_room_enabled='N' " +
-                " THEN null" +
-                " ELSE hdri.id END as roomId," +
-                " CASE WHEN hddr.is_room_enabled='N' " +
-                " THEN 'N/A'" +
-                " ELSE r.room_number END as roomNumber," +
-                " GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i')," +
-                " '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails" +
+                " hdri.id  as roomId," +
+                " r.room_number as roomNumber," +
+                " GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i'), '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails," +
+                " hddr.id as rosterId" +
                 " FROM" +
                 " hospital_department_duty_roster hddr" +
-                " LEFT JOIN hospital_department_week_days_duty_roster dw " +
-                " ON dw.hospital_department_duty_roster_id = hddr.id" +
+                " LEFT JOIN hospital_department_week_days_duty_roster dw ON dw.hospital_department_duty_roster_id = hddr.id" +
                 " LEFT JOIN week_days w ON w.id = dw.week_days_id" +
                 " LEFT JOIN hospital h ON h.id = hddr.hospital_id" +
                 " LEFT JOIN hospital_department hd ON hd.id = hddr.hospital_department_id" +
-                " LEFT JOIN hospital_department_duty_roster_room_info hdrri" +
-                " ON hdrri.hospital_department_duty_roster_id=hddr.id" +
+                " LEFT JOIN hospital_department_duty_roster_room_info hdrri ON hdrri.hospital_department_duty_roster_id=hddr.id" +
                 " LEFT JOIN hospital_department_room_info hdri ON hdri.id=hdrri.hospital_department_room_info_id " +
                 " LEFT JOIN room r ON r.id=hdri.room_id " +
                 " WHERE" +
                 " hddr.status = 'Y'" +
                 " AND hd.status = 'Y'" +
+                " AND hddr.is_room_enabled='Y'" +
                 " AND hddr.to_date >=:fromDate" +
                 " AND hddr.from_date <=:toDate" +
-                " AND h.id = :hospitalId" +
-                " AND hdri.last_modified_date IN (" +
-                " SELECT MIN(hdri.last_modified_date) FROM hospital_department_room_info hdri  " +
-                " LEFT JOIN hospital_department hd ON hd.id=hdri.hospital_department_id  " +
-                " WHERE hdri.status!='D' " +
-                " AND hd.status!='D' " +
-                " AND hd.id IN (" +
-                " SELECT DISTINCT(hdri.hospital_department_id) " +
-                " from hospital_department_room_info hdri ) " +
-                " GROUP  BY hd.id )";
+                " AND h.id = :hospitalId";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND hd.id = :hospitalDepartmentId";
 
-        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
-            SQL += " AND hdri.id = :hospitalDepartmentRoomInfoId";
-
-        SQL += " GROUP BY hddr.id";
+        SQL += " GROUP BY hddr.to_date,hddr.from_date ";
 
         return SQL;
 
@@ -187,7 +170,8 @@ public class HospitalDeptDutyRosterQuery {
                 " THEN 'N/A'" +
                 " ELSE r.room_number END as roomNumber," +
                 " GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i')," +
-                " '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails" +
+                " '-', dw.day_off_status, '-', w.name))) as doctorTimeDetails," +
+                " hddr.id as rosterId"+
                 " FROM" +
                 " hospital_department_duty_roster hddr" +
                 " LEFT JOIN hospital_department_week_days_duty_roster dw" +

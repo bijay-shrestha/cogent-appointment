@@ -128,7 +128,8 @@ public class HospitalDeptDutyRosterOverrideQuery {
                         " ELSE hddro.hospitalDepartmentRoomInfo.id END as roomId," +
                         " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[9]
                         " THEN 'N/A'" +
-                        " ELSE hddro.hospitalDepartmentRoomInfo.room.roomNumber END as roomNumber" +
+                        " ELSE hddro.hospitalDepartmentRoomInfo.room.roomNumber END as roomNumber," +
+                        " hddr.id as hospitalDepartmentDutyRosterId" +
                         " FROM HospitalDepartmentDutyRosterOverride hddro" +
                         " LEFT JOIN HospitalDepartmentDutyRoster hddr ON hddr.id = hddro .hospitalDepartmentDutyRoster.id" +
                         " WHERE" +

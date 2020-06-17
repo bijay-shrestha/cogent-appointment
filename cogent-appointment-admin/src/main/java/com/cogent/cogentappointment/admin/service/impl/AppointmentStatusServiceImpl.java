@@ -14,7 +14,6 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
-import com.cogent.cogentappointment.admin.service.RoomService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
@@ -32,6 +31,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.ALL;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
@@ -120,6 +120,9 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         log.info(FETCHING_PROCESS_STARTED, DEPARTMENT_APPOINTMENT_STATUS);
 
+        if (requestDTO.getHasAppointmentNumber().equals(YES))
+            searchByAppointmentNumber(requestDTO.getAppointmentNumber());
+
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus = fetchHospitalDepartmentStatus
                 (requestDTO);
 
@@ -143,6 +146,13 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_APPOINTMENT_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentStatusDTO;
+    }
+
+    private HospitalDeptAppointmentStatusDTO searchByAppointmentNumber(String appointmentNumber) {
+
+        AppointmentDetailsForStatus appointmentDetailsForStatus = fetchAppointmentByApptNumber(appointmentNumber);
+
+        return null;
     }
 
     @Override
@@ -460,7 +470,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private boolean hasDepartmentAppointment(HospitalDeptAppointmentStatusResponseDTO appointment,
                                              HospitalDeptDutyRosterStatusResponseDTO rosterStatusResponseDTO) {
-        if(Objects.isNull(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId())
+        if (Objects.isNull(rosterStatusResponseDTO.getHospitalDepartmentRoomInfoId())
                 && Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
             return appointment.getDate().equals(rosterStatusResponseDTO.getDate())
                     && (appointment.getDepartmentId().equals(rosterStatusResponseDTO.getHospitalDepartmentId()));
@@ -514,6 +524,12 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
             HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         return appointmentRepository.fetchHospitalDeptAppointmentForAppointmentStatus(requestDTO);
+
+    }
+
+    private AppointmentDetailsForStatus fetchAppointmentByApptNumber(String appointmentNumber) {
+
+        return appointmentRepository.fetchAppointmentByApptNumber(appointmentNumber);
 
     }
 
@@ -585,10 +601,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
              List<HospitalDeptAppointmentStatusResponseDTO> appointments) {
 
 
-        List<HospitalDeptAppointmentStatusResponseDTO>  appointmentMatchedWithRoster =
-                    appointments.stream()
-                            .filter(appointment -> hasDepartmentAppointment(appointment, rosterStatusResponseDTO))
-                            .collect(Collectors.toList());
+        List<HospitalDeptAppointmentStatusResponseDTO> appointmentMatchedWithRoster =
+                appointments.stream()
+                        .filter(appointment -> hasDepartmentAppointment(appointment, rosterStatusResponseDTO))
+                        .collect(Collectors.toList());
 
         if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
 

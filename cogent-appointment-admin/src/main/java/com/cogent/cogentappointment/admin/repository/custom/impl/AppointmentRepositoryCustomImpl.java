@@ -22,6 +22,8 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPe
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.AppointmentDetailsForStatus;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.AppointmentTimeSlotResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
@@ -307,6 +309,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<Object[]> results = query.getResultList();
 
         return parseQueryResultToHospitalDeptAppointmentStatusResponseDTOS(results);
+    }
+
+    @Override
+    public AppointmentDetailsForStatus fetchAppointmentByApptNumber(String appointmentNumber) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_BY_APPT_NUMBER)
+                .setParameter(APPOINTMENT_NUMBER, appointmentNumber);
+
+        try {
+            AppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query,
+                    AppointmentDetailsForStatus.class);
+            return responseDTO;
+        } catch (NoResultException e) {
+            throw APPOINTMENT_NOT_FOUND.get();
+        }
     }
 
     @Override

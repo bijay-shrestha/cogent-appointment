@@ -22,6 +22,8 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPe
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.AppointmentDetailsForStatus;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.AppointmentTimeSlotResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
@@ -102,6 +104,9 @@ public interface AppointmentRepositoryCustom {
 
     List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatus(
             HospitalDeptAppointmentStatusRequestDTO requestDTO);
+
+    AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber);
+
 
     List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatusRoomwise(
             HospitalDeptAppointmentStatusRequestDTO requestDTO);

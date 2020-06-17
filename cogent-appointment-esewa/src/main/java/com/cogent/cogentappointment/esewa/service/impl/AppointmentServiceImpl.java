@@ -477,18 +477,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentMinResponseWithStatusDTO(appointmentHistory);
     }
 
+//    todo: serviceType Code must be dynamic
     @Override
     public AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
 
-        AppointmentServiceType appointmentServiceType =
-                fetchAppointmentServiceType(searchDTO.getAppointmentServiceTypeId());
+//        AppointmentServiceType appointmentServiceType =
+//                fetchAppointmentServiceType(searchDTO.getAppointmentServiceTypeId());
 
         AppointmentResponseWithStatusDTO appointments = searchDTO.getIsSelf().equals(YES)
-                ? appointmentRepository.searchAppointmentsForSelf(searchDTO, appointmentServiceType.getCode())
-                : appointmentRepository.searchAppointmentsForOthers(searchDTO, appointmentServiceType.getCode());
+                ? appointmentRepository.searchAppointmentsForSelf(searchDTO, "DOC")
+                : appointmentRepository.searchAppointmentsForOthers(searchDTO, "DOC");
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 

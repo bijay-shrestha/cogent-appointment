@@ -246,7 +246,12 @@ public class DashBoardQuery {
 
         return "SELECT" +
                 " d.id as doctorId," +                                                           //[0]
-                " d.name as doctorName," +                                                       //[1]
+                " CASE WHEN" +
+                " (d.salutation is null)" +
+                " THEN d.name" +
+                " ELSE" +
+                " CONCAT_WS(' ',d.salutation, d.name)" +
+                " END as doctorName," +                                                           //[1]
                 " CASE WHEN" +
                 " (da.status is null OR da.status = 'N')" +
                 " THEN null" +
@@ -256,14 +261,14 @@ public class DashBoardQuery {
                 " s.id as specializationId," +                                                   //[3]
                 " s.name as specializationName," +                                               //[4]
                 " COUNT(a.id) as successfulAppointments," +                                      //[5]
-                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue," +                     //
-                " d.salutation as doctorSalutation" +
+                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
                 " FROM Appointment a" +
-                " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                " LEFT JOIN Specialization s ON s.id=ad.specialization.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
                 " (a.status !='RE' AND a.status !='C')" +
@@ -276,7 +281,12 @@ public class DashBoardQuery {
 
         return "SELECT" +
                 " d.id as doctorId," +                                          //[0]
-                " d.name as doctorName," +                                      //[1]
+                " CASE WHEN" +
+                " (d.salutation is null)" +
+                " THEN d.name" +
+                " ELSE" +
+                " CONCAT_WS(' ',d.salutation, d.name)" +
+                " END as doctorName," +                                          //[1]
                 " CASE WHEN" +
                 " (da.status is null OR da.status = 'N')" +
                 " THEN null" +
@@ -289,10 +299,11 @@ public class DashBoardQuery {
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 )" +
                 " as cancelledRevenue" +                                       //[6]
                 " FROM Appointment a" +
-                " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
@@ -306,16 +317,17 @@ public class DashBoardQuery {
                     " COUNT(a.id) as count," +                      //[5]
                     " COALESCE(SUM(atd.appointmentAmount ),0) as amount" +  //[6]
                     " FROM Appointment a" +
-                    " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                    " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN Specialization s ON s.id=ad.specialization.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE" +
                     " a.status ='C'" +
-                    " AND a.doctorId.id=:doctorId" +
-                    " AND a.specializationId.id=:specializationId" +
+                    " AND d.id=:doctorId" +
+                    " AND s.id=:specializationId" +
                     " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
 
 
@@ -324,17 +336,18 @@ public class DashBoardQuery {
                     " Count(a.id) as count," +
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as amount" +
                     " FROM Appointment a" +
-                    " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                    " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE" +
                     " (a.status !='RE' AND a.status !='C')" +
                     " AND a.isFollowUp='Y'" +
-                    " AND a.doctorId.id=:doctorId" +
-                    " AND a.specializationId.id=:specializationId" +
+                    " AND d.id=:doctorId" +
+                    " AND s.id=:specializationId" +
                     " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
 
     public static String QUERY_TO_GET_FOLLOW_UP_CANCELLED =

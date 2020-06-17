@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.esewa.service;
 
+import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestByDTO;
+import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
 
@@ -9,8 +11,8 @@ import com.cogent.cogentappointment.persistence.model.Patient;
 public interface HospitalPatientInfoService {
 
     void saveHospitalPatientInfoForSelf(Hospital hospital, Patient patient,
-                                        String email, String address);
+                                        PatientRequestByDTO patientRequestByDTO);
 
     void saveHospitalPatientInfoForOthers(Hospital hospital, Patient patient,
-                                          String email, String address);
+                                          PatientRequestForDTO patientRequestForDTO);
 }

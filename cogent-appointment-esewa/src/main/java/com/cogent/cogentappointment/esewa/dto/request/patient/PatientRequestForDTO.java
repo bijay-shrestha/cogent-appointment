@@ -32,10 +32,17 @@ public class PatientRequestForDTO implements Serializable {
     private Character gender;
 
     @NotNull
-//    @DateTimeFormat(pattern = "YYYY-MM-DD")
     private Date dateOfBirth;
 
     private String email;
 
     private String address;
+
+    private Long provinceId;
+
+    private Long vdcOrMunicipalityId;
+
+    private Long districtId;
+
+    private Long wardId;
 }

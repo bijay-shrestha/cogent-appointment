@@ -214,9 +214,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.nepaliDateUtility = nepaliDateUtility;
     }
 
-
     @Override
-    public AppointmentCheckAvailabilityResponseDTO fetchAvailableTimeSlots(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public AppointmentCheckAvailabilityResponseDTO fetchAvailableTimeSlots(
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -655,8 +655,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         hospitalPatientInfoService.saveHospitalPatientInfoForSelf(
                 hospital, patient,
-                patientRequestDTO.getEmail(),
-                patientRequestDTO.getAddress()
+                patientRequestDTO
         );
 
         return patient;
@@ -706,8 +705,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         hospitalPatientInfoService.saveHospitalPatientInfoForOthers(
                 hospital, childPatient,
-                requestForPatientInfo.getEmail(),
-                requestForPatientInfo.getAddress()
+                requestForPatientInfo
         );
 
         return childPatient;

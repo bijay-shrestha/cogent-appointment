@@ -485,8 +485,7 @@ public class AdminServiceImpl implements AdminService {
 
 
             FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
-            if (response.getIntegrationChannelCode() != null ||
-                    !response.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+            if (response.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
                 ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
 
                 apiInfoResponseDTO.setUrl(response.getUrl());

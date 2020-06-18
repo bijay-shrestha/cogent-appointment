@@ -33,5 +33,5 @@ public class HospitalDeptAppointmentStatusRequestDTO implements Serializable {
 
     private String appointmentNumber;
 
-    private Character hasAppointmentNUmber;
+    private Character hasAppointmentNumber;
 }

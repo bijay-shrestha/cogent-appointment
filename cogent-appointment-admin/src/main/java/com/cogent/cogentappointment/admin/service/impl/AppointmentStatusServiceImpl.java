@@ -156,6 +156,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         RosterDetailsForStatus rosterDetailsForStatus = deptDutyRosterRepository
                 .fetchHospitalDepartmentDutyRosterDetailsByDeptId(appointmentDetailsForStatus.getHospitalDepartmentId(),
                         appointmentDetailsForStatus.getAppointmentDate());
+
         if (rosterDetailsForStatus.getHasRosterOverRide().equals(YES))
             deptDutyRosterOverrideRepository.fetchOverrideRosterDetails(rosterDetailsForStatus,
                     appointmentDetailsForStatus.getAppointmentDate());

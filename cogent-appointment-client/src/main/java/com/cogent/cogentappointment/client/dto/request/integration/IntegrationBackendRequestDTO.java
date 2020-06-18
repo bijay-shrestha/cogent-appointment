@@ -25,6 +25,10 @@ public class IntegrationBackendRequestDTO implements Serializable {
 
     private boolean patientStatus;
 
+    /*true -> no hospital number | new registration patient
+    * false -> hospital number   | registered patient*/
+    private boolean isPatientNew;
+
     private String integrationChannelCode;
 
     private String hospitalNumber;

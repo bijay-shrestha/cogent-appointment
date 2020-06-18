@@ -1,15 +1,16 @@
-package com.cogent.cogentappointment.client.exception.utils;
+package com.cogent.cogentappointment.commons.exception.utils;
 
-import com.cogent.cogentappointment.client.exception.ConstraintViolationException;
+import com.cogent.cogentappointment.commons.constants.StringConstant;
+import com.cogent.cogentappointment.commons.exception.ConstraintViolationException;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
+import static com.cogent.cogentappointment.commons.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.commons.constants.StringConstant.SPACE;
+import static com.cogent.cogentappointment.commons.utils.StringUtil.splitByCharacterTypeCamelCase;
 import static org.springframework.util.StringUtils.capitalize;
 
 /**
@@ -23,7 +24,7 @@ public class ValidationUtils {
         List<String> violations = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> {
                             return capitalize(splitByCharacterTypeCamelCase(
-                                    error.getField())) + SPACE + error.getDefaultMessage();
+                                    error.getField())) + StringConstant.SPACE + error.getDefaultMessage();
                         }
                 ).collect(Collectors.toList());
 

@@ -8,10 +8,7 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AppointmentHospitalDepartmentFollowUpLogRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentHospitalDepartmentInfoRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.service.AppointmentHospitalDepartmentFollowUpRequestLogService;
-import com.cogent.cogentappointment.client.service.AppointmentHospitalDepartmentFollowUpTrackerService;
-import com.cogent.cogentappointment.client.service.AppointmentHospitalDepartmentService;
-import com.cogent.cogentappointment.client.service.PatientService;
+import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpLog;
 import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpTracker;
@@ -22,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
@@ -52,19 +50,23 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     private final AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository;
 
+    private final IntegrationCheckPointService integrationCheckPointService;
+
     public AppointmentHospitalDepartmentServiceImpl(
             AppointmentRepository appointmentRepository,
             AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository,
             PatientService patientService,
             AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService,
             AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService,
-            AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository) {
+            AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository,
+            IntegrationCheckPointService integrationCheckPointService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentHospitalDepartmentFollowUpLogRepository = appointmentHospitalDepartmentFollowUpLogRepository;
         this.patientService = patientService;
         this.appointmentHospitalDepartmentFollowUpTrackerService = appointmentHospitalDepartmentFollowUpTrackerService;
         this.appointmentHospitalDepartmentFollowUpRequestLogService = appointmentHospitalDepartmentFollowUpRequestLogService;
         this.appointmentHospitalDepartmentInfoRepository = appointmentHospitalDepartmentInfoRepository;
+        this.integrationCheckPointService = integrationCheckPointService;
     }
 
     @Override
@@ -115,11 +117,9 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         Appointment appointment = fetchPendingAppointment(
                 integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId());
 
-//        if (integrationRequestDTO.getIntegrationChannelCode() != null) {
-//            apiIntegrationCheckpoint(appointment, integrationRequestDTO);
-//        }
+        if (!Objects.isNull(integrationRequestDTO.getIntegrationChannelCode()))
+            integrationCheckPointService.apiIntegrationCheckpointDepartmentWise(appointment, integrationRequestDTO);
 
-        long a = 1/0;
         appointment.setStatus(APPROVED);
 
         saveAppointmentHospitalDepartmentFollowUpTracker(appointment);

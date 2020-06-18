@@ -119,6 +119,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 //            apiIntegrationCheckpoint(appointment, integrationRequestDTO);
 //        }
 
+        long a = 1/0;
         appointment.setStatus(APPROVED);
 
         saveAppointmentHospitalDepartmentFollowUpTracker(appointment);

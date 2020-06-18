@@ -98,13 +98,11 @@ public class RequestBodyUtils {
 
         return map;
 
-
     }
 
     public static ClientSaveRequestDTO getHospitalRequestBody(Appointment appointment) {
 
         Patient patient=appointment.getPatientId();
-
 
         ClientSaveRequestDTO clientSaveRequestDTO=ClientSaveRequestDTO.builder()
                 .name(patient.getName())

@@ -34,6 +34,7 @@ import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRe
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentDoctorInfo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -141,4 +142,5 @@ public interface AppointmentRepositoryCustom {
             Long appointmentId, Long hospitalId);
 
 
+    AppointmentDoctorInfo getPreviousAppointmentDoctorAndSpecialization(Long appointmentId);
 }

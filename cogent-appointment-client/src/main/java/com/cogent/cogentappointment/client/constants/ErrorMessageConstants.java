@@ -65,6 +65,10 @@ public class ErrorMessageConstants {
         String BAD_UPDATE_DEBUG_MESSAGE = "Admin hasn't saved its password yet and is still inactive.";
     }
 
+    public interface AppointmentTransferMessage {
+        String APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND = "Appointment Doctor Information not found";
+
+    }
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 

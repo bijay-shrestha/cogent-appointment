@@ -37,4 +37,15 @@ public class AppointmentDoctorInfoQuery {
                     " WHERE a.id =:appointmentId" +
                     " AND a.status='PA'" +
                     " AND h.id =:hospitalId";
+
+
+    public static String QUERY_TO_GET_CURRENT_APPOINTMENT_DOCTOR_INFO =
+            "SELECT" +
+                    " a.id as id," +
+                    " a.appointment as appointment," +
+                    " a.specialization as specialization," +
+                    " a.doctor as doctor" +
+                    " FROM AppointmentDoctorInfo a" +
+                    " WHERE a.appointment.id=:appointmentId";
+
 }

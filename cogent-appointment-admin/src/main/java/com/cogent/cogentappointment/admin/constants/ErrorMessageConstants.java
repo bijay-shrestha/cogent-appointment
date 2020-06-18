@@ -60,6 +60,11 @@ public class ErrorMessageConstants {
         String APPOINTMENT_MODE_NOT_EDITABLE_DEBUG_MESSAGE = "Appointment Mode having is_editable 'N' cannot be updated";
     }
 
+    public interface AppointmentTransferMessage {
+        String APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND = "Appointment Doctor Information not found";
+
+    }
+
     //B
 
     //C

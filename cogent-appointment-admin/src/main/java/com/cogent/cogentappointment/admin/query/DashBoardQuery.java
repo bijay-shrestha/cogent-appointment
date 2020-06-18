@@ -33,7 +33,7 @@ public class DashBoardQuery {
                 " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
@@ -48,7 +48,7 @@ public class DashBoardQuery {
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(Long hospitalId) {
         return " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode"+
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
@@ -178,7 +178,7 @@ public class DashBoardQuery {
                 " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " WHERE " +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY atd.transactionDate" +
                 " ORDER BY atd.transactionDate";
@@ -194,7 +194,7 @@ public class DashBoardQuery {
                 " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                 " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
@@ -210,7 +210,7 @@ public class DashBoardQuery {
                 " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY atd.transactionDate" +
                 " ORDER BY atd.transactionDate";
@@ -228,7 +228,7 @@ public class DashBoardQuery {
                 " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY" +
                 " atd.transactionDate" +

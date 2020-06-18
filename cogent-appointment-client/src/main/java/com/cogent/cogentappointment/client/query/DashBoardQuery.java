@@ -21,7 +21,7 @@ public class DashBoardQuery {
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " AND a.hospitalId.id=:hospitalId";
 
     private static String SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
@@ -36,7 +36,7 @@ public class DashBoardQuery {
             " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId" +
-                    " AND hast.appointmentServiceType.id=:appointmentServiceTypeId";
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE =
             SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
@@ -155,7 +155,7 @@ public class DashBoardQuery {
                     " WHERE " +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
-                    " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
 
@@ -171,7 +171,7 @@ public class DashBoardQuery {
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
-                    " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                     " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
 
@@ -186,7 +186,7 @@ public class DashBoardQuery {
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
-                    " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
 
@@ -203,7 +203,7 @@ public class DashBoardQuery {
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id =:hospitalId" +
-                    " AND hast.appointmentServiceType.id=:appointmentServiceTypeId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY" +
                     " atd.transactionDate" +
                     " ORDER BY" +

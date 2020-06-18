@@ -32,6 +32,6 @@ public class GenerateRevenueRequestDTO implements Serializable {
     private Character filterType;
 
     @NotNull(message = "Appointment Service Type Cannot be Null")
-    private Long appointmentServiceTypeId;
+    private String appointmentServiceTypeCode;
 
 }

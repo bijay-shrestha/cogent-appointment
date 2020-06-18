@@ -13,6 +13,8 @@ public class QueryConstants {
         String TRANSACTION_NUMBER = "transactionNumber";
     }
 
+    public static final String APPOINTMENT_NUMBER = "appointmentNumber";
+
     public static final String APPOINTMENT_TRANSFER_ID = "appointmentTransferId";
 
     public static final String APPOINTMENT_SERVICE_TYPE_ID = "appointmentServiceTypeId";

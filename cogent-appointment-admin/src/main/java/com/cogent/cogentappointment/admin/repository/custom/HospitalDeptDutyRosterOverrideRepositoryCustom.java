@@ -41,6 +41,6 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
 
 
     RosterDetailsForStatus fetchOverrideRosterDetails(RosterDetailsForStatus rosterDetailsForStatus,
-                                                      Date apppointmentDate);
+                                                      Date appointmentDate);
 
 }

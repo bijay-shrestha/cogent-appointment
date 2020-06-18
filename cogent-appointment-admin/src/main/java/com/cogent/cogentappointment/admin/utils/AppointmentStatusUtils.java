@@ -280,7 +280,7 @@ public class AppointmentStatusUtils {
         responseDTO.setRoomNumber(appointmentDetailsForStatus.getRoomNumber());
         responseDTO.setWeekDayName(convertDateToLocalDate(
                 appointmentDetailsForStatus.getAppointmentDate()).getDayOfWeek().toString());
-        responseDTO.setRoomList(null);
+        responseDTO.setRoomList(new ArrayList<>());
 
         responseDTOS.add(responseDTO);
 

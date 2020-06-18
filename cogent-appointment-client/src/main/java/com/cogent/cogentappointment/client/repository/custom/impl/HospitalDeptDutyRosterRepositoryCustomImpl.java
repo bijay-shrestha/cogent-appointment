@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospita
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
@@ -209,6 +210,25 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
         return (parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
                 results, requestDTO.getFromDate(), requestDTO.getToDate()));
+    }
+
+    @Override
+    public RosterDetailsForStatus fetchHospitalDepartmentDutyRosterDetailsByDeptId(Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId, Date date) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROSTER_DETAILS_BY_HOSPITAL_DEPARTMENT_ID(hospitalDepartmentRoomInfoId))
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(DATE, utilDateToSqlDate(date));
+
+        if(!Objects.isNull(hospitalDepartmentRoomInfoId)){
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID,hospitalDepartmentRoomInfoId);
+        }
+
+        try {
+            RosterDetailsForStatus response = transformQueryToSingleResult(query, RosterDetailsForStatus.class);
+
+            return response;
+        } catch (NoResultException ex) {
+            throw HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND.get();
+        }
     }
 
     private Query queryToGetRosterWithRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){

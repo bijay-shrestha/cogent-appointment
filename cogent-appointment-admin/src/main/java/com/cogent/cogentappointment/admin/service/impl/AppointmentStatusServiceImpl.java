@@ -213,6 +213,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     }
 
+
+
     private List<HospitalDeptAndDoctorDTO> fetchHospitalDeptAndDoctorInfo
             (List<HospitalDeptAndWeekdaysDTO> deptAndWeekdaysDTOS) {
 

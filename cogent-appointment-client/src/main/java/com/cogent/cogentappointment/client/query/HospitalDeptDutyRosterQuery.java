@@ -245,4 +245,36 @@ public class HospitalDeptDutyRosterQuery {
         return SQL;
 
     }
+
+
+    public static String QUERY_TO_FETCH_ROSTER_DETAILS_BY_HOSPITAL_DEPARTMENT_ID(Long hospitalDepartmentRoomInfoId) {
+        String query = "SELECT" +
+                " hddr.id as rosterId," +
+                " hddr.rosterGapDuration as rosterGapDuration," +
+                " DATE_FORMAT(hdwddr.startTime ,'%H:%i') as startTime," +
+                " DATE_FORMAT(hdwddr.endTime ,'%H:%i') as endTime," +
+                " hdwddr.dayOffStatus as dayOffStatus," +
+                " wd.name as weekDayName," +
+                " hddr.hasOverrideDutyRoster as hasRosterOverRide" +
+                " FROM" +
+                " HospitalDepartmentDutyRoster hddr" +
+                " LEFT JOIN HospitalDepartmentWeekDaysDutyRoster hdwddr ON " +
+                " hdwddr.hospitalDepartmentDutyRoster.id=hddr.id" +
+                " LEFT JOIN WeekDays wd ON wd.id=hdwddr.weekDays.id " +
+                " LEFT JOIN HospitalDepartmentWeekDaysDutyRosterDoctorInfo di ON " +
+                " di.hospitalDepartmentWeekDaysDutyRoster.id=hdwddr.id" +
+                " LEFT JOIN HospitalDepartmentDutyRosterRoomInfo hddrri ON hddrri.hospitalDepartmentDutyRoster.id=hddr.id " +
+                " WHERE hddr.hospitalDepartment.id=:hospitalDepartmentId " +
+                " AND" +
+                " (hddr.fromDate <= :date" +
+                " AND hddr.toDate >=:date)" +
+                " AND wd.name =DATE_FORMAT(:date,'%W') ";
+
+        if (!Objects.isNull(hospitalDepartmentRoomInfoId))
+            query+= " AND hddrri.hospitalDepartmentRoomInfo.id=:hospitalDepartmentRoomInfoId";
+
+        query += " GROUP BY hddr.id";
+
+        return query;
+    }
 }

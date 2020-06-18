@@ -135,7 +135,8 @@ public class AppointmentHospitalDepartmentQuery {
                             " COALESCE(d.value,','),COALESCE(vm.value,','),COALESCE(w.value,'') )" +
                             " ELSE" +
                             " hpi.address" +
-                            " end as address " +                                                         //[15]
+                            " end as address," +                                                         //[15]
+                            QUERY_TO_CALCULATE_PATIENT_AGE+
                             " FROM Appointment a" +
                             " INNER JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN HospitalDepartment hd ON hd.id = ad.hospitalDepartment.id" +

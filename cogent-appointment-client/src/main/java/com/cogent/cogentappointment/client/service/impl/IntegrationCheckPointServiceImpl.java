@@ -166,7 +166,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     appointmentRepository.fetchAppointmentDetailForHospitalDeptCheckIn(requestDTO.getAppointmentId(),
                             getLoggedInHospitalId());
 
-            thirdPartyCheckInDetails.setName(generateRandomNumber(3));
+//            thirdPartyCheckInDetails.setName(generateRandomNumber(3));
             thirdPartyCheckInDetails.setSex(toNormalCase(thirdPartyCheckInDetails.getGender().name()));
 
             //todo : room no and dept name is static in bheri api

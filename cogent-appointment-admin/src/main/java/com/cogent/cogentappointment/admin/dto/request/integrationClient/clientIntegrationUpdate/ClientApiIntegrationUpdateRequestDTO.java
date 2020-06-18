@@ -31,6 +31,8 @@ public class ClientApiIntegrationUpdateRequestDTO implements Serializable {
 
     private List<ClientApiQueryParamtersUpdateRequestDTO> queryParametersRequestDTOS;
 
+    private Character status;
+
     private String remarks;
 
 }

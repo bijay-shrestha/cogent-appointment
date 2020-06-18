@@ -26,4 +26,6 @@ public class ClientApiIntegrationSearchResponseDTO {
 
     private String hospitalName;
 
+    private Character status;
+
 }

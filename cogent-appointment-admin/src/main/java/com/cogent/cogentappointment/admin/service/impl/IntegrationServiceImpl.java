@@ -7,8 +7,6 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIn
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiQueryParametersResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiRequestHeaderResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
@@ -57,6 +55,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
     private final IntegrationChannelRepository integrationChannelRepository;
     private final ApiIntegrationTypeRepository apiIntegrationTypeRepository;
+    private final HospitalRepository hospitalRepository;
 
     public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository,
                                   ApiIntegrationFormatRespository apiIntegrationFormatRespository,
@@ -69,7 +68,8 @@ public class IntegrationServiceImpl implements IntegrationService {
                                   ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository,
                                   IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
                                   IntegrationChannelRepository integrationChannelRepository,
-                                  ApiIntegrationTypeRepository apiIntegrationTypeRepository) {
+                                  ApiIntegrationTypeRepository apiIntegrationTypeRepository,
+                                  HospitalRepository hospitalRepository) {
 
         this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
         this.apiIntegrationFormatRespository = apiIntegrationFormatRespository;
@@ -83,6 +83,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         this.requestBodyParametersRepository = requestBodyParametersRepository;
         this.integrationChannelRepository = integrationChannelRepository;
         this.apiIntegrationTypeRepository = apiIntegrationTypeRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     @Override
@@ -168,6 +169,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         clientFeatureIntegration.setFeatureId(requestDTO.getFeatureId());
         clientFeatureIntegration.setIntegrationChannelId(integrationChannel);
         clientFeatureIntegration.setRemarks(requestDTO.getRemarks());
+        clientFeatureIntegration.setStatus(requestDTO.getStatus());
 
         List<ApiFeatureIntegration> apiFeatureIntegration =
                 apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
@@ -381,6 +383,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         //autitable data
         responseDTO.setCreatedBy(featureIntegrationResponse.getCreatedBy());
@@ -426,9 +429,11 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setIntegrationChannelId(featureIntegrationResponse.getIntegrationChannelId());
         responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
+        responseDTO.setHospitalId(featureIntegrationResponse.getHospitalId());
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         return responseDTO;
     }
@@ -514,6 +519,5 @@ public class IntegrationServiceImpl implements IntegrationService {
     private Function<Long, NoContentFoundException> INTEGRATION_TYPE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(ApiIntegrationType.class, "id", id.toString());
     };
-
 
 }

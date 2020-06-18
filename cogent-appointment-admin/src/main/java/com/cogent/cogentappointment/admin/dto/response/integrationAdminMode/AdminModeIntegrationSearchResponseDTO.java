@@ -16,6 +16,8 @@ public class AdminModeIntegrationSearchResponseDTO implements Serializable {
 
     private Long id;
 
+    private String hospitalName;
+
     private String appointmentMode;
 
     private String featureName;
@@ -29,5 +31,7 @@ public class AdminModeIntegrationSearchResponseDTO implements Serializable {
     private String url;
 
     private String companyName;
+
+    private Character status;
 
 }

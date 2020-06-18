@@ -197,9 +197,13 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         if (appointmentDoctorInfo.getSpecialization().getId() == requestDTO.getSpecializationId() &&
                 (transactionDetail.getAppointmentAmount().compareTo(requestDTO.getAppointmentCharge()) == 0)) {
+
             transferForSameSpecializationAndCharge(appointment, requestDTO, appointmentDoctorInfo, transactionDetail);
+
         } else {
+
             transferWithNewCharge(appointment, requestDTO, appointmentDoctorInfo, transactionDetail);
+
         }
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,

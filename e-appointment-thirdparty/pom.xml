@@ -11,7 +11,7 @@
     <groupId>com.cogent</groupId>
     <artifactId>e-appointment-thirdparty</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>e-appointment-thirdparty-tester</name>
+    <name>e-appointment-thirdparty</name>
     <description>This module will be used to test thirdparty APIs</description>
     <packaging>war</packaging>
 

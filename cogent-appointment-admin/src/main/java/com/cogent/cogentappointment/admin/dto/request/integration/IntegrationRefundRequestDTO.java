@@ -1,9 +1,6 @@
-package com.cogent.cogentappointment.client.dto.request.integration;
+package com.cogent.cogentappointment.admin.dto.request.integration;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -12,6 +9,7 @@ import java.io.Serializable;
  * @author rupak ON 2020/06/18-2:38 PM
  */
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

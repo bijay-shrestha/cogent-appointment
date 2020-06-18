@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
@@ -175,12 +176,18 @@ public class IntegrationCheckpointImpl {
                                                         AppointmentTransactionDetail transactionDetail,
                                                         AppointmentRefundDetail appointmentRefundDetail,
                                                         Boolean isRefund,
-                                                        IntegrationBackendRequestDTO backendRequestDTO) {
+                                                        IntegrationRefundRequestDTO refundRequestDTO) {
 
         String generatedEsewaHmac = getSignatureForEsewa.apply("9841409090",
                 "testBir");
 
-        BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(backendRequestDTO,
+        IntegrationBackendRequestDTO integrationBackendRequestDTO=IntegrationBackendRequestDTO.builder()
+                .appointmentId(refundRequestDTO.getAppointmentId())
+                .featureCode(refundRequestDTO.getFeatureCode())
+                .integrationChannelCode(refundRequestDTO.getIntegrationChannelCode())
+                .build();
+
+        BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationBackendRequestDTO,
                 appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 
         EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,

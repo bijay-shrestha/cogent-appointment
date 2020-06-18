@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.integration.ApiFeatureIntegrationRequestBodyRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiFeatureIntegrationRequestBodyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.integrationRequestBodyAttributeUpdate.ApiFeatureIntegrationRequestBodyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;

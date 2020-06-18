@@ -213,10 +213,17 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     @Override
     public RosterDetailsForStatus fetchHospitalDepartmentDutyRosterDetailsByDeptId(Long hospitalDepartmentId,
+                                                                                   Long hospitalDepartmentRoomInfoId,
                                                                                    Date date) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROSTER_DETAILS_BY_HOSPITAL_DEPARTMENT_ID)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROSTER_DETAILS_BY_HOSPITAL_DEPARTMENT_ID(hospitalDepartmentRoomInfoId))
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(DATE, utilDateToSqlDate(date));
+
+        if(!Objects.isNull(hospitalDepartmentRoomInfoId)){
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID,hospitalDepartmentRoomInfoId);
+        }
+
+        Object objects=query.getSingleResult();
 
         try {
             RosterDetailsForStatus response = transformQueryToSingleResult(query, RosterDetailsForStatus.class);

@@ -155,6 +155,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         RosterDetailsForStatus rosterDetailsForStatus = deptDutyRosterRepository
                 .fetchHospitalDepartmentDutyRosterDetailsByDeptId(appointmentDetailsForStatus.getHospitalDepartmentId(),
+                        appointmentDetailsForStatus.getHospitalDepartmentRoomInfoId(),
                         appointmentDetailsForStatus.getAppointmentDate());
 
         if (rosterDetailsForStatus.getHasRosterOverRide().equals(YES))
@@ -167,8 +168,15 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                         rosterDetailsForStatus,
                         appointmentDetailsForStatus);
 
+        HospitalDeptAndWeekdaysDTO deptAndWeekdaysDTO=getHospitalDepartmentIdsAndWeekDays(
+                hospitalDeptDutyRosterStatus.get(0));
+
+        List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorDTOS = fetchHospitalDeptAndDoctorInfo
+                (deptAndWeekdaysDTO);
+
         HospitalDeptAppointmentStatusDTO appointmentStatusDTO=
-                parseToHospitalDeptAppointmentStatusDTO(hospitalDeptDutyRosterStatus,null);
+                parseToHospitalDeptAppointmentStatusDTO(hospitalDeptDutyRosterStatus,
+                        hospitalDeptAndDoctorDTOS);
 
         return appointmentStatusDTO;
     }
@@ -219,6 +227,18 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         return hospitalDeptAndDoctorDTOS;
     }
 
+    private List<HospitalDeptAndDoctorDTO> fetchHospitalDeptAndDoctorInfo
+            (HospitalDeptAndWeekdaysDTO deptAndWeekdaysDTO) {
+
+        List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorDTOS = new ArrayList<>();
+
+            HospitalDeptAndDoctorDTO hospitalDeptAndDoctorDTO = hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
+                    .fetchHospitalDeptAndDoctorInfo(deptAndWeekdaysDTO);
+            hospitalDeptAndDoctorDTOS.add(hospitalDeptAndDoctorDTO);
+
+        return hospitalDeptAndDoctorDTOS;
+    }
+
     private List<HospitalDeptAndWeekdaysDTO> getHospitalDepartmentIdsAndWeekDays
             (List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus) {
         List<HospitalDeptAndWeekdaysDTO> hospitalDeptAndWeekdaysDTOS = new ArrayList<>();
@@ -231,6 +251,17 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         });
 
         return hospitalDeptAndWeekdaysDTOS;
+    }
+
+    private HospitalDeptAndWeekdaysDTO getHospitalDepartmentIdsAndWeekDays
+            (HospitalDeptDutyRosterStatusResponseDTO hospitalDeptDutyRosterStatus) {
+
+            HospitalDeptAndWeekdaysDTO hospitalDeptAndWeekdaysDTO = new HospitalDeptAndWeekdaysDTO();
+            hospitalDeptAndWeekdaysDTO.setHospitalDepartmentId(hospitalDeptDutyRosterStatus.getHospitalDepartmentId());
+            hospitalDeptAndWeekdaysDTO.setWeekDay(hospitalDeptDutyRosterStatus.getDate().getDayOfWeek().toString());
+
+
+        return hospitalDeptAndWeekdaysDTO;
     }
 
     /*IN CASE OF PAST DATE ->

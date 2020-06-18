@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
@@ -151,12 +152,13 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
                 .setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID,rosterDetailsForStatus.getRosterId())
                 .setParameter(DATE,utilDateToSqlDate(appointmentDate));
 
-        Object[] result= (Object[]) query.getSingleResult();
-
-        rosterDetailsForStatus.setStartTime(result[0].toString());
-        rosterDetailsForStatus.setEndTime(result[1].toString());
-
-        return rosterDetailsForStatus;
-
+        try{
+            Object[] result= (Object[]) query.getSingleResult();
+            rosterDetailsForStatus.setStartTime(result[0].toString());
+            rosterDetailsForStatus.setEndTime(result[1].toString());
+            return rosterDetailsForStatus;
+        }catch (NoResultException e){
+            return rosterDetailsForStatus;
+        }
     }
 }

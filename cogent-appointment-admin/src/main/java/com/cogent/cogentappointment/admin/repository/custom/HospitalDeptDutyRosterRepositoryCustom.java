@@ -45,5 +45,6 @@ public interface HospitalDeptDutyRosterRepositoryCustom {
             HospitalDeptAppointmentStatusRequestDTO requestDTO);
 
     RosterDetailsForStatus fetchHospitalDepartmentDutyRosterDetailsByDeptId(Long hospitalDepartmentId,
+                                                                            Long hospitalDepartmentRoomInfoId,
                                                                             Date date);
 }

@@ -696,7 +696,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveRefundAppointment(Long appointmentId) {
+    public void approveRefundAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
@@ -707,14 +707,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentRefundDetail refundAppointmentDetail =
                 appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
-                        (appointmentId, getLoggedInHospitalId())
-                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+                        (integrationBackendRequestDTO.getAppointmentId(), getLoggedInHospitalId())
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationBackendRequestDTO.getAppointmentId()));
 
         Appointment appointment = appointmentRepository.fetchRefundAppointmentByIdAndHospitalId
-                (appointmentId, getLoggedInHospitalId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+                (integrationBackendRequestDTO.getAppointmentId(), getLoggedInHospitalId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationBackendRequestDTO.getAppointmentId()));
 
-        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
+        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(integrationBackendRequestDTO.getAppointmentId());
 
         String response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
@@ -733,6 +733,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(REJECT_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
+
+        IntegrationBackendRequestDTO backendRequestDTO=IntegrationBackendRequestDTO.builder()
+                .appointmentId(refundRejectDTO.getAppointmentId())
+                .build();
 
         Long appointmentId = refundRejectDTO.getAppointmentId();
 

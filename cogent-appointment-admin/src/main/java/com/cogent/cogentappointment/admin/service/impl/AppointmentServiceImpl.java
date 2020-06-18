@@ -169,12 +169,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO,
-                                        IntegrationBackendRequestDTO backendRequestDTO) {
+    public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(REJECT_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+
+        IntegrationBackendRequestDTO backendRequestDTO=IntegrationBackendRequestDTO.builder()
+                .appointmentId(refundRejectDTO.getAppointmentId())
+                .build();
 
         Long appointmentId = refundRejectDTO.getAppointmentId();
 

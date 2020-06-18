@@ -181,10 +181,10 @@ public class AppointmentResource {
         return ok().body(appointmentService.fetchRefundDetailsById(appointmentId));
     }
 
-    @GetMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(REFUND + APPROVE )
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId) {
-        appointmentService.approveRefundAppointment(appointmentId);
+    public ResponseEntity<?> approveRefundAppointment(@RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+        appointmentService.approveRefundAppointment(integrationBackendRequestDTO);
         return ok().build();
     }
 

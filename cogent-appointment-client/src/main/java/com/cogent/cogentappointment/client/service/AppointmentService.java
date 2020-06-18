@@ -82,7 +82,7 @@ public interface AppointmentService {
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long id);
 
-    void approveRefundAppointment(Long appointmentId);
+    void approveRefundAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO);
 

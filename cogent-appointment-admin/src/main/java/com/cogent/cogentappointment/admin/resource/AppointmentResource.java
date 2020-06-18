@@ -70,17 +70,18 @@ public class AppointmentResource {
 
     @PutMapping(REFUND + APPROVE)
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(
-                                                      @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO){
+    public ResponseEntity<?> approveRefundAppointment(@RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO){
         appointmentService.approveRefundAppointment(integrationBackendRequestDTO);
         return ok().build();
     }
 
     @PutMapping(REFUND + REJECT)
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
-    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO,
-                                                     IntegrationBackendRequestDTO integrationBackendRequestDTO){
-        appointmentService.rejectRefundAppointment(refundRejectDTO,integrationBackendRequestDTO);
+    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO){
+
+
+
+        appointmentService.rejectRefundAppointment(refundRejectDTO);
         return ok().build();
     }
 

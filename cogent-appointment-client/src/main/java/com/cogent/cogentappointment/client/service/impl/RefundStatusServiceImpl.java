@@ -89,10 +89,10 @@ public class RefundStatusServiceImpl implements RefundStatusService {
                 break;
 
             case AMBIGIOUS :
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+                appointmentService.approveRefundAppointment(requestDTO.getIntegrationBackendRequestDTO());
 
             default:
-                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+                appointmentService.approveRefundAppointment(requestDTO.getIntegrationBackendRequestDTO());
         }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));

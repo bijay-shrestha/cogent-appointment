@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
@@ -24,6 +25,7 @@ import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterL
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createNativeQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 
 @Repository
@@ -83,6 +85,8 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         return parseQueryResultToDoctorDutyRosterStatusResponseDTO(
                 results, requestDTO.getFromDate(), requestDTO.getToDate());
     }
+
+
 
     @Override
     public List<DoctorDutyRosterOverride> fetchDoctorDutyRosterOverrides(

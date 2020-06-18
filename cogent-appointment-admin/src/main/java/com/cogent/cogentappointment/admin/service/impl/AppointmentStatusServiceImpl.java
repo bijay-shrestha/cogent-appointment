@@ -40,6 +40,7 @@ import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.mergeOverrideAndActualHospitalDeptDutyRoster;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS;
 
 /**
  * @author smriti ON 16/12/2019
@@ -121,7 +122,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         log.info(FETCHING_PROCESS_STARTED, DEPARTMENT_APPOINTMENT_STATUS);
 
         if (requestDTO.getHasAppointmentNumber().equals(YES))
-            searchByAppointmentNumber(requestDTO.getAppointmentNumber());
+            return searchByAppointmentNumber(requestDTO.getAppointmentNumber());
 
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus = fetchHospitalDepartmentStatus
                 (requestDTO);
@@ -152,7 +153,23 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         AppointmentDetailsForStatus appointmentDetailsForStatus = fetchAppointmentByApptNumber(appointmentNumber);
 
-        return null;
+        RosterDetailsForStatus rosterDetailsForStatus = deptDutyRosterRepository
+                .fetchHospitalDepartmentDutyRosterDetailsByDeptId(appointmentDetailsForStatus.getHospitalDepartmentId(),
+                        appointmentDetailsForStatus.getAppointmentDate());
+        if (rosterDetailsForStatus.getHasRosterOverRide().equals(YES))
+            deptDutyRosterOverrideRepository.fetchOverrideRosterDetails(rosterDetailsForStatus,
+                    appointmentDetailsForStatus.getAppointmentDate());
+
+        List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus=
+                parseHospitalDeptDutyRosterStatusResponseDTOS(
+                        parseToAppointmentTimeSlotResponseDTOS(appointmentDetailsForStatus),
+                        rosterDetailsForStatus,
+                        appointmentDetailsForStatus);
+
+        HospitalDeptAppointmentStatusDTO appointmentStatusDTO=
+                parseToHospitalDeptAppointmentStatusDTO(hospitalDeptDutyRosterStatus,null);
+
+        return appointmentStatusDTO;
     }
 
     @Override

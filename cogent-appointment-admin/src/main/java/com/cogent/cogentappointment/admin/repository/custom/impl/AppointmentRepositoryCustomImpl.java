@@ -316,9 +316,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_BY_APPT_NUMBER)
                 .setParameter(APPOINTMENT_NUMBER, appointmentNumber);
 
+        Object o=query.getSingleResult();
+
         try {
-            AppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query,
-                    AppointmentDetailsForStatus.class);
+            AppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query, AppointmentDetailsForStatus.class);
             return responseDTO;
         } catch (NoResultException e) {
             throw APPOINTMENT_NOT_FOUND.get();

@@ -1136,22 +1136,18 @@ public class AppointmentQuery {
             "SELECT" +
                     " DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime," +
                     " a.status as status," +
-                    " a.appointmentDate as date," +
+                    " a.appointmentDate as appointmentDate," +
                     " a.appointmentNumber as appointmentNumber," +
-                    " a.patientId.mobile_number as mobileNumber," +
-                    " a.patientId.gender gender," +
+                    " a.patientId.mobileNumber as mobileNumber," +
+                    " a.patientId.gender as gender," +
                     " a.patientId.name as patientName," +
                     " a.id as appointmentId," +
-                    " a.isFollow_up as isFollowUp," +
+                    " a.isFollowUp as isFollowUp," +
                     " a.hasTransferred as hasTransferred," +
                     " hd.id as hospitalDepartmentId, " +
                     " hd.name as hospitalDepartmentName, " +
-                    " Case WHEN hdri.id is NULL  " +
-                    " THEN 'N/A' " +
-                    " Else hdri.id ENd as hospitalDepartmentRoomInfoId, " +
-                    " Case WHEN hdri.id is NULL  " +
-                    " THEN 'N/A' " +
-                    " Else r.roomNumber ENd as roomNumber" +
+                    " hdri.id  as hospitalDepartmentRoomInfoId,"+
+                    " r.roomNumber as roomNumber,"+
                     QUERY_TO_CALCULATE_PATIENT_AGE+
                     " FROM" +
                     " Appointment a" +
@@ -1160,10 +1156,10 @@ public class AppointmentQuery {
                     " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id=a.id" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id=ahd.hospitalDepartment.id" +
                     " LEFT JOIN HospitalDepartmentRoomInfo hdri On hdri.id= ahd.hospitalDepartmentRoomInfo.id" +
-                    " LEFT JOIN Room r on hdri.roomId=r.id" +
+                    " LEFT JOIN Room r on hdri.room.id=r.id" +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
-                    " AND hast.a.hospitalAppointmentServiceType.id=2";
+                    " AND hast.appointmentServiceType.id=2";
 
 
 }

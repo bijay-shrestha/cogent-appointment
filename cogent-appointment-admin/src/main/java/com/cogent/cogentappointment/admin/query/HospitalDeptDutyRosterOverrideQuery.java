@@ -153,4 +153,15 @@ public class HospitalDeptDutyRosterOverrideQuery {
         return SQL;
     }
 
+    public static String QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID=
+            "SELECT " +
+                    " DATE_FORMAT(hddro.start_time,'%H:%i') as startTime , " +
+                    " DATE_FORMAT(hddro.end_time ,'%H:%i') as endTime " +
+                    " FROM " +
+                    " hospital_department_duty_roster_override hddro " +
+                    " WHERE " +
+                    " hospital_department_duty_roster_id = :hospitalDepartmentDutyRosterId " +
+                    " AND (hddro.from_date <= :date " +
+                    " AND hddro.to_date >=:date)";
+
 }

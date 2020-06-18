@@ -149,9 +149,9 @@ public class AppointmentStatusUtils {
     }
 
     private static void setTimeSlotMapWithDepartmentAppointmentStatus(AppointmentTimeSlotResponseDTO responseDTO,
-                                                            DateTime dateTime,
-                                                            java.time.LocalDate availableDate,
-                                                            String status) {
+                                                                      DateTime dateTime,
+                                                                      java.time.LocalDate availableDate,
+                                                                      String status) {
 
         responseDTO.setAppointmentTime(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
         responseDTO.setHasTimePassed(hasTimePassed(availableDate, FORMAT.print(dateTime)));
@@ -203,6 +203,15 @@ public class AppointmentStatusUtils {
         return availableDateTime.before(currentDate);
     }
 
+    private static boolean hasTimePassed(Date date, String time) {
+
+        Date availableDateTime = parseAppointmentTime(date, time);
+
+        Date currentDate = new Date();
+
+        return availableDateTime.before(currentDate);
+    }
+
     public static AppointmentStatusDTO parseToAppointmentStatusDTO(
             List<DoctorDutyRosterStatusResponseDTO> doctorDutyRostersInfo,
             List<DoctorDropdownDTO> doctorInfo) {
@@ -222,6 +231,62 @@ public class AppointmentStatusUtils {
                 .hospitalDeptAndDoctorInfo(hospitalDeptAndDoctorDTOS)
                 .build();
     }
+
+    public static List<AppointmentTimeSlotResponseDTO> parseToAppointmentTimeSlotResponseDTOS(
+            AppointmentDetailsForStatus appointmentDetailsForStatus) {
+
+        List<AppointmentTimeSlotResponseDTO> responseDTOS= new ArrayList<> ();
+
+        AppointmentTimeSlotResponseDTO response=AppointmentTimeSlotResponseDTO.builder()
+                        .appointmentTime(appointmentDetailsForStatus.getAppointmentTime())
+                        .status(appointmentDetailsForStatus.getStatus())
+                        .appointmentNumber(appointmentDetailsForStatus.getAppointmentNumber())
+                        .mobileNumber(appointmentDetailsForStatus.getMobileNumber())
+                        .age(appointmentDetailsForStatus.getAge())
+                        .gender(String.valueOf(appointmentDetailsForStatus.getGender()))
+                        .patientName(appointmentDetailsForStatus.getPatientName())
+                        .appointmentId(appointmentDetailsForStatus.getAppointmentId())
+                        .hasTransferred(appointmentDetailsForStatus.getHasTransferred())
+                        .isFollowUp(appointmentDetailsForStatus.getIsFollowUp())
+                        .hasTimePassed(hasTimePassed(appointmentDetailsForStatus.getAppointmentDate(),
+                                appointmentDetailsForStatus.getAppointmentTime()))
+                        .build();
+        responseDTOS.add(response);
+
+        return responseDTOS;
+    }
+
+    public static List<HospitalDeptDutyRosterStatusResponseDTO> parseHospitalDeptDutyRosterStatusResponseDTOS
+            (List<AppointmentTimeSlotResponseDTO> appointmentTimeSlotResponseDTOS,
+             RosterDetailsForStatus rosterDetailsForStatus,
+             AppointmentDetailsForStatus appointmentDetailsForStatus) {
+
+        List<HospitalDeptDutyRosterStatusResponseDTO> responseDTOS = new ArrayList<>();
+
+        HospitalDeptDutyRosterStatusResponseDTO responseDTO = new HospitalDeptDutyRosterStatusResponseDTO();
+
+        responseDTO.setAppointmentTimeSlots(appointmentTimeSlotResponseDTOS);
+        responseDTO.setHospitalDepartmentDutyRosterId(rosterDetailsForStatus.getRosterId());
+        responseDTO.setUniqueIdentifier(appointmentDetailsForStatus.getHospitalDepartmentId()
+                + "-" + appointmentDetailsForStatus.getAppointmentDate());
+        responseDTO.setDate(convertDateToLocalDate(appointmentDetailsForStatus.getAppointmentDate()));
+        responseDTO.setStartTime(rosterDetailsForStatus.getStartTime());
+        responseDTO.setEndTime(rosterDetailsForStatus.getEndTime());
+        responseDTO.setDayOffStatus(rosterDetailsForStatus.getDayOffStatus());
+        responseDTO.setRosterGapDuration(rosterDetailsForStatus.getRosterGapDuration());
+        responseDTO.setHospitalDepartmentId(appointmentDetailsForStatus.getHospitalDepartmentId());
+        responseDTO.setHospitalDepartmentName(appointmentDetailsForStatus.getHospitalDepartmentName());
+        responseDTO.setHospitalDepartmentRoomInfoId(appointmentDetailsForStatus.getHospitalDepartmentRoomInfoId());
+        responseDTO.setRoomNumber(appointmentDetailsForStatus.getRoomNumber());
+        responseDTO.setWeekDayName(convertDateToLocalDate(
+                appointmentDetailsForStatus.getAppointmentDate()).getDayOfWeek().toString());
+        responseDTO.setRoomList(null);
+
+        responseDTOS.add(responseDTO);
+
+        return responseDTOS;
+    }
+
 
     public static void parseDepartmentAppointmentDetails
             (HospitalDeptAppointmentStatusResponseDTO appointmentStatusResponseDTO,
@@ -253,6 +318,7 @@ public class AppointmentStatusUtils {
 
         appointmentTimeSlotResponseDTOS.add(responseDTO);
     }
+
     public static List<AppointmentTimeSlotResponseDTO> calculateTimeSlotsForAllDepartmentAppointmentStatus(
             java.time.LocalDate availableDate,
             String startTime,

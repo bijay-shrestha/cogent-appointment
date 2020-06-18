@@ -4,6 +4,7 @@ package com.cogent.cogentappointment.client.log.constants;
  * @author smriti on 2019-10-24
  */
 public class AppointmentLog {
+
     public final static String APPOINTMENT = "APPOINTMENT";
 
     public final static String APPOINTMENT_REFUND_DETAIL = "APPOINTMENT REFUND DETAIL";
@@ -50,6 +51,8 @@ public class AppointmentLog {
     public final static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
 
     public final static String APPOINTMENT_DOCTOR_INFO = "APPOINTMENT DOCTOR INFO";
+
+    public final static String APPOINTMENT_HOSPITAL_DEPARTMENT_INFO = "APPOINTMENT HOSPITAL DEPARTMENT INFO";
 
 
 

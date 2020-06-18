@@ -11,6 +11,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/*
+This table consists of request body paramters key for request body.
+ */
 @Table(name = "api_integration_request_body_parameters")
 @Entity
 @Getter

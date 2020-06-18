@@ -17,6 +17,5 @@ public class QueryParameterUtils {
         });
 
         return builder;
-
     }
 }

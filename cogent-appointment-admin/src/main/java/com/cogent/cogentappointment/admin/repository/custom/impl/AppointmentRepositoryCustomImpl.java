@@ -38,6 +38,7 @@ import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepart
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentDoctorInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -55,10 +56,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentTransferMessage.APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentDoctorInfoQuery.QUERY_TO_GET_CURRENT_APPOINTMENT_DOCTOR_INFO;
 import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentQuery.*;
 import static com.cogent.cogentappointment.admin.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT;
@@ -566,6 +569,22 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         pendingAppointments.get(0).setTotalItems(totalItems);
         return pendingAppointments;
+    }
+
+    @Override
+    public AppointmentDoctorInfo getPreviousAppointmentDoctorAndSpecialization(Long appointmentId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_APPOINTMENT_DOCTOR_INFO)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+
+        try {
+            AppointmentDoctorInfo appointmentDoctorInfo = transformQueryToSingleResult(query, AppointmentDoctorInfo.class);
+            return appointmentDoctorInfo;
+        } catch (NoContentFoundException e) {
+            log.error(APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND);
+            throw new NoContentFoundException(APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND,
+                    APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND);
+        }
     }
 
     private Query getQueryToFetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO) {

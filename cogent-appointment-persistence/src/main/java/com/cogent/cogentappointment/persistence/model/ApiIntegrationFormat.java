@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.ApiFeatureIntegrationEntityListener;
 import com.cogent.cogentappointment.persistence.listener.ApiIntegrationFormatEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +12,10 @@ import java.io.Serializable;
 
 /**
  * @author rupak on 2020-05-19
+ */
+/*
+ApiIntegrationFormat include API informations
+ like APIs url and request method type i.e: GET, PUT, POST, PATCH, DELETE
  */
 @Entity
 @Table(name = "api_integration_format")

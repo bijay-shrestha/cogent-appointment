@@ -19,6 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 public class AdminModeIntegrationUpdateRequestDTO implements Serializable {
 
+    private Long hospitalId;
+
     private Long adminModeIntegrationId;
 
     private Long appointmentModeId;
@@ -36,6 +38,8 @@ public class AdminModeIntegrationUpdateRequestDTO implements Serializable {
     private List<ClientApiRequestHeadersUpdateRequestDTO> clientApiRequestHeaders;
 
     private List<ClientApiQueryParamtersUpdateRequestDTO> queryParametersRequestDTOS;
+
+    private Character status;
 
     private String remarks;
 }

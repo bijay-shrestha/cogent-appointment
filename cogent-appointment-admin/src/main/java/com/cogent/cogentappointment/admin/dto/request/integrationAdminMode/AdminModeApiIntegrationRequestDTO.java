@@ -19,6 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 public class AdminModeApiIntegrationRequestDTO implements Serializable {
 
+    private Long hospitalId;
+
     private Long appointmentModeId;
 
     private Long apiIntegrationTypeId;

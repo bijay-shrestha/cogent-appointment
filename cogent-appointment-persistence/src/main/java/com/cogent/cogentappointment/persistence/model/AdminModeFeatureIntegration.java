@@ -13,6 +13,11 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-21
  */
+
+/* AdminModeFeatureIntegration table is API Integration of Appointment Mode
+Appointment Mode is integrated by appointment mode & hospital wise with integration channel.
+Integration Channel can be FRONTEND OR BACKEND.
+ */
 @Table(name = "admin_mode_feature_integration")
 @Entity
 @Getter
@@ -29,6 +34,10 @@ public class AdminModeFeatureIntegration extends Auditable<String> implements Se
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name =  "appointment_mode_id")
     private AppointmentMode appointmentModeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name =  "hospital_id")
+    private Hospital hospitalId;
 
     @Column(name = "feature_id")
     private Long featureId;
@@ -49,6 +58,7 @@ public class AdminModeFeatureIntegration extends Auditable<String> implements Se
                 "id=" + id +
                 ", appointmentModeId=" + appointmentModeId.getId() +
                 ", integrationChannelId=" + integrationChannelId.getId() +
+                ", hospitalId=" + hospitalId.getId() +
                 ", featureId=" + featureId +
                 ", remarks='" + remarks + '\'' +
                 ", status=" + status +

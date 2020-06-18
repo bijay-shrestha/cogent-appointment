@@ -1,5 +1,7 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
+import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
+import com.cogent.cogentappointment.commons.exception.OperationUnsuccessfulException;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -17,8 +20,6 @@ import java.util.Map;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryParameter;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 
 /**
  * @author rupak ON 2020/06/09-11:41 AM
@@ -33,22 +34,16 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> callThirdPartyHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
+    public ResponseEntity<?> callThirdPartyDoctorCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
 
         HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
-        String uri = "";
-        Map<String, String> queryParameter = backendIntegrationApiInfo.getQueryParameters();
-        if (queryParameter != null) {
-            uri = createQueryParameter(backendIntegrationApiInfo.getApiUri(), queryParameter).toUriString();
-        } else {
-            uri = backendIntegrationApiInfo.getApiUri();
-        }
+        String uri = getHospitalDeptCheckInQueryParameter(backendIntegrationApiInfo);
 
-            ResponseEntity<?> response = restTemplateUtils.
-                    requestAPI(httpMethod,
-                            uri,
-                            new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
+        ResponseEntity<?> response = restTemplateUtils.
+                requestAPI(httpMethod,
+                        uri,
+                        new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
 
         //todo
         //exceptions to be handled
@@ -56,6 +51,30 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         System.out.println(response);
 
         return response;
+    }
+
+    @Override
+    public ResponseEntity<?> callThirdPartyHospitalDepartmentCheckInService(
+            BackendIntegrationApiInfo backendIntegrationApiInfo,
+            ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO checkInDTO) {
+
+        HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
+
+        String uri = getHospitalDeptCheckInQueryParameter(backendIntegrationApiInfo);
+
+        try {
+
+            ResponseEntity<?> response = restTemplateUtils.requestAPI(
+                    httpMethod,
+                    uri,
+                    new HttpEntity<>(checkInDTO, backendIntegrationApiInfo.getHttpHeaders())
+            );
+
+            return response;
+        } catch (HttpStatusCodeException exception) {
+            exception.printStackTrace();
+            throw new OperationUnsuccessfulException(exception.getResponseBodyAsString());
+        }
     }
 
     @Override
@@ -92,25 +111,23 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo hospitalApiInfo) {
+    public ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo integrationApiInfo) {
 
-        HttpMethod httpMethod = getHttpRequestMethod(hospitalApiInfo.getHttpMethod());
+        HttpMethod httpMethod = getHttpRequestMethod(integrationApiInfo.getHttpMethod());
 
         String uri = "";
-        if ((httpMethod == GET) || (httpMethod == POST)) {
+        Map<String, String> queryParameter = integrationApiInfo.getQueryParameters();
 
-            Map<String, String> queryParameter = hospitalApiInfo.getQueryParameters();
-            if (!queryParameter.isEmpty()) {
-                uri = createQueryParameter(hospitalApiInfo.getApiUri(), queryParameter).toUriString();
-            }
+        if (queryParameter != null) {
+            uri = createQueryParameter(integrationApiInfo.getApiUri(), queryParameter).toUriString();
         } else {
-            uri = hospitalApiInfo.getApiUri();
+            uri = integrationApiInfo.getApiUri();
         }
 
         ResponseEntity<?> response = restTemplateUtils.
                 requestAPI(httpMethod,
                         uri,
-                        new HttpEntity<>(getApiRequestBody(), hospitalApiInfo.getHttpHeaders()));
+                        new HttpEntity<>(getApiRequestBody(), integrationApiInfo.getHttpHeaders()));
 
         System.out.println(response);
 
@@ -149,10 +166,25 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         return thirdPartyResponse;
     }
 
+    private String getHospitalDeptCheckInQueryParameter(BackendIntegrationApiInfo backendIntegrationApiInfo) {
+
+        String uri = "";
+
+        Map<String, String> queryParameter = backendIntegrationApiInfo.getQueryParameters();
+
+        if (queryParameter != null) {
+            uri = createQueryParameter(backendIntegrationApiInfo.getApiUri(), queryParameter).toUriString();
+        } else {
+            uri = backendIntegrationApiInfo.getApiUri();
+        }
+
+        return uri;
+    }
+
     private ClientSaveRequestDTO getApiRequestBody() {
 
         ClientSaveRequestDTO saveRequestDTO = ClientSaveRequestDTO.builder()
-                .name("Hari Singh Tharu")
+                .name("Smriti Mool")
                 .age(20)
                 .ageMonth(1)
                 .ageDay(3)
@@ -167,6 +199,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
                 .section("ENT")
                 .roomNo("10")
                 .appointmentNo("BH-12354-90")
+                .patientId(null)
                 .build();
 
         return saveRequestDTO;

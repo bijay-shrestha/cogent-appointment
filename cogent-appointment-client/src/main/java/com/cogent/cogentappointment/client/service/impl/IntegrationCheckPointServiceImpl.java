@@ -31,6 +31,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.FRONT_END_CODE;
+import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
@@ -165,6 +166,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     appointmentRepository.fetchAppointmentDetailForHospitalDeptCheckIn(requestDTO.getAppointmentId(),
                             getLoggedInHospitalId());
 
+            thirdPartyCheckInDetails.setName(generateRandomNumber(3));
             thirdPartyCheckInDetails.setSex(toNormalCase(thirdPartyCheckInDetails.getGender().name()));
 
             //todo : room no and dept name is static in bheri api

@@ -128,8 +128,6 @@ public class AppointmentHospitalDepartmentQuery {
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
                             " end as roomNumber," +                                                      //[14]
-                            " pr.value as province," +
-                            " d.value as district," +
                             " CASE WHEN" +
                             " hpi.hasAddress  = 'Y'" +
                             " THEN" +

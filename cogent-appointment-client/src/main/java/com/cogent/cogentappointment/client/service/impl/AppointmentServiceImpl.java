@@ -609,9 +609,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // isPatientStatus-->      true--> no hospital number | new registration patient
         // isPatientStatus-->      false--> hospital number   | registered patient
-        Appointment appointment = appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(
-                integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationRequestDTO.getAppointmentId()));
+        Appointment appointment = fetchPendingAppointment(
+                integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId());
 
         if (integrationRequestDTO.getIntegrationChannelCode() != null) {
             apiIntegrationCheckpoint(appointment, integrationRequestDTO);
@@ -622,6 +621,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveAppointmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private Appointment fetchPendingAppointment(Long appointmentId, Long hospitalId) {
+        return appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(appointmentId, hospitalId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
     private void apiIntegrationCheckpoint(Appointment appointment,

@@ -45,10 +45,10 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
             uri = backendIntegrationApiInfo.getApiUri();
         }
 
-            ResponseEntity<?> response = restTemplateUtils.
-                    requestAPI(httpMethod,
-                            uri,
-                            new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
+        ResponseEntity<?> response = restTemplateUtils.
+                requestAPI(httpMethod,
+                        uri,
+                        new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
 
         //todo
         //exceptions to be handled

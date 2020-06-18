@@ -1386,11 +1386,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
     }
 
-    private AppointmentServiceType fetchAppointmentServiceType(Long appointmentServiceTypeId) {
-        return appointmentServiceTypeRepository.fetchActiveById(appointmentServiceTypeId)
-                .orElseThrow(() -> APPOINTMENT_SERVICE_TYPE_NOT_FOUND.apply(appointmentServiceTypeId));
-    }
-
     private AppointmentDoctorInfo fetchAppointmentDoctorInfo(Long appointmentId) {
         return appointmentDoctorInfoRepository.fetchAppointmentDoctorInfo(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_DOCTOR_INFO_NOT_FOUND.apply(appointmentId));
@@ -1400,12 +1395,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentHospitalDepartmentInfoRepository.fetchAppointmentHospitalDepartmentInfo(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_HOSPITAL_DEPARTMENT_INFO_NOT_FOUND.apply(appointmentId));
     }
-
-    private Function<Long, NoContentFoundException> APPOINTMENT_SERVICE_TYPE_NOT_FOUND = (appointmentServiceTypeId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_SERVICE_TYPE);
-        throw new NoContentFoundException(AppointmentServiceType.class,
-                "appointmentServiceTypeId", appointmentServiceTypeId.toString());
-    };
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DOCTOR_INFO_NOT_FOUND = (appointmentId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_DOCTOR_INFO);

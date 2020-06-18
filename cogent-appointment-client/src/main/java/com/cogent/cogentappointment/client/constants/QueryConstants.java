@@ -15,6 +15,8 @@ public class QueryConstants {
 
     public static final String APPOINTMENT_TRANSFER_ID = "appointmentTransferId";
 
+    public static final String APPOINTMENT_MODE_ID = "appointmentTransferId";
+
     public static final String API_KEY = "apiKey";
 
     public static final String ADMIN_MODE_FEATURE_INTEGRATION_ID = "adminModeFeatureIntegrationId";

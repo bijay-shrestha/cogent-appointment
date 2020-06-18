@@ -1,8 +1,6 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
 import com.cogent.cogentappointment.persistence.model.Appointment;
-import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
-import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;

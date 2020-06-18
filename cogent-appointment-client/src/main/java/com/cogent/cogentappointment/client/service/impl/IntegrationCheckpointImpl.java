@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.HospitalPatientInfoRepository;
@@ -26,6 +28,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.FRONT_END_CODE;
+import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static java.lang.Integer.parseInt;
 
@@ -52,7 +55,7 @@ public class IntegrationCheckpointImpl {
     }
 
     public void apiIntegrationCheckpoint(Appointment appointment,
-                                          IntegrationBackendRequestDTO integrationRequestDTO) {
+                                         IntegrationBackendRequestDTO integrationRequestDTO) {
 
         //front integration
         if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
@@ -65,7 +68,7 @@ public class IntegrationCheckpointImpl {
         //backend integration
         if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-            ThirdPartyHospitalResponse thirdPartyHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO,appointment);
+            ThirdPartyHospitalResponse thirdPartyHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO, appointment);
 
             if (integrationRequestDTO.isPatientStatus()) {
                 updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
@@ -82,7 +85,8 @@ public class IntegrationCheckpointImpl {
         hospitalPatientInfo.setHospitalNumber(hospitalNumber);
     }
 
-    private ThirdPartyHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO,Appointment appointment) {
+    private ThirdPartyHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO,
+                                                                     Appointment appointment) {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
@@ -90,7 +94,8 @@ public class IntegrationCheckpointImpl {
         //Esewa
         //call thirdparty requestbody utils if not create one.....
 
-        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callThirdPartyHospitalService(integrationHospitalApiInfo,appointment);
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.
+                callThirdPartyHospitalService(integrationHospitalApiInfo, appointment);
 
         if (responseEntity.getStatusCode().value() == 403) {
             throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR);
@@ -142,6 +147,57 @@ public class IntegrationCheckpointImpl {
 
         return backendIntegrationApiInfo;
     }
+
+
+    public BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationRefundRequestDTO refundRequestDTO,
+                                                                      Long appointmentModeId,
+                                                                      String generatedHmacKey) {
+
+        AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
+                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(refundRequestDTO,
+                        appointmentModeId);
+
+        Map<String, String> requestHeaderResponse = integrationRepository.
+                findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        Map<String, String> queryParametersResponse = integrationRepository.
+                findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
+
+//        List<String> requestBody = getRequestBodyByFeature(featureIntegrationResponse.getFeatureId(),
+//                featureIntegrationResponse.getRequestMethod());
+
+        BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
+        integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
+        integrationApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, generatedHmacKey));
+//        integrationApiInfo.setRequestBody(requestBody);
+
+        if (!queryParametersResponse.isEmpty()) {
+            integrationApiInfo.setQueryParameters(queryParametersResponse);
+        }
+        integrationApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
+
+        return integrationApiInfo;
+
+    }
+
+//    private List<String> getRequestBodyByFeature(Long featureId, String requestMethod) {
+//
+//        List<String> requestBody = null;
+//        if (requestMethod.equalsIgnoreCase("POST")) {
+//            List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.
+//                    fetchRequestBodyAttributeByFeatureId(featureId);
+//
+//            if (responses != null) {
+//                requestBody = responses.stream()
+//                        .map(request -> request.getName())
+//                        .collect(Collectors.toList());
+//            }
+//
+//        }
+//
+//
+//        return requestBody;
+//    }
 
     public void validateBheriHospitalResponse(ThirdPartyHospitalResponse thirdPartyHospitalResponse) {
 

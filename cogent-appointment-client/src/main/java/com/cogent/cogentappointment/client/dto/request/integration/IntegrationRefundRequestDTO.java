@@ -23,6 +23,8 @@ public class IntegrationRefundRequestDTO implements Serializable {
     @NotNull
     private Long appointmentModeId;
 
+    private String status;
+
     private String featureCode;
 
     private String integrationChannelCode;

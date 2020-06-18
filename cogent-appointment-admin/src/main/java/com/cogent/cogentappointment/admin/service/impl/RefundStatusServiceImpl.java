@@ -47,13 +47,13 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     private final AppointmentRepository appointmentRepository;
     private final AppointmentService appointmentService;
     private final ThirdPartyConnectorService thirdPartyConnectorService;
-    private final IntegrationCheckpointImpl integrationCheckpointService;
+    private final IntegrationCheckPointServiceImpl integrationCheckpointService;
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentRepository appointmentRepository,
                                    AppointmentService appointmentService,
                                    ThirdPartyConnectorService thirdPartyConnectorService,
-                                   IntegrationCheckpointImpl integrationCheckpointService) {
+                                   IntegrationCheckPointServiceImpl integrationCheckpointService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.appointmentService = appointmentService;

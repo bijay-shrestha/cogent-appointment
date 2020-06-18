@@ -81,7 +81,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final ThirdPartyConnectorService thirdPartyConnectorService;
 
-    private final IntegrationCheckpointImpl integrationCheckpointService;
+    private final IntegrationCheckPointServiceImpl integrationCheckpointService;
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
@@ -95,7 +95,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
                                   ThirdPartyConnectorService thirdPartyConnectorService,
-                                  IntegrationCheckpointImpl integrationCheckpointService,
+                                  IntegrationCheckPointServiceImpl integrationCheckpointService,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -273,9 +273,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
 
         if (backendRequestDTO.getIntegrationChannelCode() != null) {
-            integrationCheckpointService.apiIntegrationCheckpoint(appointment, backendRequestDTO);
+            integrationCheckpointService.apiIntegrationCheckpointDoctorWise(appointment, backendRequestDTO);
         }
-
 
         appointment.setStatus(APPROVED);
 

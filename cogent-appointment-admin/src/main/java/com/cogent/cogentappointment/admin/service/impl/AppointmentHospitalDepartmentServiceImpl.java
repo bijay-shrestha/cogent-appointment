@@ -2,23 +2,30 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentHospitalDeptPendingApproval.AppointmentHospitalDepartmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.HospitalDepartmentAppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
-import com.cogent.cogentappointment.admin.service.HospitalDepartmentLogsService;
+import com.cogent.cogentappointment.admin.service.AppointmentHospitalDepartmentService;
+import com.cogent.cogentappointment.admin.service.IntegrationCheckPointService;
+import com.cogent.cogentappointment.commons.exception.NoContentFoundException;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -30,12 +37,15 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
 @Slf4j
 @Service
 @Transactional
-public class HospitalDepartmentLogsServiceImpl implements HospitalDepartmentLogsService {
+public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHospitalDepartmentService {
 
     private final AppointmentRepository appointmentRepository;
 
-    public HospitalDepartmentLogsServiceImpl(AppointmentRepository appointmentRepository) {
+    private final IntegrationCheckPointService integrationCheckPointService;
+
+    public AppointmentHospitalDepartmentServiceImpl(AppointmentRepository appointmentRepository, IntegrationCheckPointService integrationCheckPointService) {
         this.appointmentRepository = appointmentRepository;
+        this.integrationCheckPointService = integrationCheckPointService;
     }
 
     @Override
@@ -89,15 +99,15 @@ public class HospitalDepartmentLogsServiceImpl implements HospitalDepartmentLogs
     }
 
     @Override
-    public List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> searchPendingHospitalDeptAppointments(
-            AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
+    public List<AppointmentHospitalDepartmentCheckInResponseDTO> searchPendingHospitalDeptAppointments(
+            AppointmentHospitalDepartmentCheckInSearchDTO searchDTO,
             Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PENDING_APPOINTMENT_APPROVAL);
 
-        List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> pendingAppointments =
+        List<AppointmentHospitalDepartmentCheckInResponseDTO> pendingAppointments =
                 appointmentRepository.searchPendingHospitalDeptAppointments(searchDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPOINTMENT_APPROVAL,
@@ -105,4 +115,54 @@ public class HospitalDepartmentLogsServiceImpl implements HospitalDepartmentLogs
 
         return pendingAppointments;
     }
+
+    @Override
+    public AppointmentHospitalDepartmentCheckInDetailResponseDTO fetchPendingHospitalDeptAppointmentDetail(
+            Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, PENDING_APPOINTMENT_APPROVAL);
+
+        AppointmentHospitalDepartmentCheckInDetailResponseDTO appointmentDetails =
+                appointmentRepository.fetchPendingHospitalDeptAppointmentDetail(appointmentId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PENDING_APPOINTMENT_APPROVAL,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return appointmentDetails;
+    }
+
+    @Override
+    public void approveAppointment(IntegrationBackendRequestDTO integrationRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
+
+        // isPatientNew-->      true--> no hospital number | new registration patient
+        // isPatientNew-->      false--> hospital number   | registered patient
+
+        Appointment appointment = fetchPendingAppointment(
+                integrationRequestDTO.getAppointmentId(), integrationRequestDTO.getHospitalId());
+
+        if (!Objects.isNull(integrationRequestDTO.getIntegrationChannelCode()))
+            integrationCheckPointService.apiIntegrationCheckpointDepartmentWise(appointment, integrationRequestDTO);
+
+        appointment.setStatus(APPROVED);
+
+//        saveAppointmentHospitalDepartmentFollowUpTracker(appointment);
+
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private Appointment fetchPendingAppointment(Long appointmentId, Long hospitalId) {
+        return appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(appointmentId, hospitalId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+    }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
+    };
+
+
 }

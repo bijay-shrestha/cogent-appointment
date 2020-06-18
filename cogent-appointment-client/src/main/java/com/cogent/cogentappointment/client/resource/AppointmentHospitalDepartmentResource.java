@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentHospitalDepartmentService;
 import io.swagger.annotations.Api;
@@ -38,7 +38,7 @@ public class AppointmentHospitalDepartmentResource {
     @PutMapping(PENDING_APPROVAL)
     @ApiOperation(FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT)
     public ResponseEntity<?> searchPendingHospitalDeptAppointments(
-            @RequestBody AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
+            @RequestBody AppointmentHospitalDepartmentCheckInSearchDTO searchDTO,
             @RequestParam("page") int page,
             @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);

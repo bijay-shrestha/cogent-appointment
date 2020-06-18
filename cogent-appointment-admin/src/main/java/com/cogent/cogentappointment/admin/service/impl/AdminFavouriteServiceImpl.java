@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.favourite.FavoriteDropDownWithIconResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.favourite.FavouriteDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.repository.AdminFavouriteRepository;
 import com.cogent.cogentappointment.admin.service.AdminFavouriteService;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_FAVOURITE;
+import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_FAVOURITE_WITH_ICON;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.SAVING_PASSWORD_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -39,6 +41,20 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService{
         log.info(FETCHING_PROCESS_STARTED, ADMIN_FAVOURITE);
 
         List<FavouriteDropDownResponseDTO> responseDTOList= adminFavouriteRepository.fetchAdminFavouriteForDropDown();
+
+        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOList;
+    }
+
+    @Override
+    public List<FavoriteDropDownWithIconResponseDTO> fetchAdminFavouriteForDropDownWithIcon() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, ADMIN_FAVOURITE_WITH_ICON);
+
+        List<FavoriteDropDownWithIconResponseDTO> responseDTOList =
+                adminFavouriteRepository.fetchAdminFavouriteForDropDownWithIcon();
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 

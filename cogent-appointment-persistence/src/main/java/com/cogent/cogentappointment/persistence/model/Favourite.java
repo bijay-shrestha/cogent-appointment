@@ -35,6 +35,9 @@ public class Favourite extends Auditable<String> implements Serializable {
     @Column(name = "path")
     private String path;
 
+    @Column(name = "icon_name")
+    private String iconName;
+
     @Column(name = "description")
     private String description;
 
@@ -51,10 +54,10 @@ public class Favourite extends Auditable<String> implements Serializable {
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +
                 ", path='" + path + '\'' +
+                ", icon_name='" + iconName + '\'' +
                 ", description='" + description + '\'' +
                 ", remarks='" + remarks + '\'' +
                 ", status=" + status +
                 '}';
     }
-
-    }
+}

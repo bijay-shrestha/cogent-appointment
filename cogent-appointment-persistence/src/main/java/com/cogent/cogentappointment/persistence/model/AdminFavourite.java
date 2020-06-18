@@ -41,11 +41,9 @@ public class AdminFavourite extends Auditable<String> implements Serializable {
     public String toString() {
         return "AdminFavourite{" +
                 "id=" + id +
-                ", adminId=" + adminId.getId() +
-                ", favouriteId=" + favouriteId.getId() +
-                ", status='" + status + '\'' +
+                ", adminId=" + adminId +
+                ", favouriteId=" + favouriteId +
+                ", status=" + status +
                 '}';
     }
-
-
 }

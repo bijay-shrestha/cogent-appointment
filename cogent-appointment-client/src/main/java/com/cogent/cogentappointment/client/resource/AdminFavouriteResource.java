@@ -12,6 +12,7 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Adm
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AdminFavouriteConstants.BASE_ADMIN_FAVOURITE;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AdminFavouriteConstants.ICON;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -32,6 +33,12 @@ public class AdminFavouriteResource {
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchHospitalForDropDown() {
         return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
+    }
+
+    @GetMapping(ICON + ACTIVE + MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchHospitalForDropDownWithIcon() {
+        return ok(adminFavouriteService.fetchAdminFavouriteForDropDownWithIcon());
     }
 
 }

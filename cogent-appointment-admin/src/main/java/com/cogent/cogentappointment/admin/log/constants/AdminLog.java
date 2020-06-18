@@ -14,6 +14,8 @@ public class AdminLog {
 
     public static final String ADMIN_FAVOURITE = "ADMIN FAVOURITE";
 
+    public static final String ADMIN_FAVOURITE_WITH_ICON = "ADMIN FAVOURITE WITH ICON";
+
     public static final String FORGOT_PASSWORD_PROCESS_STARTED = ":::: FORGOT PASSWORD PROCESS STARTED ::::";
     public static final String FORGOT_PASSWORD_PROCESS_COMPLETED = ":::: FORGOT PASSWORD PROCESS COMPLETED" +
             " IN :::: {} ms";

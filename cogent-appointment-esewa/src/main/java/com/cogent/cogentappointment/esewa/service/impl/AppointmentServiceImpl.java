@@ -214,9 +214,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.nepaliDateUtility = nepaliDateUtility;
     }
 
-
     @Override
-    public AppointmentCheckAvailabilityResponseDTO fetchAvailableTimeSlots(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public AppointmentCheckAvailabilityResponseDTO fetchAvailableTimeSlots(
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -650,7 +650,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Patient fetchPatientForSelf(Boolean isNewRegistration,
                                         Long patientId,
                                         Hospital hospital,
-                                        PatientRequestByDTO patientRequestDTO) {
+                                        PatientRequestByDTO patientRequestDTO,
+                                        Character hasAddress) {
 
         Patient patient;
 
@@ -662,8 +663,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         hospitalPatientInfoService.saveHospitalPatientInfoForSelf(
                 hospital, patient,
-                patientRequestDTO.getEmail(),
-                patientRequestDTO.getAddress()
+                patientRequestDTO,
+                hasAddress
         );
 
         return patient;
@@ -690,7 +691,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                           Long patientId,
                                           Hospital hospital,
                                           PatientRequestByDTO requestByPatientInfo,
-                                          PatientRequestForDTO requestForPatientInfo) {
+                                          PatientRequestForDTO requestForPatientInfo,
+                                          Character hasAddress) {
 
         Patient parentPatient;
         Patient childPatient;
@@ -713,8 +715,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         hospitalPatientInfoService.saveHospitalPatientInfoForOthers(
                 hospital, childPatient,
-                requestForPatientInfo.getEmail(),
-                requestForPatientInfo.getAddress()
+                requestForPatientInfo,
+                hasAddress
         );
 
         return childPatient;
@@ -1090,7 +1092,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getIsNewRegistration(),
                 appointmentInfo.getPatientId(),
                 hospital,
-                requestDTO.getPatientInfo()
+                requestDTO.getPatientInfo(),
+                NO
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -1143,7 +1146,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getIsNewRegistration(),
                 appointmentInfo.getPatientId(),
                 hospital,
-                requestDTO.getPatientInfo()
+                requestDTO.getPatientInfo(),
+                YES
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -1274,7 +1278,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getPatientId(),
                 hospital,
                 requestDTO.getRequestBy(),
-                requestDTO.getRequestFor()
+                requestDTO.getRequestFor(),
+                NO
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -1329,7 +1334,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getPatientId(),
                 hospital,
                 requestDTO.getRequestBy(),
-                requestDTO.getRequestFor()
+                requestDTO.getRequestFor(),
+                YES
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -1380,11 +1386,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
     }
 
-    private AppointmentServiceType fetchAppointmentServiceType(Long appointmentServiceTypeId) {
-        return appointmentServiceTypeRepository.fetchActiveById(appointmentServiceTypeId)
-                .orElseThrow(() -> APPOINTMENT_SERVICE_TYPE_NOT_FOUND.apply(appointmentServiceTypeId));
-    }
-
     private AppointmentDoctorInfo fetchAppointmentDoctorInfo(Long appointmentId) {
         return appointmentDoctorInfoRepository.fetchAppointmentDoctorInfo(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_DOCTOR_INFO_NOT_FOUND.apply(appointmentId));
@@ -1394,12 +1395,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentHospitalDepartmentInfoRepository.fetchAppointmentHospitalDepartmentInfo(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_HOSPITAL_DEPARTMENT_INFO_NOT_FOUND.apply(appointmentId));
     }
-
-    private Function<Long, NoContentFoundException> APPOINTMENT_SERVICE_TYPE_NOT_FOUND = (appointmentServiceTypeId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_SERVICE_TYPE);
-        throw new NoContentFoundException(AppointmentServiceType.class,
-                "appointmentServiceTypeId", appointmentServiceTypeId.toString());
-    };
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DOCTOR_INFO_NOT_FOUND = (appointmentId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_DOCTOR_INFO);

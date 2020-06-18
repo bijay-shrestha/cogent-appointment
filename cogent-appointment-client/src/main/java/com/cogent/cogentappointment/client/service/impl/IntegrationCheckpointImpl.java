@@ -52,12 +52,12 @@ public class IntegrationCheckpointImpl {
     }
 
     public void apiIntegrationCheckpoint(Appointment appointment,
-                                          IntegrationBackendRequestDTO integrationRequestDTO) {
+                                         IntegrationBackendRequestDTO integrationRequestDTO) {
 
         //front integration
         if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
 
-            if (integrationRequestDTO.isPatientStatus()) {
+            if (integrationRequestDTO.isPatientNew()) {
                 updateHospitalPatientInfo(appointment, integrationRequestDTO.getHospitalNumber());
             }
         }
@@ -65,9 +65,9 @@ public class IntegrationCheckpointImpl {
         //backend integration
         if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-            ThirdPartyHospitalResponse thirdPartyHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO,appointment);
+            ThirdPartyHospitalResponse thirdPartyHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO, appointment);
 
-            if (integrationRequestDTO.isPatientStatus()) {
+            if (integrationRequestDTO.isPatientNew()) {
                 updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
             }
         }
@@ -82,7 +82,7 @@ public class IntegrationCheckpointImpl {
         hospitalPatientInfo.setHospitalNumber(hospitalNumber);
     }
 
-    private ThirdPartyHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO,Appointment appointment) {
+    private ThirdPartyHospitalResponse hospitalIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO, Appointment appointment) {
 
         BackendIntegrationApiInfo integrationHospitalApiInfo = getHospitalApiIntegration(integrationBackendRequestDTO);
 
@@ -90,7 +90,8 @@ public class IntegrationCheckpointImpl {
         //Esewa
         //call thirdparty requestbody utils if not create one.....
 
-        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callThirdPartyHospitalService(integrationHospitalApiInfo,appointment);
+        ResponseEntity<?> responseEntity =
+                thirdPartyConnectorService.callThirdPartyDoctorCheckInService(integrationHospitalApiInfo);
 
         if (responseEntity.getStatusCode().value() == 403) {
             throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR);

@@ -146,6 +146,7 @@ public class ErrorMessageConstants {
         String INTEGRATION_BHERI_HOSPITAL_ERROR = "An error occurred while saving the patient record.";
         String INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR = "Hospital API Forbidden...";
         String INTEGRATION_API_BAD_REQUEST = "Bad Third Party API Request.";
+        String INVALID_INTEGRATION_CHANNEL_CODE = "Requested Integration Channel Code '%s' is invalid";
     }
 
 

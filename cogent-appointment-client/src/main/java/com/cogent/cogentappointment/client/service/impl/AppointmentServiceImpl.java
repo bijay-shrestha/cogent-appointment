@@ -44,7 +44,6 @@ import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
-import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -136,15 +135,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final Validator validator;
 
-    private final IntegrationRepository integrationRepository;
-
-    private final ThirdPartyConnectorService thirdPartyConnectorService;
-
     private final NepaliDateUtility nepaliDateUtility;
 
     private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
 
-    private final IntegrationCheckpointImpl integrationCheckpointService;
+    private final IntegrationCheckPointService integrationCheckPointService;
 
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
@@ -169,11 +164,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   Validator validator,
-                                  IntegrationRepository integrationRepository,
-                                  ThirdPartyConnectorService thirdPartyConnectorService,
                                   NepaliDateUtility nepaliDateUtility,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository,
-                                  IntegrationCheckpointImpl integrationCheckpointService) {
+                                  IntegrationCheckPointServiceImpl integrationCheckPointService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -197,11 +190,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
-        this.integrationRepository = integrationRepository;
-        this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.nepaliDateUtility = nepaliDateUtility;
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
-        this.integrationCheckpointService = integrationCheckpointService;
+        this.integrationCheckPointService = integrationCheckPointService;
     }
 
     @Override
@@ -602,13 +593,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // isPatientStatus-->      true--> no hospital number | new registration patient
         // isPatientStatus-->      false--> hospital number   | registered patient
-        Appointment appointment = appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(
-                integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationRequestDTO.getAppointmentId()));
+        Appointment appointment = fetchPendingAppointment(
+                integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId());
 
-        if (integrationRequestDTO.getIntegrationChannelCode() != null) {
-                    integrationCheckpointService.apiIntegrationCheckpoint(appointment,integrationRequestDTO);
-        }
+        if (integrationRequestDTO.getIntegrationChannelCode() != null)
+            integrationCheckPointService.apiIntegrationCheckpointDoctorWise(appointment, integrationRequestDTO);
 
         appointment.setStatus(APPROVED);
 
@@ -616,8 +605,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
-
-
 
     @Override
     public void rejectAppointment(AppointmentRejectDTO rejectDTO) {
@@ -1429,5 +1416,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_DOCTOR_INFO);
         throw new NoContentFoundException(AppointmentDoctorInfo.class, "appointmentId", appointmentId.toString());
     };
+
+    private Appointment fetchPendingAppointment(Long appointmentId, Long hospitalId) {
+        return appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(appointmentId, hospitalId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+    }
 }
 

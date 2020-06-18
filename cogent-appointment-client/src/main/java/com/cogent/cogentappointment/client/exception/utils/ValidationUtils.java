@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.exception.utils;
 
 import com.cogent.cogentappointment.client.exception.ConstraintViolationException;
-import com.cogent.cogentappointment.client.utils.commons.StringUtil;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.*;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 import static org.springframework.util.StringUtils.capitalize;
 
 /**

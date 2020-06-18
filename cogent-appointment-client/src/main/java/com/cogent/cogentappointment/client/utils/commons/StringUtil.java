@@ -22,7 +22,6 @@ public class StringUtil {
 
         String normalCase = WordUtils.capitalizeFully(text, delimiters);
         return normalCase;
-
     }
 
     public static String toUpperCase(String name){

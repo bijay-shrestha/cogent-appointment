@@ -1157,9 +1157,10 @@ public class AppointmentQuery {
                     " LEFT JOIN HospitalDepartment hd ON hd.id=ahd.hospitalDepartment.id" +
                     " LEFT JOIN HospitalDepartmentRoomInfo hdri On hdri.id= ahd.hospitalDepartmentRoomInfo.id" +
                     " LEFT JOIN Room r on hdri.room.id=r.id" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
-                    " AND hast.appointmentServiceType.id=2";
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
 
 }

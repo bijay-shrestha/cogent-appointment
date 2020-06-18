@@ -569,11 +569,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         Query query = createNativeQuery.apply(entityManager,
-                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS
-                        (requestDTO))
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE,"DEP");
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
@@ -630,10 +630,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return pendingAppointments;
     }
 
+    //todo:add DEP dynamically
     @Override
     public AppointmentDetailsForStatus fetchAppointmentByApptNumber(String appointmentNumber) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_BY_APPT_NUMBER)
-                .setParameter(APPOINTMENT_NUMBER, appointmentNumber);
+                .setParameter(APPOINTMENT_NUMBER, appointmentNumber)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE,"DEP");
 
         try {
             AppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query, AppointmentDetailsForStatus.class);

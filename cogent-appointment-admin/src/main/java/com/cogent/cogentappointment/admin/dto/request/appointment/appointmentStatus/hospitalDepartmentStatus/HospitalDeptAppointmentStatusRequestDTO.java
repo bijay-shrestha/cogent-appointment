@@ -13,6 +13,7 @@ import java.util.Date;
 @Setter
 @Getter
 public class HospitalDeptAppointmentStatusRequestDTO implements Serializable {
+
     private Date fromDate;
 
     private Date toDate;

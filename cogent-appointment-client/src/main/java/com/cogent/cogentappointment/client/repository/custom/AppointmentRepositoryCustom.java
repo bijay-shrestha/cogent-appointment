@@ -31,6 +31,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentStatus.Appoin
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentDoctorInfo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -127,4 +128,6 @@ public interface AppointmentRepositoryCustom {
             AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
             Pageable pageable,
             Long hospitalId);
+
+    AppointmentDoctorInfo getPreviousAppointmentDoctorAndSpecialization(Long appointmentId);
 }

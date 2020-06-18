@@ -122,27 +122,21 @@ public class AppointmentTransferUtils {
     }
 
     public static Appointment parseAppointmentTransferDetail(Appointment appointment,
-                                                             AppointmentTransferRequestDTO requestDTO,
-                                                             Doctor doctor) {
+                                                             AppointmentTransferRequestDTO requestDTO) {
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
         appointment.setAppointmentTime(parseAppointmentTime(appointment.getAppointmentDate(), requestDTO.getAppointmentTime()));
-        //todo : fix this
-//        appointment.setDoctorId(doctor);
         appointment.setRemarks(requestDTO.getRemarks());
         appointment.setHasTransferred(YES);
         return appointment;
     }
 
-    public static Appointment parseAppointmentForSpecialization(Appointment appointment,
-                                                                AppointmentTransferRequestDTO requestDTO,
-                                                                Doctor doctor,
-                                                                Specialization specialization) {
-        parseAppointmentTransferDetail(appointment,
-                requestDTO,
-                doctor);
-        //todo : fix this
-//        appointment.setSpecializationId(specialization);
-        return appointment;
+    public static AppointmentDoctorInfo parseAppointmentDoctorInfo(Doctor doctor,Specialization specialization,
+                                                                   AppointmentDoctorInfo appointmentDoctorInfo) {
+
+        appointmentDoctorInfo.setDoctor(doctor);
+        appointmentDoctorInfo.setSpecialization(specialization);
+
+        return appointmentDoctorInfo;
     }
 
     public static AppointmentTransfer parseToAppointmentTransfer(Appointment appointment,

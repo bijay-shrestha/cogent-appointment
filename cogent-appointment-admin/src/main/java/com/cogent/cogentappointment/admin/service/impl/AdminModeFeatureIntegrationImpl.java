@@ -355,7 +355,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         responseDTO.setAppointmentModeId(featureIntegrationResponse.getAppointmentModeId());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
-        responseDTO.setStatus(responseDTO.getStatus());
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         return responseDTO;
 

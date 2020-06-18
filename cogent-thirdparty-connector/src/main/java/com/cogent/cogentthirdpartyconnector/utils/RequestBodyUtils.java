@@ -46,7 +46,6 @@ public class RequestBodyUtils {
 
         requestBody.forEach(parameter -> {
 
-
             if (parameter.equalsIgnoreCase("esewa_id")) {
                 map.put("esewa_id", appointment.getPatientId().getESewaId());
             }

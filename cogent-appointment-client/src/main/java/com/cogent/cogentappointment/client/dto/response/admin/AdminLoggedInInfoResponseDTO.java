@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.client.dto.response.admin;
 
-import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +38,7 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
 
     private Character isSideBarCollapse;
 
-    private Map<String,?> eCIntegrate;
+    private Map<String,List<?>> apiIntegration;
 
-    Map<String, String> requestBody;
+    private Map<String, String> requestBody;
 }

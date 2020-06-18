@@ -15,6 +15,8 @@ public class IntegrationAdminModeQuery {
             "SELECT" +
                     " f.id as featureId," +
                     " aif.id as apiIntegrationFormatId,"+
+                    " h.id as hospitalId,"+
+                    " h.name as hospitalName,"+
                     " am.id as appointmentModeId," +
                     " am.name as appointmentModeName," +
                     " f.name as featureName," +
@@ -25,6 +27,7 @@ public class IntegrationAdminModeQuery {
                     " ic.name as integrationChannel," +
                     " ait.id as integrationTypeId," +
                     " ait.name as integrationType," +
+                    " amfi.status as status,"+
                     ADMIN_MODE_API_INTEGRATION_AUDITABLE_QUERY() +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
@@ -34,6 +37,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
                     " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
                     " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
+                    " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id"+
                     " WHERE amfi.id= :adminModeFeatureIntegrationId" +
                     " AND aif.status='Y'" +
                     " AND hrm.status='Y'" +
@@ -163,6 +167,8 @@ public class IntegrationAdminModeQuery {
             (searchRequestDTO) ->
                     " SELECT" +
                             " amfi.id as id," +
+                            " amfi.status as status," +
+                            " h.name as hospitalName,"+
                             " am.name as appointmentMode," +
                             " ic.name as integrationChannel," +
                             " f.name as featureName," +
@@ -176,7 +182,8 @@ public class IntegrationAdminModeQuery {
                             " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                             " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id"
+                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id"+
+                            " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(

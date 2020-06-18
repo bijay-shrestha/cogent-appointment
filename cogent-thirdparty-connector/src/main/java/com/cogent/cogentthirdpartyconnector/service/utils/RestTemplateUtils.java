@@ -2,12 +2,11 @@ package com.cogent.cogentthirdpartyconnector.service.utils;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author rupak on 2020-05-24
@@ -32,9 +31,19 @@ public class RestTemplateUtils {
                     request,
                     String.class);
         } catch (HttpStatusCodeException exception) {
+
+            if(exception.getStatusCode().value()==403){
+               response=new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+            }
+
+
             System.out.println("Response: " + exception.getStatusCode().value());
+
+
+
         }
 
-        return new ResponseEntity<>(response.getBody(), OK);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 }

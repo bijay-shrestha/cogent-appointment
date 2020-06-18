@@ -202,12 +202,11 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id";
 
-    public static String QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(AppointmentSearchDTO searchDTO,
-                                                                    String appointmentServiceTypeCode) {
+    public static String QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(AppointmentSearchDTO searchDTO) {
 
         String query = "";
 
-        switch (appointmentServiceTypeCode) {
+        switch (searchDTO.getAppointmentServiceTypeCode().trim().toUpperCase()) {
             case DOCTOR_CONSULTATION_CODE:
                 query += SELECT_CLAUSE_TO_SEARCH_APPOINTMENT_DOCTOR_WISE;
                 break;
@@ -221,7 +220,7 @@ public class AppointmentQuery {
                 " AND p.name =:name" +
                 " AND p.mobileNumber = :mobileNumber" +
                 " AND p.dateOfBirth =: dateOfBirth" +
-                " AND hs.appointmentServiceType.id =:appointmentServiceTypeId";
+                " AND hs.appointmentServiceType.code =:appointmentServiceTypeCode";
 
         if (!ObjectUtils.isEmpty(searchDTO.getStatus()) && !Objects.isNull(searchDTO.getStatus()))
             query += " AND a.status = '" + searchDTO.getStatus() + "'";
@@ -233,12 +232,11 @@ public class AppointmentQuery {
     }
 
     public static String QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_OTHERS(AppointmentSearchDTO searchDTO,
-                                                                      String childPatientIds,
-                                                                      String appointmentServiceTypeCode) {
+                                                                      String childPatientIds) {
 
         String query = "";
 
-        switch (appointmentServiceTypeCode) {
+        switch (searchDTO.getAppointmentServiceTypeCode().trim().toUpperCase()) {
             case DOCTOR_CONSULTATION_CODE:
                 query += SELECT_CLAUSE_TO_SEARCH_APPOINTMENT_DOCTOR_WISE;
                 break;
@@ -250,7 +248,7 @@ public class AppointmentQuery {
         query += " WHERE a.isSelf = 'N'" +
                 " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                 " AND p.id IN (" + childPatientIds + ")" +
-                " AND hs.appointmentServiceType.id =:appointmentServiceTypeId";
+                " AND hs.appointmentServiceType.code =:appointmentServiceTypeCode";
 
         if (!ObjectUtils.isEmpty(searchDTO.getStatus()))
             query += " AND a.status = '" + searchDTO.getStatus() + "'";

@@ -47,18 +47,17 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     private final AppointmentRepository appointmentRepository;
     private final AppointmentService appointmentService;
     private final ThirdPartyConnectorService thirdPartyConnectorService;
-    private final IntegrationThirdPartyImpl integrationThirdPartyImpl;
+    private final IntegrationCheckpointImpl integrationCheckpointService;
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentRepository appointmentRepository,
                                    AppointmentService appointmentService,
-                                   ThirdPartyConnectorService thirdPartyConnectorService,
-                                   IntegrationThirdPartyImpl integrationThirdPartyImpl) {
+                                   ThirdPartyConnectorService thirdPartyConnectorService, IntegrationCheckpointImpl integrationCheckpointService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.appointmentService = appointmentService;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
-        this.integrationThirdPartyImpl = integrationThirdPartyImpl;
+        this.integrationCheckpointService = integrationCheckpointService;
     }
 
 
@@ -163,7 +162,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         String generatedEsewaHmac = getSignatureForEsewa.apply(esewaPayementStatus.getEsewa_id(),
                 esewaPayementStatus.getProduct_code());
 
-        BackendIntegrationApiInfo integrationApiInfo = integrationThirdPartyImpl.
+        BackendIntegrationApiInfo integrationApiInfo = integrationCheckpointService.
                 getAppointmentModeApiIntegration(backendRequestDTO,
                         appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 

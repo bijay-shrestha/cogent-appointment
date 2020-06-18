@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.dto.request.refund.refundStatus;
 
-import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +34,6 @@ public class RefundStatusRequestDTO implements Serializable{
 
     private String appointmentMode;
 
-    private IntegrationBackendRequestDTO integrationBackendRequestDTO;
+    private IntegrationRefundRequestDTO refundRequestDTO;
 
 }

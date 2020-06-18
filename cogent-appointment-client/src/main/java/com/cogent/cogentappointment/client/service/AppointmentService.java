@@ -17,6 +17,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDetailResponseDTO;
@@ -82,7 +83,7 @@ public interface AppointmentService {
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long id);
 
-    void approveRefundAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO);
+    void approveRefundAppointment(IntegrationRefundRequestDTO integrationRefundRequestDTO);
 
     void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO);
 

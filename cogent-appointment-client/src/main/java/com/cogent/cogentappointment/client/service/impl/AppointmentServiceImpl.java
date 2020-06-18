@@ -19,6 +19,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.EsewaRefundRequestDTO;
@@ -696,7 +697,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveRefundAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    public void approveRefundAppointment(IntegrationRefundRequestDTO refundRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
@@ -707,14 +708,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentRefundDetail refundAppointmentDetail =
                 appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
-                        (integrationBackendRequestDTO.getAppointmentId(), getLoggedInHospitalId())
-                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationBackendRequestDTO.getAppointmentId()));
+                        (refundRequestDTO.getAppointmentId(), getLoggedInHospitalId())
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(refundRequestDTO.getAppointmentId()));
 
         Appointment appointment = appointmentRepository.fetchRefundAppointmentByIdAndHospitalId
-                (integrationBackendRequestDTO.getAppointmentId(), getLoggedInHospitalId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationBackendRequestDTO.getAppointmentId()));
+                (refundRequestDTO.getAppointmentId(), getLoggedInHospitalId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(refundRequestDTO.getAppointmentId()));
 
-        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(integrationBackendRequestDTO.getAppointmentId());
+        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(refundRequestDTO.getAppointmentId());
 
         String response = processRefundRequest(appointment,
                 appointmentTransactionDetail,

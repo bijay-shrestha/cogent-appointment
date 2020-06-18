@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integrationClient.ApiIntegrationCheckInRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
@@ -183,8 +184,8 @@ public class AppointmentResource {
 
     @PutMapping(REFUND + APPROVE )
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(@RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
-        appointmentService.approveRefundAppointment(integrationBackendRequestDTO);
+    public ResponseEntity<?> approveRefundAppointment(@RequestBody IntegrationRefundRequestDTO refundRequestDTO) {
+        appointmentService.approveRefundAppointment(refundRequestDTO);
         return ok().build();
     }
 

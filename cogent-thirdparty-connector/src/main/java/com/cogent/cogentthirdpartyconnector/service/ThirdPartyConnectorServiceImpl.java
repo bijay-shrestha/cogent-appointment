@@ -1,5 +1,8 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
+import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
@@ -17,6 +20,7 @@ import java.util.Map;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryParameter;
+import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getHospitalRequestBody;
 
 /**
  * @author rupak ON 2020/06/09-11:41 AM
@@ -31,7 +35,11 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> callThirdPartyHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
+    public ResponseEntity<?> callThirdPartyHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo,
+                                                           Appointment appointment) {
+
+        ClientSaveRequestDTO clientSaveRequestDTO = getHospitalRequestBody(appointment);
+
 
         HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
@@ -43,10 +51,10 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
             uri = backendIntegrationApiInfo.getApiUri();
         }
 
-            ResponseEntity<?> response = restTemplateUtils.
-                    requestAPI(httpMethod,
-                            uri,
-                            new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
+        ResponseEntity<?> response = restTemplateUtils.
+                requestAPI(httpMethod,
+                        uri,
+                        new HttpEntity<>(clientSaveRequestDTO, backendIntegrationApiInfo.getHttpHeaders()));
 
         //todo
         //exceptions to be handled

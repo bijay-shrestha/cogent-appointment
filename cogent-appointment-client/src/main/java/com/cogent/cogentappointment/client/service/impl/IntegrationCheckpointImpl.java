@@ -57,7 +57,7 @@ public class IntegrationCheckpointImpl {
         //front integration
         if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
 
-            if (integrationRequestDTO.isPatientNew()) {
+            if (integrationRequestDTO.getIsPatientNew()) {
                 updateHospitalPatientInfo(appointment, integrationRequestDTO.getHospitalNumber());
             }
         }
@@ -67,7 +67,7 @@ public class IntegrationCheckpointImpl {
 
             ThirdPartyHospitalResponse thirdPartyHospitalResponse = hospitalIntegrationCheckpoint(integrationRequestDTO, appointment);
 
-            if (integrationRequestDTO.isPatientNew()) {
+            if (integrationRequestDTO.getIsPatientNew()) {
                 updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
             }
         }

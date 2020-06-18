@@ -73,7 +73,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             case FRONT_END_CODE:
                 /*FRONT-END INTEGRATION*/
-                if (integrationRequestDTO.isPatientNew())
+                if (integrationRequestDTO.getIsPatientNew())
                     updateHospitalPatientInfo(appointment, integrationRequestDTO.getHospitalNumber());
 
                 break;
@@ -83,7 +83,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 ThirdPartyHospitalResponse thirdPartyHospitalResponse =
                         fetchThirdPartyHospitalResponseDoctorWise(integrationRequestDTO);
 
-                if (integrationRequestDTO.isPatientNew())
+                if (integrationRequestDTO.getIsPatientNew())
                     updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
 
                 break;
@@ -103,7 +103,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             case FRONT_END_CODE:
                 /*FRONT-END INTEGRATION*/
-                if (integrationRequestDTO.isPatientNew())
+                if (integrationRequestDTO.getIsPatientNew())
                     updateHospitalPatientInfo(appointment, integrationRequestDTO.getHospitalNumber());
 
                 break;
@@ -113,7 +113,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 ThirdPartyHospitalResponse thirdPartyHospitalResponse =
                         fetchThirdPartyHospitalResponseDepartmentWise(integrationRequestDTO);
 
-                if (integrationRequestDTO.isPatientNew())
+                if (integrationRequestDTO.getIsPatientNew())
                     updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
 
                 break;
@@ -166,7 +166,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     appointmentRepository.fetchAppointmentDetailForHospitalDeptCheckIn(requestDTO.getAppointmentId(),
                             getLoggedInHospitalId());
 
-//            thirdPartyCheckInDetails.setName(generateRandomNumber(3));
+            thirdPartyCheckInDetails.setName(generateRandomNumber(3));
             thirdPartyCheckInDetails.setSex(toNormalCase(thirdPartyCheckInDetails.getGender().name()));
 
             //todo : room no and dept name is static in bheri api

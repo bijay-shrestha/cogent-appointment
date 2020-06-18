@@ -14,6 +14,7 @@ import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdmin
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
@@ -421,6 +422,16 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
+
+        List<IntegrationBodyAttributeResponse> responses =
+                requestBodyParametersRepository.fetchRequestBodyAttributes();
+
+        Map<String, String> map = new HashMap<>();
+        responses.forEach(response -> {
+            map.put(response.getName(), "");
+        });
+
+
 
         responseDTO.setApiIntegration(getApiIntegrations());
 

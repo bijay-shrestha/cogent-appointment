@@ -21,6 +21,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLo
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
@@ -28,6 +29,7 @@ import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,10 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_MODE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
+import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
+import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -56,6 +62,8 @@ import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils.map;
+import static java.lang.Integer.parseInt;
 
 /**
  * @author smriti on 2019-10-22
@@ -83,6 +91,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final IntegrationThirdPartyImpl integrationEsewaService;
 
+    private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
+
     private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
 
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
@@ -94,6 +104,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
                                   ThirdPartyConnectorService thirdPartyConnectorService,
                                   IntegrationThirdPartyImpl integrationEsewaService,
+                                  HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
@@ -104,6 +115,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.integrationEsewaService = integrationEsewaService;
+        this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
     }
 
@@ -136,20 +148,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveRefundAppointment(Long appointmentId,
-                                         IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+    public void approveRefundAppointment(IntegrationBackendRequestDTO backendRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
 
         AppointmentRefundDetail refundAppointmentDetail =
-                appointmentRefundDetailRepository.findByAppointmentId(appointmentId)
-                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+                appointmentRefundDetailRepository.findByAppointmentId(backendRequestDTO.getAppointmentId())
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
 
-        Appointment appointment = appointmentRepository.fetchRefundAppointmentById(appointmentId)
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+        Appointment appointment = appointmentRepository.fetchRefundAppointmentById(backendRequestDTO.getAppointmentId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
 
-        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
+        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(backendRequestDTO.getAppointmentId());
 
         ThirdPartyResponse response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
@@ -160,15 +171,14 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new BadRequestException(response.getMessage(), response.getMessage());
         }
 
-        updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail,
-                null);
+        updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail, null);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO,
-                                        IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+                                        IntegrationBackendRequestDTO backendRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -203,7 +213,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     refundRejectDTO);
 
         } else {
-            throw new BadRequestException("Integration parameters not found", "Integration parameter return null");
+            throw new BadRequestException(INTEGRATION_PARAMETER_NOT_FOUND, INTEGRATION_PARAMETER_IS_NULL);
         }
 
 
@@ -259,18 +269,21 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveAppointment(Long appointmentId, IntegrationBackendRequestDTO backendRequestDTO) {
+    public void approveAppointment(IntegrationBackendRequestDTO backendRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
 
-        ResponseEntity<?> integrationResponse = null;
-        if (backendRequestDTO != null) {
-            integrationResponse = apiIntegrationCheckpoint(backendRequestDTO);
+        // isPatientStatus-->      true--> no hospital number | new registration patient
+        // isPatientStatus-->      false--> hospital number   | registered patient
+
+        Appointment appointment = appointmentRepository.fetchPendingAppointmentById(backendRequestDTO.getAppointmentId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
+
+        if (backendRequestDTO.getIntegrationChannelCode() != null || !backendRequestDTO.getIntegrationChannelCode().isEmpty()) {
+            apiIntegrationCheckpoint(appointment, backendRequestDTO);
         }
 
-        Appointment appointment = appointmentRepository.fetchPendingAppointmentById(appointmentId)
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
         appointment.setStatus(APPROVED);
 
@@ -279,13 +292,70 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private ResponseEntity<?> apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+    private ThirdPartyHospitalResponse apiIntegrationCheckpoint(IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
-        BackendIntegrationApiInfo integrationHospitalApiInfo =
-                integrationEsewaService.getHospitalApiIntegration(integrationBackendRequestDTO);
+        BackendIntegrationApiInfo integrationHospitalApiInfo = integrationEsewaService.getHospitalApiIntegration(integrationBackendRequestDTO);
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.getHospitalService(integrationHospitalApiInfo);
 
-        return responseEntity;
+
+        ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;
+        try {
+            thirdPartyHospitalResponse = map(responseEntity.getBody().toString(),
+                    ThirdPartyHospitalResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        validateBheriHospitalResponse(thirdPartyHospitalResponse);
+
+        return thirdPartyHospitalResponse;
+
+    }
+
+    private void validateBheriHospitalResponse(ThirdPartyHospitalResponse thirdPartyHospitalResponse) {
+
+        if (parseInt(thirdPartyHospitalResponse.getStatusCode()) == 500) {
+            throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_ERROR);
+        }
+
+        if (parseInt(thirdPartyHospitalResponse.getStatusCode()) == 400) {
+            throw new OperationUnsuccessfulException(INTEGRATION_API_BAD_REQUEST);
+        }
+
+    }
+
+
+    private void apiIntegrationCheckpoint(Appointment appointment,
+                                          IntegrationBackendRequestDTO integrationRequestDTO) {
+
+        //front integration
+        if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+            if (integrationRequestDTO.isPatientStatus()) {
+                updateHospitalPatientInfo(appointment, integrationRequestDTO.getHospitalNumber());
+            }
+        }
+
+        //backend integration
+        if (integrationRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+
+            ThirdPartyHospitalResponse thirdPartyHospitalResponse = apiIntegrationCheckpoint(integrationRequestDTO);
+
+            if (integrationRequestDTO.isPatientStatus()) {
+                updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
+            }
+        }
+    }
+
+    private void updateHospitalPatientInfo(Appointment appointment, String hospitalNumber) {
+
+        HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository.
+                findByPatientAndHospitalId(appointment.getPatientId().getId(), appointment.getHospitalId().getId())
+                .orElseThrow(() -> HOSPITAL_PATIENT_INFO_NOT_FOUND.apply(appointment.getPatientId().getId()));
+
+        hospitalPatientInfo.setHospitalNumber(hospitalNumber);
+
+
     }
 
     @Override
@@ -457,29 +527,24 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                     AppointmentTransactionDetail transactionDetail,
                                                     AppointmentRefundDetail appointmentRefundDetail,
                                                     Boolean isRefund,
-                                                    IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+                                                    IntegrationBackendRequestDTO backendRequestDTO) {
 
         ThirdPartyResponse thirdPartyResponse = null;
         switch (appointment.getAppointmentModeId().getCode()) {
 
             case APPOINTMENT_MODE_ESEWA_CODE:
 
-                //api integration
+                //esewa integration
                 thirdPartyResponse = integrationEsewaService.processEsewaRefundRequest(appointment,
                         transactionDetail,
                         appointmentRefundDetail,
                         isRefund, backendRequestDTO);
                 break;
             case APPOINTMENT_MODE_FONEPAY_CODE:
-                //api integration
-//                thirdPartyResponse = integrationEsewaService.processEsewaRefundRequest(appointment,
-//                        transactionDetail,
-//                        appointmentRefundDetail,
-//                        isRefund, backendRequestDTO);
                 break;
 
             default:
-                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+                throw new BadRequestException(INVALID_APPOINTMENT_MODE);
         }
 
 
@@ -522,6 +587,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 throw new BadRequestException(response, response);
         }
     }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_PATIENT_INFO_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(HospitalPatientInfo.class);
+    };
+
 
     private AppointmentDoctorInfo fetchAppointmentDoctorInfo(Long appointmentId) {
         return appointmentDoctorInfoRepository.fetchAppointmentDoctorInfo(appointmentId)

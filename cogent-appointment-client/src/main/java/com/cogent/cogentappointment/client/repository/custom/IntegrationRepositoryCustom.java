@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.clientIntegration.*;
+import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +20,10 @@ public interface IntegrationRepositoryCustom {
     Map<String,String> findApiRequestHeaders(Long apiIntegrationFormatId);
 
     Map<String,String> findApiQueryParameters(Long apiIntegrationFormatId);
+
+    Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId);
+
+    Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId);
 
     FeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 }

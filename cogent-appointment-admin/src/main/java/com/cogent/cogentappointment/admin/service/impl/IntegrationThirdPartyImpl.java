@@ -12,11 +12,9 @@ import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
-import com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,7 +22,6 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSignatureForEsewa;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
-import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getDynamicEsewaRequestBodyLog;
 import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaRequestBody;
 
 /**
@@ -47,7 +44,7 @@ public class IntegrationThirdPartyImpl {
                                                         AppointmentTransactionDetail transactionDetail,
                                                         AppointmentRefundDetail appointmentRefundDetail,
                                                         Boolean isRefund,
-                                                        IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+                                                        IntegrationBackendRequestDTO backendRequestDTO) {
 
         String generatedEsewaHmac = getSignatureForEsewa.apply("9841409090",
                 "testBir");

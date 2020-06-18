@@ -272,7 +272,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.fetchPendingAppointmentById(backendRequestDTO.getAppointmentId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
 
-        if (backendRequestDTO.getIntegrationChannelCode() != null || !backendRequestDTO.getIntegrationChannelCode().isEmpty()) {
+        if (backendRequestDTO.getIntegrationChannelCode() != null) {
             integrationCheckpointService.apiIntegrationCheckpoint(appointment, backendRequestDTO);
         }
 

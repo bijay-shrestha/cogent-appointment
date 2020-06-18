@@ -45,7 +45,7 @@ public class AppointmentHospitalDepartmentResource {
         return ok().body(appointmentHospitalDepartmentService.searchPendingHospitalDeptAppointments(searchDTO, pageable));
     }
 
-    @PutMapping(PENDING_APPROVAL + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @GetMapping(PENDING_APPROVAL + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT)
     public ResponseEntity<?> fetchPendingHospitalDeptAppointmentDetail(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(appointmentHospitalDepartmentService.fetchPendingHospitalDeptAppointmentDetail(appointmentId));

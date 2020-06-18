@@ -11,12 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_HOSPITAL_DEPARTMENT__FOLLOW_UP_TRACKER_STATUS;
 import static com.cogent.cogentappointment.client.utils.AppointmentHospitalDepartmentFollowUpTrackerUtils.parseFollowUpDetails;
 import static com.cogent.cogentappointment.client.utils.AppointmentHospitalDepartmentFollowUpTrackerUtils.updateNumberOfAppointmentFollowUps;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
  * @author smriti on 18/06/20
@@ -80,8 +85,28 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements
     @Override
     public void updateFollowUpTrackerStatus() {
 
-    }
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
+        log.info(UPDATING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT__FOLLOW_UP_TRACKER_STATUS);
+
+        List<AppointmentHospitalDepartmentFollowUpTracker> followUpTrackers =
+                appointmentHospitalDepartmentFollowUpTrackerRepository.fetchActiveFollowUpTracker();
+
+        followUpTrackers.forEach(followUpTracker -> {
+            int intervalDays = hospitalRepository.fetchHospitalFollowUpIntervalDays(
+                    followUpTracker.getHospital().getId());
+
+            Date expiryDate = utilDateToSqlDate(
+                    addDays(followUpTracker.getAppointmentApprovedDate(), intervalDays));
+
+            Date currentDate = utilDateToSqlDate(new Date());
+
+            if ((Objects.requireNonNull(expiryDate).compareTo(Objects.requireNonNull(currentDate))) < 0)
+                followUpTracker.setStatus(INACTIVE);
+        });
+
+        log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT__FOLLOW_UP_TRACKER_STATUS, getDifferenceBetweenTwoTime(startTime));
+    }
 
     private AppointmentHospitalDepartmentFollowUpTracker save(AppointmentHospitalDepartmentFollowUpTracker followUpTracker) {
         return appointmentHospitalDepartmentFollowUpTrackerRepository.save(followUpTracker);

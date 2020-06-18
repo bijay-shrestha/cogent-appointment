@@ -756,9 +756,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(REJECT_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
-        IntegrationBackendRequestDTO backendRequestDTO = IntegrationBackendRequestDTO.builder()
+        IntegrationRefundRequestDTO refundRequestDTO=IntegrationRefundRequestDTO.builder()
                 .appointmentId(refundRejectDTO.getAppointmentId())
+                .appointmentModeId(refundRejectDTO.getAppointmentModeId())
+                .integrationChannelCode(refundRejectDTO.getIntegrationChannelCode())
+                .featureCode(refundRejectDTO.getFeatureCode())
+                .status(refundRejectDTO.getStatus())
                 .build();
+
+
 
         Long appointmentId = refundRejectDTO.getAppointmentId();
 
@@ -773,12 +779,31 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
 
-        ThirdPartyResponse response = processRefundRequest(null,appointment,
-                appointmentTransactionDetail,
-                refundAppointmentDetail,
-                false);
 
-        updateAppointmentAndAppointmentRefundDetails(response.getStatus(), appointment, refundAppointmentDetail, refundRejectDTO);
+        if (refundRejectDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+
+            ThirdPartyResponse response = processRefundRequest(refundRequestDTO, appointment,
+                    appointmentTransactionDetail,
+                    refundAppointmentDetail,
+                    true);
+
+            if (!Objects.isNull(response.getCode())) {
+                throw new BadRequestException(response.getMessage(), response.getMessage());
+            }
+
+            updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                    appointment,
+                    refundAppointmentDetail,
+                    null);
+        }
+
+        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+            updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                    appointment,
+                    refundAppointmentDetail,
+                    null);
+        }
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }

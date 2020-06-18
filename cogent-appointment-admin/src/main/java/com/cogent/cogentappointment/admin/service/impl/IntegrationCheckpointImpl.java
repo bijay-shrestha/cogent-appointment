@@ -178,8 +178,8 @@ public class IntegrationCheckpointImpl {
                                                         Boolean isRefund,
                                                         IntegrationRefundRequestDTO refundRequestDTO) {
 
-        String generatedEsewaHmac = getSignatureForEsewa.apply("9841409090",
-                "testBir");
+        String generatedEsewaHmac = getSignatureForEsewa.apply(appointment.getPatientId().getESewaId(),
+                appointment.getHospitalId().getEsewaMerchantCode());
 
         IntegrationBackendRequestDTO integrationBackendRequestDTO=IntegrationBackendRequestDTO.builder()
                 .appointmentId(refundRequestDTO.getAppointmentId())

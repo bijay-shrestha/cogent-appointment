@@ -32,14 +32,23 @@ public class RestTemplateUtils {
                     String.class);
         } catch (HttpStatusCodeException exception) {
 
-            if(exception.getStatusCode().value()==403){
-               response=new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            if (exception.getStatusCode().value() == 400) {
+                response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+            }
+
+            if (exception.getStatusCode().value() == 404) {
+                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            }
+
+            if (exception.getStatusCode().value() == 403) {
+                response = new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
             }
 
 
             System.out.println("Response: " + exception.getStatusCode().value());
-
 
 
         }

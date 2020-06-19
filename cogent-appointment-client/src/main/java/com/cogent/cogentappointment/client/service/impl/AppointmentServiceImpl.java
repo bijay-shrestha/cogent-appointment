@@ -39,6 +39,7 @@ import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRe
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
@@ -64,6 +65,7 @@ import static com.cogent.cogentappointment.client.constants.CogentAppointmentCon
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.FRONT_END_CODE;
@@ -1107,8 +1109,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                      AppointmentRefundDetail appointmentRefundDetail,
                                                      Boolean isRefund) {
 
-
-        String generatedEsewaHmac = getSigatureForEsewa.apply(getEsewaId(appointment.getId()),
+        String esewaId = getEsewaId(appointment.getId());
+        String generatedEsewaHmac = getSigatureForEsewa.apply(esewaId,
                 appointment.getHospitalId().getEsewaMerchantCode());
 
         BackendIntegrationApiInfo integrationApiInfo = integrationCheckpointImpl.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
@@ -1118,12 +1120,37 @@ public class AppointmentServiceImpl implements AppointmentService {
                 transactionDetail,
                 appointmentRefundDetail,
                 isRefund);
+        esewaRefundRequestDTO.setEsewa_id(esewaId);
 
         integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
+        ThirdPartyResponse thirdPartyResponse = null;
+        try {
+            thirdPartyResponse = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
+                    esewaRefundRequestDTO);
 
-        return thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                esewaRefundRequestDTO);
+        } catch (Exception exception) {
+            validateThirdPartyException(thirdPartyResponse);
+        }
+
+        return thirdPartyResponse;
+    }
+
+    private void validateThirdPartyException(ThirdPartyResponse thirdPartyResponse) {
+        if (thirdPartyResponse.getCode().equals(400)) {
+            throw new OperationUnsuccessfulException(ESEWA_REFUND_API_BAD_REQUEST_MESSAGE);
+
+        }
+
+        if (thirdPartyResponse.getCode().equals(404)) {
+            throw new OperationUnsuccessfulException(ESEWA_REFUND_API_NOT_FOUND_MESSAGE);
+
+        }
+
+        if (thirdPartyResponse.getCode().equals(403)) {
+            throw new OperationUnsuccessfulException(ESEWA_REFUND_API_FORBIDDEN_MESSAGE);
+
+        }
     }
 
     private String getEsewaId(Long appointmentId) {

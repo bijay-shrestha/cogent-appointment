@@ -105,6 +105,9 @@ public class ErrorMessageConstants {
     }
 
     //E
+    public static final String ESEWA_REFUND_API_BAD_REQUEST_MESSAGE = "Third Party API Bad Request...";
+    public static final String ESEWA_REFUND_API_NOT_FOUND_MESSAGE = "Third Party API Not Found Exception...";
+    public static final String ESEWA_REFUND_API_FORBIDDEN_MESSAGE = "Third Party API Forbidden";
 
     //F
     public interface ForgotPasswordMessages {

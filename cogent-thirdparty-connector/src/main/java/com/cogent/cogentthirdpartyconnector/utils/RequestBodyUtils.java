@@ -45,7 +45,6 @@ public class RequestBodyUtils {
                                                             Boolean isRefund) {
 
         EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
-                .esewa_id(appointment.getPatientId().getESewaId())
                 .is_refund(isRefund)
                 .refund_amount(appointmentRefundDetail.getRefundAmount())
                 .product_code(appointment.getHospitalId().getEsewaMerchantCode())

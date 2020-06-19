@@ -1,5 +1,6 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.OperationUnsuccessfulException;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
@@ -34,7 +35,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> callThirdPartyDoctorCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
+    public ResponseEntity<?> callThirdPartyDoctorAppointmentCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
 
         HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
@@ -54,7 +55,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> callThirdPartyHospitalDepartmentCheckInService(
+    public ResponseEntity<?> callThirdPartyHospitalDepartmentAppointmentCheckInService(
             BackendIntegrationApiInfo backendIntegrationApiInfo,
             ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO checkInDTO) {
 

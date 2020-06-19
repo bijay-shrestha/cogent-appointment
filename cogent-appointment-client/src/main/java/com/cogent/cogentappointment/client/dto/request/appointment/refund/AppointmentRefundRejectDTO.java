@@ -18,6 +18,16 @@ public class AppointmentRefundRejectDTO implements Serializable {
     private Long appointmentId;
 
     @NotNull
+    private Long appointmentModeId;
+
+    //FULL_REFUND, PARTIAL_REFUND, AMIBGIUOS
+    private String status;
+
+    private String featureCode;
+
+    private String integrationChannelCode;
+
+    @NotNull
     @NotEmpty
     private String remarks;
 }

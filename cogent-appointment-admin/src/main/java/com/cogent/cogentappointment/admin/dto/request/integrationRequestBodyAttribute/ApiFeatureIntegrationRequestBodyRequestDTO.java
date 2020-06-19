@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.integration;
+package com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiQueryParametersResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiRequestHeaderResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.IntegrationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
@@ -23,8 +25,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
-import static com.cogent.cogentappointment.client.query.IntegrationAdminModeQuery.ADMIN_MODE_API_FEAUTRES_HEADERS_QUERY;
-import static com.cogent.cogentappointment.client.query.IntegrationAdminModeQuery.ADMIN_MODE_API_PARAMETERS_QUERY;
+import static com.cogent.cogentappointment.client.query.IntegrationAdminModeQuery.*;
 import static com.cogent.cogentappointment.client.query.IntegrationQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -134,6 +135,22 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(IntegrationRefundRequestDTO refundRequestDTO,
+                                                                                                           Long appointmentModeId) {
+        Query query = createQuery.apply(entityManager, APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY)
+                .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
+                .setParameter(INTEGRATION_CHANNEL_CODE, refundRequestDTO.getIntegrationChannelCode())
+                .setParameter(FEATURE_CODE, refundRequestDTO.getFeatureCode());
+
+        AdminFeatureIntegrationResponse responseDTOList =
+                transformQueryToSingleResult(query, AdminFeatureIntegrationResponse.class);
+
+//        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
+
+        return responseDTOList;
     }
 
     private Supplier<NoContentFoundException> CLIENT_API_INTEGRATION_NOT_FOUND = () -> {

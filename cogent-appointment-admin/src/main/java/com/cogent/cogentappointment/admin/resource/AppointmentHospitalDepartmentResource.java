@@ -2,9 +2,10 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.admin.service.HospitalDepartmentLogsService;
+import com.cogent.cogentappointment.admin.service.AppointmentHospitalDepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -12,24 +13,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.APPROVE_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * @author Sauravi Thapa ON 6/12/20
  */
-@RequestMapping(API_V1 + BASE_HOSPITAL_DEPARTMENT)
+@RequestMapping(API_V1 + BASE_APPOINTMENT+ BASE_HOSPITAL_DEPARTMENT)
 @RestController
 @Api(BASE_API_VALUE)
-public class HospitalDepartmentLogsResource {
+public class AppointmentHospitalDepartmentResource {
 
-    private final HospitalDepartmentLogsService hospitalDepartmentLogsService;
+    private final AppointmentHospitalDepartmentService appointmentHospitalDepartmentService;
 
-    public HospitalDepartmentLogsResource(HospitalDepartmentLogsService hospitalDepartmentLogsService) {
-        this.hospitalDepartmentLogsService = hospitalDepartmentLogsService;
+    public AppointmentHospitalDepartmentResource(AppointmentHospitalDepartmentService appointmentHospitalDepartmentService) {
+        this.appointmentHospitalDepartmentService = appointmentHospitalDepartmentService;
     }
 
     @PutMapping(BASE_APPOINTMENT + LOG)
@@ -40,7 +45,7 @@ public class HospitalDepartmentLogsResource {
             @RequestParam("size") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(hospitalDepartmentLogsService.searchAppointmentLogs(searchRequestDTO, pageable));
+        return ok().body(appointmentHospitalDepartmentService.searchAppointmentLogs(searchRequestDTO, pageable));
     }
 
     @PutMapping(TRANSACTION + LOG)
@@ -51,7 +56,7 @@ public class HospitalDepartmentLogsResource {
             @RequestParam("size") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(hospitalDepartmentLogsService.searchTransactionLogs(searchRequestDTO, pageable));
+        return ok().body(appointmentHospitalDepartmentService.searchTransactionLogs(searchRequestDTO, pageable));
     }
 
     //    todo: test left
@@ -63,16 +68,29 @@ public class HospitalDepartmentLogsResource {
             @RequestParam("size") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(hospitalDepartmentLogsService.searchRescheduleLogs(searchRequestDTO, pageable));
+        return ok().body(appointmentHospitalDepartmentService.searchRescheduleLogs(searchRequestDTO, pageable));
     }
 
     @PutMapping(PENDING_APPROVAL)
     @ApiOperation(FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT)
-    public ResponseEntity<?> fetchHospitalDepartmentRescheduleLog(
-            @RequestBody AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
+    public ResponseEntity<?> searchPendingHospitalDeptAppointments(
+            @RequestBody AppointmentHospitalDepartmentCheckInSearchDTO searchDTO,
             @RequestParam("page") int page,
             @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(hospitalDepartmentLogsService.searchPendingHospitalDeptAppointments(searchDTO, pageable));
+        return ok().body(appointmentHospitalDepartmentService.searchPendingHospitalDeptAppointments(searchDTO, pageable));
+    }
+
+    @GetMapping(PENDING_APPROVAL + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT)
+    public ResponseEntity<?> fetchPendingHospitalDeptAppointmentDetail(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(appointmentHospitalDepartmentService.fetchPendingHospitalDeptAppointmentDetail(appointmentId));
+    }
+
+    @PutMapping(APPROVE)
+    @ApiOperation(APPROVE_APPOINTMENT)
+    public ResponseEntity<?> approveAppointment(@Valid @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
+        appointmentHospitalDepartmentService.approveAppointment(integrationBackendRequestDTO);
+        return ok().build();
     }
 }

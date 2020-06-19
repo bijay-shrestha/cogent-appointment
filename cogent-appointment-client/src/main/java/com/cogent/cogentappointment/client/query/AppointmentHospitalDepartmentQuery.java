@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import org.springframework.util.ObjectUtils;
 
@@ -108,7 +108,7 @@ public class AppointmentHospitalDepartmentQuery {
         return SQL;
     }
 
-    public static Function<AppointmentHospitalDepartmentPendingApprovalSearchDTO, String>
+    public static Function<AppointmentHospitalDepartmentCheckInSearchDTO, String>
             QUERY_TO_FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENTS =
             (searchRequestDTO) ->
                     "SELECT" +
@@ -161,7 +161,7 @@ public class AppointmentHospitalDepartmentQuery {
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
-            AppointmentHospitalDepartmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
+            AppointmentHospitalDepartmentCheckInSearchDTO pendingApprovalSearchDTO) {
 
         String whereClause = " WHERE " +
                 " a.status='PA' AND h.id =:hospitalId";

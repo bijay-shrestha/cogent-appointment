@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
@@ -9,6 +10,7 @@ import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
+import com.cogent.cogentappointment.admin.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.admin.service.RefundStatusService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
@@ -45,22 +47,24 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     private final AppointmentRefundDetailRepository refundDetailRepository;
 
     private final AppointmentRepository appointmentRepository;
+
     private final AppointmentService appointmentService;
+
     private final ThirdPartyConnectorService thirdPartyConnectorService;
-    private final IntegrationCheckpointImpl integrationCheckpointService;
+
+    private final IntegrationCheckPointService integrationCheckpointService;
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentRepository appointmentRepository,
                                    AppointmentService appointmentService,
                                    ThirdPartyConnectorService thirdPartyConnectorService,
-                                   IntegrationCheckpointImpl integrationCheckpointService) {
+                                   IntegrationCheckPointService integrationCheckpointService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.appointmentService = appointmentService;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.integrationCheckpointService = integrationCheckpointService;
     }
-
 
     @Override
     public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO,
@@ -79,7 +83,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     @Override
     public void checkRefundStatus(RefundStatusRequestDTO requestDTO,
-                                  IntegrationBackendRequestDTO integrationBackendRequestDTO)
+                                  IntegrationRefundRequestDTO integrationRefundRequestDTO)
             throws IOException {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -95,7 +99,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         ThirdPartyResponse response = processRefundRequest(requestDTO,
                 appointment,
-                integrationBackendRequestDTO);
+                integrationRefundRequestDTO);
 
         if (!Objects.isNull(response.getCode())) {
             throw new BadRequestException(response.getMessage(), response.getMessage());
@@ -133,8 +137,8 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private void approveRefundAppointment(RefundStatusRequestDTO requestDTO) throws IOException {
 
-        requestDTO.getIntegrationBackendRequestDTO().setFeatureCode("REF_APPROVAL");
-        appointmentService.approveRefundAppointment(requestDTO.getIntegrationBackendRequestDTO());
+        requestDTO.getIntegrationRefundRequestDTO().setFeatureCode("REF_APPROVAL");
+        appointmentService.approveRefundAppointment(requestDTO.getIntegrationRefundRequestDTO());
     }
 
     @Override
@@ -155,8 +159,13 @@ public class RefundStatusServiceImpl implements RefundStatusService {
      * and 'RE' in Appointment table*/
     private ThirdPartyResponse checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO,
                                                       Appointment appointment,
-                                                      IntegrationBackendRequestDTO backendRequestDTO) throws IOException {
+                                                      IntegrationRefundRequestDTO refundRequestDTO) throws IOException {
 
+        IntegrationBackendRequestDTO backendRequestDTO=IntegrationBackendRequestDTO.builder()
+                .integrationChannelCode(refundRequestDTO.getIntegrationChannelCode())
+                .featureCode(refundRequestDTO.getFeatureCode())
+                .appointmentId(refundRequestDTO.getAppointmentId())
+                .build();
 
         EsewaPayementStatus esewaPayementStatus = parseToEsewaPaymentStatus(requestDTO);
 
@@ -182,7 +191,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private ThirdPartyResponse processRefundRequest(RefundStatusRequestDTO requestDTO,
                                                     Appointment appointment,
-                                                    IntegrationBackendRequestDTO integrationBackendRequestDTO) throws IOException {
+                                                    IntegrationRefundRequestDTO integrationRefundRequestDTO) throws IOException {
 
         ThirdPartyResponse thirdPartyResponse = null;
 
@@ -191,7 +200,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
             case APPOINTMENT_MODE_ESEWA_CODE:
                 thirdPartyResponse = checkEsewaRefundStatus(requestDTO,
                         appointment,
-                        integrationBackendRequestDTO);
+                        integrationRefundRequestDTO);
                 break;
 
             default:

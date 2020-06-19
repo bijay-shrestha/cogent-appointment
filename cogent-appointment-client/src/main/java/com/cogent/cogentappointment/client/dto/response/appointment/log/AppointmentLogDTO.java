@@ -66,4 +66,8 @@ public class AppointmentLogDTO implements Serializable {
 
     private Double revenueAmount;
 
+    private String hospitalDepartmentName;
+
+    private String roomNumber;
+
 }

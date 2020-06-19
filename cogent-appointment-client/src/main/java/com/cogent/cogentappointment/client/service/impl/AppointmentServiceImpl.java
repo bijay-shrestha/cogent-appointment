@@ -1104,9 +1104,20 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                      AppointmentRefundDetail appointmentRefundDetail,
                                                      Boolean isRefund) {
 
+        String generatedEsewaHmac=null;
+        if(appointment.getIsSelf().equals('Y')){
+             generatedEsewaHmac = getSigatureForEsewa.apply(appointment.getPatientId().getESewaId(),
+                    appointment.getHospitalId().getEsewaMerchantCode());
 
-        String generatedEsewaHmac = getSigatureForEsewa.apply(appointment.getPatientId().getESewaId(),
-                appointment.getHospitalId().getEsewaMerchantCode());
+        }else{
+            patientRelationInfoRepository.fetchPatientRelationInfo(appointment.getPatientId().getId(),
+                    appointment.getPatientId().getId());
+
+
+            generatedEsewaHmac = getSigatureForEsewa.apply(appointment.getPatientId().getESewaId(),
+                    appointment.getHospitalId().getEsewaMerchantCode());
+        }
+
 
         BackendIntegrationApiInfo integrationApiInfo = integrationCheckpointImpl.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
                 appointment.getAppointmentModeId().getId(), generatedEsewaHmac);

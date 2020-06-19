@@ -3,7 +3,7 @@ package com.cogent.cogentthirdpartyconnector.exception;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
-import static com.cogent.cogentappointment.client.exception.utils.ExceptionUtils.*;
+import static com.cogent.cogentthirdpartyconnector.exception.utils.ExceptionUtils.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**

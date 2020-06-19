@@ -1,5 +1,6 @@
 package com.cogent.cogentthirdpartyconnector.exception;
 
+import com.cogent.cogentthirdpartyconnector.exception.utils.ExceptionUtils;
 import lombok.Getter;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;

@@ -2,8 +2,8 @@ package com.cogent.cogentthirdpartyconnector.exception;
 
 import lombok.Getter;
 
-import static com.cogent.cogentappointment.client.exception.utils.ExceptionUtils.generateMessage;
-import static com.cogent.cogentappointment.client.exception.utils.ExceptionUtils.getLocalDateTime;
+import static com.cogent.cogentthirdpartyconnector.exception.utils.ExceptionUtils.generateMessage;
+import static com.cogent.cogentthirdpartyconnector.exception.utils.ExceptionUtils.getLocalDateTime;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**

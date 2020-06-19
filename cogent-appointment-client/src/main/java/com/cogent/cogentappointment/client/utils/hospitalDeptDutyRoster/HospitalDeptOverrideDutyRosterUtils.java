@@ -96,6 +96,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
             final int HOSPITAL_DEPARTMENT_NAME_INDEX = 7;
             final int ROOM_ID_INDEX = 8;
             final int ROOM_NUMBER_INDEX = 9;
+            final int DUTY_ROSTER_ID_INDEX = 10;
 
             LocalDate startLocalDate = convertDateToLocalDate((Date) result[FROM_DATE_INDEX]);
             LocalDate endLocalDate = convertDateToLocalDate((Date) result[TO_DATE_INDEX]);
@@ -108,6 +109,9 @@ public class HospitalDeptOverrideDutyRosterUtils {
 
                             HospitalDeptDutyRosterStatusResponseDTO responseDTO =
                                     HospitalDeptDutyRosterStatusResponseDTO.builder()
+                                            .uniqueIdentifier(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString())
+                                                    +"-"+
+                                                    localDate)
                                             .date(localDate)
                                             .startTime(result[START_TIME_INDEX].toString())
                                             .endTime(result[END_TIME_INDEX].toString())
@@ -118,6 +122,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
                                             .hospitalDepartmentRoomInfoId(Objects.isNull(result[ROOM_ID_INDEX]) ?
                                                     null : Long.parseLong(result[ROOM_ID_INDEX].toString()))
                                             .roomNumber(result[ROOM_NUMBER_INDEX].toString())
+                                            .hospitalDepartmentDutyRosterId(Long.parseLong(result[DUTY_ROSTER_ID_INDEX].toString()))
                                             .build();
 
                             hospitalDeptDutyRosterStatusResponseDTOS.add(responseDTO);

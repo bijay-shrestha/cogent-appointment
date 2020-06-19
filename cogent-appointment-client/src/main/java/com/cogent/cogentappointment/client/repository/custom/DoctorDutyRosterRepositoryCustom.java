@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDu
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorWithSpecialization;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
@@ -66,4 +67,6 @@ public interface DoctorDutyRosterRepositoryCustom {
     List<DutyRosterAppointmentDateAndSpecilizationDTO> getAvaliableDatesAndSpecilizationByDoctorId(Long doctorId);
 
     List<DutyRosterAppointmentDateAndDoctorDTO> getAvaliableDatesAndDoctorBySpecilizationId(Long specilizationId);
+
+    RosterDetailsForStatus fetchRosterDetailsToSearchByApptNumber(Long doctorId, Long specializationId, Date date);
 }

@@ -13,10 +13,9 @@ import java.util.Date;
 @Setter
 @Getter
 public class HospitalDeptAppointmentStatusRequestDTO implements Serializable {
-    @NotNull
+
     private Date fromDate;
 
-    @NotNull
     private Date toDate;
 
     @NotNull
@@ -33,4 +32,8 @@ public class HospitalDeptAppointmentStatusRequestDTO implements Serializable {
      * ALL = EMPTY
      * */
     private String status;
+
+    private String appointmentNumber;
+
+    private Character hasAppointmentNumber;
 }

@@ -21,7 +21,7 @@ public class HospitalDeptAppointmentStatusResponseDTO implements Serializable {
 
     private Long departmentId;
 
-    private Long roomId;
+    private Long hospitalDepartmentRoomInfoId;
 
     private String appointmentTimeDetails;
 

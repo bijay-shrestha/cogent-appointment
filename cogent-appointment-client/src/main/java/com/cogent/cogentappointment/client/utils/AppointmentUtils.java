@@ -601,7 +601,7 @@ public class AppointmentUtils {
                     .date(appointmentLocalDate)
                     .appointmentTimeDetails(result[TIME_WITH_STATUS_DETAILS_INDEX].toString())
                     .departmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
-                    .roomId((Objects.isNull(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX])) ?
+                    .hospitalDepartmentRoomInfoId((Objects.isNull(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX])) ?
                             null : Long.parseLong(result[HOSPITAL_DEPARTMENT_ROOM_INFO_ID_INDEX].toString()))
                     .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                     .patientName(result[PATIENT_NAME_INDEX].toString())

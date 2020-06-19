@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -17,14 +19,18 @@ public interface IntegrationRepositoryCustom {
 
     List<FeatureIntegrationResponse> fetchClientIntegrationResponseDTO(Long hospitalId);
 
-    Map<String,String> findApiRequestHeaders(Long apiIntegrationFormatId);
+    Map<String, String> findApiRequestHeaders(Long apiIntegrationFormatId);
 
-    Map<String,String> findApiQueryParameters(Long apiIntegrationFormatId);
+    Map<String, String> findApiQueryParameters(Long apiIntegrationFormatId);
 
     Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId);
 
     Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId);
 
     FeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(
-            IntegrationBackendRequestDTO integrationBackendRequestDTO);
+            IntegrationBackendRequestDTO requestDTO);
+
+    AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(IntegrationRefundRequestDTO refundRequestDTO,
+                                                                                                    Long appointmentModeId);
+
 }

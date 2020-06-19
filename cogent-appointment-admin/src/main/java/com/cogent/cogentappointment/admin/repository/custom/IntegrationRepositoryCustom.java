@@ -48,11 +48,12 @@ public interface IntegrationRepositoryCustom {
 
     List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTO();
 
-    ClientFeatureIntegrationResponse
-    fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO);
+    ClientFeatureIntegrationResponse fetchClientIntegrationResponseDTOForBackendIntegration(
+            IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId);
 
-    AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO integrationBackendRequestDTO,
-                                                                                                    Long appointmentModeId);
+    AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(
+            IntegrationBackendRequestDTO integrationBackendRequestDTO,
+            Long appointmentModeId);
 }

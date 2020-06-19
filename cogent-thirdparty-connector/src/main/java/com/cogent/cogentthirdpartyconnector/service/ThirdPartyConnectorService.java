@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 
 public interface ThirdPartyConnectorService {
 
-    ResponseEntity<?> callThirdPartyDoctorCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo);
+    ResponseEntity<?> callThirdPartyDoctorAppointmentCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo);
 
-    ResponseEntity<?> callThirdPartyHospitalDepartmentCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo,
-                                                                     ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO checkInDTO);
+    ResponseEntity<?> callThirdPartyHospitalDepartmentAppointmentCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo,
+                                                                                ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO checkInDTO);
 
     ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
                                               EsewaRefundRequestDTO esewaRefundRequestDTO);

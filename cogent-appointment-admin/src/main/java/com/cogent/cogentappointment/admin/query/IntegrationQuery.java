@@ -199,7 +199,7 @@ public class IntegrationQuery {
                     " AND f.status='Y'" +
                     " AND cfi.status='Y'";
 
-    public static String CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY =
+    public static String CLIENT_FEATURES_INTEGRATION_BACKEND_API_QUERY =
             CLIENT_FEAUTRES_INTEGRATION_API_QUERY +
                     " AND f.code=:featureCode" +
                     " AND ic.code=:integrationChannelCode" +
@@ -233,7 +233,7 @@ public class IntegrationQuery {
         String whereClause = " WHERE" +
                 " aif.status='Y'" +
                 " AND afi.status='Y'" +
-                " AND cfi.status='Y'";
+                " AND cfi.status!='D'";
 
         if (!Objects.isNull(requestSearchDTO.getHospitalId()))
             whereClause += " AND cfi.hospitalId=" + requestSearchDTO.getHospitalId();

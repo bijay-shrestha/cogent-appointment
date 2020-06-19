@@ -128,7 +128,7 @@ public class IntegrationAdminModeQuery {
     public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY =
             " SELECT" +
                     " aif.id as apiIntegrationFormatId," +
-                    " amfi.id as appointmentModeId," +
+                    " amfi.appointmentModeId.id as appointmentModeId," +
                     " ic.code as integrationChannelCode," +
                     " f.id as featureId," +
                     " f.code as featureCode," +

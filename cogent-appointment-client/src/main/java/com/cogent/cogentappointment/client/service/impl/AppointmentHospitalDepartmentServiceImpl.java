@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
@@ -71,7 +71,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     @Override
     public List<AppointmentHospitalDepartmentCheckInResponseDTO> searchPendingHospitalDeptAppointments(
-            AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
+            AppointmentHospitalDepartmentCheckInSearchDTO searchDTO,
             Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -111,14 +111,14 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
 
-        // isPatientStatus-->      true--> no hospital number | new registration patient
-        // isPatientStatus-->      false--> hospital number   | registered patient
+        // isPatientNew-->      true--> no hospital number | new registration patient
+        // isPatientNew-->      false--> hospital number   | registered patient
 
         Appointment appointment = fetchPendingAppointment(
                 integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId());
 
         if (!Objects.isNull(integrationRequestDTO.getIntegrationChannelCode()))
-            integrationCheckPointService.apiIntegrationCheckpointDepartmentWise(appointment, integrationRequestDTO);
+            integrationCheckPointService.apiIntegrationCheckpointForDepartmentAppointment(appointment, integrationRequestDTO);
 
         appointment.setStatus(APPROVED);
 

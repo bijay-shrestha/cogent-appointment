@@ -138,7 +138,7 @@ public class IntegrationAdminModeQuery {
     public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY =
             " SELECT" +
                     " aif.id as apiIntegrationFormatId," +
-                    " amfi.id as appointmentModeId," +
+                    " amfi.appointmentModeId.id as appointmentModeId," +
                     " ic.code as integrationChannelCode," +
                     " f.id as featureId," +
                     " f.code as featureCode," +
@@ -193,8 +193,8 @@ public class IntegrationAdminModeQuery {
                 " aif.status='Y'" +
                 " AND hrm.status='Y'" +
                 " AND amafi.status='Y'" +
-                " AND f.status='Y'" +
-                " AND amfi.status='Y'";
+                " AND f.status='Y'"+
+                " AND amfi.status!='D'";
 
         if (!Objects.isNull(requestSearchDTO.getAppointmentModeId()))
             whereClause += " AND amfi.appointmentModeId.id=" + requestSearchDTO.getAppointmentModeId();

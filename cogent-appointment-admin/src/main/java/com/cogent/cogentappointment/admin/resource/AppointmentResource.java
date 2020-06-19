@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import io.swagger.annotations.Api;
@@ -70,17 +71,18 @@ public class AppointmentResource {
 
     @PutMapping(REFUND + APPROVE)
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(
-                                                      @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO){
-        appointmentService.approveRefundAppointment(integrationBackendRequestDTO);
+    public ResponseEntity<?> approveRefundAppointment(@RequestBody IntegrationRefundRequestDTO integrationRefundRequestDTO){
+        appointmentService.approveRefundAppointment(integrationRefundRequestDTO);
         return ok().build();
     }
 
     @PutMapping(REFUND + REJECT)
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
-    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO,
-                                                     IntegrationBackendRequestDTO integrationBackendRequestDTO){
-        appointmentService.rejectRefundAppointment(refundRejectDTO,integrationBackendRequestDTO);
+    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO){
+
+
+
+        appointmentService.rejectRefundAppointment(refundRejectDTO);
         return ok().build();
     }
 

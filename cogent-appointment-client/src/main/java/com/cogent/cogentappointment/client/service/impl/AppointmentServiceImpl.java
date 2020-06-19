@@ -46,12 +46,14 @@ import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
+import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -182,8 +184,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   Validator validator,
                                   NepaliDateUtility nepaliDateUtility,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository,
-                                  AppointmentEsewaRequestRepository appointmentEsewaRequestRepository, IntegrationCheckPointServiceImpl integrationCheckPointService,
-                                  IntegrationCheckpointImpl integrationCheckpointImpl, ThirdPartyConnectorService thirdPartyConnectorService) {
+                                  AppointmentEsewaRequestRepository appointmentEsewaRequestRepository,
+                                  IntegrationCheckPointServiceImpl integrationCheckPointService,
+                                  IntegrationCheckpointImpl integrationCheckpointImpl,
+                                  ThirdPartyConnectorService thirdPartyConnectorService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -1116,24 +1120,34 @@ public class AppointmentServiceImpl implements AppointmentService {
         BackendIntegrationApiInfo integrationApiInfo = integrationCheckpointImpl.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
                 appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 
-        EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
-                transactionDetail,
-                appointmentRefundDetail,
-                isRefund);
-        esewaRefundRequestDTO.setEsewa_id(esewaId);
+        if (!Objects.isNull(integrationApiInfo)) {
 
-        integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
+            EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
+                    transactionDetail,
+                    appointmentRefundDetail,
+                    isRefund);
+            esewaRefundRequestDTO.setEsewa_id(esewaId);
 
-        ThirdPartyResponse thirdPartyResponse = null;
-        try {
-            thirdPartyResponse = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                    esewaRefundRequestDTO);
+            integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
-        } catch (Exception exception) {
-            validateThirdPartyException(thirdPartyResponse);
+            ThirdPartyResponse thirdPartyResponse = null;
+            try {
+                thirdPartyResponse = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
+                        esewaRefundRequestDTO);
+
+            } catch (Exception exception) {
+                validateThirdPartyException(thirdPartyResponse);
+            }
+
+            return thirdPartyResponse;
+
+        } else {
+            return new ThirdPartyResponse("400", "Third party hospital information Not found",
+                    "Third party hospital information Not found");
         }
 
-        return thirdPartyResponse;
+
+
     }
 
     private void validateThirdPartyException(ThirdPartyResponse thirdPartyResponse) {

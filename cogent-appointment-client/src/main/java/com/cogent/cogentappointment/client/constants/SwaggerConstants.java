@@ -241,6 +241,11 @@ public class SwaggerConstants {
     //G
 
     //H
+    public interface HmaConstant {
+        String BASE_API_VALUE = "This resource is used to generate hmac hash for frontend use";
+    }
+
+
     public interface HospitalConstant {
         String BASE_API_VALUE = "This is Hospital Resource";
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";

@@ -158,6 +158,8 @@ public class WebResourceKeyConstants {
     //G
 
     //H
+    public static final String HMAC="/hmac";
+
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_WISE = "/hospital-wise";

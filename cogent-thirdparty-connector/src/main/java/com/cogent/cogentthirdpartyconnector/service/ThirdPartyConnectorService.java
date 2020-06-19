@@ -21,4 +21,7 @@ public interface ThirdPartyConnectorService {
 
     ThirdPartyResponse callEsewaRefundStatusService(BackendIntegrationApiInfo integrationApiInfo,
                                                     EsewaPayementStatus esewaPayementStatus);
+
+    String hmacForFrontendIntegration(Long appointmentId);
+
 }

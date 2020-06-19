@@ -233,7 +233,7 @@ public class IntegrationQuery {
         String whereClause = " WHERE" +
                 " aif.status='Y'" +
                 " AND afi.status='Y'" +
-                " AND cfi.status='Y'";
+                " AND cfi.status!='D'";
 
         if (!Objects.isNull(requestSearchDTO.getHospitalId()))
             whereClause += " AND cfi.hospitalId=" + requestSearchDTO.getHospitalId();

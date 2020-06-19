@@ -49,7 +49,7 @@ public class AddressQuery {
                     " AND a.geographyType=1" +
                     " AND a.isNew=1";
 
-    public static String QUERY_TO_GET_LIST_STREET_BY_DISTRICT_ID=
+    public static String QUERY_TO_GET_LIST_STREET_BY_DISTRICT_ID =
             "SELECT" +
                     " a.id as value," +                     //[0]
                     " a.value as label" +                   //[1]
@@ -60,7 +60,7 @@ public class AddressQuery {
                     " AND a.geographyType=2" +
                     " AND a.isNew=0";
 
-    public static String QUERY_TO_GET_LIST_MUNICIPALITY_BY_DISTRICT_ID=
+    public static String QUERY_TO_GET_LIST_MUNICIPALITY_BY_DISTRICT_ID =
             "SELECT" +
                     " a.id as value," +                     //[0]
                     " a.value as label" +                   //[1]

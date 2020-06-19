@@ -13,9 +13,13 @@ public class QueryConstants {
         String TRANSACTION_NUMBER = "transactionNumber";
     }
 
+    public static final String APPOINTMENT_NUMBER = "appointmentNumber";
+
     public static final String APPOINTMENT_TRANSFER_ID = "appointmentTransferId";
 
     public static final String APPOINTMENT_MODE_ID = "appointmentTransferId";
+
+    public static final String APPOINTMENT_SERVICE_TYPE_ID = "appointmentServiceTypeId";
 
     public static final String API_KEY = "apiKey";
 
@@ -50,7 +54,7 @@ public class QueryConstants {
     //F
 
     public static final String FEATURE_CODE = "featureCode";
-    
+
     public interface AppointmentFollowUpTrackerConstants {
         String PARENT_APPOINTMENT_ID = "parentAppointmentId";
     }

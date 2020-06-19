@@ -105,4 +105,15 @@ public class DoctorDutyRosterOverrideQuery {
                 " WHERE d.id IN (" + overrideIds + ")";
     }
 
+    public static String QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID=
+            "SELECT " +
+                    " DATE_FORMAT(hddro.start_time,'%H:%i') as startTime , " +
+                    " DATE_FORMAT(hddro.end_time ,'%H:%i') as endTime " +
+                    " FROM " +
+                    " doctor_duty_roster_override hddro " +
+                    " WHERE " +
+                    " doctor_duty_roster_id = :doctorDutyRosterId " +
+                    " AND (hddro.from_date <= :date " +
+                    " AND hddro.to_date >=:date)";
+
 }

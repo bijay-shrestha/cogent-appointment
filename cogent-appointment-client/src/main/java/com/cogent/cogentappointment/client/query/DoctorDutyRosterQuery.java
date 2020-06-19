@@ -176,4 +176,24 @@ public class DoctorDutyRosterQuery {
                 " ddr.lastModifiedDate as lastModifiedDate";
     }
 
+    public static String QUERY_TO_FETCH_ROSTER_DETAILS =
+
+            "SELECT" +
+                    " d.id as rosterId," +
+                    " d.rosterGapDuration as rosterGapDuration," +
+                    " DATE_FORMAT(dw.startTime,'%H:%i') as startTime," +
+                    " DATE_FORMAT(dw.endTime ,'%H:%i') as endTime," +
+                    " dw.dayOffStatus as dayOffStatus," +
+                    " d.hasOverrideDutyRoster as hasRosterOverRide" +
+                    " FROM DoctorDutyRoster d" +
+                    " LEFT JOIN DoctorWeekDaysDutyRoster dw ON d.id = dw.doctorDutyRosterId.id" +
+                    " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +
+                    " WHERE d.status = 'Y'" +
+                    " AND d.toDate >=:date" +
+                    " AND d.fromDate <=:date " +
+                    " AND d.doctorId.id = :doctorId" +
+                    " AND d.specializationId.id = :specializationId" +
+                    " AND w.name =DATE_FORMAT(:date,'%W') "+
+                    " GROUP BY d.id";
+
 }

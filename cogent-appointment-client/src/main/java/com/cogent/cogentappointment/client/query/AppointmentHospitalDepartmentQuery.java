@@ -33,23 +33,29 @@ public class AppointmentHospitalDepartmentQuery {
                 "  a.id as appointmentId, " +                                                                      //[9]
                 "  a.is_follow_up as isFollowUp, " +                                                              //[10]
                 "  a.has_transferred as hasTransferred " +                                                        //[1]
-                "FROM appointment_hospital_department_info ahdi " +
-                "LEFT JOIN appointment a ON a.id = ahdi.appointment_id " +
-                "LEFT JOIN hospital_department hd ON hd.id=ahdi.hospital_department_id  " +
-                "LEFT JOIN hospital_department_room_info hdri ON hdri.id=ahdi.hospital_department_room_info_id  " +
-                "LEFT JOIN room r ON r.id=hdri.room_id  " +
-                "LEFT JOIN patient p ON p.id=a.patient_id  " +
-                "LEFT JOIN hospital h ON h.id=a.hospital_id  " +
+                " FROM appointment_hospital_department_info ahdi " +
+                " LEFT JOIN appointment a ON a.id = ahdi.appointment_id " +
+                " LEFT JOIN hospital_department hd ON hd.id=ahdi.hospital_department_id  " +
+                " LEFT JOIN hospital_department_room_info hdri ON hdri.id=ahdi.hospital_department_room_info_id  " +
+                " LEFT JOIN room r ON r.id=hdri.room_id  " +
+                " LEFT JOIN patient p ON p.id=a.patient_id  " +
+                " LEFT JOIN hospital h ON h.id=a.hospital_id  " +
+                " LEFT JOIN hospital_appointment_service_type hast ON hast.id=a.hospital_appointment_service_type_id" +
+                " LEFT JOIN appointment_service_type ast ON ast.id=hast.appointment_service_type_id  " +
                 " WHERE " +
                 " a.appointment_date BETWEEN :fromDate AND :toDate " +
                 " AND a.status IN ('PA', 'A', 'C') " +
-                " AND h.id =:hospitalId";
+                " AND h.id =:hospitalId"+
+                " AND ast.code=:appointmentServiceTypeCode";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             SQL += " AND ahdi.hospital_department_id =:hospitalDepartmentId";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
             SQL += " AND  ahdi.hospital_department_room_info_id = :hospitalDepartmentRoomInfoId ";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
+            SQL += " AND a.appointment_number LIKE '%" + requestDTO.getAppointmentNumber() + "%'";
 
         if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
             SQL += " AND a.status='" + requestDTO.getStatus() + "'";

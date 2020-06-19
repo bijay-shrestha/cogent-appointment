@@ -20,7 +20,9 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLo
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentDetailsForStatus;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentDetailsForStatus;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
@@ -106,6 +108,13 @@ public interface AppointmentRepositoryCustom {
 
     List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatus(
             HospitalDeptAppointmentStatusRequestDTO requestDTO);
+
+    HospitalDeptAppointmentDetailsForStatus fetchHospitalDeptAppointmentByApptNumber(String apptNumber,
+                                                                         String appointmentServiceTypeCode);
+
+    AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber,
+                                                             String appointmentServiceTypeCode);
+
 
     List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatusRoomwise(
             HospitalDeptAppointmentStatusRequestDTO requestDTO);

@@ -199,7 +199,7 @@ public class IntegrationQuery {
                     " AND f.status='Y'" +
                     " AND cfi.status='Y'";
 
-    public static String CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY =
+    public static String CLIENT_FEATURES_INTEGRATION_BACKEND_API_QUERY =
             CLIENT_FEAUTRES_INTEGRATION_API_QUERY +
                     " AND f.code=:featureCode" +
                     " AND ic.code=:integrationChannelCode" +

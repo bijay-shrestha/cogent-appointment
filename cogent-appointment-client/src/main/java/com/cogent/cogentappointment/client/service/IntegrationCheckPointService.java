@@ -10,11 +10,13 @@ import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendI
  */
 public interface IntegrationCheckPointService {
 
-    void apiIntegrationCheckpointDoctorWise(Appointment appointment,
-                                            IntegrationBackendRequestDTO integrationRequestDTO);
+    void apiIntegrationCheckpointForDoctorAppointment(Appointment appointment,
+                                                      IntegrationBackendRequestDTO integrationRequestDTO);
 
-    void apiIntegrationCheckpointDepartmentWise(Appointment appointment,
-                                                IntegrationBackendRequestDTO integrationRequestDTO);
+    void apiIntegrationCheckpointForDepartmentAppointment(Appointment appointment,
+                                                          IntegrationBackendRequestDTO integrationRequestDTO);
 
-    BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationRefundRequestDTO integrationRefundRequestDTO, Long id, String generatedEsewaHmac);
+    BackendIntegrationApiInfo getAppointmentModeApiIntegration(
+            IntegrationRefundRequestDTO integrationRefundRequestDTO,
+            Long id, String generatedEsewaHmac);
 }

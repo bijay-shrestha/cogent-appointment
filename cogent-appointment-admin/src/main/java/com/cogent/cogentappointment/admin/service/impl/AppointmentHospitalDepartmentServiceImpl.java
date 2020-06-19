@@ -1,14 +1,20 @@
-package com.cogent.cogentappointment.client.service.impl;
+package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
-import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.repository.AppointmentHospitalDepartmentFollowUpLogRepository;
-import com.cogent.cogentappointment.client.repository.AppointmentHospitalDepartmentInfoRepository;
-import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.HospitalDepartmentAppointmentLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.admin.repository.AppointmentHospitalDepartmentFollowUpLogRepository;
+import com.cogent.cogentappointment.admin.repository.AppointmentHospitalDepartmentInfoRepository;
+import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.service.*;
+import com.cogent.cogentappointment.commons.exception.NoContentFoundException;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpLog;
 import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpTracker;
@@ -22,27 +28,27 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
- * @author smriti on 16/06/20
+ * @author Sauravi Thapa ON 6/12/20
  */
+
+@Slf4j
 @Service
 @Transactional
-@Slf4j
 public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHospitalDepartmentService {
 
     private final AppointmentRepository appointmentRepository;
 
-    private final AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository;
+    private final IntegrationCheckPointService integrationCheckPointServiceImpl;
 
-    private final PatientService patientService;
+    private final AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository;
 
     private final AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService;
 
@@ -50,23 +56,73 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     private final AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository;
 
-    private final IntegrationCheckPointService integrationCheckPointService;
+    private final PatientService patientService;
 
     public AppointmentHospitalDepartmentServiceImpl(
             AppointmentRepository appointmentRepository,
+            IntegrationCheckPointService integrationCheckPointServiceImpl,
             AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository,
-            PatientService patientService,
             AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService,
             AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService,
             AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository,
-            IntegrationCheckPointService integrationCheckPointService) {
+            PatientService patientService) {
         this.appointmentRepository = appointmentRepository;
+        this.integrationCheckPointServiceImpl = integrationCheckPointServiceImpl;
         this.appointmentHospitalDepartmentFollowUpLogRepository = appointmentHospitalDepartmentFollowUpLogRepository;
-        this.patientService = patientService;
         this.appointmentHospitalDepartmentFollowUpTrackerService = appointmentHospitalDepartmentFollowUpTrackerService;
         this.appointmentHospitalDepartmentFollowUpRequestLogService = appointmentHospitalDepartmentFollowUpRequestLogService;
         this.appointmentHospitalDepartmentInfoRepository = appointmentHospitalDepartmentInfoRepository;
-        this.integrationCheckPointService = integrationCheckPointService;
+        this.patientService = patientService;
+    }
+
+    @Override
+    public HospitalDepartmentAppointmentLogResponseDTO searchAppointmentLogs(
+            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
+            Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_APPOINTMENT_LOG);
+
+        HospitalDepartmentAppointmentLogResponseDTO responseDTOS =
+                appointmentRepository.searchHospitalDepartmentAppointmentLogs(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public HospitalDepartmentTransactionLogResponseDTO searchTransactionLogs(
+            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO, Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_TRANSACTION_LOG);
+
+        HospitalDepartmentTransactionLogResponseDTO responseDTOS =
+                appointmentRepository.searchHospitalDepartmentTransactionLogs(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_TRANSACTION_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public HospitalDepartmentAppointmentRescheduleLogResponseDTO searchRescheduleLogs(
+            HospitalDepartmentAppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG);
+
+        HospitalDepartmentAppointmentRescheduleLogResponseDTO responseDTOS =
+                appointmentRepository.searchHospitalDepartmentRescheduleLogs(rescheduleDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_APPOINTMENT_RESCHEDULE_LOG,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
     }
 
     @Override
@@ -76,13 +132,12 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPOINTMENTS);
+        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPOINTMENT_APPROVAL);
 
         List<AppointmentHospitalDepartmentCheckInResponseDTO> pendingAppointments =
-                appointmentRepository.searchPendingHospitalDeptAppointments(searchDTO, pageable,
-                        getLoggedInHospitalId());
+                appointmentRepository.searchPendingHospitalDeptAppointments(searchDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPOINTMENTS,
+        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPOINTMENT_APPROVAL,
                 getDifferenceBetweenTwoTime(startTime));
 
         return pendingAppointments;
@@ -91,15 +146,14 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     @Override
     public AppointmentHospitalDepartmentCheckInDetailResponseDTO fetchPendingHospitalDeptAppointmentDetail(
             Long appointmentId) {
-
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, PENDING_APPOINTMENTS);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, PENDING_APPOINTMENT_APPROVAL);
 
         AppointmentHospitalDepartmentCheckInDetailResponseDTO appointmentDetails =
-                appointmentRepository.fetchPendingHospitalDeptAppointmentDetail(appointmentId, getLoggedInHospitalId());
+                appointmentRepository.fetchPendingHospitalDeptAppointmentDetail(appointmentId);
 
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PENDING_APPOINTMENTS,
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PENDING_APPOINTMENT_APPROVAL,
                 getDifferenceBetweenTwoTime(startTime));
 
         return appointmentDetails;
@@ -115,10 +169,11 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         // isPatientNew-->      false--> hospital number   | registered patient
 
         Appointment appointment = fetchPendingAppointment(
-                integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId());
+                integrationRequestDTO.getAppointmentId(), integrationRequestDTO.getHospitalId());
 
         if (!Objects.isNull(integrationRequestDTO.getIntegrationChannelCode()))
-            integrationCheckPointService.apiIntegrationCheckpointForDepartmentAppointment(appointment, integrationRequestDTO);
+            integrationCheckPointServiceImpl.apiIntegrationCheckpointForDepartmentAppointment(appointment,
+                    integrationRequestDTO);
 
         appointment.setStatus(APPROVED);
 
@@ -131,6 +186,11 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         return appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(appointmentId, hospitalId)
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
+    };
 
     /*IF IS FOLLOW UP = 'N',
     *   THEN PERSIST IN AppointmentHospitalDepartmentFollowUpTracker WHERE
@@ -178,11 +238,6 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         patientService.registerPatient(patientId, hospitalId);
     }
 
-    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
-        throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
-    };
-
     private AppointmentHospitalDepartmentInfo fetchAppointmentHospitalDepartmentInfo(Long appointmentId) {
         return appointmentHospitalDepartmentInfoRepository.fetchAppointmentHospitalDepartmentInfo(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_HOSPITAL_DEPARTMENT_INFO_NOT_FOUND.apply(appointmentId));
@@ -193,4 +248,5 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         throw new NoContentFoundException(AppointmentHospitalDepartmentInfo.class,
                 "appointmentId", appointmentId.toString());
     };
+
 }

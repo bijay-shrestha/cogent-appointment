@@ -23,10 +23,7 @@ import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRes
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.AppointmentFollowUpRequestLogService;
-import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
-import com.cogent.cogentappointment.admin.service.AppointmentService;
-import com.cogent.cogentappointment.admin.service.PatientService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
@@ -82,7 +79,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final ThirdPartyConnectorService thirdPartyConnectorService;
 
-    private final IntegrationCheckpointImpl integrationCheckpointService;
+    private final IntegrationCheckPointService integrationCheckpointService;
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
@@ -96,7 +93,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
                                   ThirdPartyConnectorService thirdPartyConnectorService,
-                                  IntegrationCheckpointImpl integrationCheckpointService,
+                                  IntegrationCheckPointService integrationCheckpointService,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -278,9 +275,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
 
         if (backendRequestDTO.getIntegrationChannelCode() != null) {
-            integrationCheckpointService.apiIntegrationCheckpoint(appointment, backendRequestDTO);
+            integrationCheckpointService.apiIntegrationCheckpointForDoctorAppointment(appointment, backendRequestDTO);
         }
-
 
         appointment.setStatus(APPROVED);
 
@@ -288,8 +284,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
-
-
 
 
     @Override

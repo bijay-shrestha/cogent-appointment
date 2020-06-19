@@ -1,41 +1,49 @@
-package com.cogent.cogentappointment.client.service.impl;
+package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
-import com.cogent.cogentappointment.client.exception.BadRequestException;
-import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
-import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.repository.HospitalPatientInfoRepository;
-import com.cogent.cogentappointment.client.repository.IntegrationRepository;
-import com.cogent.cogentappointment.client.service.IntegrationCheckPointService;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.exception.BadRequestException;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
+import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.repository.HospitalPatientInfoRepository;
+import com.cogent.cogentappointment.admin.repository.IntegrationRepository;
+import com.cogent.cogentappointment.admin.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
+import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
+import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
+import com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.IntegrationApiMessages.*;
-import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
-import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.FRONT_END_CODE;
-import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
-import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
+import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
+import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
+import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSignatureForEsewa;
+import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static com.cogent.cogentappointment.commons.utils.StringUtil.toNormalCase;
+import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
+import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
+import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaRequestBody;
 import static java.lang.Integer.parseInt;
 
 /**
@@ -55,9 +63,9 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     private final AppointmentRepository appointmentRepository;
 
     public IntegrationCheckPointServiceImpl(IntegrationRepository integrationRepository,
-                                            ThirdPartyConnectorService thirdPartyConnectorService,
-                                            HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                            AppointmentRepository appointmentRepository) {
+                                        ThirdPartyConnectorService thirdPartyConnectorService,
+                                        HospitalPatientInfoRepository hospitalPatientInfoRepository,
+                                        AppointmentRepository appointmentRepository) {
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
@@ -110,15 +118,14 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             case BACK_END_CODE:
-                 /*BACK-END INTEGRATION*/
 
+                 /*BACK-END INTEGRATION*/
                 if (integrationRequestDTO.getIsPatientNew()) {
                     ThirdPartyHospitalResponse thirdPartyHospitalResponse =
                             fetchThirdPartyHospitalResponseForDepartmentAppointment(integrationRequestDTO);
 
                     updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
                 }
-
                 break;
 
             default:
@@ -127,16 +134,71 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     @Override
-    public BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationRefundRequestDTO integrationRefundRequestDTO, Long id, String generatedEsewaHmac) {
-        return null;
+    public BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationBackendRequestDTO backendRequestDTO,
+                                                                      Long appointmentModeId,
+                                                                      String generatedHmacKey) {
+
+        AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
+                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(backendRequestDTO,
+                        appointmentModeId);
+
+        Map<String, String> requestHeaderResponse = integrationRepository.
+                findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        Map<String, String> queryParametersResponse = integrationRepository.
+                findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        List<String> requestBody = getRequestBodyByFeature(featureIntegrationResponse.getFeatureId(),
+                featureIntegrationResponse.getRequestMethod());
+
+        BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
+        integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
+        integrationApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, generatedHmacKey));
+        integrationApiInfo.setRequestBody(requestBody);
+
+        if (!queryParametersResponse.isEmpty()) {
+            integrationApiInfo.setQueryParameters(queryParametersResponse);
+        }
+        integrationApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
+
+        return integrationApiInfo;
     }
 
-    private void updateHospitalPatientInfo(Appointment appointment, String hospitalNumber) {
+    @Override
+    public ThirdPartyResponse processEsewaRefundRequest(Appointment appointment,
+                                                        AppointmentTransactionDetail transactionDetail,
+                                                        AppointmentRefundDetail appointmentRefundDetail,
+                                                        Boolean isRefund,
+                                                        IntegrationRefundRequestDTO refundRequestDTO) {
 
-        HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfo(
-                appointment.getPatientId().getId(), appointment.getHospitalId().getId());
+        String generatedEsewaHmac = getSignatureForEsewa.apply(appointment.getPatientId().getESewaId(),
+                appointment.getHospitalId().getEsewaMerchantCode());
 
-        hospitalPatientInfo.setHospitalNumber(hospitalNumber);
+        IntegrationBackendRequestDTO integrationBackendRequestDTO=IntegrationBackendRequestDTO.builder()
+                .appointmentId(refundRequestDTO.getAppointmentId())
+                .featureCode(refundRequestDTO.getFeatureCode())
+                .integrationChannelCode(refundRequestDTO.getIntegrationChannelCode())
+                .build();
+
+        BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationBackendRequestDTO,
+                appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
+
+        EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
+                transactionDetail,
+                appointmentRefundDetail,
+                isRefund);
+
+//        Map<String, Object> esewaRefundRequestDTO = getDynamicEsewaRequestBodyLog(
+//                integrationApiInfo.getRequestBody(),
+//                appointment,
+//                transactionDetail,
+//                appointmentRefundDetail,
+//                isRefund);
+
+        integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
+
+        return thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
+                esewaRefundRequestDTO);
     }
 
     private ThirdPartyHospitalResponse fetchThirdPartyHospitalResponseForDoctorAppointment(
@@ -171,8 +233,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         if (!Objects.isNull(backendIntegrationApiInfo)) {
 
             ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO thirdPartyCheckInDetails =
-                    appointmentRepository.fetchAppointmentDetailForHospitalDeptCheckIn(requestDTO.getAppointmentId(),
-                            getLoggedInHospitalId());
+                    appointmentRepository.fetchAppointmentDetailForHospitalDeptCheckIn(requestDTO.getAppointmentId());
 
             thirdPartyCheckInDetails.setName(generateRandomNumber(3));
             thirdPartyCheckInDetails.setSex(toNormalCase(thirdPartyCheckInDetails.getGender().name()));
@@ -181,8 +242,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             thirdPartyCheckInDetails.setSection("ENT");
 
             ResponseEntity<?> responseEntity =
-                    thirdPartyConnectorService.callThirdPartyHospitalDepartmentAppointmentCheckInService(
-                            backendIntegrationApiInfo, thirdPartyCheckInDetails);
+                    thirdPartyConnectorService.callThirdPartyHospitalDepartmentAppointmentCheckInService(backendIntegrationApiInfo,
+                            thirdPartyCheckInDetails);
 
             return fetchThirdPartyHospitalResponse(responseEntity);
         } else {
@@ -194,24 +255,21 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     private BackendIntegrationApiInfo getBackendIntegrationApiInfo(
             IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
-        FeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
-                fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
+        ClientFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
+                fetchClientIntegrationResponseDTOForBackendIntegration(integrationBackendRequestDTO);
 
         if (!Objects.isNull(featureIntegrationResponse)) {
 
             Map<String, String> requestHeaderResponse = integrationRepository.
-                    findApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
+                    findApiRequestHeadersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
 
             Map<String, String> queryParametersResponse = integrationRepository.
-                    findApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
-
-            //headers
-            HttpHeaders headers = addHeaderDetails(requestHeaderResponse);
+                    findApiQueryParametersResponse(featureIntegrationResponse.getApiIntegrationFormatId());
 
             BackendIntegrationApiInfo backendIntegrationApiInfo = new BackendIntegrationApiInfo();
 
             backendIntegrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
-            backendIntegrationApiInfo.setHttpHeaders(headers);
+            backendIntegrationApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, null));
 
             if (!queryParametersResponse.isEmpty())
                 backendIntegrationApiInfo.setQueryParameters(queryParametersResponse);
@@ -231,7 +289,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         ThirdPartyHospitalResponse thirdPartyHospitalResponse = null;
         try {
-            thirdPartyHospitalResponse = map((String) responseEntity.getBody(),
+            thirdPartyHospitalResponse = ObjectMapperUtils.map((String) responseEntity.getBody(),
                     ThirdPartyHospitalResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
@@ -257,6 +315,14 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         }
     }
 
+    private void updateHospitalPatientInfo(Appointment appointment, String hospitalNumber) {
+
+        HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfo(
+                appointment.getPatientId().getId(), appointment.getHospitalId().getId());
+
+        hospitalPatientInfo.setHospitalNumber(hospitalNumber);
+    }
+
     private HospitalPatientInfo fetchHospitalPatientInfo(Long patientId, Long hospitalId) {
         return hospitalPatientInfoRepository.findByPatientAndHospitalId(patientId, hospitalId)
                 .orElseThrow(() -> HOSPITAL_PATIENT_INFO_NOT_FOUND.apply(patientId));
@@ -266,19 +332,21 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         throw new NoContentFoundException(HospitalPatientInfo.class, "patientId", patientId.toString());
     };
 
-    private HttpHeaders addHeaderDetails(Map<String, String> requestHeaderResponse) {
+    private List<String> getRequestBodyByFeature(Long featureId, String requestMethod) {
 
-        HttpHeaders headers = new HttpHeaders();
+        List<String> requestBody = null;
+        if (requestMethod.equalsIgnoreCase("POST")) {
+            List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.
+                    fetchRequestBodyAttributeByFeatureId(featureId);
 
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.add("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)" +
-                        " Chrome/54.0.2840.99 Safari/537.36");
+            if (responses != null) {
+                requestBody = responses.stream()
+                        .map(request -> request.getName())
+                        .collect(Collectors.toList());
+            }
 
-        requestHeaderResponse.forEach(headers::add);
+        }
 
-        return headers;
+        return requestBody;
     }
-
-
 }

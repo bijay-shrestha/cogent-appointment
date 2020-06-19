@@ -35,7 +35,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> callThirdPartyDoctorCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
+    public ResponseEntity<?> callThirdPartyDoctorAppointmentCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo) {
 
         HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
@@ -55,7 +55,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ResponseEntity<?> callThirdPartyHospitalDepartmentCheckInService(
+    public ResponseEntity<?> callThirdPartyHospitalDepartmentAppointmentCheckInService(
             BackendIntegrationApiInfo backendIntegrationApiInfo,
             ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO checkInDTO) {
 

@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
+import com.cogent.cogentappointment.admin.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.admin.service.RefundStatusService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
@@ -46,22 +47,24 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     private final AppointmentRefundDetailRepository refundDetailRepository;
 
     private final AppointmentRepository appointmentRepository;
+
     private final AppointmentService appointmentService;
+
     private final ThirdPartyConnectorService thirdPartyConnectorService;
-    private final IntegrationCheckpointImpl integrationCheckpointService;
+
+    private final IntegrationCheckPointService integrationCheckpointService;
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentRepository appointmentRepository,
                                    AppointmentService appointmentService,
                                    ThirdPartyConnectorService thirdPartyConnectorService,
-                                   IntegrationCheckpointImpl integrationCheckpointService) {
+                                   IntegrationCheckPointService integrationCheckpointService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.appointmentService = appointmentService;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.integrationCheckpointService = integrationCheckpointService;
     }
-
 
     @Override
     public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO,

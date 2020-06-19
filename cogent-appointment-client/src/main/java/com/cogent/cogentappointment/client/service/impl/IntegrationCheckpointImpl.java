@@ -94,8 +94,8 @@ public class IntegrationCheckpointImpl {
         //Esewa
         //call thirdparty requestbody utils if not create one.....
 
-        ResponseEntity<?> responseEntity = thirdPartyConnectorService.
-                callThirdPartyDoctorCheckInService(integrationHospitalApiInfo);
+        ResponseEntity<?> responseEntity =
+                thirdPartyConnectorService.callThirdPartyDoctorAppointmentCheckInService(integrationHospitalApiInfo);
 
         if (responseEntity.getStatusCode().value() == 403) {
             throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR);
@@ -154,7 +154,7 @@ public class IntegrationCheckpointImpl {
                                                                       String generatedHmacKey) {
 
         AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
-                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(refundRequestDTO,appointmentModeId);
+                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(refundRequestDTO, appointmentModeId);
 
         Map<String, String> requestHeaderResponse = integrationRepository.
                 findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());

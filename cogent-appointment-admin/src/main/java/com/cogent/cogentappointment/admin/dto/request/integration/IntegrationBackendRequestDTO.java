@@ -23,7 +23,9 @@ public class IntegrationBackendRequestDTO implements Serializable {
     @NotNull
     private Long appointmentId;
 
-    private boolean patientStatus;
+    /*true -> no hospital number | new registration patient
+    * false -> hospital number   | registered patient*/
+    private Boolean isPatientNew;
 
     private String integrationChannelCode;
 

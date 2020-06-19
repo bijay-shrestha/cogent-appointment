@@ -15,46 +15,41 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentHospitalDepartmentPendingApprovalResponseDTO implements Serializable {
+public class AppointmentHospitalDepartmentCheckInResponseDTO implements Serializable {
 
     private Long appointmentId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
-    private String appointmentNumber;
-
     private String appointmentTime;
 
-    private String registrationNumber;
+    private String appointmentNumber;
 
-    private Long patientId;
-
-    private String patientName;
-
-    private String age;
-
-    private String address;
-
-    private Gender gender;
-
-    private Character isRegistered;
-
-    private String hospitalNumber;
-
-    private String mobileNumber;
-
-    private String hospitalDepartmentName;
-
-    private String appointmentMode;
+    private String transactionNumber;
 
     private Double appointmentAmount;
 
+    private String patientName;
+
+    private String mobileNumber;
+
+    private Gender gender;
+
+    private String age;
+
+    private Character isRegistered;
+
+    private String registrationNumber;
+
+    private String hospitalNumber;
+
+    /*Province, District, VDC/Municipality, Ward*/
+    private String address;
+
+    private String hospitalDepartmentName;
+
     private String roomNumber;
-
-    private String billingModeName;
-
-    private Long roomId;
 
     private int totalItems;
 }

@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -23,7 +22,9 @@ public class IntegrationBackendRequestDTO implements Serializable {
 
     private String featureCode;
 
-    private boolean patientStatus;
+    /*true -> no hospital number | new registration patient
+    * false -> hospital number   | registered patient*/
+    private Boolean isPatientNew;
 
     private String integrationChannelCode;
 

@@ -1,7 +1,7 @@
-package com.cogent.cogentappointment.thirdparty.exceptionhandler;
+package com.cogent.cogentappointment.commons.exceptionhandler;
 
 
-import com.cogent.cogentappointment.thirdparty.exception.*;
+import com.cogent.cogentappointment.commons.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import static com.cogent.cogentappointment.thirdparty.exception.MethodArgumentNotValidException.handleMethodArgumentNotValidException;
+import static com.cogent.cogentappointment.commons.exception.MethodArgumentNotValidException.handleMethodArgumentNotValidException;
 
 
 /**

@@ -1,9 +1,9 @@
-package com.cogent.cogentappointment.thirdparty.exception;
+package com.cogent.cogentappointment.commons.exception;
 
 import lombok.Getter;
 
-import static com.cogent.cogentappointment.thirdparty.exception.utils.ExceptionUtils.getLocalDateTime;
-import static com.cogent.cogentappointment.thirdparty.exception.utils.ExceptionUtils.toMap;
+import static com.cogent.cogentappointment.commons.exception.utils.ExceptionUtils.getLocalDateTime;
+import static com.cogent.cogentappointment.commons.exception.utils.ExceptionUtils.toMap;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
 /**

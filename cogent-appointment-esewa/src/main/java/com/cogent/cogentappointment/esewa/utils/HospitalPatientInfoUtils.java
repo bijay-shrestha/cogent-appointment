@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.utils;
 
+import com.cogent.cogentappointment.persistence.model.Address;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -25,6 +26,20 @@ public class HospitalPatientInfoUtils {
         hospitalPatientInfo.setIsRegistered(NO);
         hospitalPatientInfo.setStatus(ACTIVE);
         return hospitalPatientInfo;
+    }
+
+    public static void parsePatientAddressDetails(Address province,
+                                                  Address vdcOrMunicipality,
+                                                  Address district,
+                                                  Address ward,
+                                                  HospitalPatientInfo hospitalPatientInfo,
+                                                  Character hasAddress) {
+
+        hospitalPatientInfo.setHasAddress(hasAddress);
+        hospitalPatientInfo.setProvince(province);
+        hospitalPatientInfo.setVdcOrMunicipality(vdcOrMunicipality);
+        hospitalPatientInfo.setDistrict(district);
+        hospitalPatientInfo.setWard(ward);
     }
 
     public static void updateHospitalPatientInfo(String email,

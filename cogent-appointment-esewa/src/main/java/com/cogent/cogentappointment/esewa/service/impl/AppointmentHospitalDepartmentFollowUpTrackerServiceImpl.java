@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentFollowUpTrackerLog.APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER;
@@ -217,7 +218,7 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
                         hospitalDepartmentBillingModeId, hospitalDepartmentId);
 
         return parseAppointmentHospitalDeptFollowUpResponseDTO(
-                NO, followUpCharge, parentAppointmentId, savedAppointmentReservationId, hospitalRefundPercentage
+                YES, followUpCharge, parentAppointmentId, savedAppointmentReservationId, hospitalRefundPercentage
         );
     }
 

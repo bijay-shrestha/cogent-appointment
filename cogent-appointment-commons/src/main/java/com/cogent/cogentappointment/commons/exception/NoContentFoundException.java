@@ -1,9 +1,9 @@
-package com.cogent.cogentappointment.thirdparty.exception;
+package com.cogent.cogentappointment.commons.exception;
 
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
-import static com.cogent.cogentappointment.thirdparty.exception.utils.ExceptionUtils.*;
+import static com.cogent.cogentappointment.commons.exception.utils.ExceptionUtils.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**

@@ -1,14 +1,16 @@
-package com.cogent.cogentappointment.thirdparty.exception.utils;
+package com.cogent.cogentappointment.commons.exception.utils;
 
-import com.cogent.cogentappointment.thirdparty.constants.StringConstant;
-import com.cogent.cogentappointment.thirdparty.exception.ConstraintViolationException;
-import com.cogent.cogentappointment.thirdparty.utils.common.StringUtil;
+import com.cogent.cogentappointment.commons.constants.StringConstant;
+import com.cogent.cogentappointment.commons.exception.ConstraintViolationException;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.commons.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.commons.constants.StringConstant.SPACE;
+import static com.cogent.cogentappointment.commons.utils.StringUtil.splitByCharacterTypeCamelCase;
 import static org.springframework.util.StringUtils.capitalize;
 
 /**
@@ -21,12 +23,12 @@ public class ValidationUtils {
 
         List<String> violations = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> {
-                            return capitalize( StringUtil.splitByCharacterTypeCamelCase(
+                            return capitalize(splitByCharacterTypeCamelCase(
                                     error.getField())) + StringConstant.SPACE + error.getDefaultMessage();
                         }
                 ).collect(Collectors.toList());
 
-        return String.join(StringConstant.COMMA_SEPARATED + StringConstant.SPACE, violations);
+        return String.join(COMMA_SEPARATED + SPACE, violations);
     }
 
     /*
@@ -37,12 +39,12 @@ public class ValidationUtils {
         if (!constraintViolations.isEmpty()) {
             List<String> violations = constraintViolations.stream().map(
                     violation -> {
-                        return capitalize(StringUtil.splitByCharacterTypeCamelCase(
-                                violation.getPropertyPath().toString())) + StringConstant.SPACE + violation.getMessage();
+                        return capitalize(splitByCharacterTypeCamelCase(
+                                violation.getPropertyPath().toString())) + SPACE + violation.getMessage();
                     }
             ).collect(Collectors.toList());
 
-            String errorMessages = String.join(StringConstant.COMMA_SEPARATED + StringConstant.SPACE, violations);
+            String errorMessages = String.join(COMMA_SEPARATED + SPACE, violations);
 
             throw new ConstraintViolationException(errorMessages, errorMessages);
         }

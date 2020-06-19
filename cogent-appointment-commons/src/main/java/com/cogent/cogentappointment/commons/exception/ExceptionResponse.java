@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.thirdparty.exception;
+package com.cogent.cogentappointment.commons.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

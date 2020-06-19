@@ -51,8 +51,7 @@ public class AppointmentFollowUpRequestLogServiceImpl implements AppointmentFoll
     @Override
     public void update(Long appointmentFollowUpTrackerId) {
         AppointmentFollowUpRequestLog appointmentFollowUpRequestLog =
-                appointmentFollowUpRequestLogRepository.fetchByFollowUpTrackerId
-                        (appointmentFollowUpTrackerId)
+                appointmentFollowUpRequestLogRepository.fetchByFollowUpTrackerId(appointmentFollowUpTrackerId)
                         .orElseThrow(() ->
                                 APPOINTMENT_FOLLOW_REQUEST_LOG_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentFollowUpTrackerId));
 

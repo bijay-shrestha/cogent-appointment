@@ -65,6 +65,10 @@ public class ErrorMessageConstants {
         String BAD_UPDATE_DEBUG_MESSAGE = "Admin hasn't saved its password yet and is still inactive.";
     }
 
+    public interface AppointmentTransferMessage {
+        String APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND = "Appointment Doctor Information not found";
+
+    }
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
@@ -146,6 +150,7 @@ public class ErrorMessageConstants {
         String INTEGRATION_BHERI_HOSPITAL_ERROR = "An error occurred while saving the patient record.";
         String INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR = "Hospital API Forbidden...";
         String INTEGRATION_API_BAD_REQUEST = "Bad Third Party API Request.";
+        String INVALID_INTEGRATION_CHANNEL_CODE = "Requested Integration Channel Code '%s' is invalid";
     }
 
 

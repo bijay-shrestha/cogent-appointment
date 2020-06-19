@@ -1,6 +1,6 @@
-package com.cogent.cogentappointment.thirdparty.exception.utils;
+package com.cogent.cogentappointment.commons.exception.utils;
 
-import com.cogent.cogentappointment.thirdparty.utils.common.StringUtil;
+import com.cogent.cogentappointment.commons.utils.StringUtil;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;

@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiQue
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiRequestHeaderResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.query.IntegrationQuery;
 import com.cogent.cogentappointment.client.repository.custom.IntegrationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.HashMap;
@@ -60,6 +60,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
                 transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
 
         Map<String, String> map = new HashMap<>();
+
         requestHeaderResponseDTO.forEach(response -> {
             map.put(response.getKeyParam(), response.getValueParam());
         });
@@ -76,6 +77,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
                 transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);
 
         Map<String, String> map = new HashMap<>();
+
         parametersResponseDTO.forEach(response -> {
             map.put(response.getKeyParam(), response.getValueParam());
         });
@@ -116,18 +118,22 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public FeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
+    public FeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(
+            IntegrationBackendRequestDTO requestDTO) {
+
         Query query = createQuery.apply(entityManager, CLIENT_FEATURES_INTEGRATION_BACKEND_API_QUERY)
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
                 .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
                 .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());
 
-        FeatureIntegrationResponse responseDTOList =
-                transformQueryToSingleResult(query, FeatureIntegrationResponse.class);
-
-//        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
-
-        return responseDTOList;
+        try {
+            FeatureIntegrationResponse featureIntegrationResponse =
+                    transformQueryToSingleResult(query, FeatureIntegrationResponse.class);
+            return featureIntegrationResponse;
+        } catch (NoResultException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private Supplier<NoContentFoundException> CLIENT_API_INTEGRATION_NOT_FOUND = () -> {

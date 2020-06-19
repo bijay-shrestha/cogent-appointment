@@ -29,7 +29,8 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientRelationInfoResponseDTO;
@@ -39,7 +40,10 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.AppointmentUtils;
+import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
+import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentDoctorInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -58,12 +62,15 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentTransferMessage.APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.client.query.AppointmentDoctorInfoQuery.QUERY_TO_FETCH_APPOINTMENT_DETAIL_FOR_DOCTOR_WISE_CHECK_IN;
+import static com.cogent.cogentappointment.client.query.AppointmentDoctorInfoQuery.QUERY_TO_GET_CURRENT_APPOINTMENT_DOCTOR_INFO;
 import static com.cogent.cogentappointment.client.query.AppointmentHospitalDepartmentQuery.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_REFUND_AMOUNT;
@@ -559,6 +566,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatus(
             HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
         Query query = createNativeQuery.apply(entityManager,
                 QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS
                         (requestDTO))
@@ -598,7 +606,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> searchPendingHospitalDeptAppointments(
+    public List<AppointmentHospitalDepartmentCheckInResponseDTO> searchPendingHospitalDeptAppointments(
             AppointmentHospitalDepartmentPendingApprovalSearchDTO searchDTO,
             Pageable pageable,
             Long hospitalId) {
@@ -611,14 +619,77 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         addPagination.accept(pageable, query);
 
-        List<AppointmentHospitalDepartmentPendingApprovalResponseDTO> pendingAppointments =
-                transformQueryToResultList(query, AppointmentHospitalDepartmentPendingApprovalResponseDTO.class);
+        List<AppointmentHospitalDepartmentCheckInResponseDTO> pendingAppointments =
+                transformQueryToResultList(query, AppointmentHospitalDepartmentCheckInResponseDTO.class);
 
         if (pendingAppointments.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
         pendingAppointments.get(0).setTotalItems(totalItems);
         return pendingAppointments;
+    }
+
+    @Override
+    public AppointmentHospitalDepartmentCheckInDetailResponseDTO fetchPendingHospitalDeptAppointmentDetail(
+            Long appointmentId,
+            Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPOINTMENT_DETAIL)
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        try {
+            return transformQueryToSingleResult(query, AppointmentHospitalDepartmentCheckInDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    @Override
+    public ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO fetchAppointmentDetailForHospitalDeptCheckIn(
+            Long appointmentId,
+            Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_DETAIL_FOR_HOSPITAL_DEPT_CHECK_IN)
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        try {
+            return transformQueryToSingleResult(query, ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO.class);
+        } catch (NoResultException e) {
+            throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    @Override
+    public ThirdPartyDoctorWiseAppointmentCheckInDTO fetchAppointmentDetailForDoctorWiseApptCheckIn(
+            Long appointmentId, Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_DETAIL_FOR_DOCTOR_WISE_CHECK_IN)
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        try {
+            return transformQueryToSingleResult(query, ThirdPartyDoctorWiseAppointmentCheckInDTO.class);
+        } catch (NoResultException e) {
+            throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    @Override
+    public AppointmentDoctorInfo getPreviousAppointmentDoctorAndSpecialization(Long appointmentId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_APPOINTMENT_DOCTOR_INFO)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+
+        try {
+            AppointmentDoctorInfo appointmentDoctorInfo = transformQueryToSingleResult(query, AppointmentDoctorInfo.class);
+            return appointmentDoctorInfo;
+        } catch (NoContentFoundException e) {
+            log.error(APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND);
+            throw new NoContentFoundException(APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND,
+                    APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND);
+        }
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

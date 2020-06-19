@@ -10,7 +10,7 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 
-import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_ALGORITHM_ESEWA;
+import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_ALGORITHM;
 import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_API_SECRET_ESEWA;
 
 /**
@@ -21,7 +21,7 @@ public class HMACBuilderForEsewa {
 
     public static String hmacShaGenerator(String message) {
         try {
-            Key secretKeySpec = new SecretKeySpec(HMAC_API_SECRET_ESEWA.getBytes(), HMAC_ALGORITHM_ESEWA);
+            Key secretKeySpec = new SecretKeySpec(HMAC_API_SECRET_ESEWA.getBytes(), HMAC_ALGORITHM);
             Mac msgAuthenticationCode = Mac.getInstance(secretKeySpec.getAlgorithm());
             msgAuthenticationCode.init(secretKeySpec);
             final byte[] hmac = msgAuthenticationCode.doFinal(message.getBytes());

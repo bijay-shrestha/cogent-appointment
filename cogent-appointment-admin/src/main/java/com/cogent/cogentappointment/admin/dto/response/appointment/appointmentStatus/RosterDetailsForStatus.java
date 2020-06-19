@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus;
+package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus;
 
 import lombok.Getter;
 import lombok.Setter;

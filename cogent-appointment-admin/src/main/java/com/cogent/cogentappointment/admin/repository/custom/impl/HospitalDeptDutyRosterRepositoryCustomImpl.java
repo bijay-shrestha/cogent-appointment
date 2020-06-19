@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentSta
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
@@ -223,11 +223,8 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
             query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID,hospitalDepartmentRoomInfoId);
         }
 
-        Object objects=query.getSingleResult();
-
         try {
             RosterDetailsForStatus response = transformQueryToSingleResult(query, RosterDetailsForStatus.class);
-
             return response;
         } catch (NoResultException ex) {
             throw HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND.get();

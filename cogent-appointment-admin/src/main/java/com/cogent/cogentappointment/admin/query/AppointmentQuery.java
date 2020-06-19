@@ -1132,7 +1132,7 @@ public class AppointmentQuery {
         return whereClause;
     }
 
-    public static String QUERY_TO_FETCH_APPOINTMENT_BY_APPT_NUMBER=
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_BY_APPT_NUMBER =
             "SELECT" +
                     " DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime," +
                     " a.status as status," +
@@ -1157,7 +1157,33 @@ public class AppointmentQuery {
                     " LEFT JOIN HospitalDepartment hd ON hd.id=ahd.hospitalDepartment.id" +
                     " LEFT JOIN HospitalDepartmentRoomInfo hdri On hdri.id= ahd.hospitalDepartmentRoomInfo.id" +
                     " LEFT JOIN Room r on hdri.room.id=r.id" +
-                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
+                    " WHERE " +
+                    " a.appointmentNumber=:appointmentNumber" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
+
+
+    public static String QUERY_TO_FETCH_APPOINTMENT_BY_APPT_NUMBER =
+            "SELECT" +
+                    " DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime," +
+                    " a.status as status," +
+                    " a.appointmentDate as appointmentDate," +
+                    " a.appointmentNumber as appointmentNumber," +
+                    " a.patientId.mobileNumber as mobileNumber," +
+                    " a.patientId.gender as gender," +
+                    " a.patientId.name as patientName," +
+                    " a.id as appointmentId," +
+                    " a.isFollowUp as isFollowUp," +
+                    " a.hasTransferred as hasTransferred," +
+                    " adi.doctor.id as doctorId, " +
+                    " adi.doctor.name as doctorName, " +
+                    " adi.specialization.id as specializationId, " +
+                    " adi.specialization.name as specializationName, " +
+                    QUERY_TO_CALCULATE_PATIENT_AGE+
+                    " FROM" +
+                    " Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id" +
+                    " LEFT JOIN Patient p ON p.id=a.patientId.id" +
+                    " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";

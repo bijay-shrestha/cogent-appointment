@@ -35,4 +35,6 @@ public class AppointmentStatusRequestDTO implements Serializable {
     private String status;
 
     private String appointmentNumber;
+
+    private Character hasAppointmentNumber;
 }

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus;
+package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
@@ -39,12 +39,14 @@ public class AppointmentDetailsForStatus implements Serializable{
 
     private Character hasTransferred;
 
-    private Long hospitalDepartmentId;
+    private Long doctorId;
 
-    private String hospitalDepartmentName;
+    private String doctorName;
 
-    private Long hospitalDepartmentRoomInfoId;
+    private String fileUri;
 
-    private String roomNumber;
+    private Long specializationId;
+
+    private String specializationName;
 
 }

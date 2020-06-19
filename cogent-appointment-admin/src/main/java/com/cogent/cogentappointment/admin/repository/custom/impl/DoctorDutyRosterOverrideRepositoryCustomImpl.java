@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
@@ -86,6 +87,22 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
                 results, requestDTO.getFromDate(), requestDTO.getToDate());
     }
 
+    @Override
+    public RosterDetailsForStatus fetchOverrideRosterDetails(RosterDetailsForStatus rosterDetailsForStatus,
+                                                             Date appointmentDate) {
+        Query query =createNativeQuery.apply(entityManager,QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID,rosterDetailsForStatus.getRosterId())
+                .setParameter(DATE,utilDateToSqlDate(appointmentDate));
+
+        try{
+            Object[] result= (Object[]) query.getSingleResult();
+            rosterDetailsForStatus.setStartTime(result[0].toString());
+            rosterDetailsForStatus.setEndTime(result[1].toString());
+            return rosterDetailsForStatus;
+        }catch (NoResultException e){
+            return rosterDetailsForStatus;
+        }
+    }
 
 
     @Override

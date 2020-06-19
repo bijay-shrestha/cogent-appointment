@@ -446,7 +446,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.
                 fetchAdminModeIntegrationResponseDTO().stream()
-                .collect(groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
+                .collect(groupingBy(AdminFeatureIntegrationResponse::getAppointmentModeId));
 
         List<AdminModeFeatureIntegrationResponseDTO> adminModeFeatureIntegrationResponseDTOS = new ArrayList<>();
 

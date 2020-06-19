@@ -216,7 +216,7 @@ public class AppointmentStatusUtils {
 
         return AppointmentStatusDTO.builder()
                 .doctorDutyRosterInfo(doctorDutyRostersInfo)
-                .doctorInfo(doctorInfo)
+                .doctorInfo((Objects.isNull(doctorInfo))? new ArrayList<>():doctorInfo )
                 .build();
     }
 
@@ -285,6 +285,30 @@ public class AppointmentStatusUtils {
         return responseDTOS;
     }
 
+    public static List<DoctorTimeSlotResponseDTO> parseToDoctorTimeSlotResponseDTOS(
+            AppointmentDetailsForStatus appointmentDetailsForStatus) {
+
+        List<DoctorTimeSlotResponseDTO> responseDTOS= new ArrayList<> ();
+
+        DoctorTimeSlotResponseDTO response=DoctorTimeSlotResponseDTO.builder()
+                .appointmentTime(appointmentDetailsForStatus.getAppointmentTime())
+                .status(appointmentDetailsForStatus.getStatus())
+                .appointmentNumber(appointmentDetailsForStatus.getAppointmentNumber())
+                .mobileNumber(appointmentDetailsForStatus.getMobileNumber())
+                .age(appointmentDetailsForStatus.getAge())
+                .gender(String.valueOf(appointmentDetailsForStatus.getGender()))
+                .patientName(appointmentDetailsForStatus.getPatientName())
+                .appointmentId(appointmentDetailsForStatus.getAppointmentId())
+                .hasTransferred(appointmentDetailsForStatus.getHasTransferred())
+                .isFollowUp(appointmentDetailsForStatus.getIsFollowUp())
+                .hasTimePassed(hasTimePassed(appointmentDetailsForStatus.getAppointmentDate(),
+                        appointmentDetailsForStatus.getAppointmentTime()))
+                .build();
+        responseDTOS.add(response);
+
+        return responseDTOS;
+    }
+
     public static List<DoctorDutyRosterStatusResponseDTO> parseDoctorDutyRosterStatusResponseDTOS
             (List<DoctorTimeSlotResponseDTO> doctorTimeSlotResponseDTOS,
              RosterDetailsForStatus rosterDetailsForStatus,
@@ -306,7 +330,6 @@ public class AppointmentStatusUtils {
         responseDTO.setSpecializationName(appointmentDetailsForStatus.getSpecializationName());
         responseDTO.setWeekDayName(convertDateToLocalDate(
                 appointmentDetailsForStatus.getAppointmentDate()).getDayOfWeek().toString());
-        responseDTO.setFileUri(appointmentDetailsForStatus.getFileUri());
 
         responseDTOS.add(responseDTO);
 

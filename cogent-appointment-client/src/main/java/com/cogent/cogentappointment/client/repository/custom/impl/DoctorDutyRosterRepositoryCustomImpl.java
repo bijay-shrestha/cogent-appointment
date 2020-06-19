@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDu
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorWithSpecialization;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
@@ -293,6 +294,25 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
                 .setParameter(SPECIALIZATION_ID, specilizationId);
 
         return transformQueryToResultList(query, DutyRosterAppointmentDateAndDoctorDTO.class);
+    }
+
+
+    @Override
+    public RosterDetailsForStatus fetchRosterDetailsToSearchByApptNumber(Long doctorId, Long specializationId, Date date) {
+        Query query=createQuery.apply(entityManager,QUERY_TO_FETCH_ROSTER_DETAILS)
+                .setParameter(DATE, utilDateToSqlDate(date))
+                .setParameter(DOCTOR_ID,doctorId)
+                .setParameter(SPECIALIZATION_ID,specializationId);
+
+        try {
+            RosterDetailsForStatus response = transformQueryToSingleResult(query, RosterDetailsForStatus.class);
+            return response;
+        } catch (NoResultException ex) {
+            error();
+            throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
+        }
+
+
     }
 
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId, Long hospitalId) {

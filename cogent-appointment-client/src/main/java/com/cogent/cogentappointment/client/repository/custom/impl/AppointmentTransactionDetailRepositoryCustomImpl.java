@@ -198,7 +198,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                 .setParameter(TO_DATE, dashBoardRequestDTO.getToDate())
                 .setParameter(FROM_DATE, dashBoardRequestDTO.getFromDate())
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, "DOC");
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, "DOC");
 
         List<Object[]> objects = query.getResultList();
 

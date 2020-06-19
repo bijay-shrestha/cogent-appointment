@@ -28,8 +28,9 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.AppointmentDetailsForStatus;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
@@ -145,5 +146,8 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentDoctorInfo getPreviousAppointmentDoctorAndSpecialization(Long appointmentId);
 
-    AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber);
+    HospitalDeptAppointmentDetailsForStatus fetchHospitalDeptAppointmentByApptNumber(String apptNumber);
+
+    AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber,
+                                                                         String appointmentServiceTypeCode);
 }

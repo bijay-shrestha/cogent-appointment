@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus;
+package com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
@@ -15,7 +15,7 @@ import java.sql.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentDetailsForStatus implements Serializable{
+public class HospitalDeptAppointmentDetailsForStatus implements Serializable{
 
     private String appointmentTime;
 
@@ -39,16 +39,12 @@ public class AppointmentDetailsForStatus implements Serializable{
 
     private Character hasTransferred;
 
-    private String doctorSalutation;
+    private Long hospitalDepartmentId;
 
-    private Long doctorId;
+    private String hospitalDepartmentName;
 
-    private String doctorName;
+    private Long hospitalDepartmentRoomInfoId;
 
-    private Long specializationId;
-
-    private String specializationName;
-
-    private Long hospitalId;
+    private String roomNumber;
 
 }

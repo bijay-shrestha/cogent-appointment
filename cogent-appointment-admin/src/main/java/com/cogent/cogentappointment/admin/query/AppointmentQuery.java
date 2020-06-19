@@ -1177,13 +1177,16 @@ public class AppointmentQuery {
                     " adi.doctor.id as doctorId, " +
                     " adi.doctor.name as doctorName, " +
                     " adi.specialization.id as specializationId, " +
-                    " adi.specialization.name as specializationName, " +
+                    " adi.specialization.name as specializationName," +
+//                    " ds.salutationId.name as doctorSalutation," +
+                    " a.hospitalId.id as hospitalId," +
                     QUERY_TO_CALCULATE_PATIENT_AGE+
                     " FROM" +
                     " Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
+                    " LEFT JOIN DoctorSalutation ds ON ds.doctorId.id = adi.doctor.id" +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";

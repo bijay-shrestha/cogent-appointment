@@ -21,4 +21,7 @@ public class DashBoardRequestDTO implements Serializable {
     private Date toDate;
 
     private Long hospitalId;
+
+//    @NotNull(message = "Appointment Service Type Cannot be Null")
+    private String appointmentServiceTypeCode;
 }

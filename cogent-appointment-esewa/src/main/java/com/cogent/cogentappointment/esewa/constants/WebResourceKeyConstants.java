@@ -53,7 +53,7 @@ public class WebResourceKeyConstants {
 
     //C
     public interface CommonConstants {
-        String BASE_COMMON = "/common";
+        String BASE_COMMON = "/commons";
         String DOCTOR_SPECIALIZATION = "/doctor-specialization";
     }
 

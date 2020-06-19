@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.Availab
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterOverrideAppointmentDate;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorWithSpecialization;
@@ -215,6 +216,23 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
                 .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
 
         return transformQueryToResultList(query, DutyRosterOverrideAppointmentDate.class);
+    }
+
+    @Override
+    public RosterDetailsForStatus fetchOverrideRosterDetails(RosterDetailsForStatus rosterDetailsForStatus,
+                                                             Date appointmentDate) {
+        Query query =createNativeQuery.apply(entityManager,QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID,rosterDetailsForStatus.getRosterId())
+                .setParameter(DATE,utilDateToSqlDate(appointmentDate));
+
+        try{
+            Object[] result= (Object[]) query.getSingleResult();
+            rosterDetailsForStatus.setStartTime(result[0].toString());
+            rosterDetailsForStatus.setEndTime(result[1].toString());
+            return rosterDetailsForStatus;
+        }catch (NoResultException e){
+            return rosterDetailsForStatus;
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND = () ->

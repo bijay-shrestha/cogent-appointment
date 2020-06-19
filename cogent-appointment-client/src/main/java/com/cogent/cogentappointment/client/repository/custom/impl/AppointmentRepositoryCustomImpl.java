@@ -31,7 +31,9 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientRelationInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogDTO;
@@ -568,11 +570,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         Query query = createNativeQuery.apply(entityManager,
-                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS
-                        (requestDTO))
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE,"DEP");
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
@@ -628,6 +630,36 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         pendingAppointments.get(0).setTotalItems(totalItems);
         return pendingAppointments;
     }
+
+    //todo:add DEP dynamically
+    @Override
+    public HospitalDeptAppointmentDetailsForStatus fetchHospitalDeptAppointmentByApptNumber(String appointmentNumber) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_BY_APPT_NUMBER)
+                .setParameter(APPOINTMENT_NUMBER, appointmentNumber)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE,"DEP");
+
+        try {
+            HospitalDeptAppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query, HospitalDeptAppointmentDetailsForStatus.class);
+            return responseDTO;
+        } catch (NoResultException e) {
+            throw APPOINTMENT_NOT_FOUND.get();
+        }
+    }
+
+    @Override
+    public AppointmentDetailsForStatus fetchAppointmentByApptNumber(String appointmentNumber, String appointmentServiceTypeCode) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_BY_APPT_NUMBER)
+                .setParameter(APPOINTMENT_NUMBER, appointmentNumber)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE,appointmentServiceTypeCode);
+
+        try {
+            AppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query, AppointmentDetailsForStatus.class);
+            return responseDTO;
+        } catch (NoResultException e) {
+            throw APPOINTMENT_NOT_FOUND.get();
+        }
+    }
+
 
     @Override
     public AppointmentHospitalDepartmentCheckInDetailResponseDTO fetchPendingHospitalDeptAppointmentDetail(

@@ -41,6 +41,7 @@ public class AppointmentStatusResource {
         return ok(appointmentStatusService.fetchAppointmentStatusResponseDTO(requestDTO));
     }
 
+    //todo:make service type code dynamic
     @PutMapping(BASE_HOSPITAL_DEPARTMENT + STATUS)
     @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS)
     public ResponseEntity<?> fetchHospitalDeptAppointmentStatus(

@@ -97,5 +97,15 @@ public class RoomQuery {
                     " AND hdri.status = 'Y'" +
                     " ORDER BY label ASC";
 
+    public static final String QUERY_TO_FETCH_ROOM_LIST_FOR_APPOINTMENT_STATUS =
+            "SELECT hdri.id as value," +                                                  //[0]
+                    " r.roomNumber AS label" +                                            //[1]
+                    " FROM Room r" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.room.id=r.id" +
+                    " WHERE hdri.hospitalDepartment.id=:hospitalDepartmentId " +
+                    " AND r.status = 'Y'" +
+                    " AND hdri.status = 'Y'" +
+                    " ORDER BY label ASC";
+
 
 }

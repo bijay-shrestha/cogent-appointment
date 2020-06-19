@@ -19,9 +19,10 @@ import java.util.List;
 @Qualifier("appointmentTransactionDetailRepositoryCustom")
 public interface AppointmentTransactionDetailRepositoryCustom {
 
-    Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId);
+    Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId,String appointmentServiceTypeCode);
 
-    AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(Date toDate, Date fromDate, Long hospitalId);
+    AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(Date toDate, Date fromDate, Long hospitalId,
+                                                                           String appointmentServiceTypeCode );
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO,
                                             Long hospitalId, Character filter);

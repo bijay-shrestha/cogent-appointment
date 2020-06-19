@@ -128,7 +128,8 @@ public class HospitalDeptDutyRosterOverrideQuery {
                         " ELSE hddro.hospitalDepartmentRoomInfo.id END as roomId," +
                         " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[9]
                         " THEN 'N/A'" +
-                        " ELSE hddro.hospitalDepartmentRoomInfo.room.roomNumber END as roomNumber" +
+                        " ELSE hddro.hospitalDepartmentRoomInfo.room.roomNumber END as roomNumber," +
+                        " hddr.id as hospitalDepartmentDutyRosterId" +
                         " FROM HospitalDepartmentDutyRosterOverride hddro" +
                         " LEFT JOIN HospitalDepartmentDutyRoster hddr ON hddr.id = hddro .hospitalDepartmentDutyRoster.id" +
                         " WHERE" +
@@ -151,5 +152,16 @@ public class HospitalDeptDutyRosterOverrideQuery {
 
         return SQL;
     }
+
+    public static String QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID=
+            "SELECT " +
+                    " DATE_FORMAT(hddro.start_time,'%H:%i') as startTime , " +
+                    " DATE_FORMAT(hddro.end_time ,'%H:%i') as endTime " +
+                    " FROM " +
+                    " hospital_department_duty_roster_override hddro " +
+                    " WHERE " +
+                    " hospital_department_duty_roster_id = :hospitalDepartmentDutyRosterId " +
+                    " AND (hddro.from_date <= :date " +
+                    " AND hddro.to_date >=:date)";
 
 }

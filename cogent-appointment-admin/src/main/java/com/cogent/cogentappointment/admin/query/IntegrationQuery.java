@@ -145,7 +145,7 @@ public class IntegrationQuery {
                     " AND hrm.status='Y'" +
                     " AND afi.status='Y'" +
                     " AND f.status='Y'" +
-                    " AND cfi.status='Y'" +
+                    " AND cfi.status!='D'" +
                     " AND ic.status='Y'" +
                     " AND ait.status='Y'";
 

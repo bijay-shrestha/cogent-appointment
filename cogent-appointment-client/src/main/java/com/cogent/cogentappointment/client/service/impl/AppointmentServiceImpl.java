@@ -149,6 +149,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final IntegrationCheckPointService integrationCheckPointService;
 
+    private final IntegrationCheckpointImpl integrationCheckpointImpl;
+
     private final ThirdPartyConnectorService thirdPartyConnectorService;
 
     public AppointmentServiceImpl(PatientService patientService,
@@ -176,7 +178,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   Validator validator,
                                   NepaliDateUtility nepaliDateUtility,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository,
-                                  IntegrationCheckPointServiceImpl integrationCheckPointService, ThirdPartyConnectorService thirdPartyConnectorService) {
+                                  IntegrationCheckPointServiceImpl integrationCheckPointService,
+                                  IntegrationCheckpointImpl integrationCheckpointImpl, ThirdPartyConnectorService thirdPartyConnectorService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -203,6 +206,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.nepaliDateUtility = nepaliDateUtility;
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
         this.integrationCheckPointService = integrationCheckPointService;
+        this.integrationCheckpointImpl = integrationCheckpointImpl;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
     }
 
@@ -1104,7 +1108,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String generatedEsewaHmac = getSigatureForEsewa.apply(appointment.getPatientId().getESewaId(),
                 appointment.getHospitalId().getEsewaMerchantCode());
 
-        BackendIntegrationApiInfo integrationApiInfo = integrationCheckPointService.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
+        BackendIntegrationApiInfo integrationApiInfo = integrationCheckpointImpl.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
                 appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 
         EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,

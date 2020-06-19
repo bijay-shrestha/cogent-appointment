@@ -550,6 +550,7 @@ public class AppointmentQuery {
                     " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
                     " a.appointmentNumber as appointmentNumber," +
                     " h.name as hospitalName," +
+                    " h.id as hospitalId,"+
                     " p.name as patientName," +
                     " CASE WHEN" +
                     " (hpi.registrationNumber IS NULL)" +

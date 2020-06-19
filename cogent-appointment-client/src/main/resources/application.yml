@@ -1,6 +1,6 @@
 ##### [START] CATALINA HOME CONFIG IN DEVELOPMENT/ PRODUCTION [/START] ########
 ## Note: ENABLE THIS ONLY IN CASE OF EMBEDDED TOMCAT DEPLOYMENT  ###
-######___ ***** ENTER PATH TO YOUR STAND-ALONE TOMCAT SERVER ***** ____ ############
+###### ___ ***** ENTER PATH TO YOUR STAND-ALONE TOMCAT SERVER ***** ____ ############
 
 catalina:
   home: /home/rupak/Softwares/tomcat

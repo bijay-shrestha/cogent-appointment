@@ -8,9 +8,9 @@ import com.cogent.cogentappointment.persistence.model.Appointment;
  */
 public interface IntegrationCheckPointService {
 
-    void apiIntegrationCheckpointDoctorWise(Appointment appointment,
-                                            IntegrationBackendRequestDTO integrationRequestDTO);
+    void apiIntegrationCheckpointForDoctorAppointment(Appointment appointment,
+                                                      IntegrationBackendRequestDTO integrationRequestDTO);
 
-    void apiIntegrationCheckpointDepartmentWise(Appointment appointment,
-                                                IntegrationBackendRequestDTO integrationRequestDTO);
+    void apiIntegrationCheckpointForDepartmentAppointment(Appointment appointment,
+                                                          IntegrationBackendRequestDTO integrationRequestDTO);
 }

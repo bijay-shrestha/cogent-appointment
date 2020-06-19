@@ -72,8 +72,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     @Override
-    public void apiIntegrationCheckpointDoctorWise(Appointment appointment,
-                                                   IntegrationBackendRequestDTO integrationRequestDTO) {
+    public void apiIntegrationCheckpointForDoctorAppointment(Appointment appointment,
+                                                             IntegrationBackendRequestDTO integrationRequestDTO) {
 
         String integrationChannelCode = integrationRequestDTO.getIntegrationChannelCode().trim().toUpperCase();
 
@@ -89,7 +89,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             case BACK_END_CODE:
                  /*BACK-END INTEGRATION*/
                 ThirdPartyHospitalResponse thirdPartyHospitalResponse =
-                        fetchThirdPartyHospitalResponseDoctorWise(integrationRequestDTO);
+                        fetchThirdPartyHospitalResponseForDoctorAppointment(integrationRequestDTO);
 
                 if (integrationRequestDTO.getIsPatientNew())
                     updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
@@ -102,8 +102,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     @Override
-    public void apiIntegrationCheckpointDepartmentWise(Appointment appointment,
-                                                       IntegrationBackendRequestDTO integrationRequestDTO) {
+    public void apiIntegrationCheckpointForDepartmentAppointment(Appointment appointment,
+                                                                 IntegrationBackendRequestDTO integrationRequestDTO) {
 
         String integrationChannelCode = integrationRequestDTO.getIntegrationChannelCode().trim().toUpperCase();
 
@@ -118,12 +118,12 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             case BACK_END_CODE:
                  /*BACK-END INTEGRATION*/
-                ThirdPartyHospitalResponse thirdPartyHospitalResponse =
-                        fetchThirdPartyHospitalResponseDepartmentWise(integrationRequestDTO);
+                if (integrationRequestDTO.getIsPatientNew()) {
+                    ThirdPartyHospitalResponse thirdPartyHospitalResponse =
+                            fetchThirdPartyHospitalResponseForDepartmentAppointment(integrationRequestDTO);
 
-                if (integrationRequestDTO.getIsPatientNew())
                     updateHospitalPatientInfo(appointment, thirdPartyHospitalResponse.getResponseData());
-
+                }
                 break;
 
             default:
@@ -131,7 +131,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         }
     }
 
-    private ThirdPartyHospitalResponse fetchThirdPartyHospitalResponseDoctorWise(
+    private ThirdPartyHospitalResponse fetchThirdPartyHospitalResponseForDoctorAppointment(
             IntegrationBackendRequestDTO requestDTO) {
 
         BackendIntegrationApiInfo backendIntegrationApiInfo = getBackendIntegrationApiInfo(requestDTO);
@@ -146,7 +146,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 //            thirdPartyCheckInDetails.setSex(toNormalCase(thirdPartyCheckInDetails.getGender().name()));
 
             ResponseEntity<?> responseEntity =
-                    thirdPartyConnectorService.callThirdPartyDoctorCheckInService(backendIntegrationApiInfo);
+                    thirdPartyConnectorService.callThirdPartyDoctorAppointmentCheckInService(backendIntegrationApiInfo);
 
             return fetchThirdPartyHospitalResponse(responseEntity);
         } else {
@@ -155,7 +155,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         }
     }
 
-    private ThirdPartyHospitalResponse fetchThirdPartyHospitalResponseDepartmentWise(
+    private ThirdPartyHospitalResponse fetchThirdPartyHospitalResponseForDepartmentAppointment(
             IntegrationBackendRequestDTO requestDTO) {
 
         BackendIntegrationApiInfo backendIntegrationApiInfo = getBackendIntegrationApiInfo(requestDTO);
@@ -172,7 +172,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             thirdPartyCheckInDetails.setSection("ENT");
 
             ResponseEntity<?> responseEntity =
-                    thirdPartyConnectorService.callThirdPartyHospitalDepartmentCheckInService(backendIntegrationApiInfo,
+                    thirdPartyConnectorService.callThirdPartyHospitalDepartmentAppointmentCheckInService(backendIntegrationApiInfo,
                             thirdPartyCheckInDetails);
 
             return fetchThirdPartyHospitalResponse(responseEntity);
@@ -186,7 +186,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             IntegrationBackendRequestDTO integrationBackendRequestDTO) {
 
         ClientFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
-                fetchClientIntegrationResponseDTOforBackendIntegration(integrationBackendRequestDTO);
+                fetchClientIntegrationResponseDTOForBackendIntegration(integrationBackendRequestDTO);
 
         if (!Objects.isNull(featureIntegrationResponse)) {
 
@@ -295,10 +295,10 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     public ThirdPartyResponse processEsewaRefundRequest(Appointment appointment,
-                                                         AppointmentTransactionDetail transactionDetail,
-                                                         AppointmentRefundDetail appointmentRefundDetail,
-                                                         Boolean isRefund,
-                                                         IntegrationBackendRequestDTO backendRequestDTO) {
+                                                        AppointmentTransactionDetail transactionDetail,
+                                                        AppointmentRefundDetail appointmentRefundDetail,
+                                                        Boolean isRefund,
+                                                        IntegrationBackendRequestDTO backendRequestDTO) {
 
         String generatedEsewaHmac = getSignatureForEsewa.apply("9841409090",
                 "testBir");

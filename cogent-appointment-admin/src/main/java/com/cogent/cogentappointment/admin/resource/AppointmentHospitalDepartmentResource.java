@@ -90,7 +90,7 @@ public class AppointmentHospitalDepartmentResource {
     @PutMapping(APPROVE)
     @ApiOperation(APPROVE_APPOINTMENT)
     public ResponseEntity<?> approveAppointment(@Valid @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
-//        appointmentHospitalDepartmentService.approveAppointment(integrationBackendRequestDTO);
+        appointmentHospitalDepartmentService.approveAppointment(integrationBackendRequestDTO);
         return ok().build();
     }
 }

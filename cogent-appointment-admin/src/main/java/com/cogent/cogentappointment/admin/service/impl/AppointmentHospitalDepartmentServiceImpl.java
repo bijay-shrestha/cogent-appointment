@@ -10,11 +10,15 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLo
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.admin.repository.AppointmentHospitalDepartmentFollowUpLogRepository;
+import com.cogent.cogentappointment.admin.repository.AppointmentHospitalDepartmentInfoRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
-import com.cogent.cogentappointment.admin.service.AppointmentHospitalDepartmentService;
-import com.cogent.cogentappointment.admin.service.IntegrationCheckPointService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.commons.exception.NoContentFoundException;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpLog;
+import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpTracker;
+import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -43,9 +48,31 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     private final IntegrationCheckPointService integrationCheckPointService;
 
-    public AppointmentHospitalDepartmentServiceImpl(AppointmentRepository appointmentRepository, IntegrationCheckPointService integrationCheckPointService) {
+    private final AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository;
+
+    private final AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService;
+
+    private final AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService;
+
+    private final AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository;
+
+    private final PatientService patientService;
+
+    public AppointmentHospitalDepartmentServiceImpl(
+            AppointmentRepository appointmentRepository,
+            IntegrationCheckPointService integrationCheckPointService,
+            AppointmentHospitalDepartmentFollowUpLogRepository appointmentHospitalDepartmentFollowUpLogRepository,
+            AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService,
+            AppointmentHospitalDepartmentFollowUpRequestLogService appointmentHospitalDepartmentFollowUpRequestLogService,
+            AppointmentHospitalDepartmentInfoRepository appointmentHospitalDepartmentInfoRepository,
+            PatientService patientService) {
         this.appointmentRepository = appointmentRepository;
         this.integrationCheckPointService = integrationCheckPointService;
+        this.appointmentHospitalDepartmentFollowUpLogRepository = appointmentHospitalDepartmentFollowUpLogRepository;
+        this.appointmentHospitalDepartmentFollowUpTrackerService = appointmentHospitalDepartmentFollowUpTrackerService;
+        this.appointmentHospitalDepartmentFollowUpRequestLogService = appointmentHospitalDepartmentFollowUpRequestLogService;
+        this.appointmentHospitalDepartmentInfoRepository = appointmentHospitalDepartmentInfoRepository;
+        this.patientService = patientService;
     }
 
     @Override
@@ -145,11 +172,11 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 integrationRequestDTO.getAppointmentId(), integrationRequestDTO.getHospitalId());
 
         if (!Objects.isNull(integrationRequestDTO.getIntegrationChannelCode()))
-            integrationCheckPointService.apiIntegrationCheckpointDepartmentWise(appointment, integrationRequestDTO);
+            integrationCheckPointService.apiIntegrationCheckpointForDepartmentAppointment(appointment, integrationRequestDTO);
 
         appointment.setStatus(APPROVED);
 
-//        saveAppointmentHospitalDepartmentFollowUpTracker(appointment);
+        saveAppointmentHospitalDepartmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -164,5 +191,61 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
     };
 
+    /*IF IS FOLLOW UP = 'N',
+    *   THEN PERSIST IN AppointmentHospitalDepartmentFollowUpTracker WHERE
+    *   ALLOWED NUMBER OF FOLLOW UPS & INTERVAL DAYS IS BASED ON THE SELECTED HOSPITAL.
+    *   PERSIST IN APPOINTMENT FOLLOW UP REQUEST WITH REQUEST COUNT STARTING WITH 0.
+    *   REGISTER PATIENT AND GENERATE A UNIQUE REGISTRATION NUMBER.
+    *
+    * ELSE
+    *   UPDATE AppointmentHospitalDepartmentFollowUpTracker
+    *   ie. DECREMENT NUMBER OF FOLLOW UPS BY 1 AND IF IT IS ZERO, THEN SET STATUS AS 'N'
+    *   ONLY ACTIVE ('Y') AppointmentHospitalDepartmentFollowUpTracker ARE FETCHED TO DIFFERENTIATE
+     *  WHETHER IT IS FOLLOW UP OR NORMAL APPOINTMENT
+    *   */
+    private void saveAppointmentHospitalDepartmentFollowUpTracker(Appointment appointment) {
+
+        if (appointment.getIsFollowUp().equals(YES)) {
+
+            AppointmentHospitalDepartmentFollowUpLog appointmentFollowUpLog =
+                    appointmentHospitalDepartmentFollowUpLogRepository.findByFollowUpAppointmentId(appointment.getId())
+                            .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointment.getId()));
+
+            appointmentHospitalDepartmentFollowUpTrackerService.updateFollowUpTracker(
+                    appointmentFollowUpLog.getParentAppointmentId());
+
+        } else {
+
+            AppointmentHospitalDepartmentInfo appointmentHospitalDepartmentInfo =
+                    fetchAppointmentHospitalDepartmentInfo(appointment.getId());
+
+            AppointmentHospitalDepartmentFollowUpTracker appointmentFollowUpTracker =
+                    appointmentHospitalDepartmentFollowUpTrackerService.save(
+                            appointment.getId(),
+                            appointment.getHospitalId(),
+                            appointmentHospitalDepartmentInfo.getHospitalDepartment(),
+                            appointment.getPatientId()
+                    );
+
+            appointmentHospitalDepartmentFollowUpRequestLogService.save(appointmentFollowUpTracker);
+
+            registerPatient(appointment.getPatientId().getId(), appointment.getHospitalId().getId());
+        }
+    }
+
+    private void registerPatient(Long patientId, Long hospitalId) {
+        patientService.registerPatient(patientId, hospitalId);
+    }
+
+    private AppointmentHospitalDepartmentInfo fetchAppointmentHospitalDepartmentInfo(Long appointmentId) {
+        return appointmentHospitalDepartmentInfoRepository.fetchAppointmentHospitalDepartmentInfo(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_HOSPITAL_DEPARTMENT_INFO_NOT_FOUND.apply(appointmentId));
+    }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_HOSPITAL_DEPARTMENT_INFO_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_HOSPITAL_DEPARTMENT_INFO);
+        throw new NoContentFoundException(AppointmentHospitalDepartmentInfo.class,
+                "appointmentId", appointmentId.toString());
+    };
 
 }

@@ -597,7 +597,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId());
 
         if (integrationRequestDTO.getIntegrationChannelCode() != null)
-            integrationCheckPointService.apiIntegrationCheckpointDoctorWise(appointment, integrationRequestDTO);
+            integrationCheckPointService.apiIntegrationCheckpointForDoctorAppointment(appointment, integrationRequestDTO);
 
         appointment.setStatus(APPROVED);
 

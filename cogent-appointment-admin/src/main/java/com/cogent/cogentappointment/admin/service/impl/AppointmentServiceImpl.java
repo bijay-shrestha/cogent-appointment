@@ -273,7 +273,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
 
         if (backendRequestDTO.getIntegrationChannelCode() != null) {
-            integrationCheckpointService.apiIntegrationCheckpointDoctorWise(appointment, backendRequestDTO);
+            integrationCheckpointService.apiIntegrationCheckpointForDoctorAppointment(appointment, backendRequestDTO);
         }
 
         appointment.setStatus(APPROVED);
@@ -282,8 +282,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
-
-
 
 
     @Override

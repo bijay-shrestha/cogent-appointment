@@ -91,7 +91,7 @@ public class IntegrationCheckpointImpl {
         //call thirdparty requestbody utils if not create one.....
 
         ResponseEntity<?> responseEntity =
-                thirdPartyConnectorService.callThirdPartyDoctorCheckInService(integrationHospitalApiInfo);
+                thirdPartyConnectorService.callThirdPartyDoctorAppointmentCheckInService(integrationHospitalApiInfo);
 
         if (responseEntity.getStatusCode().value() == 403) {
             throw new OperationUnsuccessfulException(INTEGRATION_BHERI_HOSPITAL_FORBIDDEN_ERROR);

@@ -118,7 +118,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                 integrationRequestDTO.getAppointmentId(), getLoggedInHospitalId());
 
         if (!Objects.isNull(integrationRequestDTO.getIntegrationChannelCode()))
-            integrationCheckPointService.apiIntegrationCheckpointDepartmentWise(appointment, integrationRequestDTO);
+            integrationCheckPointService.apiIntegrationCheckpointForDepartmentAppointment(appointment, integrationRequestDTO);
 
         appointment.setStatus(APPROVED);
 

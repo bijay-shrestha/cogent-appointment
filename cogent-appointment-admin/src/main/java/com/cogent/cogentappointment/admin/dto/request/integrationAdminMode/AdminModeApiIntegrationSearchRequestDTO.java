@@ -26,4 +26,6 @@ public class AdminModeApiIntegrationSearchRequestDTO implements Serializable {
 
     private String url;
 
+    private Character status;
+
 }

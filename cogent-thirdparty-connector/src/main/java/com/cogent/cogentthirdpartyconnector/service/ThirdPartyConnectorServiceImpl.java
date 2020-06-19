@@ -2,9 +2,6 @@ package com.cogent.cogentthirdpartyconnector.service;
 
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.OperationUnsuccessfulException;
-import com.cogent.cogentappointment.persistence.model.Appointment;
-import com.cogent.cogentthirdpartyconnector.repository.AppointmentEsewaRequestRepository;
-import com.cogent.cogentthirdpartyconnector.repository.AppointmentRepository;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
 import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
@@ -22,12 +19,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.commons.log.constants.AddressLog.ZONE;
 import static com.cogent.cogentappointment.commons.utils.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.commons.utils.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentthirdpartyconnector.log.constants.HmacLog.GENERATING_HMAC_FOR_FRONTEND_PROCESS_COMPLETED;
 import static com.cogent.cogentthirdpartyconnector.log.constants.HmacLog.GENERATING_HMAC_FOR_FRONTEND_PROCESS_STARTED;
-import static com.cogent.cogentthirdpartyconnector.utils.HMACUtils.getSigatureForEsewa;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryParameter;
@@ -42,16 +37,12 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
     private final RestTemplateUtils restTemplateUtils;
 
-    private final AppointmentRepository appointmentRepository;
+//    private final AppointmentRepository appointmentRepository;
+//
+//    private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
 
-    private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
-
-    public ThirdPartyConnectorServiceImpl(RestTemplateUtils restTemplateUtils,
-                                          AppointmentRepository appointmentRepository,
-                                          AppointmentEsewaRequestRepository appointmentEsewaRequestRepository) {
+    public ThirdPartyConnectorServiceImpl(RestTemplateUtils restTemplateUtils) {
         this.restTemplateUtils = restTemplateUtils;
-        this.appointmentRepository = appointmentRepository;
-        this.appointmentEsewaRequestRepository = appointmentEsewaRequestRepository;
     }
 
     @Override
@@ -194,15 +185,15 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         log.info(GENERATING_HMAC_FOR_FRONTEND_PROCESS_STARTED);
 
-        Appointment appointment=appointmentRepository.fetchPendingAppointmentById(appointmentId);
-
-        String esewaId=appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId);
-
-        String hmac=getSigatureForEsewa.apply(esewaId,appointment.getHospitalId().getEsewaMerchantCode());
+//        Appointment appointment=appointmentRepository.fetchPendingAppointmentById(appointmentId);
+//
+//        String esewaId=appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId);
+//
+//        String hmac=getSigatureForEsewa.apply(esewaId,appointment.getHospitalId().getEsewaMerchantCode());
 
         log.info(GENERATING_HMAC_FOR_FRONTEND_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
-        return hmac;
+        return null;
     }
 
     private String getHospitalDeptCheckInQueryParameter(BackendIntegrationApiInfo backendIntegrationApiInfo) {

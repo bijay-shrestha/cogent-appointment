@@ -1,15 +1,12 @@
 package com.cogent.cogentthirdpartyconnector.exception.utils;
 
-import com.cogent.cogentappointment.client.exception.ConstraintViolationException;
 
-import javax.validation.ConstraintViolation;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
+import static com.cogent.cogentappointment.commons.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentthirdpartyconnector.constants.HMACConstant.SPACE;
+import static com.cogent.cogentthirdpartyconnector.utils.StringUtil.splitByCharacterTypeCamelCase;
 import static org.springframework.util.StringUtils.capitalize;
 
 /**
@@ -28,24 +25,5 @@ public class ValidationUtils {
                 ).collect(Collectors.toList());
 
         return String.join(COMMA_SEPARATED + SPACE, violations);
-    }
-
-    /*
-    ConstraintViolationException to be thrown when validation on an argument annotated with {@code @Valid}
-   (request dtos) fails on Service layer
-  */
-    public static <T> void validateConstraintViolation(Set<ConstraintViolation<T>> constraintViolations) {
-        if (!constraintViolations.isEmpty()) {
-            List<String> violations = constraintViolations.stream().map(
-                    violation -> {
-                        return capitalize(splitByCharacterTypeCamelCase(
-                                violation.getPropertyPath().toString())) + SPACE + violation.getMessage();
-                    }
-            ).collect(Collectors.toList());
-
-            String errorMessages = String.join(COMMA_SEPARATED + SPACE, violations);
-
-            throw new ConstraintViolationException(errorMessages, errorMessages);
-        }
     }
 }

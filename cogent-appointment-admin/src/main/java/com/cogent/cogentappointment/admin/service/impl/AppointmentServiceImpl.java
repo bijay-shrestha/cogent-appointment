@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentSta
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDetailResponseDTO;
@@ -140,24 +141,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void approveRefundAppointment(IntegrationBackendRequestDTO backendRequestDTO) {
+    public void approveRefundAppointment(IntegrationRefundRequestDTO integrationRefundRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
 
         AppointmentRefundDetail refundAppointmentDetail =
-                appointmentRefundDetailRepository.findByAppointmentId(backendRequestDTO.getAppointmentId())
-                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
+                appointmentRefundDetailRepository.findByAppointmentId(integrationRefundRequestDTO.getAppointmentId())
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationRefundRequestDTO.getAppointmentId()));
 
-        Appointment appointment = appointmentRepository.fetchRefundAppointmentById(backendRequestDTO.getAppointmentId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
+        Appointment appointment = appointmentRepository.fetchRefundAppointmentById(integrationRefundRequestDTO.getAppointmentId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationRefundRequestDTO.getAppointmentId()));
 
-        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(backendRequestDTO.getAppointmentId());
+        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(integrationRefundRequestDTO.getAppointmentId());
 
         ThirdPartyResponse response = processRefundRequest(appointment,
                 appointmentTransactionDetail,
                 refundAppointmentDetail,
-                true, backendRequestDTO);
+                true, integrationRefundRequestDTO);
 
         if (!Objects.isNull(response.getCode())) {
             throw new BadRequestException(response.getMessage(), response.getMessage());
@@ -169,12 +170,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO,
-                                        IntegrationBackendRequestDTO backendRequestDTO) {
+    public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(REJECT_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+
+        IntegrationRefundRequestDTO refundRequestDTO=IntegrationRefundRequestDTO.builder()
+                .appointmentId(refundRejectDTO.getAppointmentId())
+                .build();
 
         Long appointmentId = refundRejectDTO.getAppointmentId();
 
@@ -189,11 +194,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointmentId);
 
-        if (backendRequestDTO != null) {
+        if (refundRequestDTO != null) {
             ThirdPartyResponse response = processRefundRequest(appointment,
                     appointmentTransactionDetail,
                     refundAppointmentDetail,
-                    false, backendRequestDTO);
+                    false, refundRequestDTO);
 
             if (!Objects.isNull(response.getCode())) {
                 throw new BadRequestException(response.getMessage());
@@ -456,7 +461,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                     AppointmentTransactionDetail transactionDetail,
                                                     AppointmentRefundDetail appointmentRefundDetail,
                                                     Boolean isRefund,
-                                                    IntegrationBackendRequestDTO backendRequestDTO) {
+                                                    IntegrationRefundRequestDTO integrationRefundRequestDTO) {
 
         ThirdPartyResponse thirdPartyResponse = null;
         switch (appointment.getAppointmentModeId().getCode()) {
@@ -467,7 +472,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 thirdPartyResponse = integrationCheckpointService.processEsewaRefundRequest(appointment,
                         transactionDetail,
                         appointmentRefundDetail,
-                        isRefund, backendRequestDTO);
+                        isRefund, integrationRefundRequestDTO);
                 break;
             case APPOINTMENT_MODE_FONEPAY_CODE:
                 break;

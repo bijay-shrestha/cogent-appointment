@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -121,6 +122,11 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             default:
                 throw new BadRequestException(String.format(INVALID_INTEGRATION_CHANNEL_CODE, integrationChannelCode));
         }
+    }
+
+    @Override
+    public BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationRefundRequestDTO integrationRefundRequestDTO, Long id, String generatedEsewaHmac) {
+        return null;
     }
 
     private void updateHospitalPatientInfo(Appointment appointment, String hospitalNumber) {

@@ -1,5 +1,6 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.OperationUnsuccessfulException;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;

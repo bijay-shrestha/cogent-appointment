@@ -26,7 +26,6 @@ import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
-import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -80,11 +79,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
 
-    private final ThirdPartyConnectorService thirdPartyConnectorService;
-
     private final IntegrationCheckPointService integrationCheckpointService;
-
-    private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
     private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
 
@@ -95,9 +90,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   PatientService patientService,
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
-                                  ThirdPartyConnectorService thirdPartyConnectorService,
                                   IntegrationCheckPointService integrationCheckpointService,
-                                  HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
@@ -106,9 +99,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.patientService = patientService;
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
-        this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.integrationCheckpointService = integrationCheckpointService;
-        this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
     }
 
@@ -148,12 +139,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentRefundDetail refundAppointmentDetail =
                 appointmentRefundDetailRepository.findByAppointmentId(integrationRefundRequestDTO.getAppointmentId())
-                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationRefundRequestDTO.getAppointmentId()));
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(
+                                integrationRefundRequestDTO.getAppointmentId()));
 
-        Appointment appointment = appointmentRepository.fetchRefundAppointmentById(integrationRefundRequestDTO.getAppointmentId())
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(integrationRefundRequestDTO.getAppointmentId()));
+        Appointment appointment = appointmentRepository.fetchRefundAppointmentById(
+                integrationRefundRequestDTO.getAppointmentId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(
+                        integrationRefundRequestDTO.getAppointmentId()));
 
-        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(integrationRefundRequestDTO.getAppointmentId());
+        AppointmentTransactionDetail appointmentTransactionDetail =
+                fetchAppointmentTransactionDetail(integrationRefundRequestDTO.getAppointmentId());
 
         ThirdPartyResponse response = processRefundRequest(appointment,
                 appointmentTransactionDetail,

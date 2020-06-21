@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.persistence.model.*;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -22,7 +21,7 @@ public class HospitalDepartmentUtils {
             parseToHospitalDepartment = (requestDTO, hospital) -> {
 
         HospitalDepartment hospitalDepartment = new HospitalDepartment();
-        hospitalDepartment.setName(convertToNormalCase(requestDTO.getName()));
+        hospitalDepartment.setName(requestDTO.getName());
         hospitalDepartment.setCode(toUpperCase(requestDTO.getCode()));
         hospitalDepartment.setDescription(requestDTO.getDescription());
         hospitalDepartment.setStatus(requestDTO.getStatus());
@@ -105,7 +104,7 @@ public class HospitalDepartmentUtils {
     public static BiFunction<HospitalDepartment, HospitalDepartmentUpdateRequestDTO, HospitalDepartment>
             parseToUpdateHospitalDepartment = (hospitalDepartment, requestDTO) -> {
 
-        hospitalDepartment.setName(convertToNormalCase(requestDTO.getName()));
+        hospitalDepartment.setName(requestDTO.getName());
         hospitalDepartment.setCode(toUpperCase(requestDTO.getCode()));
         hospitalDepartment.setDescription(requestDTO.getDescription());
         hospitalDepartment.setStatus(requestDTO.getStatus());

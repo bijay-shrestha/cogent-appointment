@@ -386,8 +386,6 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
                     esewaRefundRequestDTO);
 
-//                validateThirdPartyException(thirdPartyResponse);
-
             if (responseEntity.getBody() == null) {
                 throw new OperationUnsuccessfulException("ThirdParty API response is null");
             }
@@ -403,6 +401,10 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 e.printStackTrace();
             }
 
+            if (thirdPartyResponse.getCode() != null) {
+                validateThirdPartyException(thirdPartyResponse);
+            }
+
 
             return thirdPartyResponse;
 
@@ -415,6 +417,12 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     private void validateThirdPartyException(ThirdPartyResponse thirdPartyResponse) {
+
+        if (thirdPartyResponse == null) {
+            throw new OperationUnsuccessfulException("Third Party API Returns null");
+
+        }
+
         if (thirdPartyResponse.getCode().equals(400)) {
             throw new OperationUnsuccessfulException(ESEWA_REFUND_API_BAD_REQUEST_MESSAGE);
 
@@ -422,6 +430,11 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         if (thirdPartyResponse.getCode().equals(404)) {
             throw new OperationUnsuccessfulException(ESEWA_REFUND_API_NOT_FOUND_MESSAGE);
+
+        }
+
+        if (thirdPartyResponse.getCode().equals(403)) {
+            throw new OperationUnsuccessfulException(ESEWA_REFUND_API_FORBIDDEN_MESSAGE);
 
         }
 

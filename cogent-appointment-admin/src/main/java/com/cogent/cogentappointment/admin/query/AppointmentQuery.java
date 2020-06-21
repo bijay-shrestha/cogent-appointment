@@ -544,13 +544,13 @@ public class AppointmentQuery {
 
     public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
             "SELECT" +
-                    " a.id as appointmentId,"+
-                    " a.appointmentModeId.id as appointmentModeId,"+
+                    " a.id as appointmentId," +
+                    " a.appointmentModeId.id as appointmentModeId," +
                     " a.appointmentDate as appointmentDate," +
                     " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
                     " a.appointmentNumber as appointmentNumber," +
                     " h.name as hospitalName," +
-                    " h.id as hospitalId,"+
+                    " h.id as hospitalId," +
                     " p.name as patientName," +
                     " CASE WHEN" +
                     " (hpi.registrationNumber IS NULL)" +
@@ -573,6 +573,7 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentCharge," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
                     " a.appointmentModeId.name as appointmentMode," +
+                    " h.esewaMerchantCode as productCode," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     " dv.fileUri as fileUri" +
@@ -1149,9 +1150,9 @@ public class AppointmentQuery {
                     " a.hasTransferred as hasTransferred," +
                     " hd.id as hospitalDepartmentId, " +
                     " hd.name as hospitalDepartmentName, " +
-                    " hdri.id  as hospitalDepartmentRoomInfoId,"+
-                    " r.roomNumber as roomNumber,"+
-                    QUERY_TO_CALCULATE_PATIENT_AGE+
+                    " hdri.id  as hospitalDepartmentRoomInfoId," +
+                    " r.roomNumber as roomNumber," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
                     " Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id" +
@@ -1183,7 +1184,7 @@ public class AppointmentQuery {
                     " adi.specialization.name as specializationName," +
 //                    " ds.salutationId.name as doctorSalutation," +
                     " a.hospitalId.id as hospitalId," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE+
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
                     " Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id" +

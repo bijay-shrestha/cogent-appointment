@@ -79,7 +79,7 @@ public class HospitalUtils {
 
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
-        hospital.setName(convertToNormalCase(hospitalRequestDTO.getName()));
+        hospital.setName(hospitalRequestDTO.getName());
         hospital.setEsewaMerchantCode(toUpperCase(hospitalRequestDTO.getEsewaMerchantCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
@@ -136,7 +136,7 @@ public class HospitalUtils {
     public static Hospital parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
                                                   Hospital hospital) {
 
-        hospital.setName(convertToNormalCase(updateRequestDTO.getName()));
+        hospital.setName(updateRequestDTO.getName());
         hospital.setAddress(updateRequestDTO.getAddress());
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());

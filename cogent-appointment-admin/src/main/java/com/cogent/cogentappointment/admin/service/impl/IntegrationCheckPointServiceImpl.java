@@ -63,9 +63,9 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     private final AppointmentRepository appointmentRepository;
 
     public IntegrationCheckPointServiceImpl(IntegrationRepository integrationRepository,
-                                        ThirdPartyConnectorService thirdPartyConnectorService,
-                                        HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                        AppointmentRepository appointmentRepository) {
+                                            ThirdPartyConnectorService thirdPartyConnectorService,
+                                            HospitalPatientInfoRepository hospitalPatientInfoRepository,
+                                            AppointmentRepository appointmentRepository) {
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
@@ -174,10 +174,11 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         String generatedEsewaHmac = getSignatureForEsewa.apply(appointment.getPatientId().getESewaId(),
                 appointment.getHospitalId().getEsewaMerchantCode());
 
-        IntegrationBackendRequestDTO integrationBackendRequestDTO=IntegrationBackendRequestDTO.builder()
+        IntegrationBackendRequestDTO integrationBackendRequestDTO = IntegrationBackendRequestDTO.builder()
                 .appointmentId(refundRequestDTO.getAppointmentId())
                 .featureCode(refundRequestDTO.getFeatureCode())
                 .integrationChannelCode(refundRequestDTO.getIntegrationChannelCode())
+                .hospitalId(refundRequestDTO.getHospitalId())
                 .build();
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationBackendRequestDTO,

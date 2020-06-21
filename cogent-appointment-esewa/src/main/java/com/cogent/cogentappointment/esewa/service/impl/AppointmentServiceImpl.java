@@ -60,7 +60,6 @@ import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentModeLog.APPOINTMENT_MODE;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
-import static com.cogent.cogentappointment.esewa.log.constants.AppointmentServiceTypeLog.APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpLogUtils.parseToAppointmentFollowUpLog;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentFollowUpLogUtils.parseToAppointmentHospitalDepartmentFollowUpLog;
@@ -145,6 +144,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final NepaliDateUtility nepaliDateUtility;
 
+    private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
+
     public AppointmentServiceImpl(
             PatientService patientService,
             DoctorService doctorService,
@@ -178,7 +179,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
             AppointmentServiceTypeRepository appointmentServiceTypeRepository,
             HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
-            NepaliDateUtility nepaliDateUtility) {
+            NepaliDateUtility nepaliDateUtility, AppointmentEsewaRequestRepository appointmentEsewaRequestRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -212,6 +213,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentServiceTypeRepository = appointmentServiceTypeRepository;
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.nepaliDateUtility = nepaliDateUtility;
+        this.appointmentEsewaRequestRepository = appointmentEsewaRequestRepository;
     }
 
     @Override
@@ -1117,6 +1119,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         save(appointment);
 
+        saveAppointmentEsewaRequest(appointment,requestDTO.getPatientInfo().getESewaId());
+
         saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
 
         if (appointmentInfo.getIsFollowUp().equals(YES))
@@ -1170,6 +1174,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
 
         save(appointment);
+
+        saveAppointmentEsewaRequest(appointment,requestDTO.getPatientInfo().getESewaId());
 
         saveAppointmentHospitalDepartmentInfo(appointment, appointmentReservationLog);
 
@@ -1303,6 +1309,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         save(appointment);
 
+        saveAppointmentEsewaRequest(appointment,requestDTO.getRequestBy().getESewaId());
+
         saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
 
         if (appointmentInfo.getIsFollowUp().equals(YES))
@@ -1358,6 +1366,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setAppointmentDateInNepali(getNepaliDate(appointment.getAppointmentDate()));
 
         save(appointment);
+
+        saveAppointmentEsewaRequest(appointment,requestDTO.getRequestBy().getESewaId());
 
         saveAppointmentHospitalDepartmentInfo(appointment, appointmentReservationLog);
 
@@ -1415,6 +1425,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return hospitalDeptDutyRosterRepository.fetchHospitalDeptDutyRoster(
                 appointmentDate, hospitalDepartmentId, hospitalDepartmentRoomInfoId
         );
+    }
+
+    private void saveAppointmentEsewaRequest(Appointment appointment,String esewaId){
+        appointmentEsewaRequestRepository.save(parseToAppointmentEsewaRequest(appointment,esewaId));
     }
 
     private String getNepaliDate(Date date) {

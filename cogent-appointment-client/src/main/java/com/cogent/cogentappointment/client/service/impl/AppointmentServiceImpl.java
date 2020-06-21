@@ -39,6 +39,7 @@ import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRe
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
@@ -66,7 +67,7 @@ import static com.cogent.cogentappointment.client.constants.CogentAppointmentCon
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.FRONT_END_CODE;
@@ -150,7 +151,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
 
+    private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
+
     private final IntegrationCheckPointService integrationCheckPointService;
+
+    private final IntegrationCheckpointImpl integrationCheckpointImpl;
 
     private final ThirdPartyConnectorService thirdPartyConnectorService;
 
@@ -179,7 +184,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   Validator validator,
                                   NepaliDateUtility nepaliDateUtility,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository,
-                                  IntegrationCheckPointServiceImpl integrationCheckPointService, ThirdPartyConnectorService thirdPartyConnectorService) {
+                                  AppointmentEsewaRequestRepository appointmentEsewaRequestRepository,
+                                  IntegrationCheckPointServiceImpl integrationCheckPointService,
+                                  IntegrationCheckpointImpl integrationCheckpointImpl,
+                                  ThirdPartyConnectorService thirdPartyConnectorService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -205,7 +213,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.validator = validator;
         this.nepaliDateUtility = nepaliDateUtility;
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
+        this.appointmentEsewaRequestRepository = appointmentEsewaRequestRepository;
         this.integrationCheckPointService = integrationCheckPointService;
+        this.integrationCheckpointImpl = integrationCheckpointImpl;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
     }
 
@@ -1120,23 +1130,61 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                      AppointmentRefundDetail appointmentRefundDetail,
                                                      Boolean isRefund) {
 
-
-        String generatedEsewaHmac = getSigatureForEsewa.apply(appointment.getPatientId().getESewaId(),
+        String esewaId = getEsewaId(appointment.getId());
+        String generatedEsewaHmac = getSigatureForEsewa.apply(esewaId,
                 appointment.getHospitalId().getEsewaMerchantCode());
 
-        BackendIntegrationApiInfo integrationApiInfo = integrationCheckPointService.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
+        BackendIntegrationApiInfo integrationApiInfo = integrationCheckpointImpl.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
                 appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 
-        EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
-                transactionDetail,
-                appointmentRefundDetail,
-                isRefund);
+        if (!Objects.isNull(integrationApiInfo)) {
 
-        integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
+            EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
+                    transactionDetail,
+                    appointmentRefundDetail,
+                    isRefund);
+            esewaRefundRequestDTO.setEsewa_id(esewaId);
 
+            integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
-        return thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                esewaRefundRequestDTO);
+            ThirdPartyResponse thirdPartyResponse = null;
+            try {
+                thirdPartyResponse = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
+                        esewaRefundRequestDTO);
+
+            } catch (Exception exception) {
+                validateThirdPartyException(thirdPartyResponse);
+            }
+
+            return thirdPartyResponse;
+
+        } else {
+            return new ThirdPartyResponse("400", "Third party hospital information Not found",
+                    "Third party hospital information Not found");
+        }
+    }
+
+    private void validateThirdPartyException(ThirdPartyResponse thirdPartyResponse) {
+        if (thirdPartyResponse.getCode().equals(400)) {
+            throw new OperationUnsuccessfulException(ESEWA_REFUND_API_BAD_REQUEST_MESSAGE);
+
+        }
+
+        if (thirdPartyResponse.getCode().equals(404)) {
+            throw new OperationUnsuccessfulException(ESEWA_REFUND_API_NOT_FOUND_MESSAGE);
+
+        }
+
+        if (thirdPartyResponse.getCode().equals(403)) {
+            throw new OperationUnsuccessfulException(ESEWA_REFUND_API_FORBIDDEN_MESSAGE);
+
+        }
+    }
+
+    private String getEsewaId(Long appointmentId) {
+
+        return appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId);
+
     }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,

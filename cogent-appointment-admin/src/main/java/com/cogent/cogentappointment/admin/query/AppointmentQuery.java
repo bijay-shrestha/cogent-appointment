@@ -553,6 +553,7 @@ public class AppointmentQuery {
                     " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
                     " a.appointmentNumber as appointmentNumber," +
                     " h.name as hospitalName," +
+                    " h.id as hospitalId," +
                     " p.name as patientName," +
                     " CASE WHEN" +
                     " (hpi.registrationNumber IS NULL)" +
@@ -575,6 +576,7 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentCharge," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
                     " a.appointmentModeId.name as appointmentMode," +
+                    " h.esewaMerchantCode as productCode," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     " dv.fileUri as fileUri" +

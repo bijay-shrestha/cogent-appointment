@@ -29,11 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
@@ -150,12 +148,12 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     @Override
-    public BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationRefundRequestDTO integrationRefundRequestDTO,
-                                                                      Long appointmentId,
-                                                                      String generatedEsewaHmac) {
+    public BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationRefundRequestDTO refundRequestDTO,
+                                                                      Long appointmentModeId,
+                                                                      String generatedHmacKey) {
+
         AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
-                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(integrationRefundRequestDTO,
-                        appointmentId);
+                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(refundRequestDTO, appointmentModeId);
 
         Map<String, String> requestHeaderResponse = integrationRepository.
                 findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
@@ -163,15 +161,13 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         Map<String, String> queryParametersResponse = integrationRepository.
                 findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
 
-        //todo
-        List<String> requestBody =null;
-//                getRequestBodyByFeature(featureIntegrationResponse.getFeatureId(),
+//        List<String> requestBody = getRequestBodyByFeature(featureIntegrationResponse.getFeatureId(),
 //                featureIntegrationResponse.getRequestMethod());
 
         BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
         integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
-        integrationApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, generatedEsewaHmac));
-        integrationApiInfo.setRequestBody(requestBody);
+        integrationApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, generatedHmacKey));
+//        integrationApiInfo.setRequestBody(requestBody);
 
         if (!queryParametersResponse.isEmpty()) {
             integrationApiInfo.setQueryParameters(queryParametersResponse);
@@ -179,11 +175,26 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         integrationApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
 
         return integrationApiInfo;
+
     }
 
 //    private List<String> getRequestBodyByFeature(Long featureId, String requestMethod) {
 //
+//        List<String> requestBody = null;
+//        if (requestMethod.equalsIgnoreCase("POST")) {
+//            List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.
+//                    fetchRequestBodyAttributeByFeatureId(featureId);
 //
+//            if (responses != null) {
+//                requestBody = responses.stream()
+//                        .map(request -> request.getName())
+//                        .collect(Collectors.toList());
+//            }
+//
+//        }
+//
+//
+//        return requestBody;
 //    }
 
 

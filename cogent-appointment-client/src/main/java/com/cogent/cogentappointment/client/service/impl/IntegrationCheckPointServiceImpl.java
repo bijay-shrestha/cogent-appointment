@@ -383,14 +383,26 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
+            ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
+                    esewaRefundRequestDTO);
+
+//                validateThirdPartyException(thirdPartyResponse);
+
+            if (responseEntity.getBody() == null) {
+                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+            }
+
+
             ThirdPartyResponse thirdPartyResponse = null;
             try {
-                thirdPartyResponse = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                        esewaRefundRequestDTO);
+                thirdPartyResponse = map(responseEntity.getBody().toString(),
+                        ThirdPartyResponse.class);
+            } catch (IOException e)
 
-            } catch (Exception exception) {
-                validateThirdPartyException(thirdPartyResponse);
+            {
+                e.printStackTrace();
             }
+
 
             return thirdPartyResponse;
 

@@ -78,7 +78,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
+    public ResponseEntity<?> callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
                                                      EsewaRefundRequestDTO esewaRefundRequestDTO) {
 
 
@@ -98,17 +98,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
                         new HttpEntity<>(esewaRefundRequestDTO, backendIntegrationApiInfo.getHttpHeaders()));
 
 
-        ThirdPartyResponse thirdPartyResponse = null;
-        try {
-            thirdPartyResponse = map(response.getBody().toString(),
-                    ThirdPartyResponse.class);
-        } catch (IOException e)
-
-        {
-            e.printStackTrace();
-        }
-
-        return thirdPartyResponse;
+        return response;
 
     }
 

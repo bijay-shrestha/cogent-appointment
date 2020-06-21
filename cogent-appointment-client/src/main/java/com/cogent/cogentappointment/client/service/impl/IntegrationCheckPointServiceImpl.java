@@ -370,7 +370,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 appointment.getHospitalId().getEsewaMerchantCode());
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationRefundRequestDTO,
-                appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
+                appointment.getAppointmentModeId().getId(),
+                generatedEsewaHmac);
 
         if (!Objects.isNull(integrationApiInfo)) {
 
@@ -394,8 +395,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             return thirdPartyResponse;
 
         } else {
-            return new ThirdPartyResponse("400", "Third party hospital information Not found",
-                    "Third party hospital information Not found");
+            return new ThirdPartyResponse("400", "Third party API information Not found",
+                    "Third party API information Not found");
         }
 
 

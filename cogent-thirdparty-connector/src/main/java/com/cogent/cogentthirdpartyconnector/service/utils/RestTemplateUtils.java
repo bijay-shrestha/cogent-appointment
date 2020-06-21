@@ -1,6 +1,7 @@
 package com.cogent.cogentthirdpartyconnector.service.utils;
 
-import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
+import com.cogent.cogentappointment.commons.exception.OperationUnsuccessfulException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -8,12 +9,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import static org.springframework.http.HttpStatus.OK;
+import static com.cogent.cogentthirdpartyconnector.utils.ExceptionUtils.exceptionHandler;
 
 /**
  * @author rupak on 2020-05-24
  */
 @Component
+@Slf4j
 public class RestTemplateUtils {
 
     private final RestTemplate restTemplate;
@@ -35,10 +37,18 @@ public class RestTemplateUtils {
         } catch (HttpStatusCodeException exception) {
 
             System.out.println("Response: " + exception.getStatusCode().value());
-
+            exceptionHandler(httpMethod,
+                    request,
+                    uri,
+                    exception);
 
         }
 
-        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+        if (response != null) {
+            return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+        }
+
+        throw new OperationUnsuccessfulException("ThirdParty API response is null");
+
     }
 }

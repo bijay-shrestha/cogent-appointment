@@ -20,7 +20,6 @@ import java.util.Map;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryParameter;
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author rupak ON 2020/06/09-11:41 AM
@@ -93,54 +92,24 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
             uri = backendIntegrationApiInfo.getApiUri();
         }
 
-        ResponseEntity<?> response = null;
-        try {
-            response = restTemplateUtils.
-                    requestAPI(httpMethod,
-                            uri,
-                            new HttpEntity<>(esewaRefundRequestDTO, backendIntegrationApiInfo.getHttpHeaders()));
-        } catch (HttpStatusCodeException exception) {
-
-            String message = "";
-            String code = "";
-            String status = "";
-            if (exception.getStatusCode().value() == 400) {
-                code = "400";
-                message = "Bad Request";
-                status = "ERROR";
-            }
-
-            if (exception.getStatusCode().value() == 404) {
-                code = "404";
-                message = "Not Found";
-                status = "ERROR";
-            }
-
-            if (exception.getStatusCode().value() == 403) {
-                code = "403";
-                message = "Forbidden";
-                status = "ERROR";
-            }
-
-            ThirdPartyResponse thirdPartyResponse = ThirdPartyResponse.builder()
-                    .message(message)
-                    .code(code)
-                    .status(status).build();
-
-            response = new ResponseEntity<>(thirdPartyResponse, OK);
-
-        }
+        ResponseEntity<?> response = restTemplateUtils.
+                requestAPI(httpMethod,
+                        uri,
+                        new HttpEntity<>(esewaRefundRequestDTO, backendIntegrationApiInfo.getHttpHeaders()));
 
 
         ThirdPartyResponse thirdPartyResponse = null;
         try {
             thirdPartyResponse = map(response.getBody().toString(),
                     ThirdPartyResponse.class);
-        } catch (IOException e) {
+        } catch (IOException e)
+
+        {
             e.printStackTrace();
         }
 
         return thirdPartyResponse;
+
     }
 
     @Override

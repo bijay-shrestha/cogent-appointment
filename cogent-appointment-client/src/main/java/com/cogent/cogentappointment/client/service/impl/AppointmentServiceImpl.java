@@ -147,7 +147,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
 
+    private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
+
     private final IntegrationCheckPointService integrationCheckPointService;
+
+    private final IntegrationCheckpointImpl integrationCheckpointImpl;
 
     private final ThirdPartyConnectorService thirdPartyConnectorService;
 
@@ -176,7 +180,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   Validator validator,
                                   NepaliDateUtility nepaliDateUtility,
                                   AppointmentDoctorInfoRepository appointmentDoctorInfoRepository,
-                                  IntegrationCheckPointServiceImpl integrationCheckPointService, ThirdPartyConnectorService thirdPartyConnectorService) {
+                                  AppointmentEsewaRequestRepository appointmentEsewaRequestRepository, IntegrationCheckPointServiceImpl integrationCheckPointService,
+                                  IntegrationCheckpointImpl integrationCheckpointImpl, ThirdPartyConnectorService thirdPartyConnectorService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -202,7 +207,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.validator = validator;
         this.nepaliDateUtility = nepaliDateUtility;
         this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
+        this.appointmentEsewaRequestRepository = appointmentEsewaRequestRepository;
         this.integrationCheckPointService = integrationCheckPointService;
+        this.integrationCheckpointImpl = integrationCheckpointImpl;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
     }
 
@@ -1101,10 +1108,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                      Boolean isRefund) {
 
 
-        String generatedEsewaHmac = getSigatureForEsewa.apply(appointment.getPatientId().getESewaId(),
+        String generatedEsewaHmac = getSigatureForEsewa.apply(getEsewaId(appointment.getId()),
                 appointment.getHospitalId().getEsewaMerchantCode());
 
-        BackendIntegrationApiInfo integrationApiInfo = integrationCheckPointService.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
+        BackendIntegrationApiInfo integrationApiInfo = integrationCheckpointImpl.getAppointmentModeApiIntegration(integrationRefundRequestDTO,
                 appointment.getAppointmentModeId().getId(), generatedEsewaHmac);
 
         EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
@@ -1117,6 +1124,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
                 esewaRefundRequestDTO);
+    }
+
+    private String getEsewaId(Long appointmentId) {
+
+        return appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId);
+
     }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,

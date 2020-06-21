@@ -143,7 +143,8 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         Query query = createQuery.apply(entityManager, APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY)
                 .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
                 .setParameter(INTEGRATION_CHANNEL_CODE, refundRequestDTO.getIntegrationChannelCode())
-                .setParameter(FEATURE_CODE, refundRequestDTO.getFeatureCode());
+                .setParameter(FEATURE_CODE, refundRequestDTO.getFeatureCode())
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
 
         AdminFeatureIntegrationResponse responseDTOList =
                 transformQueryToSingleResult(query, AdminFeatureIntegrationResponse.class);

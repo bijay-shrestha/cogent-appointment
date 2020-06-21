@@ -18,8 +18,10 @@ public class DashBoardQuery {
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " AND a.hospitalId.id=:hospitalId";
 
     private static String SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
@@ -27,12 +29,14 @@ public class DashBoardQuery {
                     " COUNT(a.id)," +                                   //[0]
                     " COALESCE(SUM(atd.appointmentAmount ),0)" +        //[1]
                     " FROM AppointmentTransactionDetail atd" +
-                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id";
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id ";
 
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
             " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.hospitalId.id=:hospitalId";
+                    " AND a.hospitalId.id=:hospitalId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE =
             SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
@@ -56,6 +60,7 @@ public class DashBoardQuery {
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
                     " AND a.status='RE' AND ard.status = 'A'";
 
@@ -66,6 +71,7 @@ public class DashBoardQuery {
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
                     " AND a.status='RE' AND ard.status = 'A'";
 
@@ -145,9 +151,11 @@ public class DashBoardQuery {
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE " +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
 
@@ -159,9 +167,11 @@ public class DashBoardQuery {
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                     " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
 
@@ -172,9 +182,11 @@ public class DashBoardQuery {
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
 
@@ -184,14 +196,14 @@ public class DashBoardQuery {
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenue" +
                     " FROM" +
                     " AppointmentTransactionDetail atd" +
-                    " LEFT JOIN Appointment a ON" +
-                    " a.id = atd.appointment.id" +
-                    " LEFT JOIN Hospital h ON" +
-                    " h.id = a.hospitalId.id" +
+                    " LEFT JOIN Appointment a ON a.id = atd.appointment.id" +
+                    " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id =:hospitalId" +
+                    " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY" +
                     " atd.transactionDate" +
                     " ORDER BY" +

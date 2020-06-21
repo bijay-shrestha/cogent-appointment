@@ -19,6 +19,9 @@ public class IntegrationRefundRequestDTO implements Serializable {
     private Long appointmentId;
 
     @NotNull
+    private Long hospitalId;
+
+    @NotNull
     private Long appointmentModeId;
 
     //FULL_REFUND, PARTIAL_REFUND, AMIBGIUOS

@@ -392,4 +392,15 @@ public class AppointmentUtils {
                 .build();
     }
 
+    public static AppointmentEsewaRequest parseToAppointmentEsewaRequest(Appointment appointment,
+                                                                         String esewaId){
+
+        AppointmentEsewaRequest appointmentEsewaRequest=new AppointmentEsewaRequest();
+        appointmentEsewaRequest.setAppointment(appointment);
+        appointmentEsewaRequest.setEsewaId(esewaId);
+
+        return appointmentEsewaRequest;
+
+    }
+
 }

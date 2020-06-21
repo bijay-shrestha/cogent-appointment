@@ -40,9 +40,12 @@ public class AppointmentHospitalDepartmentQuery {
                 " LEFT JOIN room r ON r.id=hdri.room_id  " +
                 " LEFT JOIN patient p ON p.id=a.patient_id  " +
                 " LEFT JOIN hospital h ON h.id=a.hospital_id  " +
+                " LEFT JOIN hospital_appointment_service_type hast ON hast.id=a.hospital_appointment_service_type_id" +
+                " LEFT JOIN appointment_service_type ast ON ast.id=hast.appointment_service_type_id  " +
                 " WHERE " +
                 " a.appointment_date BETWEEN :fromDate AND :toDate " +
-                " AND a.status IN ('PA', 'A', 'C') ";
+                " AND a.status IN ('PA', 'A', 'C') " +
+                " AND ast.code=:appointmentServiceTypeCode";
 
         if (!Objects.isNull(requestDTO.getHospitalId()))
             SQL += " AND h.id =:hospitalId";

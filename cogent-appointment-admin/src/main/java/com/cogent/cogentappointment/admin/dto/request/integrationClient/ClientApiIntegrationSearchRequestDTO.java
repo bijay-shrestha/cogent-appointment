@@ -24,5 +24,7 @@ public class ClientApiIntegrationSearchRequestDTO implements Serializable {
 
     private String url;
 
+    private Character status;
+
 
 }

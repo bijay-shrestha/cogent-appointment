@@ -73,19 +73,21 @@ public class DashboardServiceImpl implements DashboardService {
         Double currentTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getCurrentToDate(),
                 requestDTO.getCurrentFromDate(),
-                hospitalId);
+                hospitalId,
+                "DOC");
 
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getPreviousToDate(),
                 requestDTO.getPreviousFromDate(),
-                hospitalId);
+                hospitalId,
+                "DOC");
 
         AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
                         requestDTO.getCurrentToDate(),
                         requestDTO.getCurrentFromDate(),
-                        hospitalId
-                );
+                        hospitalId,
+                        "DOC");
 
         RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(
                 currentTransaction,

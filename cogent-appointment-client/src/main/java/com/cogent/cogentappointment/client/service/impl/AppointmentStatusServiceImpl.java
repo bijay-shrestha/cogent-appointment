@@ -229,6 +229,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                         rosterDetailsForStatus,
                         hospitalDeptAppointmentDetailsForStatus);
 
+        fetchRoomByDepartmentId(hospitalDeptDutyRosterStatus);
+
         HospitalDeptAndWeekdaysDTO deptAndWeekdaysDTO=getHospitalDepartmentIdsAndWeekDays(
                 hospitalDeptDutyRosterStatus.get(0));
 

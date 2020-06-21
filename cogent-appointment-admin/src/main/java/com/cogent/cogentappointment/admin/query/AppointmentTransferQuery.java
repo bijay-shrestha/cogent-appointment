@@ -114,10 +114,11 @@ public class AppointmentTransferQuery {
                     " DATE_FORMAT(a.appointmentTime , '%h:%i %p')" +
                     " FROM" +
                     " Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " WHERE" +
-                    " a.doctorId.id = :doctorId" +
+                    " adi.doctor.id = :doctorId" +
                     " AND a.hospitalId.id = :hospitalId" +
-                    " AND a.specializationId.id = :specializationId" +
+                    " AND adi.specialization.id = :specializationId" +
                     " AND a.appointmentDate = :date" +
                     " AND (a.status = 'PA'" +
                     " OR a.status = 'A')";

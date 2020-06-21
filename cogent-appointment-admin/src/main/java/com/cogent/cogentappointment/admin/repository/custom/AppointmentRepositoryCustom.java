@@ -79,7 +79,9 @@ public interface AppointmentRepositoryCustom {
             Pageable pageable,
             String appointmentServiceTypeCode);
 
-    TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable);
+    TransactionLogResponseDTO searchDoctorAppointmentTransactionLogs(TransactionLogSearchDTO searchRequestDTO,
+                                                                     Pageable pageable,
+                                                                     String appointmentServiceTypeCode);
 
     HospitalDepartmentTransactionLogResponseDTO searchHospitalDepartmentTransactionLogs(
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO,

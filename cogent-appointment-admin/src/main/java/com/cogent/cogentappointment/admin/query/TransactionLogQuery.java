@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.query;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import org.springframework.util.ObjectUtils;
@@ -48,6 +47,7 @@ public class TransactionLogQuery {
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[22]
                     " da.fileUri as fileUri" +                                                     //[23]
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN AppointmentMode am ON am.id = a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -69,7 +69,8 @@ public class TransactionLogQuery {
             TransactionLogSearchDTO transactionLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " sp.status!='D'" +
+                " has.appointmentServiceType.code = :appointmentServiceTypeCode" +
+                " AND sp.status!='D'" +
                 " AND d.status!='D'";
 
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getFromDate())
@@ -111,6 +112,7 @@ public class TransactionLogQuery {
             "SELECT" +
                     " COALESCE (SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -121,7 +123,8 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " sp.status!='D'" +
+                    " has.appointmentServiceType.code = :appointmentServiceTypeCode" +
+                    " AND sp.status!='D'" +
                     " AND d.status!='D'";
 
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
@@ -129,6 +132,7 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " COALESCE(SUM(atd.appointmentAmount ),0)" +
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -139,7 +143,8 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " sp.status!='D'" +
+                    " has.appointmentServiceType.code = :appointmentServiceTypeCode" +
+                    " AND sp.status!='D'" +
                     " AND d.status!='D'";
 
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
@@ -203,6 +208,7 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " COALESCE (SUM(ard.refundAmount ),0) as amount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -213,7 +219,8 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " sp.status!='D'" +
+                    " has.appointmentServiceType.code = :appointmentServiceTypeCode" +
+                    " AND sp.status!='D'" +
                     " AND d.status!='D'" +
                     " AND a.status='RE'";
 
@@ -236,6 +243,7 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -246,7 +254,8 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " sp.status!='D'" +
+                    " has.appointmentServiceType.code = :appointmentServiceTypeCode" +
+                    " AND sp.status!='D'" +
                     " AND d.status!='D'" +
                     " AND a.status='RE'";
 
@@ -540,6 +549,7 @@ public class TransactionLogQuery {
 
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(
             HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
+
         String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT +
                 " AND a.isFollowUp = 'Y'" +
                 GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(searchRequestDTO);

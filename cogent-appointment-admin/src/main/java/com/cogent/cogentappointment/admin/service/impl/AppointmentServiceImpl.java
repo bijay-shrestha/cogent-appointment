@@ -307,23 +307,23 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_LOG);
 
-        String code = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
         AppointmentLogResponseDTO appointmentLogs;
 
-        switch (code) {
+        switch (appointmentServiceTypeCode) {
             case DOCTOR_CONSULTATION_CODE:
                 appointmentLogs = appointmentRepository.searchDoctorAppointmentLogs(
-                        searchRequestDTO, pageable, code);
+                        searchRequestDTO, pageable, appointmentServiceTypeCode);
                 break;
 
             case DEPARTMENT_CONSULTATION_CODE:
                 appointmentLogs = appointmentRepository.searchHospitalDepartmentAppointmentLogs(
-                        searchRequestDTO, pageable, code);
+                        searchRequestDTO, pageable, appointmentServiceTypeCode);
                 break;
 
             default:
-                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE, code));
+                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode));
         }
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
@@ -332,13 +332,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable) {
+    public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO,
+                                                           Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, TRANSACTION_LOG);
 
-        TransactionLogResponseDTO responseDTOS = appointmentRepository.searchTransactionLogs(searchRequestDTO,
-                pageable);
+        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+
+        TransactionLogResponseDTO responseDTOS = appointmentRepository.searchDoctorAppointmentTransactionLogs(
+                searchRequestDTO, pageable, appointmentServiceTypeCode);
 
         log.info(SEARCHING_PROCESS_COMPLETED, TRANSACTION_LOG, getDifferenceBetweenTwoTime(startTime));
 

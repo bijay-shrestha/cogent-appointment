@@ -79,26 +79,13 @@ public class AppointmentLogUtils {
         responseDTO.setRevenueFromRefundInfo(revenueFromRefundAppointmentResponseDTO);
     }
 
-    public static void parseToHospitalDepartmentAppointmentLogResponseDTO(HospitalDepartmentAppointmentLogResponseDTO responseDTO,
-                                                        BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
-                                                        CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
-                                                        CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
-                                                        RefundAppointmentResponseDTO refundAppointmentResponseDTO,
-                                                        RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
-
-        responseDTO.setBookedInfo(bookedAppointmentResponseDTO);
-        responseDTO.setCheckedInInfo(checkedInAppointmentResponseDTO);
-        responseDTO.setCancelledInfo(cancelledAppointmentResponseDTO);
-        responseDTO.setRefundInfo(refundAppointmentResponseDTO);
-        responseDTO.setRevenueFromRefundInfo(revenueFromRefundAppointmentResponseDTO);
-    }
-
-    public static void parseToTxnLogResponseDTO(TransactionLogResponseDTO responseDTO,
-                                                BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
-                                                CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
-                                                CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
-                                                RefundAppointmentResponseDTO refundAppointmentResponseDTO,
-                                                RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
+    public static void parseToTxnLogResponseDTO(
+            TransactionLogResponseDTO responseDTO,
+            BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
+            CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
+            CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
+            RefundAppointmentResponseDTO refundAppointmentResponseDTO,
+            RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
 
         responseDTO.setBookedInfo(bookedAppointmentResponseDTO);
         responseDTO.setCheckedInInfo(checkedInAppointmentResponseDTO);
@@ -108,11 +95,11 @@ public class AppointmentLogUtils {
     }
 
     public static void parseToHospitalDeptTxnLogResponseDTO(HospitalDepartmentTransactionLogResponseDTO responseDTO,
-                                                BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
-                                                CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
-                                                CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
-                                                RefundAppointmentResponseDTO refundAppointmentResponseDTO,
-                                                RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
+                                                            BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
+                                                            CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
+                                                            CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
+                                                            RefundAppointmentResponseDTO refundAppointmentResponseDTO,
+                                                            RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
 
         responseDTO.setBookedInfo(bookedAppointmentResponseDTO);
         responseDTO.setCheckedInInfo(checkedInAppointmentResponseDTO);

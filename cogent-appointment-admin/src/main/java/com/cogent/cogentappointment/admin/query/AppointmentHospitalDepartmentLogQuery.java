@@ -10,7 +10,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDat
 /**
  * @author smriti on 19/06/20
  */
-public class AppointmentHospitalDepartmentRevenueQuery {
+public class AppointmentHospitalDepartmentLogQuery {
 
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
             "SELECT" +
@@ -177,26 +177,23 @@ public class AppointmentHospitalDepartmentRevenueQuery {
         return GET_WHERE_CLAUSE_TO_FETCH_APPOINTMENT_REVENUE_DETAILS(query, searchRequestDTO);
     }
 
-    private static String SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT =
-            "SELECT" +
-                    " COALESCE (SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
-                    " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
-                    " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
-                    " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Hospital h ON a.hospitalId.id = h.id" +
-                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
-                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                    " WHERE" +
-                    " hd.status!='D'" +
-                    " AND has.appointmentServiceType.code = :appointmentServiceTypeCode";
-
     public static String QUERY_TO_FETCH_TOTAL_HOSPITAL_DEPARTMENT_APPOINTMENT_AMOUNT(
             AppointmentLogSearchDTO searchRequestDTO) {
-        String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
+        String query = "SELECT" +
+                " COALESCE (SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
+                " FROM Appointment a" +
+                " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
+                " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                " LEFT JOIN Hospital h ON a.hospitalId.id = h.id" +
+                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                " WHERE" +
+                " hd.status!='D'" +
+                " AND has.appointmentServiceType.code = :appointmentServiceTypeCode";
 
         return GET_WHERE_CLAUSE_TO_FETCH_APPOINTMENT_REVENUE_DETAILS(query, searchRequestDTO);
     }

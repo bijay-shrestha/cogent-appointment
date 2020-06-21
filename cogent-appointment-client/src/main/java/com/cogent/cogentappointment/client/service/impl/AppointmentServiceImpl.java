@@ -1262,6 +1262,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateIfRequestIsBeforeCurrentDateTime(
                 rescheduleRequestDTO.getRescheduleDate(), rescheduleRequestDTO.getRescheduleTime());
 
+        //toDo:appointment(DoctorId and specialization Id)
         Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
                 rescheduleRequestDTO.getRescheduleDate(),
                 rescheduleRequestDTO.getRescheduleTime(),

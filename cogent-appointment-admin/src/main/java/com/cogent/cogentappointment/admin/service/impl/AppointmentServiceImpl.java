@@ -39,8 +39,11 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
+import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
+import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_MODE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.INTEGRATION_PARAMETER_IS_NULL;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.INTEGRATION_PARAMETER_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
@@ -304,16 +307,33 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
                                                            Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_LOG);
 
-        AppointmentLogResponseDTO responseDTOS =
-                appointmentRepository.searchAppointmentLogs(searchRequestDTO, pageable);
+        String code = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+
+        AppointmentLogResponseDTO appointmentLogs;
+
+        switch (code) {
+            case DOCTOR_CONSULTATION_CODE:
+                appointmentLogs = appointmentRepository.searchDoctorAppointmentLogs(
+                        searchRequestDTO, pageable, code);
+                break;
+
+            case DEPARTMENT_CONSULTATION_CODE:
+                appointmentLogs = appointmentRepository.searchHospitalDepartmentAppointmentLogs(
+                        searchRequestDTO, pageable, code);
+                break;
+
+            default:
+                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE, code));
+        }
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTOS;
+        return appointmentLogs;
     }
 
     @Override

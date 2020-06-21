@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
@@ -35,17 +34,6 @@ public class AppointmentHospitalDepartmentResource {
 
     public AppointmentHospitalDepartmentResource(AppointmentHospitalDepartmentService appointmentHospitalDepartmentService) {
         this.appointmentHospitalDepartmentService = appointmentHospitalDepartmentService;
-    }
-
-    @PutMapping(BASE_APPOINTMENT + LOG)
-    @ApiOperation(FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG)
-    public ResponseEntity<?> fetchHospitalDepartmentAppointmentLog(
-            @RequestBody HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentHospitalDepartmentService.searchAppointmentLogs(searchRequestDTO, pageable));
     }
 
     @PutMapping(TRANSACTION + LOG)

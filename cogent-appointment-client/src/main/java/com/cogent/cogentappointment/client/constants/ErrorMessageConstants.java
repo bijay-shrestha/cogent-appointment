@@ -169,6 +169,8 @@ public class ErrorMessageConstants {
 
     public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 
+    public static final String INVALID_APPOINTMENT_SERVICE_TYPE_CODE = "Invalid Appointment Service Type Code : '%s'";
+
     //J
 
     //K

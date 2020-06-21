@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
@@ -16,7 +15,6 @@ import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentResc
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.HospitalDepartmentAppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -71,11 +69,15 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentPendingApprovalDetailResponseDTO fetchDetailsByAppointmentId(Long appointmentId);
 
-    AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
+    AppointmentLogResponseDTO searchDoctorAppointmentLogs(
+            AppointmentLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            String appointmentServiceTypeCode);
 
-    HospitalDepartmentAppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(
-            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
-            Pageable pageable);
+    AppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(
+            AppointmentLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            String appointmentServiceTypeCode);
 
     TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable);
 
@@ -110,7 +112,7 @@ public interface AppointmentRepositoryCustom {
             HospitalDeptAppointmentStatusRequestDTO requestDTO);
 
     HospitalDeptAppointmentDetailsForStatus fetchHospitalDeptAppointmentByApptNumber(String apptNumber,
-                                                                         String appointmentServiceTypeCode);
+                                                                                     String appointmentServiceTypeCode);
 
     AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber,
                                                              String appointmentServiceTypeCode);
@@ -132,7 +134,6 @@ public interface AppointmentRepositoryCustom {
 
     ThirdPartyDoctorWiseAppointmentCheckInDTO fetchAppointmentDetailForDoctorWiseApptCheckIn(
             Long appointmentId);
-
 
 
 }

@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.HospitalDepartmentAppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
@@ -73,23 +71,6 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         this.appointmentHospitalDepartmentFollowUpRequestLogService = appointmentHospitalDepartmentFollowUpRequestLogService;
         this.appointmentHospitalDepartmentInfoRepository = appointmentHospitalDepartmentInfoRepository;
         this.patientService = patientService;
-    }
-
-    @Override
-    public HospitalDepartmentAppointmentLogResponseDTO searchAppointmentLogs(
-            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
-            Pageable pageable) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_APPOINTMENT_LOG);
-
-        HospitalDepartmentAppointmentLogResponseDTO responseDTOS =
-                appointmentRepository.searchHospitalDepartmentAppointmentLogs(searchRequestDTO, pageable);
-
-        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
     }
 
     @Override

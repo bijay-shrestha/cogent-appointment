@@ -4,8 +4,6 @@
 
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
-catalina:
-  home: /home/f1soft/Softwares/tomcat
 
 spring:
   profiles:

@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
@@ -28,9 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
@@ -45,6 +48,7 @@ import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterU
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
+import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaRequestBody;
 import static java.lang.Integer.parseInt;
@@ -147,10 +151,40 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
     @Override
     public BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationRefundRequestDTO integrationRefundRequestDTO,
-                                                                      Long id,
+                                                                      Long appointmentId,
                                                                       String generatedEsewaHmac) {
-        return null;
+        AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
+                fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(integrationRefundRequestDTO,
+                        appointmentId);
+
+        Map<String, String> requestHeaderResponse = integrationRepository.
+                findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        Map<String, String> queryParametersResponse = integrationRepository.
+                findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
+
+        //todo
+        List<String> requestBody =null;
+//                getRequestBodyByFeature(featureIntegrationResponse.getFeatureId(),
+//                featureIntegrationResponse.getRequestMethod());
+
+        BackendIntegrationApiInfo integrationApiInfo = new BackendIntegrationApiInfo();
+        integrationApiInfo.setApiUri(featureIntegrationResponse.getUrl());
+        integrationApiInfo.setHttpHeaders(generateApiHeaders(requestHeaderResponse, generatedEsewaHmac));
+        integrationApiInfo.setRequestBody(requestBody);
+
+        if (!queryParametersResponse.isEmpty()) {
+            integrationApiInfo.setQueryParameters(queryParametersResponse);
+        }
+        integrationApiInfo.setHttpMethod(featureIntegrationResponse.getRequestMethod());
+
+        return integrationApiInfo;
     }
+
+//    private List<String> getRequestBodyByFeature(Long featureId, String requestMethod) {
+//
+//
+//    }
 
 
     private ThirdPartyResponse processRefundRequest(IntegrationRefundRequestDTO integrationRefundRequestDTO,

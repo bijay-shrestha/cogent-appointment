@@ -24,11 +24,13 @@ public class IntegrationRefundRequestDTO implements Serializable {
     @NotNull
     private Long appointmentModeId;
 
-    //FULL_REFUND, PARTIAL_REFUND, AMIBGIUOS
+    //FULL_REFUND, PARTIAL_REFUND, AMIBIGIUOS
     private String status;
 
     private String featureCode;
 
     private String integrationChannelCode;
+
+    private String remarks;
 
 }

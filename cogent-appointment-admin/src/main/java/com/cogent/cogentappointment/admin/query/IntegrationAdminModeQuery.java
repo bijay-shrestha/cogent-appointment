@@ -139,6 +139,7 @@ public class IntegrationAdminModeQuery {
             " SELECT" +
                     " aif.id as apiIntegrationFormatId," +
                     " amfi.appointmentModeId.id as appointmentModeId," +
+                    " amfi.hospitalId.id as hospitalId," +
                     " ic.code as integrationChannelCode," +
                     " f.id as featureId," +
                     " f.code as featureCode," +

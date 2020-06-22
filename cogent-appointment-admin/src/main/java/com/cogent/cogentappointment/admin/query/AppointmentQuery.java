@@ -174,7 +174,7 @@ public class AppointmentQuery {
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
             SQL += " AND a.appointment_number='" + requestDTO.getAppointmentNumber() + "'";
 
-        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id" +
+        SQL += " GROUP BY a.appointment_date, d.id, s.id, a.id" +
                 " ORDER BY appointment_date";
 
         return SQL;
@@ -591,7 +591,7 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentCharge," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
                     " a.appointmentModeId.name as appointmentMode," +
-                    " h.esewaMerchantCode as productCode," +
+                    " h.esewaMerchantCode as esewaMerchantCode," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     " dv.fileUri as fileUri" +

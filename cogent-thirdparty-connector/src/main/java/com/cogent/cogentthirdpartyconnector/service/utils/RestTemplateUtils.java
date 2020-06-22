@@ -44,11 +44,12 @@ public class RestTemplateUtils {
 
         }
 
-        if (response != null) {
-            return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+        if (response == null || response.getBody() == null) {
+            throw new OperationUnsuccessfulException("ThirdParty API response is null");
         }
 
-        throw new OperationUnsuccessfulException("ThirdParty API response is null");
+
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
 
     }
 }

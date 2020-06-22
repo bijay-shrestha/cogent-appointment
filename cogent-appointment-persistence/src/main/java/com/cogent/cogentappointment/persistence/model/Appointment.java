@@ -55,17 +55,6 @@ public class Appointment extends Auditable<String> implements Serializable {
     @JoinColumn(name = "hospital_appointment_service_type_id")
     private HospitalAppointmentServiceType hospitalAppointmentServiceType;
 
-    //todo : remove doctor and specialization from here
-    /*eg.Specialization name like Surgeon, Physician,etc*/
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "specialization_id")
-    private Specialization specializationId;
-
-    /*eg.Doctor name like Dr.Sanjeev Uprety*/
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctorId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private Patient patientId;

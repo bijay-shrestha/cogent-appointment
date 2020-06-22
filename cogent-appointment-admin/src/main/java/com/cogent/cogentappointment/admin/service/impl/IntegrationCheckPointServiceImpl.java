@@ -43,6 +43,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUt
 import static com.cogent.cogentappointment.commons.utils.StringUtil.toNormalCase;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
+import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaRequestBody;
 import static java.lang.Integer.parseInt;
 
@@ -198,8 +199,26 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
-        return thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
+        ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
                 esewaRefundRequestDTO);
+
+        if (responseEntity.getBody() == null) {
+            throw new OperationUnsuccessfulException("ThirdParty API response is null");
+        }
+
+
+        ThirdPartyResponse thirdPartyResponse = null;
+        try {
+            thirdPartyResponse = map(responseEntity.getBody().toString(),
+                    ThirdPartyResponse.class);
+        } catch (IOException e)
+
+        {
+            e.printStackTrace();
+        }
+
+
+        return thirdPartyResponse;
     }
 
     private ThirdPartyHospitalResponse fetchThirdPartyHospitalResponseForDoctorAppointment(

@@ -129,7 +129,7 @@ public class AppointmentUtils {
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
         appointment.setIsSelf(isSelf);
         appointment.setAppointmentModeId(appointmentMode);
-        parseToAppointment(patient, specialization, doctor, hospital, appointment);
+        parseToAppointment(patient, hospital, appointment);
         return appointment;
     }
 
@@ -138,12 +138,8 @@ public class AppointmentUtils {
     }
 
     private static void parseToAppointment(Patient patient,
-                                           Specialization specialization,
-                                           Doctor doctor,
                                            Hospital hospital,
                                            Appointment appointment) {
-        appointment.setDoctorId(doctor);
-        appointment.setSpecializationId(specialization);
         appointment.setHospitalId(hospital);
         appointment.setPatientId(patient);
         appointment.setStatus(PENDING_APPROVAL);

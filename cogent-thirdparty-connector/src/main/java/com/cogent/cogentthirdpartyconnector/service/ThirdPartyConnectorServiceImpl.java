@@ -23,6 +23,7 @@ import static com.cogent.cogentappointment.commons.utils.DateUtils.getDifference
 import static com.cogent.cogentappointment.commons.utils.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentthirdpartyconnector.log.constants.HmacLog.GENERATING_HMAC_FOR_FRONTEND_PROCESS_COMPLETED;
 import static com.cogent.cogentthirdpartyconnector.log.constants.HmacLog.GENERATING_HMAC_FOR_FRONTEND_PROCESS_STARTED;
+import static com.cogent.cogentthirdpartyconnector.utils.HMACUtils.getSigatureForEsewa;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryParameter;
@@ -36,10 +37,6 @@ import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.cre
 public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorService {
 
     private final RestTemplateUtils restTemplateUtils;
-
-//    private final AppointmentRepository appointmentRepository;
-//
-//    private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
 
     public ThirdPartyConnectorServiceImpl(RestTemplateUtils restTemplateUtils) {
         this.restTemplateUtils = restTemplateUtils;
@@ -171,21 +168,17 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public String hmacForFrontendIntegration(Long appointmentId) {
+    public String hmacForFrontendIntegration(String esewaId,String merchantCode) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(GENERATING_HMAC_FOR_FRONTEND_PROCESS_STARTED);
 
-//        Appointment appointment=appointmentRepository.fetchPendingAppointmentById(appointmentId);
-//
-//        String esewaId=appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId);
-//
-//        String hmac=getSigatureForEsewa.apply(esewaId,appointment.getHospitalId().getEsewaMerchantCode());
+        String hmac=getSigatureForEsewa.apply(esewaId,merchantCode);
 
         log.info(GENERATING_HMAC_FOR_FRONTEND_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
-        return null;
+        return hmac;
     }
 
     private String getHospitalDeptCheckInQueryParameter(BackendIntegrationApiInfo backendIntegrationApiInfo) {

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.service.HmacService;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,14 @@ import static org.springframework.http.ResponseEntity.ok;
 @Api(BASE_API_VALUE)
 public class HmacResource {
 
-    private final ThirdPartyConnectorService thirdPartyConnectorService;
+    private final HmacService hmacService;
 
-    public HmacResource(ThirdPartyConnectorService thirdPartyConnectorService) {
-        this.thirdPartyConnectorService = thirdPartyConnectorService;
+    public HmacResource(HmacService hmacService) {
+        this.hmacService = hmacService;
     }
 
     @GetMapping(APPOINTMENT_ID_PATH_VARIABLE_BASE)
     public ResponseEntity<?> generateHash(@PathVariable("appointmentId") Long appointmentId) {
-        return ok(thirdPartyConnectorService.hmacForFrontendIntegration(appointmentId));
+        return ok(hmacService.getHmacForFrontend(appointmentId));
     }
 }

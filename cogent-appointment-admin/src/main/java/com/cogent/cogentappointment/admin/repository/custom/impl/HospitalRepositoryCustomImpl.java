@@ -29,9 +29,7 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentServiceTypeLog.APPOINTMENT_SERVICE_TYPE;
-import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
-import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.*;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalAppointmentServiceTypeQuery.QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.admin.query.HospitalBillingModeInfoQuery.QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID;
@@ -241,7 +239,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     };
 
     private Supplier<NoContentFoundException> HOSPITAL_APPOINTMENT_SERVICE_TYPE_NOT_FOUND = () -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_SERVICE_TYPE);
+        log.error(CONTENT_NOT_FOUND, HOSPITAL_APPOINTMENT_SERVICE_TYPE);
         throw new NoContentFoundException(HospitalAppointmentServiceType.class);
     };
 

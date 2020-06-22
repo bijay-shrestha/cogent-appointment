@@ -1,6 +1,5 @@
 package com.cogent.cogentthirdpartyconnector.service;
 
-import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.OperationUnsuccessfulException;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
@@ -79,7 +78,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
+    public ResponseEntity<?> callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
                                                      EsewaRefundRequestDTO esewaRefundRequestDTO) {
 
 
@@ -98,17 +97,9 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
                         uri,
                         new HttpEntity<>(esewaRefundRequestDTO, backendIntegrationApiInfo.getHttpHeaders()));
 
-        System.out.println(response);
 
-        ThirdPartyResponse thirdPartyResponse = null;
-        try {
-            thirdPartyResponse = map(response.getBody().toString(),
-                    ThirdPartyResponse.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return response;
 
-        return thirdPartyResponse;
     }
 
     @Override

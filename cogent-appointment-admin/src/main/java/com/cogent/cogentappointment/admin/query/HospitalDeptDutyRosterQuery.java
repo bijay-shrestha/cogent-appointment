@@ -155,7 +155,7 @@ public class HospitalDeptDutyRosterQuery {
         if (!Objects.isNull(requestDTO.getHospitalId()))
             SQL += " AND h.id = :hospitalId";
 
-        SQL += " GROUP BY hddr.to_date,hddr.from_date ";
+        SQL += " GROUP BY hd.id,hddr.to_date,hddr.from_date ";
 
         return SQL;
 

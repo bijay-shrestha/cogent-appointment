@@ -14,7 +14,7 @@ public interface ThirdPartyConnectorService {
     ResponseEntity<?> callThirdPartyHospitalDepartmentAppointmentCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo,
                                                                                 ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO checkInDTO);
 
-    ThirdPartyResponse callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
+    ResponseEntity<?> callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
                                               EsewaRefundRequestDTO esewaRefundRequestDTO);
 
     ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);

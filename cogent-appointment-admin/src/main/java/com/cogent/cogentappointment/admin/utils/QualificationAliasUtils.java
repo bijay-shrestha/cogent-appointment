@@ -5,8 +5,6 @@ import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.Qualifi
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
-
 /**
  * @author Rupak
  */
@@ -14,7 +12,7 @@ public class QualificationAliasUtils {
 
     public static QualificationAlias parseToQualificationAlias(QualificationAliasRequestDTO requestDTO) {
         QualificationAlias qualificationAlias = new QualificationAlias();
-        qualificationAlias.setName(convertToNormalCase(requestDTO.getName()));
+        qualificationAlias.setName(requestDTO.getName());
         qualificationAlias.setStatus(requestDTO.getStatus());
         return qualificationAlias;
     }
@@ -22,7 +20,7 @@ public class QualificationAliasUtils {
     public static void parseToUpdatedQualificationAlias(QualificationAlias qualificationAlias,
                                                         QualificationAliasUpdateRequestDTO requestDTO) {
 
-        qualificationAlias.setName(convertToNormalCase(requestDTO.getName()));
+        qualificationAlias.setName(requestDTO.getName());
         qualificationAlias.setStatus(requestDTO.getStatus());
         qualificationAlias.setRemarks(requestDTO.getRemarks());
     }

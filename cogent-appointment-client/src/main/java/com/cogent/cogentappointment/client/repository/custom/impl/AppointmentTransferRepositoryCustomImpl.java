@@ -120,7 +120,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_UNAVAILABLE_TIME)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId)
-                .setParameter(DATE, date);
+                .setParameter(DATE, date)
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
 
         List<String> response = query.getResultList();
 

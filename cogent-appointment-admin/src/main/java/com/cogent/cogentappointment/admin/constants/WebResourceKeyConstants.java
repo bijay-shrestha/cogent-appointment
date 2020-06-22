@@ -84,6 +84,7 @@ public class WebResourceKeyConstants {
     public static final String BASE_PASSWORD = "/password";
 
     //C
+    public static final String CODE = "/code";
 
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
@@ -236,6 +237,7 @@ public class WebResourceKeyConstants {
     }
 
     //N
+    public static final String NAME = "/name";
 
 
     //O

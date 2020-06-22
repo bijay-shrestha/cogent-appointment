@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.query;
+package com.cogent.cogentappointment.client.query;
 
 /**
  * @author smriti on 26/05/20

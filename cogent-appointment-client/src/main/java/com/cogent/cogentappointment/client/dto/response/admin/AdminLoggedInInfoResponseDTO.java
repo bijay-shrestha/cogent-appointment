@@ -41,4 +41,6 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
     private Map<String,List<?>> apiIntegration;
 
     private Map<String, String> requestBody;
+
+    private String primaryAppointmentServiceTypeCode;
 }

@@ -34,9 +34,13 @@ import java.util.Date;
  * 6. AppointmentFollowUpLog/AppointmentHospitalDepartmentFollowUpLog
  * 7. AppointmentReservationLog/AppointmentHospitalDepartmentReservationLog
  * 8. AppointmentStatistics
+ * 9. AppointmentEsewaRequest
+ *
  * <p>
  * RESCHEDULE -> AppointmentRescheduleLog
  * REFUND -> AppointmentRefundDetail
+ *
+ *
  */
 @Entity
 @Table(name = "appointment")

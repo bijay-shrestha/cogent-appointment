@@ -175,14 +175,15 @@ public class AdminQuery {
                     " p.id as profileId," +                                                //[3]
                     " p.name as profileName," +                                            //[4]
                     " d.id as departmentId," +                                             //[5]
-                    " d.name as departmentName," +
-                    " h.name as hospitalName," +                                           //[6]
-                    " p.isAllRoleAssigned as isAllRoleAssigned," +                         //[7]
-                    " af.isSideBarCollapse as isSideBarCollapse," +                        //[8]
+                    " d.name as departmentName," +                                         //[6]
+                    " h.name as hospitalName," +                                           //[7]
+                    " p.isAllRoleAssigned as isAllRoleAssigned," +                         //[8]
+                    " af.isSideBarCollapse as isSideBarCollapse," +                        //[9]
                     " CASE " +
                     "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
                     "    ELSE hl.fileUri" +
-                    " END as hospitalLogo" +                                              //[9]
+                    " END as hospitalLogo," +                                              //[10]
+                    " has.appointmentServiceType.code as primaryAppointmentServiceTypeCode" + //[11]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -190,10 +191,13 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " LEFT JOIN HospitalLogo hl ON hl.hospital.id=h.id" +
                     " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON h.id = has.hospital.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
                     " AND a.status='Y'" +
-                    " AND h.id=:hospitalId";
+                    " AND h.id=:hospitalId" +
+                    " AND has.status = 'Y'" +
+                    " AND has.isPrimary= 'Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
             " SELECT ami.id as adminMetaInfoId," +                   //[0]

@@ -69,7 +69,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
         validateName(count, requestDTO.getName());
 
-        parseToUpdatedQualificationAlias(qualificationAliasToBeUpdated, requestDTO);
+        save(parseToUpdatedQualificationAlias(qualificationAliasToBeUpdated, requestDTO));
 
         log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
     }

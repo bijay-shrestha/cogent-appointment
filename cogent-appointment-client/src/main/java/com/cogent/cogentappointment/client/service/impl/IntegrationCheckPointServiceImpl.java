@@ -399,6 +399,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             {
                 e.printStackTrace();
+                throw new OperationUnsuccessfulException("ThirdParty API response is null");
             }
 
             if (thirdPartyResponse.getCode() != null) {

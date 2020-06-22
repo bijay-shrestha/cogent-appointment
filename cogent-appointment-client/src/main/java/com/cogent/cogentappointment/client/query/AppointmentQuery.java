@@ -612,7 +612,7 @@ public class AppointmentQuery {
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
             SQL += " AND a.appointment_number='" + requestDTO.getAppointmentNumber() + "'";
 
-        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id" +
+        SQL += " GROUP BY a.appointment_date, d.id, s.id, a.id" +
                 " ORDER BY appointment_date";
 
         return SQL;

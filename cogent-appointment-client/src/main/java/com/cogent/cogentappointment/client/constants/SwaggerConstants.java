@@ -123,6 +123,18 @@ public class SwaggerConstants {
         String FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT = "Fetch pending hospital department appointments";
     }
 
+
+    public interface AppointmentServiceTypeConstant {
+        String BASE_API_VALUE = "This is Appointment Service Type Resource.";
+        String SAVE_OPERATION = "Save new Appointment Service Type";
+        String UPDATE_OPERATION = "Update existing Appointment Service Type";
+        String DELETE_OPERATION = "Set Appointment Service Type status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Appointment Service Type according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Appointment Service Type details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Service Type details for dropdown";
+        String FETCH_NAME_AND_CODE_FOR_DROPDOWN = "Fetch Appointment Service Type name and code for dropdown";
+    }
+
     //B
     public interface BillingModeConstant {
         String BASE_API_VALUE = "This is Billing Mode Resource.";

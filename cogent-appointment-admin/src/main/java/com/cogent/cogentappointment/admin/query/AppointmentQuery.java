@@ -143,11 +143,14 @@ public class AppointmentQuery {
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
+                " r.roomNumber  as roomNumber,"+
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                 " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = ahd.hospitalDepartment.id" +
+                " LEFT JOIN Room r ON r.id = hdri.room.id" +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                 " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
@@ -161,7 +164,9 @@ public class AppointmentQuery {
     private static String GET_WHERE_CLAUSE_TO_FETCH_DEPARTMENT_REFUND_APPOINTMENTS(DepartmentCancelApprovalSearchDTO searchDTO) {
         String whereClause = " WHERE ard.status = 'PA'" +
                 " AND hd.status!='D'" +
-                " AND apst.status!='D'";
+                " AND apst.status!='D'" +
+                " AND hdri.status!='D'" +
+                " AND r.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchDTO.getFromDate()) && !ObjectUtils.isEmpty(searchDTO.getToDate()))
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchDTO.getFromDate())
@@ -176,6 +181,9 @@ public class AppointmentQuery {
 
         if (!Objects.isNull(searchDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id=" + searchDTO.getHospitalDepartmentId();
+
+        if (!Objects.isNull(searchDTO.getRoomId()))
+            whereClause += " AND r.id=" + searchDTO.getRoomId();
 
         if (!Objects.isNull(searchDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchDTO.getHospitalId();

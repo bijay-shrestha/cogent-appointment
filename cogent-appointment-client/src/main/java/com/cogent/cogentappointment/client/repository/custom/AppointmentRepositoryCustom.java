@@ -12,6 +12,7 @@ import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepart
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
@@ -32,6 +33,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentStatus.Appoin
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
@@ -150,4 +152,7 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber,
                                                                          String appointmentServiceTypeCode);
+
+    DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO,
+                                                                               Pageable pageable);
 }

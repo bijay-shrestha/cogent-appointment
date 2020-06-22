@@ -12,6 +12,7 @@ import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepart
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
@@ -35,10 +36,13 @@ import com.cogent.cogentappointment.client.dto.response.appointmentStatus.Appoin
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientRelationInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.query.AppointmentQuery;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.AppointmentUtils;
@@ -658,6 +662,31 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         } catch (NoResultException e) {
             throw APPOINTMENT_NOT_FOUND.get();
         }
+    }
+
+    @Override
+    public DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO, Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_CANCEL_APPROVALS(searchDTO))
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<DepartmentCancelApprovalResponseDTO> cancelApprovalResponseDTOList =
+                transformQueryToResultList(query, DepartmentCancelApprovalResponseDTO.class);
+
+        if (cancelApprovalResponseDTOList.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+
+            return DepartmentCancelApprovalResponse.builder()
+                    .response(cancelApprovalResponseDTOList)
+                    .totalItems(totalItems)
+                    .build();
+        }
+
     }
 
 

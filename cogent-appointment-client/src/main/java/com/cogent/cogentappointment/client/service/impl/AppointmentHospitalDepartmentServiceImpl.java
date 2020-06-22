@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AppointmentHospitalDepartmentFollowUpLogRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentHospitalDepartmentInfoRepository;
@@ -125,6 +127,21 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         saveAppointmentHospitalDepartmentFollowUpTracker(appointment);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
+
+        DepartmentCancelApprovalResponse approvalResponse = appointmentRepository.
+                fetchDepartmentAppointmentCancelApprovals(searchDTO,
+                        pageable);
+
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return approvalResponse;
     }
 
     private Appointment fetchPendingAppointment(Long appointmentId, Long hospitalId) {

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund;
+package com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;

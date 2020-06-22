@@ -74,22 +74,6 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     }
 
     @Override
-    public HospitalDepartmentTransactionLogResponseDTO searchTransactionLogs(
-            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO, Pageable pageable) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_TRANSACTION_LOG);
-
-        HospitalDepartmentTransactionLogResponseDTO responseDTOS =
-                appointmentRepository.searchHospitalDepartmentTransactionLogs(searchRequestDTO, pageable);
-
-        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_TRANSACTION_LOG, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
-    @Override
     public HospitalDepartmentAppointmentRescheduleLogResponseDTO searchRescheduleLogs(
             HospitalDepartmentAppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable) {
 

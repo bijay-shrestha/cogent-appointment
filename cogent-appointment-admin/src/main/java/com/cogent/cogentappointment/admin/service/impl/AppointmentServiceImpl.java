@@ -341,12 +341,27 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
-        TransactionLogResponseDTO responseDTOS = appointmentRepository.searchDoctorAppointmentTransactionLogs(
-                searchRequestDTO, pageable, appointmentServiceTypeCode);
+        TransactionLogResponseDTO transactionLogs;
+
+        switch (appointmentServiceTypeCode) {
+            case DOCTOR_CONSULTATION_CODE:
+                transactionLogs = appointmentRepository.searchDoctorAppointmentTransactionLogs(
+                        searchRequestDTO, pageable, appointmentServiceTypeCode);
+                break;
+
+            case DEPARTMENT_CONSULTATION_CODE:
+                transactionLogs = appointmentRepository.searchHospitalDepartmentTransactionLogs(
+                        searchRequestDTO, pageable, appointmentServiceTypeCode);
+                break;
+
+            default:
+                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE,
+                        appointmentServiceTypeCode));
+        }
 
         log.info(SEARCHING_PROCESS_COMPLETED, TRANSACTION_LOG, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTOS;
+        return transactionLogs;
     }
 
     @Override

@@ -320,7 +320,6 @@ public class AppointmentHospitalDepartmentQuery {
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                             " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
-                            " LEFT JOIN HospitalBillingModeInfo hbm ON hbm.id = ahd.hospitalDepartmentBillingModeInfo.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +

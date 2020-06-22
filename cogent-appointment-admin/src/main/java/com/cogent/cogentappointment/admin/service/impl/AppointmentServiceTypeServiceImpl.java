@@ -52,7 +52,7 @@ public class AppointmentServiceTypeServiceImpl implements AppointmentServiceType
     }
 
     @Override
-    public List<ApptServiceTypeDropDownResponseDTO> fetchSerivceTypeNameAndCodeList() {
+    public List<ApptServiceTypeDropDownResponseDTO> fetchServiceTypeNameAndCodeList() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, APPOINTMENT_SERVICE_TYPE);

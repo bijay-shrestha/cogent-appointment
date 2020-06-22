@@ -618,14 +618,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 return createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_QUEUE
                         .apply(appointmentQueueRequestDTO))
                         .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
-                        .setParameter(HOSPITAL_ID,getLoggedInHospitalId())
+                        .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
                         .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
 
             case DEPARTMENT_CONSULTATION_CODE:
                 return createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_QUEUE
                         .apply(appointmentQueueRequestDTO))
                         .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
-                        .setParameter(HOSPITAL_ID,getLoggedInHospitalId())
+                        .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
                         .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
 
             default:

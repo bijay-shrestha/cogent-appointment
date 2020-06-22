@@ -16,5 +16,5 @@ public interface AppointmentServiceTypeRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveMinInfo();
 
-    List<ApptServiceTypeDropDownResponseDTO> fetchSerivceTypeNameAndCodeList();
+    List<ApptServiceTypeDropDownResponseDTO> fetchServiceTypeNameAndCodeList();
 }

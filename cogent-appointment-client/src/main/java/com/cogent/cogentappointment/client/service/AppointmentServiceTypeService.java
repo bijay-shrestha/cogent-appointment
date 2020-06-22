@@ -15,5 +15,5 @@ public interface AppointmentServiceTypeService {
 
     AppointmentServiceType fetchActiveById(Long id);
 
-    List<ApptServiceTypeDropDownResponseDTO> fetchSerivceTypeNameAndCodeList();
+    List<ApptServiceTypeDropDownResponseDTO> fetchServiceTypeNameAndCodeList();
 }

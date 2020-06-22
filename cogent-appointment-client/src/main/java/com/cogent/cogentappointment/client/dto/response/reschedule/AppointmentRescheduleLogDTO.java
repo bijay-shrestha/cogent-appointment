@@ -58,4 +58,6 @@ public class AppointmentRescheduleLogDTO implements Serializable {
     private Double appointmentAmount;
 
     private String remarks;
+
+    private String hospitalDepartmentName;
 }

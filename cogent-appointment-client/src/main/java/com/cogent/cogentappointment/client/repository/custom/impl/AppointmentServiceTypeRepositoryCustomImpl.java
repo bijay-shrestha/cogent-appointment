@@ -47,7 +47,7 @@ public class AppointmentServiceTypeRepositoryCustomImpl implements AppointmentSe
     }
 
     @Override
-    public List<ApptServiceTypeDropDownResponseDTO> fetchSerivceTypeNameAndCodeList() {
+    public List<ApptServiceTypeDropDownResponseDTO> fetchServiceTypeNameAndCodeList() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_SERVICE_TYPE_NAME_AND_CODE);
 
         List<ApptServiceTypeDropDownResponseDTO> results = transformQueryToResultList(query,

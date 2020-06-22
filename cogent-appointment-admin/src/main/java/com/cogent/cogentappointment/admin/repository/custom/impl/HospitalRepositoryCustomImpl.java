@@ -3,12 +3,14 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.HospitalAppointmentServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -27,6 +29,7 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentServiceTypeLog.APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
@@ -177,6 +180,21 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
+    public List<AppointmentServiceTypeDropDownResponseDTO> fetchAssignedAppointmentServiceType(Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<AppointmentServiceTypeDropDownResponseDTO> appointmentServiceTypes =
+                transformQueryToResultList(query, AppointmentServiceTypeDropDownResponseDTO.class);
+
+        if (appointmentServiceTypes.isEmpty())
+            throw HOSPITAL_APPOINTMENT_SERVICE_TYPE_NOT_FOUND.get();
+
+        else return appointmentServiceTypes;
+    }
+
+    @Override
     public List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_HOSPITAL_FOR_DROPDOWN);
 
@@ -220,6 +238,11 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "id", id.toString());
+    };
+
+    private Supplier<NoContentFoundException> HOSPITAL_APPOINTMENT_SERVICE_TYPE_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_SERVICE_TYPE);
+        throw new NoContentFoundException(HospitalAppointmentServiceType.class);
     };
 
     private List<HospitalContactNumberResponseDTO> fetchHospitalContactNumber(Long hospitalId) {

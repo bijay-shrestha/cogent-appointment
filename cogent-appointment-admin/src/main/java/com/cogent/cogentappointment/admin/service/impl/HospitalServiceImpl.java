@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.*;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
@@ -30,8 +31,6 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.BillingModeLog.BILLING_MODE;
@@ -292,6 +291,20 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_ALIAS, getDifferenceBetweenTwoTime(startTime));
 
         return alias;
+    }
+
+    @Override
+    public List<AppointmentServiceTypeDropDownResponseDTO> fetchAssignedAppointmentServiceType(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_APPOINTMENT_SERVICE_TYPE);
+
+        List<AppointmentServiceTypeDropDownResponseDTO> appointmentServiceTypes =
+                hospitalRepository.fetchAssignedAppointmentServiceType(hospitalId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_APPOINTMENT_SERVICE_TYPE, getDifferenceBetweenTwoTime(startTime));
+
+        return appointmentServiceTypes;
     }
 
     private void saveHospitalBillingModeInfo(Hospital hospital, List<Long> billingModeIds) {

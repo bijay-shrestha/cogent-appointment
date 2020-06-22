@@ -160,4 +160,16 @@ public class HospitalQuery {
                 " h.lastModifiedBy as lastModifiedBy," +
                 " h.lastModifiedDate as lastModifiedDate";
     }
+
+    public static String QUERY_TO_FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE =
+            " SELECT " +
+                    " ast.name as name," +
+                    " ast.code as code," +
+                    " has.isPrimary as isPrimary"+
+                    " FROM Hospital h " +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON h.id = has.hospital.id" +
+                    " LEFT JOIN AppointmentServiceType ast ON ast.id = has.appointmentServiceType.id" +
+                    " WHERE" +
+                    " has.status = 'Y'" +
+                    " AND h.id =:hospitalId";
 }

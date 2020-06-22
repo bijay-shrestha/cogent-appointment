@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.admin.service;
 
 
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.*;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
 import org.springframework.data.domain.Pageable;
 
@@ -26,6 +23,9 @@ public interface DashboardService {
     Double calculateTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO);
 
     DoctorRevenueResponseDTO calculateOverallDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                           Pageable pageable);
+
+    HospitalDepartmentRevenueResponseDTO calculateOverallHospitalDeptRevenue(HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
                                                            Pageable pageable);
 
     List<DashboardFeatureResponseDTO> getDashboardFeaturesByAdmin(Long adminId);

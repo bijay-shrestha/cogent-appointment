@@ -125,6 +125,7 @@ public class WebResourceKeyConstants {
         String REVENUE_TREND = "/revenueTrend";
         String DOCTOR_REVENUE = "/doctorRevenue";
         String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
+        String HOSPITAL_DEPARTMENT_REVENUE = "/hospitalDepartmentRevenue";
     }
 
     public static final String DETAIL = "/detail";

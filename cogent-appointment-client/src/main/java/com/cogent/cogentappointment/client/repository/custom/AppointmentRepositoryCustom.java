@@ -108,14 +108,23 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentLogResponseDTO searchDoctorAppointmentLogs(
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable,
-            Long hospitalId,  String appointmentServiceTypeCode);
+            Long hospitalId, String appointmentServiceTypeCode);
 
     AppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable,
             Long hospitalId, String appointmentServiceTypeCode);
 
-    TransactionLogResponseDTO searchTransactionLogs(
-            TransactionLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
+    TransactionLogResponseDTO searchDoctorTransactionLogs(
+            TransactionLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            Long hospitalId,
+            String appointmentServiceTypeCode);
+
+    TransactionLogResponseDTO searchHospitalDepartmentTransactionLogs(
+            TransactionLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            Long hospitalId,
+            String appointmentServiceTypeCode);
 
     List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                        Long hospitalId,

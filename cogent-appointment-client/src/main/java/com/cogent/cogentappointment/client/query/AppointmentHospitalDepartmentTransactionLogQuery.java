@@ -1,13 +1,13 @@
-package com.cogent.cogentappointment.admin.query;
+package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author smriti on 21/06/20
@@ -17,16 +17,16 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
     public static Function<TransactionLogSearchDTO, String> QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_TRANSACTION_LOGS =
             (appointmentLogSearchDTO) ->
                     "SELECT" +
-                            " h.name as hospitalName," +                                                         //[0]
-                            " a.appointmentDate as appointmentDate," +                                           //[1]
-                            " a.appointmentNumber as appointmentNumber," +                                       //[2]
-                            " DATE_FORMAT(a.appointmentTime , '%h:%i %p') as appointmentTime," +                 //[3]
-                            " p.eSewaId as esewaId," +                                                           //[4]
+                            " a.appointmentDate as appointmentDate," +                                           //[0]
+                            " a.appointmentNumber as appointmentNumber," +                                       //[1]
+                            " DATE_FORMAT(a.appointmentTime , '%h:%i %p') as appointmentTime," +                 //[2]
+                            " p.eSewaId as esewaId," +                                                           //[3]
                             " CASE WHEN hpi.registrationNumber IS NULL " +
                             " THEN 'N/A'" +
-                            " ELSE hpi.registrationNumber END as registrationNumber," +                          //[5]
-                            " p.name as patientName," +                                                          //[6]
-                            " p.gender as patientGender," +                                                      //[7]
+                            " ELSE hpi.registrationNumber END as registrationNumber," +                          //[4]
+                            " p.name as patientName," +                                                          //[5]
+                            " p.gender as patientGender," +                                                      //[6]
+                            " p.dateOfBirth as patientDob," +                                                    //[7]
                             " hpi.isRegistered as isRegistered," +                                              //[8]
                             " p.mobileNumber as mobileNumber," +                                                //[9]
                             " atd.transactionNumber as transactionNumber," +                                    //[10]
@@ -43,8 +43,7 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
                             " hb.billingMode.name as billingModeName," +                                        //[21]
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
-                            " end as roomNumber," +                                                             //[22]
-                            " p.dateOfBirth as patientDob" +                                                    //[23]
+                            " end as roomNumber" +                                                             //[22]
                             " FROM Appointment a" +
                             " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
@@ -64,7 +63,7 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
     private static String GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_TRANSACTION_LOG_DETAILS(
             TransactionLogSearchDTO searchRequestDTO) {
 
-        String whereClause = " AND hd.status!='D'";
+        String whereClause = " AND hd.status!='D' AND h.id = :hospitalId";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
                 && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
@@ -77,9 +76,6 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
 
         if (!Objects.isNull(searchRequestDTO.getStatus()) && !searchRequestDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + searchRequestDTO.getStatus() + "'";
-
-        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
-            whereClause += " AND h.id = " + searchRequestDTO.getHospitalId();
 
         if (!Objects.isNull(searchRequestDTO.getPatientMetaInfoId()))
             whereClause += " AND pmi.id = " + searchRequestDTO.getPatientMetaInfoId();

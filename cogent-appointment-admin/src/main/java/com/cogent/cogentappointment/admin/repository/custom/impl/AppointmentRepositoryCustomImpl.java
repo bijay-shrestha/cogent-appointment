@@ -34,7 +34,6 @@ import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRes
 import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
@@ -64,6 +63,8 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.query.AppointmentDoctorInfoQuery.QUERY_TO_FETCH_APPOINTMENT_DETAIL_FOR_DOCTOR_WISE_CHECK_IN;
 import static com.cogent.cogentappointment.admin.query.AppointmentDoctorInfoQuery.QUERY_TO_GET_CURRENT_APPOINTMENT_DOCTOR_INFO;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
 import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
 import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT;
@@ -474,7 +475,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             TransactionLogResponseDTO responseDTO = new TransactionLogResponseDTO();
             responseDTO.setTransactionLogs(transactionLogs);
             responseDTO.setTotalItems(totalItems);
-            calculateAppointmentStatisticsForTransactionLog(
+            calculateDoctorAppointmentStatisticsForTransactionLog(
                     searchRequestDTO, responseDTO, appointmentServiceTypeCode);
             return responseDTO;
         }
@@ -503,7 +504,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             TransactionLogResponseDTO responseDTO = new TransactionLogResponseDTO();
             responseDTO.setTotalItems(totalItems);
             responseDTO.setTransactionLogs(transactionLogs);
-            calculateAppointmentStatisticsForHospitalDepartmentTransactionLog(
+            calculateHospitalDepartmentAppointmentStatisticsForTransactionLog(
                     searchRequestDTO, responseDTO, appointmentServiceTypeCode);
             return responseDTO;
         }
@@ -723,9 +724,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 searchRequestDTO, appointmentLogResponse, appointmentServiceTypeCode);
     }
 
-    private void calculateAppointmentStatisticsForTransactionLog(TransactionLogSearchDTO searchRequestDTO,
-                                                                 TransactionLogResponseDTO txnLogResponse,
-                                                                 String appointmentServiceTypeCode) {
+    private void calculateDoctorAppointmentStatisticsForTransactionLog(TransactionLogSearchDTO searchRequestDTO,
+                                                                       TransactionLogResponseDTO txnLogResponse,
+                                                                       String appointmentServiceTypeCode) {
 
         BookedAppointmentResponseDTO bookedInfo = getBookedAppointmentDetails(
                 searchRequestDTO, appointmentServiceTypeCode);
@@ -754,7 +755,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         calculateTotalAppointmentAmount(searchRequestDTO, txnLogResponse, appointmentServiceTypeCode);
     }
 
-    private void calculateAppointmentStatisticsForHospitalDepartmentTransactionLog(
+    private void calculateHospitalDepartmentAppointmentStatisticsForTransactionLog(
             TransactionLogSearchDTO searchRequestDTO,
             TransactionLogResponseDTO txnLogResponse,
             String appointmentServiceTypeCode) {
@@ -1048,14 +1049,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
          /*BOOKED INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
-                AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedResult = query.getResultList();
 
          /*BOOKED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
+                QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedWithFollowUpResult = query1.getResultList();

@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * @author Sauravi Thapa ON 6/19/20
  */
@@ -14,6 +16,6 @@ import org.springframework.stereotype.Repository;
 public interface AppointmentEsewaRequestRepository extends JpaRepository<AppointmentEsewaRequest,Long> {
 
     @Query("SELECT a.esewaId FROM AppointmentEsewaRequest a WHERE a.appointment.id=:appointmentId")
-    String fetchEsewaIdByAppointmentId(@Param("appointmentId") Long appointmentId);
+    Optional<String> fetchEsewaIdByAppointmentId(@Param("appointmentId") Long appointmentId);
 
 }

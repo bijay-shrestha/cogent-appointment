@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
@@ -45,6 +46,7 @@ import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
+import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
@@ -448,7 +450,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
     private String getEsewaId(Long appointmentId) {
 
-        return appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId);
+        return appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId).
+                orElseThrow(() -> ESEWA_ID_NOT_FOUND.get());
 
     }
 
@@ -601,6 +604,11 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         return headers;
     }
+
+    private Supplier<NoContentFoundException> ESEWA_ID_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, "eSewa Id");
+        throw new NoContentFoundException("eSewa Id not Found", "eSewa Id not Found");
+    };
 
 
 }

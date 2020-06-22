@@ -15,4 +15,8 @@ public class AppointmentQueueRequestDTO implements Serializable {
     private Long doctorId;
 
     private Date date;
+
+    private String appointmentServiceType;
+
+    private Long hospitalDepartmentId;
 }

@@ -209,7 +209,7 @@ public class DashBoardQuery {
                     " ORDER BY" +
                     " atd.transactionDate";
 
-    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_APPOINTMENT_QUEUE =
+    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_DOCTOR_APPOINTMENT_QUEUE =
             (searchDTO) ->
                     "SELECT" +
                             " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
@@ -230,6 +230,7 @@ public class DashBoardQuery {
                             " END as doctorAvatar" +
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                            " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                             " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                             " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id = d.id" +
@@ -238,12 +239,29 @@ public class DashBoardQuery {
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(searchDTO);
 
+    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_QUEUE =
+            (appointmentQueueSearchDTO) ->
+                    "SELECT" +
+                            " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
+                            " a.patientId.name as patientName," +
+                            " a.patientId.mobileNumber as patientMobileNumber," +
+                            " ad.hospitalDepartment.name as hospitalDepartmentName" +
+                            " FROM Appointment a" +
+                            " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                            " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
+                            " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
+                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(appointmentQueueSearchDTO);
+
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
 
         String whereClause = " WHERE " +
                 " a.status='PA'" +
                 " AND DATE(a.appointmentDate) = :date" +
-                " AND h.id= :hospitalId";
+                " AND h.id= :hospitalId" +
+                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
+
+        if (!Objects.isNull(appointmentQueueRequestDTO.getHospitalDepartmentId()))
+            whereClause += " AND ad.hospitalDepartment.id = " + appointmentQueueRequestDTO.getHospitalDepartmentId();
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();

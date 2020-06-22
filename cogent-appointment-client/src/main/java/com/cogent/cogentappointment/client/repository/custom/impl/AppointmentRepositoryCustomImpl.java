@@ -511,7 +511,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                               Long hospitalId,
                                                               Pageable pageable) {
 
-        appointmentQueueRequestDTO.setAppointmentServiceType("DEP");
+        appointmentQueueRequestDTO.setAppointmentServiceType("DOC");
 
         Query query = getQueryForAppointmentQueue(appointmentQueueRequestDTO);
 

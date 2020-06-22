@@ -1000,7 +1000,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return childPatient;
     }
 
-
     private Appointment findPendingAppointmentById(Long appointmentId) {
         return appointmentRepository.fetchPendingAppointmentById(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
@@ -1262,19 +1261,21 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateIfRequestIsBeforeCurrentDateTime(
                 rescheduleRequestDTO.getRescheduleDate(), rescheduleRequestDTO.getRescheduleTime());
 
+        AppointmentDoctorInfo appointmentDoctorInfo = fetchAppointmentDoctorInfo(appointment.getId());
+
         Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
                 rescheduleRequestDTO.getRescheduleDate(),
                 rescheduleRequestDTO.getRescheduleTime(),
-                appointment.getDoctorId().getId(),
-                appointment.getSpecializationId().getId()
+                appointmentDoctorInfo.getDoctor().getId(),
+                appointmentDoctorInfo.getSpecialization().getId()
         );
 
         validateAppointmentExists(appointmentCount, rescheduleRequestDTO.getRescheduleTime());
 
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo =
                 fetchDoctorDutyRosterInfo(rescheduleRequestDTO.getRescheduleDate(),
-                        appointment.getDoctorId().getId(),
-                        appointment.getSpecializationId().getId()
+                        appointmentDoctorInfo.getDoctor().getId(),
+                        appointmentDoctorInfo.getSpecialization().getId()
                 );
 
         boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(

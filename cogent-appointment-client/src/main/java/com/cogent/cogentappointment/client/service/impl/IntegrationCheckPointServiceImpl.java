@@ -266,7 +266,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-            ThirdPartyResponse response = processRefundRequest(refundRequestDTO, appointment,
+            ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                    appointment,
                     appointmentTransactionDetail,
                     refundAppointmentDetail,
                     true);

@@ -68,6 +68,7 @@ public class DashboardResource {
         return ok(dashboardService.getRevenueTrend(countRequestDTO));
     }
 
+    //todo:make service type code dynamic
     @PutMapping(APPOINTMENT_QUEUE)
     @ApiOperation(FETCH_APPOINTMENT_QUEUE)
     public ResponseEntity<?> fetchAppointmentQueueLog(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,

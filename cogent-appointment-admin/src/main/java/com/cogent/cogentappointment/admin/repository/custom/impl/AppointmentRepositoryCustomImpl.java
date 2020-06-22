@@ -55,8 +55,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentTransferMessage.APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_SERVICE_TYPE_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -232,9 +234,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                               Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE
-                .apply(appointmentQueueRequestDTO))
-                .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
+        appointmentQueueRequestDTO.setAppointmentServiceType("DOC");
+
+        Query query = getQueryForAppointmentQueue(appointmentQueueRequestDTO);
 
         int totalItems = query.getResultList().size();
 
@@ -251,11 +253,32 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         }
     }
 
+    private Query getQueryForAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
+
+        switch (appointmentQueueRequestDTO.getAppointmentServiceType()) {
+            case DOCTOR_CONSULTATION_CODE:
+                return createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_QUEUE
+                        .apply(appointmentQueueRequestDTO))
+                        .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
+                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
+
+            case DEPARTMENT_CONSULTATION_CODE:
+                return createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_QUEUE
+                        .apply(appointmentQueueRequestDTO))
+                        .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
+                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
+
+            default:
+                throw new NoContentFoundException(NO_SERVICE_TYPE_FOUND);
+
+        }
+    }
+
     @Override
     public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
             AppointmentQueueRequestDTO appointmentQueueRequestDTO,
             Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
         int totalItems = query.getResultList().size();

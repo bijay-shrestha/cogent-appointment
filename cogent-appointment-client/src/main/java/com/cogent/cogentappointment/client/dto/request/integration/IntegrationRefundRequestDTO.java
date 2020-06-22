@@ -30,4 +30,7 @@ public class IntegrationRefundRequestDTO implements Serializable {
 
     private String integrationChannelCode;
 
+    private String remarks;
+
+
 }

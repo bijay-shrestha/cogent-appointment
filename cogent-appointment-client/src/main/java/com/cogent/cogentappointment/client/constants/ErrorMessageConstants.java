@@ -193,6 +193,9 @@ public class ErrorMessageConstants {
     public static String NO_RECORD_FOUND = "No %s(s) found.";
 
 
+    public static final String NO_SERVICE_TYPE_FOUND ="NO SERVICE TYPE FOUND";
+
+
     //O
 
     //P

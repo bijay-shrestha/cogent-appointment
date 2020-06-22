@@ -573,7 +573,7 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentCharge," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
                     " a.appointmentModeId.name as appointmentMode," +
-                    " h.esewaMerchantCode as productCode," +
+                    " h.esewaMerchantCode as esewaMerchantCode," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     " dv.fileUri as fileUri" +

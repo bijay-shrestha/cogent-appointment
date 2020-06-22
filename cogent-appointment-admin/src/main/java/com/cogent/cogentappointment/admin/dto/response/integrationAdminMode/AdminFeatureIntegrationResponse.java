@@ -16,6 +16,8 @@ public class AdminFeatureIntegrationResponse implements Serializable {
 
     private Long apiIntegrationFormatId;
 
+    private Long hospitalId;
+
     private Long appointmentModeId;
 
     private String integrationChannelCode;

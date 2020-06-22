@@ -2,10 +2,8 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -15,9 +13,6 @@ import java.util.List;
  */
 
 public interface AppointmentHospitalDepartmentService {
-
-    HospitalDepartmentAppointmentRescheduleLogResponseDTO searchRescheduleLogs(
-            HospitalDepartmentAppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable);
 
     List<AppointmentHospitalDepartmentCheckInResponseDTO> searchPendingHospitalDeptAppointments(
             AppointmentHospitalDepartmentCheckInSearchDTO searchDTO,

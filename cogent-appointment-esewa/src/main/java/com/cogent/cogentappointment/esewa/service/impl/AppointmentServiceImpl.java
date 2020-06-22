@@ -308,10 +308,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode()))
             requestDTO.getAppointmentInfo().setAppointmentServiceTypeCode(DOCTOR_CONSULTATION_CODE);
 
-        String code = requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
+        String appointmentServiceTypeCode = requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
 
         AppointmentSuccessResponseDTO responseDTO;
-        switch (code.trim().toUpperCase()) {
+        switch (appointmentServiceTypeCode.trim().toUpperCase()) {
 
             case DOCTOR_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForSelfDoctorWise(
@@ -324,7 +324,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 break;
 
             default:
-                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE, code));
+                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE,
+                        appointmentServiceTypeCode));
         }
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
@@ -357,10 +358,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode()))
             requestDTO.getAppointmentInfo().setAppointmentServiceTypeCode(DOCTOR_CONSULTATION_CODE);
 
-        String code = requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
+        String appointmentServiceTypeCode = requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
 
         AppointmentSuccessResponseDTO responseDTO;
-        switch (code.trim().toUpperCase()) {
+        switch (appointmentServiceTypeCode.trim().toUpperCase()) {
 
             case DOCTOR_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForOthersDoctorWise(
@@ -373,7 +374,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 break;
 
             default:
-                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE, code));
+                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE,
+                        appointmentServiceTypeCode));
         }
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));

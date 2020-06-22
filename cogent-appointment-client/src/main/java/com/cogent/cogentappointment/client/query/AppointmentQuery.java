@@ -246,6 +246,7 @@ public class AppointmentQuery {
                             " da.fileUri as fileUri" +                                                 //[17]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                            " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
                             " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
@@ -266,7 +267,8 @@ public class AppointmentQuery {
                 " AND sp.status!='D'" +
                 " AND d.status!='D'" +
                 " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate" +
-                " AND h.id =:hospitalId";
+                " AND h.id =:hospitalId"+
+                " AND has.appointmentServiceType.code = :appointmentServiceTypeCode";
 
         if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentRescheduleLogSearchDTO.getAppointmentNumber() + "%'";
@@ -308,6 +310,7 @@ public class AppointmentQuery {
                         " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                         " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                         " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                        " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
                         GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
     }
 

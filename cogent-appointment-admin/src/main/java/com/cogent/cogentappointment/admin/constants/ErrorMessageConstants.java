@@ -181,9 +181,10 @@ public class ErrorMessageConstants {
 
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s' ";
-    public static final String NO_SERVICE_TYPE_FOUND ="NO SERVICE TYPE FOUND";
 
     public static String NO_RECORD_FOUND = "No %s(s) found.";
+
+    public static final String NO_SERVICE_TYPE_FOUND ="NO SERVICE TYPE FOUND";
 
     //O
 

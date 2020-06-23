@@ -84,7 +84,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                             HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                             AppointmentRepository appointmentRepository,
                                             AppointmentRefundDetailRepository appointmentRefundDetailRepository,
-                                            AppointmentTransactionDetailRepository appointmentTransactionDetailRepository, AppointmentEsewaRequestRepository appointmentEsewaRequestRepository) {
+                                            AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
+                                            AppointmentEsewaRequestRepository appointmentEsewaRequestRepository) {
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
@@ -213,13 +214,6 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 appointmentRefundDetail,
                 isRefund, refundRequestDTO.getRemarks());
         esewaRefundRequestDTO.setEsewa_id(esewaId);
-
-//        Map<String, Object> esewaRefundRequestDTO = getDynamicEsewaRequestBodyLog(
-//                integrationApiInfo.getRequestBody(),
-//                appointment,
-//                transactionDetail,
-//                appointmentRefundDetail,
-//                isRefund);
 
         integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 

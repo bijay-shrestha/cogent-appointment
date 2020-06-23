@@ -43,12 +43,13 @@ public class HospitalDeptDutyRosterQuery {
                 " dr.hospital.name as hospitalName," +                                 //[6]
                 " dr.isRoomEnabled as isRoomEnabled," +                                 //[7]
                 " CASE WHEN dr.isRoomEnabled = 'N' THEN null" +
-                " WHEN dr.isRoomEnabled = 'Y' THEN hri.room.roomNumber" +
+                " WHEN dr.isRoomEnabled = 'Y' THEN r.roomNumber" +
                 " END AS roomNumber" +                                                 //[8]
                 " FROM HospitalDepartmentDutyRoster dr" +
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
                 " LEFT OUTER JOIN HospitalDepartmentDutyRosterRoomInfo hr ON dr.id = hr.hospitalDepartmentDutyRoster.id" +
                 " LEFT JOIN HospitalDepartmentRoomInfo hri ON hri.id = hr.hospitalDepartmentRoomInfo.id" +
+                " LEFT JOIN Room r ON r.id = hri.room.id" +
                 " WHERE" +
                 " dr.status !='D'" +
                 " AND dr.toDate >=:fromDate AND dr.fromDate <=:toDate";
@@ -278,9 +279,9 @@ public class HospitalDeptDutyRosterQuery {
                 " AND wd.name =DATE_FORMAT(:date,'%W') ";
 
         if (!Objects.isNull(hospitalDepartmentRoomInfoId))
-            query+= " AND hddrri.hospitalDepartmentRoomInfo.id=:hospitalDepartmentRoomInfoId";
+            query += " AND hddrri.hospitalDepartmentRoomInfo.id=:hospitalDepartmentRoomInfoId";
 
-            query += " GROUP BY hddr.id";
+        query += " GROUP BY hddr.id";
 
         return query;
     }

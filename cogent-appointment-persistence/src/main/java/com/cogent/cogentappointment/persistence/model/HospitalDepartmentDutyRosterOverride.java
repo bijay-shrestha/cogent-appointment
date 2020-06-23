@@ -78,7 +78,6 @@ public class HospitalDepartmentDutyRosterOverride extends Auditable<String> impl
                 ", endTime=" + endTime +
                 ", dayOffStatus=" + dayOffStatus +
                 ", hospitalDepartmentDutyRoster=" + hospitalDepartmentDutyRoster.getId() +
-                ", hospitalDepartmentRoomInfo=" + hospitalDepartmentRoomInfo.getId() +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +
                 ", fromDateInNepali='" + fromDateInNepali + '\'' +

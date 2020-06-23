@@ -42,12 +42,13 @@ public class HospitalDeptDutyRosterQuery {
                 " dr.status as status," +                                              //[5]
                 " dr.isRoomEnabled as isRoomEnabled," +                               //[6]
                 " CASE WHEN dr.isRoomEnabled = 'N' THEN null" +
-                " WHEN dr.isRoomEnabled = 'Y' THEN hri.room.roomNumber" +
+                " WHEN dr.isRoomEnabled = 'Y' THEN r.roomNumber" +
                 " END AS roomNumber" +                                                //[7]
                 " FROM HospitalDepartmentDutyRoster dr" +
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
                 " LEFT OUTER JOIN HospitalDepartmentDutyRosterRoomInfo hr ON dr.id = hr.hospitalDepartmentDutyRoster.id" +
                 " LEFT JOIN HospitalDepartmentRoomInfo hri ON hri.id = hr.hospitalDepartmentRoomInfo.id" +
+                " LEFT JOIN Room r ON r.id = hri.room.id" +
                 " WHERE" +
                 " dr.status !='D'" +
                 " AND dr.hospital.id=:hospitalId" +

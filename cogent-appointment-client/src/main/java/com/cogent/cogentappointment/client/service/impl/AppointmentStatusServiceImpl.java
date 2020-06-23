@@ -610,7 +610,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private List<Long> getRosterIdList(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS) {
         return rosterStatusResponseDTOS
                 .stream()
-                .map(HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentRoomInfoId)
+                .map(HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentDutyRosterId)
                 .collect(Collectors.toList());
     }
 

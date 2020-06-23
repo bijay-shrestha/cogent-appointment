@@ -121,17 +121,22 @@ public class HospitalDeptDutyRosterOverrideQuery {
                         " DATE_FORMAT(hddro.endTime, '%H:%i') as endTime," +                                         //[3]
                         " hddro.dayOffStatus as dayOffStatus ," +                                                    //[4]
                         " hddr.rosterGapDuration as gapDuration," +                                                  //[5]
-                        " hddr.hospitalDepartment.id as hospitalDepartmentId," +                                     //[6]
-                        " hddr.hospitalDepartment.name as hospitatDepartmentName," +                                //[7]
+                        " hd.id as hospitalDepartmentId," +                                     //[6]
+                        " hd.name as hospitatDepartmentName," +                                //[7]
                         " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[8]
                         " THEN null" +
-                        " ELSE hddro.hospitalDepartmentRoomInfo.id END as roomId," +
+                        " ELSE ri.id END as roomId," +
                         " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[9]
                         " THEN 'N/A'" +
-                        " ELSE hddro.hospitalDepartmentRoomInfo.room.roomNumber END as roomNumber," +
+                        " ELSE r.roomNumber END as roomNumber," +
                         " hddr.id as hospitalDepartmentDutyRosterId" +
-                        " FROM HospitalDepartmentDutyRosterOverride hddro" +
+                        " FROM" +
+                        " HospitalDepartmentDutyRosterOverride hddro" +
                         " LEFT JOIN HospitalDepartmentDutyRoster hddr ON hddr.id = hddro .hospitalDepartmentDutyRoster.id" +
+                        " LEFT JOIN HospitalDepartment hd ON hddr.hospitalDepartment.id=hd.id" +
+                        " LEFT JOIN HospitalDepartmentDutyRosterRoomInfo ri ON ri.hospitalDepartmentDutyRoster.id=hddr.id" +
+                        " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.id=ri.hospitalDepartmentRoomInfo.id" +
+                        " LEFT JOIN Room r ON r.id=hdri.room.id " +
                         " WHERE" +
                         " hddro.status = 'Y'" +
                         " AND hddr.status = 'Y'" +
@@ -143,10 +148,10 @@ public class HospitalDeptDutyRosterOverrideQuery {
             SQL += " AND hddr.id IN (:hospitalDepartmentDutyRosterId) ";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
-            SQL += " AND hddr.hospitalDepartment.id = :hospitalDepartmentId";
+            SQL += " AND hd.id = :hospitalDepartmentId";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
-            SQL += " AND hddro.hospitalDepartmentRoomInfo.id = :hospitalDepartmentRoomInfoId";
+            SQL += " AND hdri.id = :hospitalDepartmentRoomInfoId";
 
         return SQL;
     }

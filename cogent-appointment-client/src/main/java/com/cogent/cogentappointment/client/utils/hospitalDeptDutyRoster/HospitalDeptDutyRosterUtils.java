@@ -164,9 +164,9 @@ public class HospitalDeptDutyRosterUtils {
         BY COMPARING DATE, DOCTOR ID AND SPECIALIZATION ID*/
         List<HospitalDeptDutyRosterStatusResponseDTO> unmatchedList = hospitalDeptDutyRosterStatus.stream()
                 .filter(rosterStatus -> (hospitalDeptDutyRosterOverrideStatus.stream()
-                        .filter(overrideStatus -> (overrideStatus.getDate().equals(rosterStatus.getDate()))
-                                && (overrideStatus.getHospitalDepartmentId().equals(rosterStatus.getHospitalDepartmentId()))
-                                && (overrideStatus.getHospitalDepartmentRoomInfoId().equals(rosterStatus.getHospitalDepartmentRoomInfoId())))
+                        .filter(overrideStatus -> (overrideStatus.getHospitalDepartmentDutyRosterId()
+                                        .equals(rosterStatus.getHospitalDepartmentDutyRosterId()))
+                                )
                         .count()) < 1)
                 .collect(Collectors.toList());
 

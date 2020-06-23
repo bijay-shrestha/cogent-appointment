@@ -404,12 +404,12 @@ public class AppointmentHospitalDepartmentQuery {
                             " hb.billingMode.name as billingModeName," +                                //[16]
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
-                            " end as roomNumber" +                                                      //[17]
+                            " end as roomNumber," +                                                      //[17]
+                            " h.name as hospitalName"+                                                  //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                             " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
-                            " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
                             " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

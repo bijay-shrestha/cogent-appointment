@@ -23,6 +23,8 @@ public class AppointmentCheckAvailabilityResponseDTO implements Serializable {
 
     private List<String> availableTimeSlots;
 
+//    private List<AppointmentAvailableTimeSlotsResponseDTO> availableTimeSlots;
+
     private int responseCode;
 
     private HttpStatus responseStatus;

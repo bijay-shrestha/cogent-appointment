@@ -551,6 +551,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatus
             (HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
+        List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS = new ArrayList<>();
+
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus =
                 deptDutyRosterRepository.fetchHospitalDeptDutyRosterStatus(requestDTO);
 
@@ -561,7 +563,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
 
-        return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
+        rosterStatusResponseDTOS = mergeOverrideAndActualHospitalDeptDutyRoster(
+                hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
+
+        return rosterStatusResponseDTOS;
     }
 
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatusRoomWise
@@ -582,7 +587,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private List<Long> getRosterIdList(List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS) {
         return rosterStatusResponseDTOS
                 .stream()
-                .map(HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentRoomInfoId)
+                .map(HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentDutyRosterId)
                 .collect(Collectors.toList());
     }
 

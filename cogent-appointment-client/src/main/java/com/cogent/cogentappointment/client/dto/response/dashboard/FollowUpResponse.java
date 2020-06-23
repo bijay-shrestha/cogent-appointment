@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.dashboard;
+package com.cogent.cogentappointment.client.dto.response.dashboard;
 
 import lombok.*;
 
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DoctorFollowUpResponse implements Serializable {
+public class FollowUpResponse implements Serializable {
     private Long count;
 
     private Double amount;

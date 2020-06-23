@@ -54,9 +54,6 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
                         uri,
                         new HttpEntity<>(getApiRequestBody(), backendIntegrationApiInfo.getHttpHeaders()));
 
-        //todo
-        //exceptions to be handled
-
         System.out.println(response);
 
         return response;
@@ -88,8 +85,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
     @Override
     public ResponseEntity<?> callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
-                                                     EsewaRefundRequestDTO esewaRefundRequestDTO) {
-
+                                                    EsewaRefundRequestDTO esewaRefundRequestDTO) {
 
         HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
@@ -105,7 +101,6 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
                 requestAPI(httpMethod,
                         uri,
                         new HttpEntity<>(esewaRefundRequestDTO, backendIntegrationApiInfo.getHttpHeaders()));
-
 
         return response;
 
@@ -168,13 +163,13 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public String hmacForFrontendIntegration(String esewaId,String merchantCode) {
+    public String hmacForFrontendIntegration(String esewaId, String merchantCode) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(GENERATING_HMAC_FOR_FRONTEND_PROCESS_STARTED);
 
-        String hmac=getSigatureForEsewa.apply(esewaId,merchantCode);
+        String hmac = getSigatureForEsewa.apply(esewaId, merchantCode);
 
         log.info(GENERATING_HMAC_FOR_FRONTEND_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 

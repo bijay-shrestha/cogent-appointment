@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.client.service;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.*;
 import com.cogent.cogentappointment.client.dto.response.dashboard.*;
 import org.springframework.data.domain.Pageable;
 
@@ -29,4 +26,8 @@ public interface DashboardService {
 
     DoctorRevenueResponseDTO calculateOverallDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
                                                    Pageable pageable);
+
+    HospitalDepartmentRevenueResponseDTO calculateOverallHospitalDeptRevenue(HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
+                                                                             Pageable pageable);
+
 }

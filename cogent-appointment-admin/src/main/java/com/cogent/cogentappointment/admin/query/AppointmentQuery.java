@@ -379,7 +379,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                             " LEFT JOIN PatientMetaInfo pi ON p.id= pi.patient.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId"
+                            " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId AND ard.status='A'"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(

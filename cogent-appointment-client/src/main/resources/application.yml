@@ -6,4 +6,4 @@
 
 spring:
   profiles:
-    active: ir
+    active: uat

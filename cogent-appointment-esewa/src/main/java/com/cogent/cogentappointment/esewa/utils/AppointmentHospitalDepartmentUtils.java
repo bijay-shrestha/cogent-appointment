@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.esewa.utils;
 
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.availableDate.AppointmentAvailableDateDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.availableDate.AppointmentAvailableDateResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO;
@@ -19,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
@@ -170,7 +173,17 @@ public class AppointmentHospitalDepartmentUtils {
         return false;
     }
 
-    public static AppointmentAvailableDateResponseDTO parseAvailableAppointmentDates(List<LocalDate> availableDates) {
+    public static AppointmentAvailableDateDTO parseAvailableAppointmentDates(LocalDate localDate,
+                                                                             NepaliDateUtility nepaliDateUtility) {
+        return AppointmentAvailableDateDTO.builder()
+                .availableDate(localDate)
+                .availableDateNepali(getNepaliDate(convertLocalDateToDate(localDate), nepaliDateUtility))
+                .build();
+    }
+
+    public static AppointmentAvailableDateResponseDTO parseAvailableAppointmentDates(
+            List<AppointmentAvailableDateDTO> availableDates) {
+
         AppointmentAvailableDateResponseDTO responseDTO = new AppointmentAvailableDateResponseDTO();
         responseDTO.setAvailableDates(availableDates);
         responseDTO.setResponseCode(OK.value());
@@ -179,4 +192,10 @@ public class AppointmentHospitalDepartmentUtils {
         return responseDTO;
     }
 
+    private static String getNepaliDate(Date date, NepaliDateUtility nepaliDateUtility) {
+
+        String nepaliDate = nepaliDateUtility.getNepaliDateFromDate(date);
+
+        return formatToDateString(nepaliDate);
+    }
 }

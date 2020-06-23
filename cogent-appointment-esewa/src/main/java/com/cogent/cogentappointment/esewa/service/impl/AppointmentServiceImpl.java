@@ -1119,7 +1119,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         save(appointment);
 
-        saveAppointmentEsewaRequest(appointment,requestDTO.getPatientInfo().getESewaId());
+        saveAppointmentEsewaRequest(appointment, requestDTO.getPatientInfo().getESewaId());
 
         saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
 
@@ -1175,7 +1175,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         save(appointment);
 
-        saveAppointmentEsewaRequest(appointment,requestDTO.getPatientInfo().getESewaId());
+        saveAppointmentEsewaRequest(appointment, requestDTO.getPatientInfo().getESewaId());
 
         saveAppointmentHospitalDepartmentInfo(appointment, appointmentReservationLog);
 
@@ -1309,7 +1309,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         save(appointment);
 
-        saveAppointmentEsewaRequest(appointment,requestDTO.getRequestBy().getESewaId());
+        saveAppointmentEsewaRequest(appointment, requestDTO.getRequestBy().getESewaId());
 
         saveAppointmentDoctorInfo(appointment, appointmentReservationLog);
 
@@ -1367,7 +1367,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         save(appointment);
 
-        saveAppointmentEsewaRequest(appointment,requestDTO.getRequestBy().getESewaId());
+        saveAppointmentEsewaRequest(appointment, requestDTO.getRequestBy().getESewaId());
 
         saveAppointmentHospitalDepartmentInfo(appointment, appointmentReservationLog);
 
@@ -1427,8 +1427,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
     }
 
-    private void saveAppointmentEsewaRequest(Appointment appointment,String esewaId){
-        appointmentEsewaRequestRepository.save(parseToAppointmentEsewaRequest(appointment,esewaId));
+    private void saveAppointmentEsewaRequest(Appointment appointment, String esewaId) {
+        appointmentEsewaRequestRepository.save(parseToAppointmentEsewaRequest(appointment, esewaId));
     }
 
     private String getNepaliDate(Date date) {

@@ -393,14 +393,13 @@ public class AppointmentUtils {
     }
 
     public static AppointmentEsewaRequest parseToAppointmentEsewaRequest(Appointment appointment,
-                                                                         String esewaId){
+                                                                         String esewaId) {
 
-        AppointmentEsewaRequest appointmentEsewaRequest=new AppointmentEsewaRequest();
+        AppointmentEsewaRequest appointmentEsewaRequest = new AppointmentEsewaRequest();
         appointmentEsewaRequest.setAppointment(appointment);
         appointmentEsewaRequest.setEsewaId(esewaId);
 
         return appointmentEsewaRequest;
-
     }
 
 }

@@ -150,7 +150,8 @@ public class AppointmentQuery {
                     " a.status = 'R'" +
                     " THEN 'REJECTED'" +
                     " END AS status," +                                                   //[15]
-                    " hpi.registrationNumber AS registrationNumber" +                     //[16]
+                    " hpi.registrationNumber AS registrationNumber," +                     //[16]
+                    " a.appointmentDateInNepali as appointmentDateInNepali"+              //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType hs ON hs.id = a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
@@ -191,9 +192,10 @@ public class AppointmentQuery {
                     " THEN 'REJECTED'" +
                     " END AS status," +                                                   //[15]
                     " hpi.registrationNumber AS registrationNumber," +                      //[16]
-                    " d.salutation as doctorSalutation," +                     //[11]                     //[12]
+                    " d.salutation as doctorSalutation," +                                 //[11]                     //[12]
                     " ah.hospitalDepartment.name as hospitalDepartmentName," +                //[13]
-                    " ah.hospitalDepartmentRoomInfo.id as hospitalDepartmentRoomInfoId" +     //[14]
+                    " ah.hospitalDepartmentRoomInfo.id as hospitalDepartmentRoomInfoId," +     //[14]
+                    " a.appointmentDateInNepali as appointmentDateInNepali"+              //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType hs ON hs.id = a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN AppointmentHospitalDepartmentInfo ah ON a.id = ah.appointment.id" +

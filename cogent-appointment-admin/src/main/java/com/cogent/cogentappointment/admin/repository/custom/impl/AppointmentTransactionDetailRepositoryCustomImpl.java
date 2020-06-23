@@ -279,7 +279,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                     FollowUpResponse.class);
 
             revenueDTO.setTotalFollowUp(followUpResponse.getCount());
-            revenueDTO.setDoctorRevenue(revenueDTO.getDoctorRevenue() + followUpResponse.getAmount());
+            revenueDTO.setDepartmentRevenue(revenueDTO.getDepartmentRevenue() + followUpResponse.getAmount());
         });
 
         return revenueDTOList;

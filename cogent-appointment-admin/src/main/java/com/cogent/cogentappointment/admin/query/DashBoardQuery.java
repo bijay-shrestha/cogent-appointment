@@ -428,9 +428,10 @@ public class DashBoardQuery {
                 " COALESCE(SUM(atd.appointmentAmount),0) as departmentRevenue" +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
                 " WHERE" +
                 " (a.status !='RE' AND a.status !='C')" +
                 " AND a.isFollowUp='N'" +
@@ -440,7 +441,7 @@ public class DashBoardQuery {
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
         String whereClause = " AND h.id=:hospitalId ";
 
-        if (isEmpty(requestDTO.getHospitalDepartmentId()))
+        if (requestDTO.getHospitalDepartmentId() != 0 && !Objects.isNull(requestDTO.getHospitalDepartmentId()))
             whereClause += " AND ad.hospitalDepartment.id=" + requestDTO.getHospitalDepartmentId();
 
 
@@ -459,9 +460,10 @@ public class DashBoardQuery {
                 " COALESCE(SUM(atd.appointmentAmount),0) as departmentRevenue" +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
                 " WHERE" +
                 " a.status ='RE'" +
                 " AND ard.status='A'" +
@@ -474,9 +476,10 @@ public class DashBoardQuery {
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as amount" +
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                    " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
                     " WHERE" +
                     " (a.status !='RE' OR a.status !='C')" +
                     " AND a.isFollowUp='Y'" +
@@ -488,9 +491,10 @@ public class DashBoardQuery {
                     " COUNT(a.id) as count," +
                     " COALESCE(SUM(atd.appointmentAmount ),0) as amount" +
                     " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                    " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
                     " WHERE" +
                     " a.status ='C'" +
                     " AND ad.hospitalDepartment.id=:hospitalDepartmentId" +

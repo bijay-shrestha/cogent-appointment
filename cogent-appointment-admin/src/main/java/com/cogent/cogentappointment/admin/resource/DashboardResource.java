@@ -121,7 +121,7 @@ public class DashboardResource {
     }
 
     @GetMapping(HOSPITAL_DEPARTMENT_REVENUE)
-    @ApiOperation(DOCTOR_REVENUE_OPERATION)
+    @ApiOperation(HOSPITAL_DEPARTMENT_REVENUE_OPERATION)
     public ResponseEntity<?> getHospitalDepartmentRevenueList(@RequestParam("toDate") String toDate,
                                                   @RequestParam("fromDate") String fromDate,
                                                   @RequestParam("hospitalDepartmentId") Long hospitalDepartmentId,

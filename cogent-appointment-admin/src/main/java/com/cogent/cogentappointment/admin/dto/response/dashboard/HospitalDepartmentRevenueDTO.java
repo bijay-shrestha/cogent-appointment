@@ -23,7 +23,7 @@ public class HospitalDepartmentRevenueDTO implements Serializable {
 
     private Long totalFollowUp = 0L;
 
-    private Double doctorRevenue = 0D;
+    private Double departmentRevenue = 0D;
 
     private Double cancelledRevenue = 0D;
 

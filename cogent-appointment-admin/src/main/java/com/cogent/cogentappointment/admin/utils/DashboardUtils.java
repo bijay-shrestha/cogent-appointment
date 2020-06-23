@@ -321,14 +321,14 @@ public class DashboardUtils {
         hospitalDepartmentRevenue.setTotalAppointments(hospitalDepartmentRevenue.getSuccessfulAppointments() +
                 hospitalDepartmentRevenue.getCancelledAppointments());
 
-        hospitalDepartmentRevenue.setDoctorRevenue(
-                combinedInfo.getDoctorRevenue() + hospitalDepartmentRevenue.getDoctorRevenue());
+        hospitalDepartmentRevenue.setDepartmentRevenue(
+                combinedInfo.getDepartmentRevenue() + hospitalDepartmentRevenue.getDepartmentRevenue());
 
         hospitalDepartmentRevenue.setCancelledRevenue(
                 combinedInfo.getCancelledRevenue() + hospitalDepartmentRevenue.getCancelledRevenue());
 
         hospitalDepartmentRevenue.setTotalRevenue(
-                hospitalDepartmentRevenue.getDoctorRevenue() + hospitalDepartmentRevenue.getCancelledRevenue());
+                hospitalDepartmentRevenue.getDepartmentRevenue() + hospitalDepartmentRevenue.getCancelledRevenue());
     }
 
     private static void calculateUnmatchedMatchedRevenueDetails(DoctorRevenueDTO combinedInfo) {
@@ -344,7 +344,7 @@ public class DashboardUtils {
         combinedInfo.setTotalAppointments(combinedInfo.getSuccessfulAppointments() +
                 combinedInfo.getCancelledAppointments());
 
-        combinedInfo.setTotalRevenue(combinedInfo.getDoctorRevenue() + combinedInfo.getCancelledRevenue());
+        combinedInfo.setTotalRevenue(combinedInfo.getDepartmentRevenue() + combinedInfo.getCancelledRevenue());
     }
 
     public static DoctorRevenueResponseDTO parseToDoctorRevenueResponseDTO(List<DoctorRevenueDTO> revenueDTOList) {

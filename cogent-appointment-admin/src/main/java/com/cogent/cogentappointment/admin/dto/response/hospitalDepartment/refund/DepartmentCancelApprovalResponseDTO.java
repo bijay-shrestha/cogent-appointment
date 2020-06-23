@@ -34,8 +34,6 @@ public class DepartmentCancelApprovalResponseDTO implements Serializable {
 
     private String age;
 
-    private String doctorName;
-
     private String eSewaId;
 
     private String transactionNumber;

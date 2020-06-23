@@ -236,7 +236,8 @@ public class AppointmentStatusUtils {
         List<AppointmentTimeSlotResponseDTO> responseDTOS= new ArrayList<> ();
 
         AppointmentTimeSlotResponseDTO response=AppointmentTimeSlotResponseDTO.builder()
-                        .appointmentTime(hospitalDeptAppointmentDetailsForStatus.getAppointmentTime())
+                        .appointmentTime(convert24HourTo12HourFormat(
+                                hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
                         .status(hospitalDeptAppointmentDetailsForStatus.getStatus())
                         .appointmentNumber(hospitalDeptAppointmentDetailsForStatus.getAppointmentNumber())
                         .mobileNumber(hospitalDeptAppointmentDetailsForStatus.getMobileNumber())
@@ -291,7 +292,7 @@ public class AppointmentStatusUtils {
         List<DoctorTimeSlotResponseDTO> responseDTOS= new ArrayList<> ();
 
         DoctorTimeSlotResponseDTO response=DoctorTimeSlotResponseDTO.builder()
-                .appointmentTime(appointmentDetailsForStatus.getAppointmentTime())
+                .appointmentTime(convert24HourTo12HourFormat(appointmentDetailsForStatus.getAppointmentTime()))
                 .status(appointmentDetailsForStatus.getStatus())
                 .appointmentNumber(appointmentDetailsForStatus.getAppointmentNumber())
                 .mobileNumber(appointmentDetailsForStatus.getMobileNumber())

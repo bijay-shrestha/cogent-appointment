@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_INTEGRATION_CHANNEL_CODE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.FRONT_END_CODE;
@@ -232,31 +233,49 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                              AppointmentRefundDetail refundAppointmentDetail,
                                                              IntegrationRefundRequestDTO refundRequestDTO) {
 
+        if (refundRequestDTO.getIntegrationChannelCode()!= null) {
 
-        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+            switch (refundRequestDTO.getIntegrationChannelCode()) {
 
-            ThirdPartyResponse response = processRefundRequest(refundRequestDTO, appointment,
-                    appointmentTransactionDetail,
-                    refundAppointmentDetail,
-                    true);
+                case BACK_END_CODE:
 
-            if (!Objects.isNull(response.getCode())) {
-                throw new BadRequestException(response.getMessage(), response.getMessage());
+                    ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                            appointment,
+                            appointmentTransactionDetail,
+                            refundAppointmentDetail,
+                            true);
+
+                    if (!Objects.isNull(response.getCode())) {
+                        throw new BadRequestException(response.getMessage(), response.getMessage());
+                    }
+
+                    updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+
+                    break;
+
+                case FRONT_END_CODE:
+
+                    updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+                    break;
+
+                default:
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
             }
 
-            updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
-                    appointment,
-                    refundAppointmentDetail,
-                    null);
         }
 
-        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+        throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
 
-            updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-                    appointment,
-                    refundAppointmentDetail,
-                    null);
-        }
+//        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+//                appointment,
+//                refundAppointmentDetail,
+//                null);
 
     }
 
@@ -381,7 +400,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
                     transactionDetail,
                     appointmentRefundDetail,
-                    isRefund);
+                    isRefund,integrationRefundRequestDTO.getRemarks());
             esewaRefundRequestDTO.setEsewa_id(esewaId);
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));

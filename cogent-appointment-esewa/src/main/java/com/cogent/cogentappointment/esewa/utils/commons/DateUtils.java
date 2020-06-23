@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,6 +79,12 @@ public class DateUtils {
 
     public static LocalDate convertDateToLocalDate(Date date) {
         return new java.sql.Date(date.getTime()).toLocalDate();
+    }
+
+    public static Date convertLocalDateToDate(LocalDate requestedDate) {
+        return Date.from(requestedDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
     }
 
     public static String getDayCodeFromDate(Date date) {

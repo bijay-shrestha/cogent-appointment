@@ -385,7 +385,8 @@ public class DashBoardQuery {
                     " Count(a.id) as count," +
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as amount" +
                     " FROM Appointment a" +
-                    " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " LEFT JOIN Doctor d ON d.id= adi.doctor.id" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                     " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
@@ -394,8 +395,8 @@ public class DashBoardQuery {
                     " WHERE" +
                     " (a.status ='RE' OR a.status ='C')" +
                     " AND a.isFollowUp='Y'" +
-                    " AND a.doctorId.id=:doctorId" +
-                    " AND a.specializationId.id=:specializationId" +
+                    " AND adi.doctor.id=:doctorId" +
+                    " AND adi.specialization.id=:specializationId" +
                     " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
 
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(DoctorRevenueRequestDTO requestDTO) {
@@ -419,16 +420,17 @@ public class DashBoardQuery {
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
                 " WHERE" +
                 " ard.status = 'A'" +
                 " AND ard.refundedDate BETWEEN :fromDate AND :toDate" +
                 " AND a.hospitalId.id=:hospitalId";
 
         if (!Objects.isNull(doctorId))
-            query += " AND a.doctorId.id = " + doctorId;
+            query += " AND adi.doctor.id = " + doctorId;
 
         if (!Objects.isNull(specializationId))
-            query += " AND a.specializationId.id = " + specializationId;
+            query += " AND adi.specialization.id = " + specializationId;
 
         return query;
     }

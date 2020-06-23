@@ -551,8 +551,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatus
             (HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
-        List<HospitalDeptDutyRosterStatusResponseDTO> rosterStatusResponseDTOS = new ArrayList<>();
-
         List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus =
                 deptDutyRosterRepository.fetchHospitalDeptDutyRosterStatus(requestDTO);
 
@@ -563,10 +561,9 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
 
-        rosterStatusResponseDTOS = mergeOverrideAndActualHospitalDeptDutyRoster(
-                hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
 
-        return rosterStatusResponseDTOS;
+        return  mergeOverrideAndActualHospitalDeptDutyRoster(
+                hospitalDeptDutyRosterOverrideStatus, hospitalDeptDutyRosterStatus);
     }
 
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDepartmentStatusRoomWise

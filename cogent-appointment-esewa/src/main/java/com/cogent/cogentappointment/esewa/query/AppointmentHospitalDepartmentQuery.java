@@ -16,7 +16,7 @@ public class AppointmentHospitalDepartmentQuery {
                 " WHERE" +
                 " a.appointmentDate = :date" +
                 " AND ah.hospitalDepartment.id = :hospitalDepartmentId" +
-                " AND a.status = 'PA'";
+                " AND a.status IN ('PA', 'A')";
 
         if (!Objects.isNull(hospitalDepartmentRoomInfoId))
             query += " AND ah.hospitalDepartmentRoomInfo.id =" + hospitalDepartmentRoomInfoId;
@@ -33,7 +33,7 @@ public class AppointmentHospitalDepartmentQuery {
                 " a.appointmentDate =:appointmentDate" +
                 " AND ah.hospitalDepartment.id =:hospitalDepartmentId" +
                 " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
-                " AND a.status='PA'";
+                " AND a.status IN ('PA', 'A')";
 
         if (!Objects.isNull(hospitalDepartmentRoomInfoId))
             query += " AND ah.hospitalDepartmentRoomInfo.id =" + hospitalDepartmentRoomInfoId;

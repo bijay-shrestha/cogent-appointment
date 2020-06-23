@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.service.CompanyService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
@@ -21,8 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CompanyConstants.BASE_COMPANY;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ID_PATH_VARIABLE_BASE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -81,7 +80,8 @@ public class CompanyResource {
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
-    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
-        return ok(companyService.fetchDetailsById(id));
+    public ResponseEntity<CompanyResponseDTO> fetchDetailsById(@PathVariable("id") Long id) {
+        CompanyResponseDTO responseDTO = companyService.fetchDetailsById(id);
+        return ok().body(responseDTO);
     }
 }

@@ -71,15 +71,17 @@ public class AppointmentResource {
 
     @PutMapping(REFUND + APPROVE)
     @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(@RequestBody IntegrationRefundRequestDTO integrationRefundRequestDTO){
+    public ResponseEntity<?> approveRefundAppointment(@RequestBody IntegrationRefundRequestDTO integrationRefundRequestDTO) {
         appointmentService.approveRefundAppointment(integrationRefundRequestDTO);
         return ok().build();
     }
 
     @PutMapping(REFUND + REJECT)
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
-    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO){
+    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO) {
 
+        //todo
+        //add integration details in refund cancel
         appointmentService.rejectRefundAppointment(refundRejectDTO);
         return ok().build();
     }

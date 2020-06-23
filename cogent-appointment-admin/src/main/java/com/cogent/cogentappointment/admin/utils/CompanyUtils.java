@@ -24,9 +24,9 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUppe
  */
 public class CompanyUtils {
 
-    public static Hospital convertComapanyDTOToHospital(CompanyRequestDTO hospitalRequestDTO) {
+    public static Hospital convertCompanyDTOToHospital(CompanyRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
-        hospital.setName(StringUtil.convertToNormalCase(hospitalRequestDTO.getName()));
+        hospital.setName(hospitalRequestDTO.getName());
         hospital.setCode(toUpperCase(hospitalRequestDTO.getCompanyCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
@@ -61,7 +61,7 @@ public class CompanyUtils {
     public static Hospital parseToUpdatedCompany(CompanyUpdateRequestDTO updateRequestDTO,
                                              Hospital company) {
 
-        company.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
+        company.setName(updateRequestDTO.getName());
         company.setAddress(updateRequestDTO.getAddress());
         company.setPanNumber(updateRequestDTO.getPanNumber());
         company.setStatus(updateRequestDTO.getStatus());

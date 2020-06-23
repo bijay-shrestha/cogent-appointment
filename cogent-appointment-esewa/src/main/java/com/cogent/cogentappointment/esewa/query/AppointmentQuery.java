@@ -23,7 +23,7 @@ public class AppointmentQuery {
                     " AND ad.doctor.id = :doctorId" +
                     " AND ad.specialization.id = :specializationId" +
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
-                    " AND a.status='PA'";
+                    " AND a.status IN ('PA', 'A')";
 
     public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
             "SELECT a.appointment_number" +
@@ -44,7 +44,7 @@ public class AppointmentQuery {
                     " a.appointmentDate = :date" +
                     " AND ad.doctor.id = :doctorId" +
                     " AND ad.specialization.id = :specializationId" +
-                    " AND a.status = 'PA'";
+                    " AND a.status IN ('PA', 'A')";
 
     /*%H - hour (e.g., 00,01,02,…12) IN 24 HOUR FORMAT
     * %h - hour (e.g., 00,01,02,…12) IN 12 HOUR FORMAT

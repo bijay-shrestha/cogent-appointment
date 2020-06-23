@@ -211,7 +211,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
                 transactionDetail,
                 appointmentRefundDetail,
-                isRefund);
+                isRefund, refundRequestDTO.getRemarks());
 
 //        Map<String, Object> esewaRefundRequestDTO = getDynamicEsewaRequestBodyLog(
 //                integrationApiInfo.getRequestBody(),

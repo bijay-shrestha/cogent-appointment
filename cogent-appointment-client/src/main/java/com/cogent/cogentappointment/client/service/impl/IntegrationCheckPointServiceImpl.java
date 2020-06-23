@@ -400,7 +400,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
                     transactionDetail,
                     appointmentRefundDetail,
-                    isRefund);
+                    isRefund,integrationRefundRequestDTO.getRemarks());
             esewaRefundRequestDTO.setEsewa_id(esewaId);
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));

@@ -70,7 +70,7 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentAmount" +                        //[8]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " LEFT JOIN Specialization s ON s.id = adi.specialization.id" +
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
@@ -113,7 +113,7 @@ public class AppointmentQuery {
                     " atd.discountAmount as discountAmount," +                             //[11]
                     " atd.serviceChargeAmount as serviceChargeAmount" +                    //[12]
                     " FROM Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " LEFT JOIN Specialization s ON s.id = adi.specialization.id" +
@@ -146,7 +146,7 @@ public class AppointmentQuery {
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as doctorName," +                                            //[12]
+                    " END as doctorName," +                                                  //[12]
                     " s.id as specializationId," +                                          //[13]
                     " s.name as specializationName," +                                      //[14]
                     " CASE WHEN " +
@@ -165,7 +165,8 @@ public class AppointmentQuery {
                     " a.status = 'R'" +
                     " THEN 'REJECTED'" +
                     " END AS status," +                                                   //[15]
-                    " hpi.registrationNumber AS registrationNumber" +                     //[16]
+                    " hpi.registrationNumber AS registrationNumber," +                    //[16]
+                    " a.appointmentDateInNepali as appointmentDateInNepali" +              //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType hs ON hs.id = a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
@@ -207,7 +208,8 @@ public class AppointmentQuery {
                     " END AS status," +                                                   //[15]
                     " hpi.registrationNumber AS registrationNumber," +                      //[16]
                     " ah.hospitalDepartment.name as hospitalDepartmentName," +                //[13]
-                    " ah.hospitalDepartmentRoomInfo.id as hospitalDepartmentRoomInfoId" +     //[14]
+                    " ah.hospitalDepartmentRoomInfo.id as hospitalDepartmentRoomInfoId," +     //[14]
+                    " a.appointmentDateInNepali as appointmentDateInNepali" +              //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType hs ON hs.id = a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN AppointmentHospitalDepartmentInfo ah ON a.id = ah.appointment.id" +

@@ -245,7 +245,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // isPatientStatus-->      true--> no hospital number | new registration patient
         // isPatientStatus-->      false--> hospital number   | registered patient
-
         Appointment appointment = appointmentRepository.fetchPendingAppointmentById(backendRequestDTO.getAppointmentId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(backendRequestDTO.getAppointmentId()));
 
@@ -354,25 +353,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTOS;
     }
 
-    private void changeAppointmentAndAppointmentRefundDetailStatus(Appointment appointment,
-                                                                   AppointmentRefundDetail refundAppointmentDetail,
-                                                                   String remarks) {
-
-        save(changeAppointmentStatus.apply(appointment, remarks));
-
-        saveAppointmentRefundDetail(changeAppointmentRefundDetailStatus.apply(refundAppointmentDetail, remarks));
-    }
-
-    private void defaultAppointmentAndAppointmentRefundDetailStatusChanges(Appointment appointment,
-                                                                           AppointmentRefundDetail refundAppointmentDetail,
-                                                                           String remarks) {
-
-        save(defaultAppointmentStatusChange.apply(appointment, remarks));
-
-        saveAppointmentRefundDetail(defaultAppointmentRefundDetailStatusChange.apply(refundAppointmentDetail, remarks));
-
-    }
-
     private void save(Appointment appointment) {
         appointmentRepository.save(appointment);
     }
@@ -421,12 +401,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void registerPatient(Long patientId, Long hospitalId) {
         patientService.registerPatient(patientId, hospitalId);
     }
-
-    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail) {
-        appointmentRefundDetailRepository.save(appointmentRefundDetail);
-    }
-
-
 
     private AppointmentDoctorInfo fetchAppointmentDoctorInfo(Long appointmentId) {
         return appointmentDoctorInfoRepository.fetchAppointmentDoctorInfo(appointmentId)

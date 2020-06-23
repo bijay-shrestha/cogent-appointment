@@ -167,7 +167,7 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard.";
         String DOCTOR_REVENUE_OPERATION = "Doctor Revenue list.";
         String REFUND_AMOUNT_OPERATION = "Calculate Total Refunded Amount.";
-
+        String HOSPITAL_DEPARTMENT_REVENUE_OPERATION = "Hospital Department Revenue list.";
     }
 
     public interface DepartmentConstant {

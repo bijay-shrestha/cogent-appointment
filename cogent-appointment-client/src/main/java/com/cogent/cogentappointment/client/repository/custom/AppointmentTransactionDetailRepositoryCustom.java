@@ -2,8 +2,10 @@ package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.HospitalDepartmentRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.HospitalDepartmentRevenueDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +32,12 @@ public interface AppointmentTransactionDetailRepositoryCustom {
     List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,Pageable pagable);
 
     List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,Pageable pagable);
+
+
+    List<HospitalDepartmentRevenueDTO> calculateHospitalDepartmentRevenue(HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
+                                                                          Pageable pageable);
+
+    List<HospitalDepartmentRevenueDTO> calculateCancelledHospitalDepartmentRevenue(HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
+                                                                                   Pageable pageable);
 
 }

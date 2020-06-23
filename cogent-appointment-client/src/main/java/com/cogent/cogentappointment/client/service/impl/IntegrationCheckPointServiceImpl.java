@@ -181,25 +181,6 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
     }
 
-//    private List<String> getRequestBodyByFeature(Long featureId, String requestMethod) {
-//
-//        List<String> requestBody = null;
-//        if (requestMethod.equalsIgnoreCase("POST")) {
-//            List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.
-//                    fetchRequestBodyAttributeByFeatureId(featureId);
-//
-//            if (responses != null) {
-//                requestBody = responses.stream()
-//                        .map(request -> request.getName())
-//                        .collect(Collectors.toList());
-//            }
-//
-//        }
-//
-//
-//        return requestBody;
-//    }
-
 
     private ThirdPartyResponse processRefundRequest(IntegrationRefundRequestDTO integrationRefundRequestDTO,
                                                     Appointment appointment,
@@ -237,19 +218,20 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
         }
 
-        switch (refundRequestDTO.getIntegrationChannelCode()) {
+        //condition to check transaction number for follow up case.
+        //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+        //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+        if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
 
-            case BACK_END_CODE:
+            changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                    refundAppointmentDetail,
+                    refundRequestDTO.getRemarks(), null);
+        } else {
 
-                if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
-                        appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+            switch (refundRequestDTO.getIntegrationChannelCode()) {
 
-                    changeAppointmentAndAppointmentRefundDetailStatus(appointment,
-                            refundAppointmentDetail,
-                            refundRequestDTO.getRemarks(), null);
-
-                } else {
-
+                case BACK_END_CODE:
 
                     ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
                             appointment,
@@ -267,29 +249,23 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                             refundAppointmentDetail,
                             null);
 
-                }
+                    break;
 
-                break;
+                case FRONT_END_CODE:
 
-            case FRONT_END_CODE:
+                    updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                            refundRequestDTO.getRemarks(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+                    break;
 
-                updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-                        refundRequestDTO.getRemarks(),
-                        appointment,
-                        refundAppointmentDetail,
-                        null);
-                break;
+                default:
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
+            }
 
-            default:
-                throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
         }
-
     }
-
-//        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-//                appointment,
-//                refundAppointmentDetail,
-//                null);
 
     @Override
     public void apiIntegrationCheckpointForRejectAppointment(Appointment appointment,

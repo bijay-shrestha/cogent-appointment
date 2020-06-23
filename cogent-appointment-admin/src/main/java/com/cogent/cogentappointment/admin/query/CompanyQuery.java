@@ -16,7 +16,7 @@ public class CompanyQuery {
                     " h.code" +                         //[1]
                     " FROM Hospital h" +
                     " WHERE " +
-                    " (h.name =:name OR h.code =:code)" +
+                    " (h.name =:name OR h.code =:esewaMerchantCode)" +
                     " AND h.status != 'D'" +
                     " AND h.isCompany='Y'";
 

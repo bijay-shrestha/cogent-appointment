@@ -22,8 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CompanyConstants.BASE_COMPANY;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ID_PATH_VARIABLE_BASE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;

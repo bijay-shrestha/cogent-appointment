@@ -270,10 +270,12 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         }
 
-        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-                appointment,
-                refundAppointmentDetail,
-                null);
+        throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
+
+//        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+//                appointment,
+//                refundAppointmentDetail,
+//                null);
 
     }
 
@@ -398,7 +400,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
                     transactionDetail,
                     appointmentRefundDetail,
-                    isRefund);
+                    isRefund,integrationRefundRequestDTO.getRemarks());
             esewaRefundRequestDTO.setEsewa_id(esewaId);
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));

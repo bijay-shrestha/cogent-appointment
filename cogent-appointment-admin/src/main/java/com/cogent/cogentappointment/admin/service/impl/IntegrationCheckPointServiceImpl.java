@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
@@ -244,9 +243,9 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                              AppointmentRefundDetail refundAppointmentDetail,
                                                              IntegrationRefundRequestDTO refundRequestDTO) {
 
-        if (appointment.getAppointmentModeId().getCode() != null) {
+        if (refundRequestDTO.getIntegrationChannelCode() != null) {
 
-            switch (appointment.getAppointmentModeId().getCode()) {
+            switch (refundRequestDTO.getIntegrationChannelCode()) {
 
                 case BACK_END_CODE:
 
@@ -276,15 +275,15 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     break;
 
                 default:
-                    throw new BadRequestException(ErrorMessageConstants.INVALID_INTEGRATION_CHANNEL_CODE);
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
             }
 
         }
 
-        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-                appointment,
-                refundAppointmentDetail,
-                null);
+//        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+//                appointment,
+//                refundAppointmentDetail,
+//                null);
 
 
     }

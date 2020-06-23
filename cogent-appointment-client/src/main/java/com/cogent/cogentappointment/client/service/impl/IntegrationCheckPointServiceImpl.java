@@ -233,9 +233,9 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                              AppointmentRefundDetail refundAppointmentDetail,
                                                              IntegrationRefundRequestDTO refundRequestDTO) {
 
-        if (appointment.getAppointmentModeId().getCode() != null) {
+        if (refundRequestDTO.getIntegrationChannelCode()!= null) {
 
-            switch (appointment.getAppointmentModeId().getCode()) {
+            switch (refundRequestDTO.getIntegrationChannelCode()) {
 
                 case BACK_END_CODE:
 

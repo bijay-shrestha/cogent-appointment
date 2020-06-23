@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentHospitalDepartmentService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.APPROVE_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_APPOINTMENTS_CANCEL_APPROVALS;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
@@ -92,5 +94,14 @@ public class AppointmentHospitalDepartmentResource {
     public ResponseEntity<?> approveAppointment(@Valid @RequestBody IntegrationBackendRequestDTO integrationBackendRequestDTO) {
         appointmentHospitalDepartmentService.approveAppointment(integrationBackendRequestDTO);
         return ok().build();
+    }
+
+    @PutMapping(REFUND)
+    @ApiOperation(FETCH_APPOINTMENTS_CANCEL_APPROVALS)
+    public ResponseEntity<?> fetchRefundDepartmentAppointments(@RequestBody DepartmentCancelApprovalSearchDTO searchDTO,
+                                                     @RequestParam("page") int page,
+                                                     @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentHospitalDepartmentService.fetchDepartmentAppointmentCancelApprovals(searchDTO, pageable));
     }
 }

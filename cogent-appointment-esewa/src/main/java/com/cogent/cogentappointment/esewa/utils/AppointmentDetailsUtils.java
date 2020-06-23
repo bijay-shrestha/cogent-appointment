@@ -1,11 +1,12 @@
 package com.cogent.cogentappointment.esewa.utils;
 
-import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.*;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.AppointmentDatesResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.AvailableDatesResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDates;
@@ -47,6 +49,7 @@ public class AppointmentDetailsUtils {
 
     public static AppointmentDatesResponseDTO getFinalResponse(AppointmentDatesRequestDTO requestDTO,
                                                                List<AvailableDatesResponseDTO> finalAvaliableDateAndTime) {
+
         AppointmentDatesResponseDTO appointmentDatesResponseDTO = new AppointmentDatesResponseDTO();
         appointmentDatesResponseDTO.setDoctorId(requestDTO.getDoctorId());
         appointmentDatesResponseDTO.setSpecializationId(requestDTO.getSpecializationId());
@@ -68,18 +71,20 @@ public class AppointmentDetailsUtils {
     }
 
     public static List<AvailableDatesResponseDTO> mergeRosterAndRosterOverrideDatesAndTime(
-            List<AvailableDatesResponseDTO> avaliableRosterDates,
-            List<AvailableDatesResponseDTO> avaliableRosterOverrideDates) {
+            List<AvailableDatesResponseDTO> availableRosterDates,
+            List<AvailableDatesResponseDTO> availableRosterOverrideDates) {
+
         List<AvailableDatesResponseDTO> finalDateAndTimeResponse = new ArrayList<>();
-        if (avaliableRosterOverrideDates != null && !avaliableRosterOverrideDates.isEmpty()) {
-            List<AvailableDatesResponseDTO> unmatched = avaliableRosterDates.stream()
-                    .filter(dates -> avaliableRosterOverrideDates.stream()
+
+        if (availableRosterOverrideDates != null && !availableRosterOverrideDates.isEmpty()) {
+            List<AvailableDatesResponseDTO> unmatched = availableRosterDates.stream()
+                    .filter(dates -> availableRosterOverrideDates.stream()
                             .filter(overrideDate -> overrideDate.getDate().equals(dates.getDate()))
                             .count() < 1)
                     .collect(Collectors.toList());
             finalDateAndTimeResponse.addAll(unmatched);
-            List<AvailableDatesResponseDTO> matched = avaliableRosterOverrideDates.stream()
-                    .filter(overrideDates -> avaliableRosterOverrideDates.stream()
+            List<AvailableDatesResponseDTO> matched = availableRosterOverrideDates.stream()
+                    .filter(overrideDates -> availableRosterOverrideDates.stream()
                             .filter(dates -> overrideDates.getDate().equals(dates.getDate())
                                     && !overrideDates.getDoctorAvailableTime().equals("12:00-12:00"))
                             .count() > 0)
@@ -87,8 +92,9 @@ public class AppointmentDetailsUtils {
             finalDateAndTimeResponse.addAll(matched);
             finalDateAndTimeResponse.sort(Comparator.comparing(AvailableDatesResponseDTO::getDate));
         } else {
-            return avaliableRosterDates;
+            return availableRosterDates;
         }
+
         return finalDateAndTimeResponse;
     }
 
@@ -105,11 +111,15 @@ public class AppointmentDetailsUtils {
 
     public static void getAllDutyRosterDatesAndTime(Date date, DoctorWeekDaysDutyRosterAppointmentDate weekdays,
                                                     AvailableDatesResponseDTO datesResponseDTO,
-                                                    List<AvailableDatesResponseDTO> avaliableDates) {
+                                                    List<AvailableDatesResponseDTO> availableDates,
+                                                    NepaliDateUtility nepaliDateUtility) {
+
         if (date.toString().substring(0, 3).toUpperCase().equals(weekdays.getWeekDay())) {
             datesResponseDTO.setDate(utilDateToSqlDate(date));
             datesResponseDTO.setDoctorAvailableTime(weekdays.getStartTime() + "-" + weekdays.getEndTime());
-            avaliableDates.add(datesResponseDTO);
+            datesResponseDTO.setDateNepali(getNepaliDate(date, nepaliDateUtility));
+
+            availableDates.add(datesResponseDTO);
         }
     }
 
@@ -207,4 +217,10 @@ public class AppointmentDetailsUtils {
                     .build();
     }
 
+    private static String getNepaliDate(Date date, NepaliDateUtility nepaliDateUtility) {
+
+        String nepaliDate = nepaliDateUtility.getNepaliDateFromDate(date);
+
+        return formatToDateString(nepaliDate);
+    }
 }

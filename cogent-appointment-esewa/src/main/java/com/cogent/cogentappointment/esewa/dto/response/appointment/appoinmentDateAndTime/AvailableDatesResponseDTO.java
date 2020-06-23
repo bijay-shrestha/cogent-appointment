@@ -14,5 +14,7 @@ public class AvailableDatesResponseDTO implements Serializable {
 
     private Date date;
 
+    private String dateNepali;
+
     private String doctorAvailableTime;
 }

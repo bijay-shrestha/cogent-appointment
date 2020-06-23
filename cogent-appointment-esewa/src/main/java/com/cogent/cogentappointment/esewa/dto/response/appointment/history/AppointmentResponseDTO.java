@@ -34,8 +34,6 @@ public class AppointmentResponseDTO implements Serializable {
 
     private String doctorName;
 
-    private String doctorSalutation;
-
     private Long specializationId;
 
     private String specializationName;
@@ -57,4 +55,6 @@ public class AppointmentResponseDTO implements Serializable {
     private String roomNumber;
 
     private Long hospitalDepartmentRoomInfoId;
+
+    private String appointmentDateInNepali;
 }

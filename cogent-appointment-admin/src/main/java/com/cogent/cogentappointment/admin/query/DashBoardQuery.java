@@ -246,6 +246,7 @@ public class DashBoardQuery {
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
                 " WHERE" +
                 " ard.status = 'A'" +
                 " AND ard.refundedDate BETWEEN :fromDate AND :toDate";
@@ -254,10 +255,10 @@ public class DashBoardQuery {
             query += " AND a.hospitalId.id = " + hospitalId;
 
         if (!Objects.isNull(doctorId))
-            query += " AND a.doctorId.id = " + doctorId;
+            query += " AND adi.doctor.id = " + doctorId;
 
         if (!Objects.isNull(specializationId))
-            query += " AND a.specializationId.id = " + specializationId;
+            query += " AND adi.specialization.id = " + specializationId;
 
         return query;
     }
@@ -347,8 +348,8 @@ public class DashBoardQuery {
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE" +
                     " a.status ='C'" +
-                    " AND a.doctorId.id=:doctorId" +
-                    " AND a.specializationId.id=:specializationId" +
+                    " AND ad.doctor.id=:doctorId" +
+                    " AND ad.specialization.id=:specializationId" +
                     " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
 
     public static String QUERY_TO_GET_FOLLOW_UP =

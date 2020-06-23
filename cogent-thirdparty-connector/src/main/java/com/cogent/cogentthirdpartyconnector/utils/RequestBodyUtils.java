@@ -42,13 +42,13 @@ public class RequestBodyUtils {
     public static EsewaRefundRequestDTO getEsewaRequestBody(Appointment appointment,
                                                             AppointmentTransactionDetail transactionDetail,
                                                             AppointmentRefundDetail appointmentRefundDetail,
-                                                            Boolean isRefund) {
+                                                            Boolean isRefund,String remarks) {
 
         EsewaRefundRequestDTO esewaRefundRequestDTO = EsewaRefundRequestDTO.builder()
                 .is_refund(isRefund)
                 .refund_amount(appointmentRefundDetail.getRefundAmount())
                 .product_code(appointment.getHospitalId().getEsewaMerchantCode())
-                .remarks("refund")
+                .remarks(remarks)
                 .txn_amount(transactionDetail.getAppointmentAmount())
                 .properties(Properties.builder()
                         .appointmentId(appointment.getId())

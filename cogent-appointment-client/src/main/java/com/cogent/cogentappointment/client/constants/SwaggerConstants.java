@@ -55,6 +55,7 @@ public class SwaggerConstants {
         String CHECK_CURRENT_APPOINTMENT_AVAILABILITY = "Check current available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
+        String FETCH_APPOINTMENTS_CANCEL_APPROVALS = "Fetch  Appointment cancel approval List";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
@@ -253,6 +254,11 @@ public class SwaggerConstants {
     //G
 
     //H
+    public interface HmaConstant {
+        String BASE_API_VALUE = "This resource is used to generate hmac hash for frontend use";
+    }
+
+
     public interface HospitalConstant {
         String BASE_API_VALUE = "This is Hospital Resource";
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";

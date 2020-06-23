@@ -32,10 +32,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_INTEGRATION_CHANNEL_CODE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.FRONT_END_CODE;
@@ -45,6 +47,7 @@ import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
+import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
@@ -230,31 +233,49 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                              AppointmentRefundDetail refundAppointmentDetail,
                                                              IntegrationRefundRequestDTO refundRequestDTO) {
 
+        if (refundRequestDTO.getIntegrationChannelCode()!= null) {
 
-        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+            switch (refundRequestDTO.getIntegrationChannelCode()) {
 
-            ThirdPartyResponse response = processRefundRequest(refundRequestDTO, appointment,
-                    appointmentTransactionDetail,
-                    refundAppointmentDetail,
-                    true);
+                case BACK_END_CODE:
 
-            if (!Objects.isNull(response.getCode())) {
-                throw new BadRequestException(response.getMessage(), response.getMessage());
+                    ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                            appointment,
+                            appointmentTransactionDetail,
+                            refundAppointmentDetail,
+                            true);
+
+                    if (!Objects.isNull(response.getCode())) {
+                        throw new BadRequestException(response.getMessage(), response.getMessage());
+                    }
+
+                    updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+
+                    break;
+
+                case FRONT_END_CODE:
+
+                    updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+                    break;
+
+                default:
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
             }
 
-            updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
-                    appointment,
-                    refundAppointmentDetail,
-                    null);
         }
 
-        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+        throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
 
-            updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-                    appointment,
-                    refundAppointmentDetail,
-                    null);
-        }
+//        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+//                appointment,
+//                refundAppointmentDetail,
+//                null);
 
     }
 
@@ -266,7 +287,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-            ThirdPartyResponse response = processRefundRequest(refundRequestDTO, appointment,
+            ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                    appointment,
                     appointmentTransactionDetail,
                     refundAppointmentDetail,
                     true);
@@ -378,7 +400,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
                     transactionDetail,
                     appointmentRefundDetail,
-                    isRefund);
+                    isRefund,integrationRefundRequestDTO.getRemarks());
             esewaRefundRequestDTO.setEsewa_id(esewaId);
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
@@ -399,6 +421,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             {
                 e.printStackTrace();
+                throw new OperationUnsuccessfulException("ThirdParty API response is null");
             }
 
             if (thirdPartyResponse.getCode() != null) {
@@ -446,7 +469,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
     private String getEsewaId(Long appointmentId) {
 
-        return appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId);
+        return appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId).
+                orElseThrow(() -> ESEWA_ID_NOT_FOUND.get());
 
     }
 
@@ -599,6 +623,11 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         return headers;
     }
+
+    private Supplier<NoContentFoundException> ESEWA_ID_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, "eSewa Id");
+        throw new NoContentFoundException("eSewa Id not Found", "eSewa Id not Found");
+    };
 
 
 }

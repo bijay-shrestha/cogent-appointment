@@ -428,7 +428,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Map<String, String> map = new HashMap<>();
 
-        if(responses!=null) {
+        if (responses != null) {
             responses.forEach(response -> {
                 map.put(response.getName(), "");
             });
@@ -576,6 +576,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
         }
+
+        featureIntegrationResponseDTO.setHospitalId(responseDTO.getHospitalId());
 
 
         return featureIntegrationResponseDTO;

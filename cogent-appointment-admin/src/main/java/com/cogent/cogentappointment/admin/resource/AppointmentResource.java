@@ -80,8 +80,6 @@ public class AppointmentResource {
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
     public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO){
 
-
-
         appointmentService.rejectRefundAppointment(refundRejectDTO);
         return ok().build();
     }

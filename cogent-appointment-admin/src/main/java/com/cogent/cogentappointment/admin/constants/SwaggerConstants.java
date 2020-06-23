@@ -273,6 +273,12 @@ public class SwaggerConstants {
     //G
 
     //H
+
+    public interface Hmaconstant {
+        String BASE_API_VALUE = "This resource is used to generate hmac hash for frontend use";
+
+    }
+
     public interface HospitalConstant {
         String BASE_API_VALUE = "This is Hospital setup Resource";
         String SAVE_OPERATION = "Save new hospital";

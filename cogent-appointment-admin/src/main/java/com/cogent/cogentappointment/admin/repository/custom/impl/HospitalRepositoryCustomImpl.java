@@ -59,10 +59,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public List<Object[]> validateCompanyDuplicity(String name, String esewaMerchantCode) {
+    public List<Object[]> validateCompanyDuplicity(String name, String code) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_COMPANY_DUPLICITY)
                 .setParameter(NAME, name)
-                .setParameter(ESEWA_MERCHANT_CODE, esewaMerchantCode);
+                .setParameter(CODE, code);
 
         return query.getResultList();
     }

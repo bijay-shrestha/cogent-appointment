@@ -26,9 +26,10 @@ public class AppointmentQuery {
     public static String QUERY_TO_VALIDATE_APPOINTMENT_EXISTS =
             "SELECT COUNT(a.id)" +
                     " FROM  Appointment a" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
                     " WHERE a.appointmentDate =:appointmentDate" +
-                    " AND a.doctorId.id =:doctorId" +
-                    " AND a.specializationId.id =:specializationId" +
+                    " AND adi.doctor.id =:doctorId" +
+                    " AND adi.specialization.id =:specializationId" +
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
                     " AND a.status='PA'";
     /*esewa*/
@@ -46,10 +47,11 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =
             "SELECT DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime" +               //[0]
                     " FROM Appointment a" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
                     " WHERE" +
                     " a.appointmentDate = :date" +
-                    " AND a.doctorId.id = :doctorId" +
-                    " AND a.specializationId.id = :specializationId" +
+                    " AND adi.doctor.id = :doctorId" +
+                    " AND adi.specialization.id = :specializationId" +
                     " AND a.status = 'PA'";
 
     /*USED IN DOCTOR DUTY ROSTER*/
@@ -69,11 +71,12 @@ public class AppointmentQuery {
             "SELECT" +
                     " COUNT(a.appointmentDate) as appointmentDate" +
                     " FROM Appointment a" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
                     " WHERE" +
                     " a.status='PA'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.doctorId.id = :doctorId" +
-                    " AND a.specializationId.id = :specializationId";
+                    " AND adi.doctor.id = :doctorId" +
+                    " AND adi.specialization.id = :specializationId";
 
 
     /*%H - hour (e.g., 00,01,02,…12) IN 24 HOUR FORMAT
@@ -95,9 +98,10 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentAmount," +                          //[8]
                     " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
+                    " LEFT JOIN Specialization s ON s.id = adi.specialization.id" +
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id";
 
@@ -135,9 +139,10 @@ public class AppointmentQuery {
                     " atd.serviceChargeAmount as serviceChargeAmount," +                    //[12]
                     " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
+                    " LEFT JOIN Specialization s ON s.id = adi.specialization.id" +
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                     " WHERE a.id =:id";
@@ -169,9 +174,10 @@ public class AppointmentQuery {
                     " s.name as specializationName," +                                       //[14]
                     " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
+                    " LEFT JOIN Specialization s ON s.id = adi.specialization.id" +
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id";
 

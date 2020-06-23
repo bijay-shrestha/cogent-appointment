@@ -39,11 +39,12 @@ public class AppointmentQuery {
             "SELECT" +
                     " COUNT(a.appointmentDate) as appointmentDate" +
                     " FROM Appointment a" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " WHERE" +
                     " a.status='PA'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.doctorId.id = :doctorId" +
-                    " AND a.specializationId.id = :specializationId";
+                    " AND adi.doctor.id = :doctorId" +
+                    " AND adi.specialization.id = :specializationId";
 
     public static String QUERY_TO_FETCH_APPOINTMENT_CANCEL_APPROVALS(AppointmentCancelApprovalSearchDTO searchDTO) {
         return " SELECT" +

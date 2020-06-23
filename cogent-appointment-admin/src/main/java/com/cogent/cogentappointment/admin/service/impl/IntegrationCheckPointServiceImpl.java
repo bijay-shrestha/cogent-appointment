@@ -212,6 +212,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 transactionDetail,
                 appointmentRefundDetail,
                 isRefund, refundRequestDTO.getRemarks());
+        esewaRefundRequestDTO.setEsewa_id(esewaId);
 
 //        Map<String, Object> esewaRefundRequestDTO = getDynamicEsewaRequestBodyLog(
 //                integrationApiInfo.getRequestBody(),
@@ -257,11 +258,22 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                              AppointmentRefundDetail refundAppointmentDetail,
                                                              IntegrationRefundRequestDTO refundRequestDTO) {
 
-        if (refundRequestDTO.getIntegrationChannelCode() != null) {
+        if (refundRequestDTO.getIntegrationChannelCode() == null) {
+            throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
+        }
 
-            switch (refundRequestDTO.getIntegrationChannelCode()) {
+        switch (refundRequestDTO.getIntegrationChannelCode()) {
 
-                case BACK_END_CODE:
+            case BACK_END_CODE:
+
+                if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                        appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+
+                    changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                            refundAppointmentDetail,
+                            refundRequestDTO.getRemarks(), null);
+
+                } else {
 
                     ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
                             appointment,
@@ -274,27 +286,27 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     }
 
                     updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                            refundRequestDTO.getRemarks(),
                             appointment,
                             refundAppointmentDetail,
                             null);
+                }
 
-                    break;
 
-                case FRONT_END_CODE:
+                break;
 
-                    updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-                            appointment,
-                            refundAppointmentDetail,
-                            null);
-                    break;
+            case FRONT_END_CODE:
 
-                default:
-                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
-            }
+                updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                        refundRequestDTO.getRemarks(),
+                        appointment,
+                        refundAppointmentDetail,
+                        null);
+                break;
 
+            default:
+                throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
         }
-
-        throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
 
 //        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
 //                appointment,
@@ -321,6 +333,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         }
 
         updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                refundRequestDTO.getRemarks(),
                 appointment,
                 refundAppointmentDetail,
                 null);
@@ -358,20 +371,24 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,
+                                                              String frontEndRemarks,
                                                               Appointment appointment,
                                                               AppointmentRefundDetail refundAppointmentDetail,
                                                               AppointmentRefundRejectDTO refundRejectDTO) {
+
         switch (response) {
 
             case PARTIAL_REFUND:
                 changeAppointmentAndAppointmentRefundDetailStatus(appointment,
                         refundAppointmentDetail,
+                        frontEndRemarks,
                         response);
                 break;
 
             case FULL_REFUND:
                 changeAppointmentAndAppointmentRefundDetailStatus(appointment,
                         refundAppointmentDetail,
+                        frontEndRemarks,
                         response);
                 break;
 
@@ -392,15 +409,16 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         response);
                 throw new BadRequestException(response, response);
         }
+
     }
 
     private void changeAppointmentAndAppointmentRefundDetailStatus(Appointment appointment,
                                                                    AppointmentRefundDetail refundAppointmentDetail,
-                                                                   String remarks) {
+                                                                   String frontEndRemarks, String eSewaRemarks) {
 
-        save(changeAppointmentStatus.apply(appointment, remarks));
+        save(changeAppointmentStatus.apply(appointment, frontEndRemarks));
 
-        saveAppointmentRefundDetail(changeAppointmentRefundDetailStatus.apply(refundAppointmentDetail, remarks));
+        saveAppointmentRefundDetail(changeAppointmentRefundDetailStatus.apply(refundAppointmentDetail, eSewaRemarks));
     }
 
     private void defaultAppointmentAndAppointmentRefundDetailStatusChanges(Appointment appointment,

@@ -37,7 +37,8 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_MODE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_INTEGRATION_CHANNEL_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
@@ -242,31 +243,50 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                              AppointmentRefundDetail refundAppointmentDetail,
                                                              IntegrationRefundRequestDTO refundRequestDTO) {
 
-        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+        if (refundRequestDTO.getIntegrationChannelCode() != null) {
 
-            ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
-                    appointment,
-                    appointmentTransactionDetail,
-                    refundAppointmentDetail,
-                    true);
+            switch (refundRequestDTO.getIntegrationChannelCode()) {
 
-            if (!Objects.isNull(response.getCode())) {
-                throw new BadRequestException(response.getMessage(), response.getMessage());
+                case BACK_END_CODE:
+
+                    ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                            appointment,
+                            appointmentTransactionDetail,
+                            refundAppointmentDetail,
+                            true);
+
+                    if (!Objects.isNull(response.getCode())) {
+                        throw new BadRequestException(response.getMessage(), response.getMessage());
+                    }
+
+                    updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+
+                    break;
+
+                case FRONT_END_CODE:
+
+                    updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+                    break;
+
+                default:
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
             }
 
-            updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
-                    appointment,
-                    refundAppointmentDetail,
-                    null);
         }
 
-        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+        throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
 
-            updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-                    appointment,
-                    refundAppointmentDetail,
-                    null);
-        }
+//        updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+//                appointment,
+//                refundAppointmentDetail,
+//                null);
+
 
     }
 

@@ -2,9 +2,11 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.HospitalDepartmentRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorFollowUpResponse;
+import com.cogent.cogentappointment.client.dto.response.dashboard.FollowUpResponse;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.HospitalDepartmentRevenueDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransactionDetailRepositoryCustom;
@@ -30,6 +32,7 @@ import static com.cogent.cogentappointment.client.utils.DashboardUtils.revenueSt
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -225,10 +228,10 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                     .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
                     .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId());
-            DoctorFollowUpResponse doctorFollowUpResponse = transformQueryToSingleResult(queryToGetFollowUp,
-                    DoctorFollowUpResponse.class);
-            doctorRevenueDTO.setTotalFollowUp(doctorFollowUpResponse.getCount());
-            doctorRevenueDTO.setDoctorRevenue(doctorRevenueDTO.getDoctorRevenue() + doctorFollowUpResponse.getAmount());
+            FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetFollowUp,
+                    FollowUpResponse.class);
+            doctorRevenueDTO.setTotalFollowUp(followUpResponse.getCount());
+            doctorRevenueDTO.setDoctorRevenue(doctorRevenueDTO.getDoctorRevenue() + followUpResponse.getAmount());
         });
 
 
@@ -252,14 +255,73 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                     .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId())
                     .setParameter(SPECIALIZATION_ID, doctorRevenueDTO.getSpecializationId());
-            DoctorFollowUpResponse doctorFollowUpResponse = transformQueryToSingleResult(queryToGetCancelled,
-                    DoctorFollowUpResponse.class);
-            doctorRevenueDTO.setCancelledAppointments(doctorRevenueDTO.getCancelledAppointments() + doctorFollowUpResponse.getCount());
-            doctorRevenueDTO.setCancelledRevenue(doctorRevenueDTO.getCancelledRevenue() + doctorFollowUpResponse.getAmount());
+            FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetCancelled,
+                    FollowUpResponse.class);
+            doctorRevenueDTO.setCancelledAppointments(doctorRevenueDTO.getCancelledAppointments() + followUpResponse.getCount());
+            doctorRevenueDTO.setCancelledRevenue(doctorRevenueDTO.getCancelledRevenue() + followUpResponse.getAmount());
         });
 
         return doctorRevenueDTOList;
     }
+
+    @Override
+    public List<HospitalDepartmentRevenueDTO> calculateHospitalDepartmentRevenue(
+            HospitalDepartmentRevenueRequestDTO requestDTO, Pageable pageable) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        addPagination.accept(pageable, query);
+
+        List<HospitalDepartmentRevenueDTO> revenueDTOList = transformQueryToResultList(query,
+                HospitalDepartmentRevenueDTO.class);
+
+        revenueDTOList.forEach(revenueDTO -> {
+            Query queryToGetFollowUp = createQuery.apply(entityManager, QUERY_TO_GET_HOSPITAL_DEPARTMENT_FOLLOW_UP)
+                    .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                    .setParameter(HOSPITAL_DEPARTMENT_ID, revenueDTO.getHospitalDepartmentId());
+
+            FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetFollowUp,
+                    FollowUpResponse.class);
+
+            revenueDTO.setTotalFollowUp(followUpResponse.getCount());
+            revenueDTO.setDepartmentRevenue(revenueDTO.getDepartmentRevenue() + followUpResponse.getAmount());
+        });
+
+        return revenueDTOList;
+    }
+
+    @Override
+    public List<HospitalDepartmentRevenueDTO> calculateCancelledHospitalDepartmentRevenue(
+            HospitalDepartmentRevenueRequestDTO requestDTO, Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_COMPANY_REVENUE(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        addPagination.accept(pageable, query);
+
+        List<HospitalDepartmentRevenueDTO> revenueDTOList = transformQueryToResultList(query, HospitalDepartmentRevenueDTO.class);
+
+        revenueDTOList.forEach(revenueDTO -> {
+            Query queryToGetCancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_COMPANY_REVENUE_CANCELLED)
+                    .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                    .setParameter(HOSPITAL_DEPARTMENT_ID, revenueDTO.getHospitalDepartmentId());
+
+            FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetCancelled,
+                    FollowUpResponse.class);
+            revenueDTO.setCancelledAppointments(revenueDTO.getCancelledAppointments() + followUpResponse.getCount());
+            revenueDTO.setCancelledRevenue(revenueDTO.getCancelledRevenue() + followUpResponse.getAmount());
+
+        });
+
+        return revenueDTOList;
+    }
+
 
     private String getQueryByFilter(Character filter) {
         Map<Character, String> queriesWithFilterAsKey = new HashMap<>();

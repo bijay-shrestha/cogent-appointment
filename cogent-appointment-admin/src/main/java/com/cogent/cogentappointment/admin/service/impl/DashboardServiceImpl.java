@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.*;
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -214,6 +211,32 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    public HospitalDepartmentRevenueResponseDTO calculateOverallHospitalDeptRevenue(
+            HospitalDepartmentRevenueRequestDTO revenueRequestDTO, Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REVENUE);
+
+        List<HospitalDepartmentRevenueDTO> hospitalDeptRevenue =
+                appointmentTransactionDetailRepository.calculateHospitalDepartmentRevenue(revenueRequestDTO, pageable);
+
+        List<HospitalDepartmentRevenueDTO> cancelledRevenue =
+                appointmentTransactionDetailRepository.calculateCancelledHospitalDepartmentRevenue(revenueRequestDTO, pageable);
+
+        validateHospitalDepartmentRevenue(hospitalDeptRevenue, cancelledRevenue);
+
+        List<HospitalDepartmentRevenueDTO> mergedList = mergeHospitalDepartmentAndCancelledRevenue
+                (hospitalDeptRevenue, cancelledRevenue);
+
+        HospitalDepartmentRevenueResponseDTO responseDTO = parseToHospitalDeptRevenueResponseDTO(mergedList);
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REVENUE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
+    @Override
     public List<DashboardFeatureResponseDTO> getDashboardFeaturesByAdmin(Long adminId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -247,6 +270,15 @@ public class DashboardServiceImpl implements DashboardService {
         if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
             log.error(CONTENT_NOT_FOUND, DOCTOR_REVENUE);
             throw new NoContentFoundException(DOCTOR_REVENUE_NOT_FOUND);
+        }
+    }
+
+    private void validateHospitalDepartmentRevenue(List<HospitalDepartmentRevenueDTO> doctorRevenue,
+                                       List<HospitalDepartmentRevenueDTO> cancelledRevenue) {
+
+        if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
+            log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_REVENUE);
+            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE);
         }
     }
 }

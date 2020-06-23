@@ -159,15 +159,13 @@ public class HospitalDeptDutyRosterUtils {
             List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus,
             List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus) {
 
+
         /*COUNT <1 WILL RETURN UNMATCHED VALUES AND COUNT > 0 WILL RETURN MATCHED VALUES*/
-        /*FETCH ONLY THOSE DOCTOR DUTY ROSTER EXCEPT OVERRIDE DUTY ROSTER
-        BY COMPARING DATE, DOCTOR ID AND SPECIALIZATION ID*/
         List<HospitalDeptDutyRosterStatusResponseDTO> unmatchedList = hospitalDeptDutyRosterStatus.stream()
                 .filter(rosterStatus -> (hospitalDeptDutyRosterOverrideStatus.stream()
-                        .filter(overrideStatus -> (overrideStatus.getDate().equals(rosterStatus.getDate()))
-                                && (overrideStatus.getHospitalDepartmentId().equals(rosterStatus.getHospitalDepartmentId()))
-                                && (overrideStatus.getHospitalDepartmentRoomInfoId()
-                                .equals(rosterStatus.getHospitalDepartmentRoomInfoId())))
+                        .filter(overrideStatus -> (overrideStatus.getHospitalDepartmentDutyRosterId()
+                                .equals(rosterStatus.getHospitalDepartmentDutyRosterId()))
+                        )
                         .count()) < 1)
                 .collect(Collectors.toList());
 
@@ -179,5 +177,30 @@ public class HospitalDeptDutyRosterUtils {
 
         return hospitalDeptDutyRosterOverrideStatus;
     }
+
+    public static List<HospitalDeptDutyRosterStatusResponseDTO> mergeOverrideAndActualHospitalDeptDutyRosterWithoutRoom(
+            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus,
+            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus) {
+
+
+        /*COUNT <1 WILL RETURN UNMATCHED VALUES AND COUNT > 0 WILL RETURN MATCHED VALUES*/
+        List<HospitalDeptDutyRosterStatusResponseDTO> unmatchedList = hospitalDeptDutyRosterStatus.stream()
+                .filter(rosterStatus -> (hospitalDeptDutyRosterOverrideStatus.stream()
+                        .filter(overrideStatus -> (overrideStatus.getDate().equals(rosterStatus.getDate()))
+                                && (overrideStatus.getHospitalDepartmentId().equals(rosterStatus.getHospitalDepartmentId())))
+                        .count()) < 1)
+                .collect(Collectors.toList());
+
+        /*MERGE DUTY ROSTER LIST (UNMATCHED LIST) WITH REMAINING OVERRIDE DUTY ROSTER LIST  */
+        hospitalDeptDutyRosterOverrideStatus.addAll(unmatchedList);
+
+        /*SORT BY DATE*/
+        hospitalDeptDutyRosterOverrideStatus.sort(Comparator.comparing(HospitalDeptDutyRosterStatusResponseDTO::getDate));
+
+        return hospitalDeptDutyRosterOverrideStatus;
+    }
+
+
+
 
 }

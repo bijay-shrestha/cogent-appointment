@@ -278,7 +278,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     appointment,
                     appointmentTransactionDetail,
                     refundAppointmentDetail,
-                    true);
+                    false);
 
             if (!Objects.isNull(response.getCode())) {
                 throw new BadRequestException(response.getMessage(), response.getMessage());

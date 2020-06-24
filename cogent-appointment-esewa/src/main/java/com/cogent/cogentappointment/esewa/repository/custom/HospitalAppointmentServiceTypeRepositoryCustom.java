@@ -13,4 +13,6 @@ public interface HospitalAppointmentServiceTypeRepositoryCustom {
 
     HospitalAppointmentServiceType fetchHospitalAppointmentServiceType(Long hospitalId,
                                                                        String appointmentServiceTypeCode);
+
+    HospitalAppointmentServiceType fetchAssignedAppointmentServiceType(Long hospitalAppointmentServiceTypeId);
 }

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
@@ -289,7 +288,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     refundRequestDTO.getRemarks(),
                     appointment,
                     refundAppointmentDetail,
-                    null);
+                    refundRequestDTO);
         }
 
         if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
@@ -307,7 +306,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                               String frontEndRemarks,
                                                               Appointment appointment,
                                                               AppointmentRefundDetail refundAppointmentDetail,
-                                                              AppointmentRefundRejectDTO refundRejectDTO) {
+                                                              IntegrationRefundRequestDTO refundRequestDTO) {
         switch (response) {
 
             case PARTIAL_REFUND:
@@ -325,7 +324,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             case SUCCESS:
-                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO.getRemarks(),
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRequestDTO.getRemarks(),
                         refundAppointmentDetail));
                 break;
 

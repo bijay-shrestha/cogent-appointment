@@ -21,4 +21,6 @@ public class AppointmentStatusDTO implements Serializable {
 
     private List<DoctorDropdownDTO> doctorInfo;
 
+    private AppointmentStatusCountResponseDTO appointmentStatusCount;
+
 }

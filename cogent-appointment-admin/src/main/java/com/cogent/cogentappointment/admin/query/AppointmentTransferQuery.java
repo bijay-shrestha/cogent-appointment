@@ -242,7 +242,8 @@ public class AppointmentTransferQuery {
                     " FROM" +
                     " Appointment a" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
-                    " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " LEFT JOIN Doctor d ON d.id=adi.doctor.id" +
                     " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
@@ -265,7 +266,7 @@ public class AppointmentTransferQuery {
             whereClause += " AND pmi.id=" + requestDTO.getPatientMetaInfoId();
 
         if (!ObjectUtils.isEmpty(requestDTO.getDoctorId()))
-            whereClause += " AND a.doctorId.id=" + requestDTO.getDoctorId();
+            whereClause += " AND adi.doctor.id=" + requestDTO.getDoctorId();
 
         if (!ObjectUtils.isEmpty(requestDTO.getSpecializationId()))
             whereClause += " AND a.specializationId.id=" + requestDTO.getSpecializationId();

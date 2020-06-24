@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -15,5 +14,5 @@ import java.util.List;
 @Setter
 public class AppointmentAvailableDateResponseDTO extends StatusResponseDTO implements Serializable {
 
-    private List<LocalDate> availableDates;
+    private List<AppointmentAvailableDateDTO> availableDates;
 }

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.ApptServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentServiceTypeRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AppointmentServiceType;
@@ -16,6 +17,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentServiceTypeLog.APPOINTMENT_SERVICE_TYPE;
+import static com.cogent.cogentappointment.admin.query.AppointmentServiceTypeQuery.QUERY_TO_FETCH_APPOINTMENT_SERVICE_TYPE_NAME_AND_CODE;
 import static com.cogent.cogentappointment.admin.query.AppointmentServiceTypeQuery.QUERY_TO_FETCH_MIN_APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
@@ -37,6 +39,19 @@ public class AppointmentServiceTypeRepositoryCustomImpl implements AppointmentSe
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_APPOINTMENT_SERVICE_TYPE);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty())
+            NO_APPOINTMENT_SERVICE_TYPE_FOUND.get();
+
+        return results;
+    }
+
+    @Override
+    public List<ApptServiceTypeDropDownResponseDTO> fetchSerivceTypeNameAndCodeList() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_SERVICE_TYPE_NAME_AND_CODE);
+
+        List<ApptServiceTypeDropDownResponseDTO> results = transformQueryToResultList(query,
+                ApptServiceTypeDropDownResponseDTO.class);
 
         if (results.isEmpty())
             NO_APPOINTMENT_SERVICE_TYPE_FOUND.get();

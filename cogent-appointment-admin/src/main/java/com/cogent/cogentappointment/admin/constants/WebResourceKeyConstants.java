@@ -84,6 +84,7 @@ public class WebResourceKeyConstants {
     public static final String BASE_PASSWORD = "/password";
 
     //C
+    public static final String CODE = "/code";
 
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
@@ -124,6 +125,7 @@ public class WebResourceKeyConstants {
         String REVENUE_TREND = "/revenueTrend";
         String DOCTOR_REVENUE = "/doctorRevenue";
         String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
+        String HOSPITAL_DEPARTMENT_REVENUE = "/hospitalDepartmentRevenue";
     }
 
     public static final String DETAIL = "/detail";
@@ -158,6 +160,8 @@ public class WebResourceKeyConstants {
     //G
 
     //H
+    public static final String HMAC="/hmac";
+
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_WISE = "/hospital-wise";
@@ -236,6 +240,7 @@ public class WebResourceKeyConstants {
     }
 
     //N
+    public static final String NAME = "/name";
 
 
     //O

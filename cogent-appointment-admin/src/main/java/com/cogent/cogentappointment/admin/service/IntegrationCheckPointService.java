@@ -28,4 +28,14 @@ public interface IntegrationCheckPointService {
                                                  AppointmentRefundDetail appointmentRefundDetail,
                                                  Boolean isRefund,
                                                  IntegrationRefundRequestDTO refundRequestDTO);
+
+    void apiIntegrationCheckpointForRefundAppointment(Appointment appointment,
+                                                      AppointmentTransactionDetail appointmentTransactionDetail,
+                                                      AppointmentRefundDetail refundAppointmentDetail,
+                                                      IntegrationRefundRequestDTO refundRequestDTO);
+
+    void apiIntegrationCheckpointForRejectAppointment(Appointment appointment,
+                                                      AppointmentTransactionDetail appointmentTransactionDetail,
+                                                      AppointmentRefundDetail refundAppointmentDetail,
+                                                      IntegrationRefundRequestDTO refundRequestDTO);
 }

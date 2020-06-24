@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.ApptServiceTypeDropDownResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ import java.util.List;
 public interface AppointmentServiceTypeRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveMinInfo();
+
+    List<ApptServiceTypeDropDownResponseDTO> fetchSerivceTypeNameAndCodeList();
 }

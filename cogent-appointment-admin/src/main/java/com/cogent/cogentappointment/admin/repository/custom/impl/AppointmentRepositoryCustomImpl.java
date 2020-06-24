@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentSta
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
@@ -32,11 +33,14 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLo
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.query.AppointmentQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
@@ -58,8 +62,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentTransferMessage.APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_SERVICE_TYPE_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -242,9 +248,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                               Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE
-                .apply(appointmentQueueRequestDTO))
-                .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
+        appointmentQueueRequestDTO.setAppointmentServiceType("DOC");
+
+        Query query = getQueryForAppointmentQueue(appointmentQueueRequestDTO);
 
         int totalItems = query.getResultList().size();
 
@@ -261,11 +267,32 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         }
     }
 
+    private Query getQueryForAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
+
+        switch (appointmentQueueRequestDTO.getAppointmentServiceType()) {
+            case DOCTOR_CONSULTATION_CODE:
+                return createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_QUEUE
+                        .apply(appointmentQueueRequestDTO))
+                        .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
+                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
+
+            case DEPARTMENT_CONSULTATION_CODE:
+                return createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_QUEUE
+                        .apply(appointmentQueueRequestDTO))
+                        .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
+                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
+
+            default:
+                throw new NoContentFoundException(NO_SERVICE_TYPE_FOUND);
+
+        }
+    }
+
     @Override
     public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
             AppointmentQueueRequestDTO appointmentQueueRequestDTO,
             Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
         int totalItems = query.getResultList().size();
@@ -303,7 +330,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE,"DEP");
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, "DEP");
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
@@ -321,10 +348,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public HospitalDeptAppointmentDetailsForStatus fetchHospitalDeptAppointmentByApptNumber(String appointmentNumber,
-                                                                                String appointmentServiceTypeCode) {
+                                                                                            String appointmentServiceTypeCode) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_BY_APPT_NUMBER)
                 .setParameter(APPOINTMENT_NUMBER, appointmentNumber)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE,appointmentServiceTypeCode);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         try {
             HospitalDeptAppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query, HospitalDeptAppointmentDetailsForStatus.class);
@@ -338,7 +365,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public AppointmentDetailsForStatus fetchAppointmentByApptNumber(String appointmentNumber, String appointmentServiceTypeCode) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_BY_APPT_NUMBER)
                 .setParameter(APPOINTMENT_NUMBER, appointmentNumber)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE,appointmentServiceTypeCode);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         try {
             AppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query, AppointmentDetailsForStatus.class);
@@ -648,6 +675,34 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         } catch (NoResultException e) {
             throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
         }
+    }
+
+    @Override
+    public DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO,
+                                                                                      Pageable pageable) {
+
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_CANCEL_APPROVALS(searchDTO));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<DepartmentCancelApprovalResponseDTO> cancelApprovalResponseDTOList =
+                transformQueryToResultList(query, DepartmentCancelApprovalResponseDTO.class);
+
+        if (cancelApprovalResponseDTOList.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+
+            return DepartmentCancelApprovalResponse.builder()
+                    .response(cancelApprovalResponseDTOList)
+                    .totalItems(totalItems)
+                    .build();
+        }
+
+
     }
 
     private Query getQueryToFetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO) {

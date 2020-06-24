@@ -55,6 +55,7 @@ public class SwaggerConstants {
         String CHECK_CURRENT_APPOINTMENT_AVAILABILITY = "Check current available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
+        String FETCH_APPOINTMENTS_CANCEL_APPROVALS = "Fetch  Appointment cancel approval List";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
@@ -123,6 +124,18 @@ public class SwaggerConstants {
         String FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT = "Fetch pending hospital department appointments";
     }
 
+
+    public interface AppointmentServiceTypeConstant {
+        String BASE_API_VALUE = "This is Appointment Service Type Resource.";
+        String SAVE_OPERATION = "Save new Appointment Service Type";
+        String UPDATE_OPERATION = "Update existing Appointment Service Type";
+        String DELETE_OPERATION = "Set Appointment Service Type status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Appointment Service Type according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Appointment Service Type details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Service Type details for dropdown";
+        String FETCH_NAME_AND_CODE_FOR_DROPDOWN = "Fetch Appointment Service Type name and code for dropdown";
+    }
+
     //B
     public interface BillingModeConstant {
         String BASE_API_VALUE = "This is Billing Mode Resource.";
@@ -155,7 +168,7 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard.";
         String DOCTOR_REVENUE_OPERATION = "Doctor Revenue list.";
         String REFUND_AMOUNT_OPERATION = "Calculate Total Refunded Amount.";
-
+        String HOSPITAL_DEPARTMENT_REVENUE_OPERATION = "Hospital Department Revenue list.";
     }
 
     public interface DepartmentConstant {
@@ -241,6 +254,11 @@ public class SwaggerConstants {
     //G
 
     //H
+    public interface HmaConstant {
+        String BASE_API_VALUE = "This resource is used to generate hmac hash for frontend use";
+    }
+
+
     public interface HospitalConstant {
         String BASE_API_VALUE = "This is Hospital Resource";
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";

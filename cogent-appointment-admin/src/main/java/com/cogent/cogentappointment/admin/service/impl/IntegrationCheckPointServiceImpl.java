@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
@@ -8,9 +9,7 @@ import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientF
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
-import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
-import com.cogent.cogentappointment.admin.repository.HospitalPatientInfoRepository;
-import com.cogent.cogentappointment.admin.repository.IntegrationRepository;
+import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
@@ -33,13 +32,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
+import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
+import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_INTEGRATION_CHANNEL_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSignatureForEsewa;
+import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
+import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.commons.utils.StringUtil.toNormalCase;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
@@ -63,14 +73,26 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
     private final AppointmentRepository appointmentRepository;
 
+    private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
+
+    private final AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
+
+    private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
+
     public IntegrationCheckPointServiceImpl(IntegrationRepository integrationRepository,
                                             ThirdPartyConnectorService thirdPartyConnectorService,
                                             HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                            AppointmentRepository appointmentRepository) {
+                                            AppointmentRepository appointmentRepository,
+                                            AppointmentRefundDetailRepository appointmentRefundDetailRepository,
+                                            AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
+                                            AppointmentEsewaRequestRepository appointmentEsewaRequestRepository) {
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.appointmentRepository = appointmentRepository;
+        this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
+        this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
+        this.appointmentEsewaRequestRepository = appointmentEsewaRequestRepository;
     }
 
     @Override
@@ -172,7 +194,9 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                         Boolean isRefund,
                                                         IntegrationRefundRequestDTO refundRequestDTO) {
 
-        String generatedEsewaHmac = getSignatureForEsewa.apply(appointment.getPatientId().getESewaId(),
+
+        String esewaId = getEsewaId(appointment.getId());
+        String generatedEsewaHmac = getSignatureForEsewa.apply(esewaId,
                 appointment.getHospitalId().getEsewaMerchantCode());
 
         IntegrationBackendRequestDTO integrationBackendRequestDTO = IntegrationBackendRequestDTO.builder()
@@ -188,14 +212,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
                 transactionDetail,
                 appointmentRefundDetail,
-                isRefund);
-
-//        Map<String, Object> esewaRefundRequestDTO = getDynamicEsewaRequestBodyLog(
-//                integrationApiInfo.getRequestBody(),
-//                appointment,
-//                transactionDetail,
-//                appointmentRefundDetail,
-//                isRefund);
+                isRefund, refundRequestDTO.getRemarks());
+        esewaRefundRequestDTO.setEsewa_id(esewaId);
 
         integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
@@ -220,6 +238,202 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         return thirdPartyResponse;
     }
+
+    private String getEsewaId(Long appointmentId) {
+
+        return appointmentEsewaRequestRepository.fetchEsewaIdByAppointmentId(appointmentId).
+                orElseThrow(() -> ESEWA_ID_NOT_FOUND.get());
+
+    }
+
+    @Override
+    public void apiIntegrationCheckpointForRefundAppointment(Appointment appointment,
+                                                             AppointmentTransactionDetail appointmentTransactionDetail,
+                                                             AppointmentRefundDetail refundAppointmentDetail,
+                                                             IntegrationRefundRequestDTO refundRequestDTO) {
+
+        if (refundRequestDTO.getIntegrationChannelCode() == null) {
+            throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
+        }
+
+        //condition to check transaction number for follow up case.
+        //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+        //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+        if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+
+            changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                    refundAppointmentDetail,
+                    refundRequestDTO.getRemarks(), null);
+        } else {
+
+            switch (refundRequestDTO.getIntegrationChannelCode()) {
+
+                case BACK_END_CODE:
+
+                    ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                            appointment,
+                            appointmentTransactionDetail,
+                            refundAppointmentDetail,
+                            true);
+
+                    if (!Objects.isNull(response.getCode())) {
+                        throw new BadRequestException(response.getMessage(), response.getMessage());
+                    }
+
+                    updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                            refundRequestDTO.getRemarks(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+
+                    break;
+
+                case FRONT_END_CODE:
+
+                    updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                            refundRequestDTO.getRemarks(),
+                            appointment,
+                            refundAppointmentDetail,
+                            null);
+                    break;
+
+                default:
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
+            }
+
+        }
+
+    }
+
+    @Override
+    public void apiIntegrationCheckpointForRejectAppointment(Appointment appointment,
+                                                             AppointmentTransactionDetail appointmentTransactionDetail,
+                                                             AppointmentRefundDetail refundAppointmentDetail,
+                                                             IntegrationRefundRequestDTO refundRequestDTO) {
+
+        ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                appointment,
+                appointmentTransactionDetail,
+                refundAppointmentDetail,
+                false);
+
+        if (!Objects.isNull(response.getCode())) {
+            throw new BadRequestException(response.getMessage());
+        }
+
+        updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                refundRequestDTO.getRemarks(),
+                appointment,
+                refundAppointmentDetail,
+                null);
+
+
+    }
+
+
+    private ThirdPartyResponse processRefundRequest(IntegrationRefundRequestDTO integrationRefundRequestDTO,
+                                                    Appointment appointment,
+                                                    AppointmentTransactionDetail transactionDetail,
+                                                    AppointmentRefundDetail appointmentRefundDetail,
+                                                    Boolean isRefund) {
+
+        ThirdPartyResponse thirdPartyResponse = null;
+        switch (appointment.getAppointmentModeId().getCode()) {
+
+            case APPOINTMENT_MODE_ESEWA_CODE:
+
+                //esewa integration
+                thirdPartyResponse = processEsewaRefundRequest(appointment,
+                        transactionDetail,
+                        appointmentRefundDetail,
+                        isRefund, integrationRefundRequestDTO);
+                break;
+            case APPOINTMENT_MODE_FONEPAY_CODE:
+                break;
+
+            default:
+                throw new BadRequestException(INVALID_APPOINTMENT_MODE);
+        }
+
+
+        return thirdPartyResponse;
+    }
+
+    private void updateAppointmentAndAppointmentRefundDetails(String response,
+                                                              String frontEndRemarks,
+                                                              Appointment appointment,
+                                                              AppointmentRefundDetail refundAppointmentDetail,
+                                                              AppointmentRefundRejectDTO refundRejectDTO) {
+
+        switch (response) {
+
+            case PARTIAL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        refundAppointmentDetail,
+                        frontEndRemarks,
+                        response);
+                break;
+
+            case FULL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        refundAppointmentDetail,
+                        frontEndRemarks,
+                        response);
+                break;
+
+            case SUCCESS:
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO,
+                        refundAppointmentDetail));
+                break;
+
+            case AMBIGUOUS:
+                defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment,
+                        refundAppointmentDetail,
+                        response);
+                throw new BadRequestException(response, response);
+
+            default:
+                defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment,
+                        refundAppointmentDetail,
+                        response);
+                throw new BadRequestException(response, response);
+        }
+
+    }
+
+    private void changeAppointmentAndAppointmentRefundDetailStatus(Appointment appointment,
+                                                                   AppointmentRefundDetail refundAppointmentDetail,
+                                                                   String frontEndRemarks, String eSewaRemarks) {
+
+        save(changeAppointmentStatus.apply(appointment, frontEndRemarks));
+
+        saveAppointmentRefundDetail(changeAppointmentRefundDetailStatus.apply(refundAppointmentDetail, eSewaRemarks));
+    }
+
+    private void defaultAppointmentAndAppointmentRefundDetailStatusChanges(Appointment appointment,
+                                                                           AppointmentRefundDetail refundAppointmentDetail,
+                                                                           String remarks) {
+
+        save(defaultAppointmentStatusChange.apply(appointment, remarks));
+
+        saveAppointmentRefundDetail(defaultAppointmentRefundDetailStatusChange.apply(refundAppointmentDetail, remarks));
+
+    }
+
+    private void save(Appointment appointment) {
+        appointmentRepository.save(appointment);
+    }
+
+    private void saveAppointmentRefundDetail(AppointmentRefundDetail appointmentRefundDetail) {
+        appointmentRefundDetailRepository.save(appointmentRefundDetail);
+    }
+
+    private AppointmentTransactionDetail fetchAppointmentTransactionDetail(Long appointmentId) {
+        return appointmentTransactionDetailRepository.fetchByAppointmentId(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+    }
+
 
     private ThirdPartyHospitalResponse fetchThirdPartyHospitalResponseForDoctorAppointment(
             IntegrationBackendRequestDTO requestDTO) {
@@ -369,4 +583,15 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         return requestBody;
     }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
+    };
+
+    private Supplier<NoContentFoundException> ESEWA_ID_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, "eSewa Id");
+        throw new NoContentFoundException("eSewa Id not Found", "eSewa Id not Found");
+    };
+
 }

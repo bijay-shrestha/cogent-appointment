@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentServiceTypeConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentServiceTypeConstant.FETCH_DETAILS_FOR_DROPDOWN;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentServiceTypeConstant.FETCH_NAME_AND_CODE_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentServiceTypeConstants.BASE_APPOINTMENT_SERVICE_TYPE;
 import static org.springframework.http.ResponseEntity.ok;
@@ -32,6 +33,12 @@ public class AppointmentServiceTypeResource {
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActiveMinInfo() {
         return ok(appointmentServiceTypeService.fetchActiveMinInfo());
+    }
+
+    @GetMapping(NAME + CODE)
+    @ApiOperation(FETCH_NAME_AND_CODE_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchSerivceTypeNameAndCodeList() {
+        return ok(appointmentServiceTypeService.fetchSerivceTypeNameAndCodeList());
     }
 
 }

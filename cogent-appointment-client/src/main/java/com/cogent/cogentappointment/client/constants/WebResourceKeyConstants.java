@@ -72,6 +72,12 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE = "/{appointmentTransferId}";
     }
 
+    public interface AppointmentServiceTypeConstants {
+        String BASE_APPOINTMENT_SERVICE_TYPE = "/appointmentServiceType";
+    }
+
+
+
 
     //B
     public static final String BASE_PASSWORD = "/password";
@@ -82,6 +88,8 @@ public class WebResourceKeyConstants {
     }
 
     //C
+    public static final String CODE = "/code";
+
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
     }
@@ -107,6 +115,7 @@ public class WebResourceKeyConstants {
         String REVENUE_TREND = "/revenueTrend";
         String DOCTOR_REVENUE = "/doctorRevenue";
         String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
+        String HOSPITAL_DEPARTMENT_REVENUE = "/hospitalDepartmentRevenue";
     }
 
     public static final String DETAIL = "/detail";
@@ -156,6 +165,8 @@ public class WebResourceKeyConstants {
     //G
 
     //H
+    public static final String HMAC="/hmac";
+
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_WISE = "/hospital-wise";
@@ -210,6 +221,8 @@ public class WebResourceKeyConstants {
     }
 
     //N
+    public static final String NAME = "/name";
+
 
 
     //O

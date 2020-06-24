@@ -2,10 +2,7 @@ package com.cogent.cogentappointment.admin.resource;
 
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.*;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import io.swagger.annotations.Api;
@@ -24,6 +21,7 @@ import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.Dash
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorRevenueUtils.convertToDoctorRevenueRequestDTO;
+import static com.cogent.cogentappointment.admin.utils.HospitalDepartmentRevenueUtils.convertToHospitalDepartmentRevenueRequestDTO;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -68,6 +66,7 @@ public class DashboardResource {
         return ok(dashboardService.getRevenueTrend(countRequestDTO));
     }
 
+    //todo:make service type code dynamic
     @PutMapping(APPOINTMENT_QUEUE)
     @ApiOperation(FETCH_APPOINTMENT_QUEUE)
     public ResponseEntity<?> fetchAppointmentQueueLog(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,
@@ -119,5 +118,21 @@ public class DashboardResource {
 
         Pageable pageable = PageRequest.of(page, size);
         return ok(dashboardService.calculateOverallDoctorRevenue(doctorRevenueRequestDTO, pageable));
+    }
+
+    @GetMapping(HOSPITAL_DEPARTMENT_REVENUE)
+    @ApiOperation(HOSPITAL_DEPARTMENT_REVENUE_OPERATION)
+    public ResponseEntity<?> getHospitalDepartmentRevenueList(@RequestParam("toDate") String toDate,
+                                                  @RequestParam("fromDate") String fromDate,
+                                                  @RequestParam("hospitalDepartmentId") Long hospitalDepartmentId,
+                                                  @RequestParam("hospitalId") Long hospitalId,
+                                                  @RequestParam("page") int page,
+                                                  @RequestParam("size") int size) throws ParseException {
+
+        HospitalDepartmentRevenueRequestDTO revenueRequestDTO =
+                convertToHospitalDepartmentRevenueRequestDTO(hospitalDepartmentId, hospitalId, fromDate, toDate);
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(dashboardService.calculateOverallHospitalDeptRevenue(revenueRequestDTO, pageable));
     }
 }

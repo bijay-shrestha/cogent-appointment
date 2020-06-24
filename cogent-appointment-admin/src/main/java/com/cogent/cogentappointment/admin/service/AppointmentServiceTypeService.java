@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.ApptServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.persistence.model.AppointmentServiceType;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface AppointmentServiceTypeService {
     List<DropDownResponseDTO> fetchActiveMinInfo();
 
     AppointmentServiceType fetchActiveById(Long id);
+
+    List<ApptServiceTypeDropDownResponseDTO> fetchSerivceTypeNameAndCodeList();
 }

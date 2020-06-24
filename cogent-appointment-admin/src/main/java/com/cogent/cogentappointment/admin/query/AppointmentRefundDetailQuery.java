@@ -32,8 +32,8 @@ public class AppointmentRefundDetailQuery {
                 " a.patientId.name as patientName," +
                 " a.patientId.gender as gender," +
                 " a.patientId.mobileNumber as mobileNumber," +
-                " a.doctorId.name as doctorName," +
-                " a.specializationId.name as specializationName," +
+                " adi.doctor.name as doctorName," +
+                " adi.specialization.name as specializationName," +
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " ard.status as refundStatus," +
@@ -43,7 +43,8 @@ public class AppointmentRefundDetailQuery {
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
-                " LEFT JOIN DoctorAvatar da ON da.doctorId.id = a.doctorId.id" +
+                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                " LEFT JOIN DoctorAvatar da ON da.doctorId.id = adi.doctor.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -79,10 +80,10 @@ public class AppointmentRefundDetailQuery {
             whereClause += " AND pm.id =" + searchDTO.getPatientMetaInfoId();
 
         if (!Objects.isNull(searchDTO.getDoctorId()))
-            whereClause += " AND a.doctorId.id=" + searchDTO.getDoctorId();
+            whereClause += " AND adi.doctor.id=" + searchDTO.getDoctorId();
 
         if (!Objects.isNull(searchDTO.getSpecializationId()))
-            whereClause += " AND a.specializationId.id=" + searchDTO.getSpecializationId();
+            whereClause += " AND adi.specialization.id=" + searchDTO.getSpecializationId();
 
         if (!ObjectUtils.isEmpty(searchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered='" + searchDTO.getPatientType() + "'";
@@ -150,8 +151,8 @@ public class AppointmentRefundDetailQuery {
                     " a.patientId.eSewaId" +
                     " END as eSewaId," +
                     " a.patientId.mobileNumber as mobileNumber," +
-                    " a.doctorId.name as doctorName," +
-                    " a.specializationId.name as specializationName," +
+                    " adi.doctor.name as doctorName," +
+                    " adi.specialization.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
                     " ard.refundAmount as refundAmount," +
@@ -166,7 +167,8 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
                     " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = a.doctorId.id" +
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = adi.doctor.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " WHERE ard.appointmentId.id=:appointmentId" +
                     " AND ard.status IN ('PA','A','R')";

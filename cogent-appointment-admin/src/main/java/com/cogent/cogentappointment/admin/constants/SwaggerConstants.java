@@ -126,6 +126,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Appointment Service Type according to given request parameters";
         String DETAILS_OPERATION = "Fetch Appointment Service Type details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Service Type details for dropdown";
+        String FETCH_NAME_AND_CODE_FOR_DROPDOWN = "Fetch Appointment Service Type name and code for dropdown";
     }
 
     //B
@@ -202,6 +203,7 @@ public class SwaggerConstants {
         String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
         String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
         String DOCTOR_REVENUE_OPERATION = "Doctor Revenue list.";
+        String HOSPITAL_DEPARTMENT_REVENUE_OPERATION = "Hospital Department Revenue list.";
         String REFUND_AMOUNT_OPERATION = "Calculate Total Refunded Amount.";
     }
 
@@ -271,6 +273,12 @@ public class SwaggerConstants {
     //G
 
     //H
+
+    public interface Hmaconstant {
+        String BASE_API_VALUE = "This resource is used to generate hmac hash for frontend use";
+
+    }
+
     public interface HospitalConstant {
         String BASE_API_VALUE = "This is Hospital setup Resource";
         String SAVE_OPERATION = "Save new hospital";

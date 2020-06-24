@@ -94,7 +94,7 @@ public class CompanyServiceImpl implements CompanyService {
         validateDuplicity(companies, requestDTO.getName(), requestDTO.getCompanyCode(),
                 "COMPANY");
 
-        Hospital company = save(convertComapanyDTOToHospital(requestDTO));
+        Hospital company = save(convertCompanyDTOToHospital(requestDTO));
 
         saveCompanyContactNumber(company.getId(), requestDTO.getContactNumber());
 

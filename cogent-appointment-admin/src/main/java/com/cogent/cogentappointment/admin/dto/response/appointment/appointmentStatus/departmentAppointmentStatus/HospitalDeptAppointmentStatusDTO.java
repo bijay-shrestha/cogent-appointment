@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus;
 
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusCountResponseDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,5 +19,7 @@ public class HospitalDeptAppointmentStatusDTO implements Serializable {
     private List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterInfo;
 
     private List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorInfo;
+
+    private AppointmentStatusCountResponseDTO appointmentStatusCount;
 
 }

@@ -20,12 +20,10 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.refund.Appoin
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
-import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
-import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,23 +31,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
-import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
-import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_MODE;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.INTEGRATION_PARAMETER_IS_NULL;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.INTEGRATION_PARAMETER_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseAppointmentRejectDetails;
-import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
-import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -162,9 +151,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(REJECT_PROCESS_STARTED, APPOINTMENT_REFUND);
 
-
-        IntegrationRefundRequestDTO refundRequestDTO=IntegrationRefundRequestDTO.builder()
+        IntegrationRefundRequestDTO refundRequestDTO = IntegrationRefundRequestDTO.builder()
                 .appointmentId(refundRejectDTO.getAppointmentId())
+                .hospitalId(refundRejectDTO.getHospitalId())
+                .appointmentModeId(refundRejectDTO.getAppointmentModeId())
+                .featureCode(refundRejectDTO.getFeatureCode())
+                .integrationChannelCode(refundRejectDTO.getIntegrationChannelCode())
+                .remarks(refundRejectDTO.getRemarks())
+                .status(refundRejectDTO.getStatus())
                 .build();
 
         Long appointmentId = refundRejectDTO.getAppointmentId();

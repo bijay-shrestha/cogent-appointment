@@ -75,5 +75,9 @@ public class HospitalRequestDTO implements Serializable {
 
     private Long primaryAppointmentServiceTypeId;
 
+    private String hospitalLogo;
+
+    private String hospitalBanner;
+
 }
 

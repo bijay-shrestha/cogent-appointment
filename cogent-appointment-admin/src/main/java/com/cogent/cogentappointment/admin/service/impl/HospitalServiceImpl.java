@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import javax.validation.Validator;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -30,8 +29,6 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.BillingModeLog.BILLING_MODE;
@@ -99,14 +96,11 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner)
-            throws NoSuchAlgorithmException {
+    public void save(HospitalRequestDTO requestDTO) throws NoSuchAlgorithmException {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, HOSPITAL);
-
-        validateConstraintViolation(validator.validate(requestDTO));
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
                 requestDTO.getName(), requestDTO.getEsewaMerchantCode(), requestDTO.getAlias());
@@ -121,9 +115,9 @@ public class HospitalServiceImpl implements HospitalService {
 
         saveHospitalContactNumber(hospital.getId(), requestDTO.getContactNumber());
 
-        saveHospitalLogo(hospital, logo);
+        saveHospitalLogo(hospital, requestDTO.getHospitalLogo());
 
-        saveHospitalBanner(hospital, banner);
+        saveHospitalBanner(hospital, requestDTO.getHospitalBanner());
 
         saveHmacApiInfo(parseToHmacApiInfo(hospital));
 
@@ -139,7 +133,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public void update(@Valid HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) {
+    public void update(HospitalUpdateRequestDTO updateRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -169,10 +163,10 @@ public class HospitalServiceImpl implements HospitalService {
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
         if (updateRequestDTO.getIsLogoUpdate().equals(YES))
-            updateHospitalLogo(hospital, logo);
+            updateHospitalLogo(hospital, updateRequestDTO.getHospitalLogo());
 
         if (updateRequestDTO.getIsBannerUpdate().equals(YES))
-            updateHospitalBanner(hospital, banner);
+            updateHospitalBanner(hospital, updateRequestDTO.getHospitalBanner());
 
         updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
 
@@ -371,11 +365,14 @@ public class HospitalServiceImpl implements HospitalService {
         }
     }
 
-    private void saveHospitalBanner(Hospital hospital, MultipartFile hospitalBanner) {
-        if (!Objects.isNull(hospitalBanner)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{hospitalBanner});
-            saveHospitalBanner(convertFileToHospitalHospitalBanner(responseList.get(0), hospital));
-        }
+    private void saveHospitalLogo(Hospital hospital, String hospitalLogo) {
+        if (!Objects.isNull(hospitalLogo))
+            saveHospitalLogo(convertFileToHospitalLogo(new HospitalLogo(), hospitalLogo, hospital));
+    }
+
+    private void saveHospitalBanner(Hospital hospital, String hospitalBanner) {
+        if (!Objects.isNull(hospitalBanner))
+            saveHospitalBanner(convertFileToHospitalBanner(new HospitalBanner(), hospitalBanner, hospital));
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Hospital hospital, MultipartFile[] files) {
@@ -440,21 +437,22 @@ public class HospitalServiceImpl implements HospitalService {
 
     }
 
-    private void updateHospitalLogo(Hospital hospital, MultipartFile files) {
+    private void updateHospitalLogo(Hospital hospital, String hospitalLogoImage) {
         HospitalLogo hospitalLogo = hospitalLogoRepository.findHospitalLogoByHospitalId(hospital.getId());
 
-        if (Objects.isNull(hospitalLogo)) saveHospitalLogo(hospital, files);
-        else updateHospitalLogo(hospital, hospitalLogo, files);
+        if (Objects.isNull(hospitalLogo)) saveHospitalLogo(hospital, hospitalLogoImage);
+        else updateHospitalLogo(hospital, hospitalLogo, hospitalLogoImage);
     }
 
-    private void updateHospitalLogo(Hospital hospital, HospitalLogo hospitalLogo, MultipartFile files) {
+    private void updateHospitalLogo(Hospital hospital, HospitalLogo hospitalLogo, String hospitalLogoImage) {
 
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{files});
-            setLogoFileProperties(responseList.get(0), hospitalLogo);
-        } else
-            hospitalLogo.setStatus(INACTIVE);
+        if (!Objects.isNull(hospitalLogoImage)) {
+            convertFileToHospitalLogo(hospitalLogo, hospitalLogoImage, hospital);
+        } else hospitalLogo.setStatus(INACTIVE);
+
+        saveHospitalLogo(hospitalLogo);
     }
+
 
     private void updateHospitalBanner(Hospital hospital, HospitalBanner hospitalBanner, MultipartFile banner) {
 
@@ -465,11 +463,21 @@ public class HospitalServiceImpl implements HospitalService {
             hospitalBanner.setStatus(INACTIVE);
     }
 
-    private void updateHospitalBanner(Hospital hospital, MultipartFile banner) {
+    private void updateHospitalBanner(Hospital hospital, String hospitalBannerImage) {
         HospitalBanner hospitalBanner = hospitalBannerRepository.findHospitalBannerByHospitalId(hospital.getId());
 
-        if (Objects.isNull(hospitalBanner)) saveHospitalBanner(hospital, banner);
-        else updateHospitalBanner(hospital, hospitalBanner, banner);
+        if (Objects.isNull(hospitalBanner)) saveHospitalBanner(hospital, hospitalBannerImage);
+        else updateHospitalBanner(hospital, hospitalBanner, hospitalBannerImage);
+    }
+
+    private void updateHospitalBanner(Hospital hospital, HospitalBanner hospitalBanner,
+                                      String hospitalBannerImage) {
+
+        if (!Objects.isNull(hospitalBannerImage)) {
+            convertFileToHospitalBanner(hospitalBanner, hospitalBannerImage, hospital);
+        } else hospitalBanner.setStatus(INACTIVE);
+
+        saveHospitalBanner(hospitalBanner);
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

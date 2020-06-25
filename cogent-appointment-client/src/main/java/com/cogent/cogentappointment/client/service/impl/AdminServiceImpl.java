@@ -32,7 +32,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import javax.validation.Validator;
 import java.util.*;
 import java.util.function.Consumer;
@@ -91,7 +90,6 @@ public class AdminServiceImpl implements AdminService {
 
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
 
-    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
     private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
 
     public AdminServiceImpl(Validator validator,
@@ -108,7 +106,6 @@ public class AdminServiceImpl implements AdminService {
                             AdminFeatureService adminFeatureService,
                             IntegrationRepository integrationRepository,
                             IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
-                            AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
                             AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
@@ -124,7 +121,6 @@ public class AdminServiceImpl implements AdminService {
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
-        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
     }
 
@@ -277,13 +273,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void update(@Valid AdminUpdateRequestDTO updateRequestDTO, MultipartFile files) {
+    public void update(AdminUpdateRequestDTO updateRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN);
-
-        validateConstraintViolation(validator.validate(updateRequestDTO));
 
         Long hospitalId = getLoggedInHospitalId();
 
@@ -300,22 +294,23 @@ public class AdminServiceImpl implements AdminService {
                 hospitalId
         );
 
-        emailIsNotUpdated(updateRequestDTO, admin, files, hospitalId);
+        emailIsNotUpdated(updateRequestDTO, admin, hospitalId);
 
-        emailIsUpdated(updateRequestDTO, admin, files, hospitalId);
+        emailIsUpdated(updateRequestDTO, admin, hospitalId);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void emailIsNotUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                   Admin admin, MultipartFile files, Long hospitalId) {
+                                   Admin admin, Long hospitalId) {
+
         if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
             update(updateRequestDTO, updateRequestDTO.getStatus(), admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -330,6 +325,7 @@ public class AdminServiceImpl implements AdminService {
     private void emailIsUpdated(AdminUpdateRequestDTO updateRequestDTO,
                                 Admin admin,
                                 Long hospitalId) {
+
         if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -343,7 +339,7 @@ public class AdminServiceImpl implements AdminService {
             update(updateRequestDTO, INACTIVE, admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, updateRequestDTO.get);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -711,10 +707,12 @@ public class AdminServiceImpl implements AdminService {
         return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
 
-    private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            setFileProperties(responseList.get(0), adminAvatar);
+    private void updateAdminAvatar(Admin admin,
+                                   AdminAvatar adminAvatar,
+                                   String avatar) {
+
+        if (!Objects.isNull(avatar)) {
+            convertFileToAdminAvatar(adminAvatar, avatar, admin);
         } else adminAvatar.setStatus(INACTIVE);
 
         saveAdminAvatar(adminAvatar);
@@ -816,11 +814,11 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
-    private void updateAvatar(Admin admin, MultipartFile files) {
+    private void updateAvatar(Admin admin, String avatar) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
-        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, files);
-        else updateAdminAvatar(admin, adminAvatar, files);
+        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, avatar);
+        else updateAdminAvatar(admin, adminAvatar, avatar);
     }
 
     public void update(AdminUpdateRequestDTO adminRequestDTO, Character status, Admin admin, Long hospitalId) {

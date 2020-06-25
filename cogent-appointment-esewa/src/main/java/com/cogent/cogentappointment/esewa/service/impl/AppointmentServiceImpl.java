@@ -55,6 +55,8 @@ import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.esewa.constants.StringConstant.NO_SPACE;
 import static com.cogent.cogentappointment.esewa.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.*;
@@ -1124,17 +1126,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 NO
         );
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+        String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
                 hospital.getId(),
                 hospital.getCode()
         );
 
-        Appointment appointment = parseToAppointment(
+        Appointment appointment = parseToAppointment(hyphenatedAppointmentNumber,
+                hyphenatedAppointmentNumber.replaceAll(HYPHEN, NO_SPACE),
                 requestDTO.getAppointmentInfo(),
                 appointmentReservationLog.getAppointmentDate(),
                 appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
                 YES,
                 patient,
                 hospital,
@@ -1188,17 +1190,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 YES
         );
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+        String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
                 hospital.getId(),
                 hospital.getCode()
         );
 
-        Appointment appointment = parseToAppointment(
+        Appointment appointment = parseToAppointment(hyphenatedAppointmentNumber,
+                hyphenatedAppointmentNumber.replaceAll(HYPHEN, NO_SPACE),
                 requestDTO.getAppointmentInfo(),
                 appointmentReservationLog.getAppointmentDate(),
                 appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
                 YES,
                 patient,
                 hospital,
@@ -1335,11 +1337,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital.getCode()
         );
 
+        String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
+                appointmentInfo.getCreatedDateNepali(),
+                hospital.getId(),
+                hospital.getCode()
+        );
+
         Appointment appointment = parseToAppointment(
+                hyphenatedAppointmentNumber,
+                hyphenatedAppointmentNumber.replaceAll(HYPHEN, NO_SPACE),
                 appointmentInfo,
                 appointmentReservationLog.getAppointmentDate(),
                 appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
                 NO,
                 patient,
                 hospital,
@@ -1394,17 +1403,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                 YES
         );
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+        String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
                 hospital.getId(),
                 hospital.getCode()
         );
 
         Appointment appointment = parseToAppointment(
+                hyphenatedAppointmentNumber,
+                hyphenatedAppointmentNumber.replaceAll(HYPHEN, NO_SPACE),
                 appointmentInfo,
                 appointmentReservationLog.getAppointmentDate(),
                 appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
                 NO,
                 patient,
                 hospital,

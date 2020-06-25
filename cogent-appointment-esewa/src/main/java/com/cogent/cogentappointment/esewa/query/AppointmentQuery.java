@@ -26,7 +26,7 @@ public class AppointmentQuery {
                     " AND a.status IN ('PA', 'A')";
 
     public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
-            "SELECT a.appointment_number" +
+            "SELECT a.hyphenated_appointment_number" +
                     " FROM appointment a" +
                     " LEFT JOIN hospital h ON h.id =a.hospital_id" +
                     " WHERE" +

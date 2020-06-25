@@ -1,8 +1,11 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.constants.QueryConstants;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.ApptServiceTypeDropDownResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.PrimaryAppointmentServiceTypeResponse;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.query.AppointmentServiceTypeQuery;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentServiceTypeRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AppointmentServiceType;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +22,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_
 import static com.cogent.cogentappointment.client.log.constants.AppointmentServiceTypeLog.APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.client.query.AppointmentServiceTypeQuery.QUERY_TO_FETCH_APPOINTMENT_SERVICE_TYPE_NAME_AND_CODE;
 import static com.cogent.cogentappointment.client.query.AppointmentServiceTypeQuery.QUERY_TO_FETCH_MIN_APPOINTMENT_SERVICE_TYPE;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti on 26/05/20
@@ -54,6 +56,20 @@ public class AppointmentServiceTypeRepositoryCustomImpl implements AppointmentSe
                 ApptServiceTypeDropDownResponseDTO.class);
 
         if (results.isEmpty())
+            NO_APPOINTMENT_SERVICE_TYPE_FOUND.get();
+
+        return results;
+    }
+
+    @Override
+    public PrimaryAppointmentServiceTypeResponse fetchAppointmentServiceTypeByHospital(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, AppointmentServiceTypeQuery.QUERY_TO_FETCH_PRIMARY_APPOINTMENT_SERVICE_TYPE_BY_HOSPIAL_ID)
+                .setParameter(QueryConstants.HOSPITAL_ID,hospitalId);
+
+        PrimaryAppointmentServiceTypeResponse results = transformNativeQueryToSingleResult(query,
+                PrimaryAppointmentServiceTypeResponse.class);
+
+        if (results==null)
             NO_APPOINTMENT_SERVICE_TYPE_FOUND.get();
 
         return results;

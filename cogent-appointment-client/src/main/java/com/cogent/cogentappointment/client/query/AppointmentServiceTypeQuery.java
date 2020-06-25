@@ -18,4 +18,15 @@ public class AppointmentServiceTypeQuery {
                     " a.code as code" +
                     " FROM AppointmentServiceType a" +
                     " WHERE a.status = 'Y'";
+
+    public static final String QUERY_TO_FETCH_PRIMARY_APPOINTMENT_SERVICE_TYPE_BY_HOSPIAL_ID =
+            "SELECT" +
+                    " hast.id as value," +
+                    " ast.name as name" +
+                    " FROM HospitalAppointmentServiceType hast" +
+                    " LEFT JOIN AppointmentServiceType ast ON ast.id=hast.appointmentServiceType.id" +
+                    " LEFT JOIN Hospital h ON h.id=hast.hospital.id" +
+                    " WHERE hast.status = 'Y'" +
+                    " AND ast.status='Y'" +
+                    " AND h.id=:hospitalId";
 }

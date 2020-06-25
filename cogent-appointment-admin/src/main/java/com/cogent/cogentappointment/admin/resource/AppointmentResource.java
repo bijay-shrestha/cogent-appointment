@@ -80,8 +80,6 @@ public class AppointmentResource {
     @ApiOperation(REJECT_REFUND_APPOINTMENT)
     public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO) {
 
-        //todo
-        //add integration details in refund cancel
         appointmentService.rejectRefundAppointment(refundRejectDTO);
         return ok().build();
     }

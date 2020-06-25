@@ -319,9 +319,10 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
                     appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
 
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
-                        refundAppointmentDetail,
-                        refundRequestDTO.getRemarks(), null);
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRequestDTO,
+                        refundAppointmentDetail));
+
+
             } else {
 
                 ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
@@ -351,9 +352,9 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
                     appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
 
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
-                        refundAppointmentDetail,
-                        refundRequestDTO.getRemarks(), null);
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRequestDTO,
+                        refundAppointmentDetail));
+
             } else {
 
                 updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),

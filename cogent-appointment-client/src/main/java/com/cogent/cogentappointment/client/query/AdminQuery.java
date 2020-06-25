@@ -182,7 +182,8 @@ public class AdminQuery {
                     " CASE " +
                     "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
                     "    ELSE hl.fileUri" +
-                    " END as hospitalLogo" +                                              //[9]
+                    " END as hospitalLogo," +                                              //[9]
+                    " h.code as hospitalCode"+                                             //[10]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +

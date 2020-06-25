@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResp
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public interface DoctorService {
 
     String save(DoctorRequestDTO requestDTO);
 
-    void update(DoctorUpdateRequestDTO requestDTO, MultipartFile avatar);
+    void update(DoctorUpdateRequestDTO requestDTO);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 

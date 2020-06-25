@@ -11,10 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DoctorConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
@@ -22,9 +20,7 @@ import static com.cogent.cogentappointment.client.constants.WebResourceKeyConsta
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DoctorConstants.UPDATE_DETAILS;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_WISE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SpecializationConstants.SPECIALIZATION_WISE;
-import static com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils.map;
 import static java.net.URI.create;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -48,12 +44,10 @@ public class DoctorResource {
         return created(create(API_V1 + BASE_DOCTOR)).build();
     }
 
-    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@RequestPart(value = "avatar", required = false) MultipartFile avatar,
-                                    @RequestParam("request") String request) throws IOException {
-        DoctorUpdateRequestDTO updateRequestDTO = map(request, DoctorUpdateRequestDTO.class);
-        doctorService.update(updateRequestDTO, avatar);
+    public ResponseEntity<?> update(@Valid @RequestBody DoctorUpdateRequestDTO updateRequestDTO) {
+        doctorService.update(updateRequestDTO);
         return ok().build();
     }
 

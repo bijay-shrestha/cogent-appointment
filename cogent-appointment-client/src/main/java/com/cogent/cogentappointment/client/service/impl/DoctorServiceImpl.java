@@ -128,15 +128,8 @@ public class DoctorServiceImpl implements DoctorService {
         return doctor.getCode();
     }
 
-    private void saveDoctorSalutation(Long doctorId, List<Long> salutationIds) {
-
-        doctorSalutationRepository.saveAll(parseToDoctorSalutation(doctorId, salutationIds));
-
-    }
-
-
     @Override
-    public void update(DoctorUpdateRequestDTO requestDTO, MultipartFile avatar) {
+    public void update(DoctorUpdateRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -177,7 +170,7 @@ public class DoctorServiceImpl implements DoctorService {
         updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationInfo());
 
         if (requestDTO.getDoctorInfo().getIsAvatarUpdate().equals(YES))
-            updateDoctorAvatar(doctor, avatar);
+            updateDoctorAvatar(doctor, requestDTO.getDoctorInfo().getAvatar());
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
     }
@@ -505,9 +498,8 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR_AVATAR);
 
-        if (!Objects.isNull(avatar)) {
+        if (!Objects.isNull(avatar))
             saveDoctorAvatar(convertFileToDoctorAvatar(avatar, doctor));
-        }
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
@@ -616,12 +608,37 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
+    private void updateDoctorAvatar(Doctor doctor, String avatar) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_AVATAR);
+
+        DoctorAvatar doctorAvatar = doctorAvatarRepository.findByDoctorId(doctor.getId());
+
+        if (Objects.isNull(doctorAvatar)) saveDoctorAvatar(doctor, avatar);
+        else updateDoctorAvatar(doctor, doctorAvatar, avatar);
+
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
+    }
+
     private void updateDoctorAvatar(Doctor doctor,
                                     DoctorAvatar doctorAvatar,
                                     MultipartFile files) {
         if (!Objects.isNull(files)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{files});
             setAvatarFileProperties(responseList.get(0), doctorAvatar);
+        } else doctorAvatar.setStatus(INACTIVE);
+
+        saveDoctorAvatar(doctorAvatar);
+    }
+
+
+    private void updateDoctorAvatar(Doctor doctor,
+                                    DoctorAvatar doctorAvatar,
+                                    String avatar) {
+
+        if (!Objects.isNull(avatar)) {
+            doctorAvatar.setFileUri(avatar);
         } else doctorAvatar.setStatus(INACTIVE);
 
         saveDoctorAvatar(doctorAvatar);
@@ -673,6 +690,11 @@ public class DoctorServiceImpl implements DoctorService {
         log.error(DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND, DoctorAppointmentCharge.class.getSimpleName(), doctorId);
         throw new NoContentFoundException(DoctorAppointmentCharge.class, "doctorId", doctorId.toString());
     };
+
+    private void saveDoctorSalutation(Long doctorId, List<Long> salutationIds) {
+        doctorSalutationRepository.saveAll(parseToDoctorSalutation(doctorId, salutationIds));
+
+    }
 }
 
 

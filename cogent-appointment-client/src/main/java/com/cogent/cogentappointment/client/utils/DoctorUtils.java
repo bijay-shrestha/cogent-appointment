@@ -85,6 +85,15 @@ public class DoctorUtils {
         return doctorAppointmentCharge;
     }
 
+    public static DoctorAvatar convertFileToDoctorAvatar(String avatar,
+                                                         Doctor doctor) {
+
+        DoctorAvatar doctorAvatar = new DoctorAvatar();
+        doctorAvatar.setDoctorId(doctor);
+        doctorAvatar.setFileUri(avatar);
+        return doctorAvatar;
+    }
+
     public static DoctorAvatar convertFileToDoctorAvatar(FileUploadResponseDTO uploadResponseDTO,
                                                          Doctor doctor) {
 

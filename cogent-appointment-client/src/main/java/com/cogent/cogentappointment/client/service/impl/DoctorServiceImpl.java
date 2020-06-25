@@ -89,7 +89,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String save(DoctorRequestDTO requestDTO, MultipartFile avatar) {
+    public String save(DoctorRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -122,7 +122,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         saveDoctorQualifications(doctor.getId(), requestDTO.getQualificationIds());
 
-        saveDoctorAvatar(doctor, avatar);
+        saveDoctorAvatar(doctor, requestDTO.getAvatar());
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -489,6 +489,31 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
+//    private void saveDoctorAvatar(Doctor doctor, MultipartFile file) {
+//        Long startTime = getTimeInMillisecondsFromLocalDate();
+//
+//        log.info(SAVING_PROCESS_STARTED, DOCTOR_AVATAR);
+//
+//        if (!Objects.isNull(file)) {
+//            List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{file});
+//            saveDoctorAvatar(convertFileToDoctorAvatar(responseList.get(0), doctor));
+//        }
+//
+//        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
+//    }
+
+    private void saveDoctorAvatar(Doctor doctor, String avatar) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_AVATAR);
+
+        if (!Objects.isNull(avatar)) {
+            saveDoctorAvatar(convertFileToDoctorAvatar(avatar, doctor));
+        }
+
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
+    }
+
     private void saveDoctorAvatar(Doctor doctor, MultipartFile file) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -501,6 +526,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
+
 
     private List<FileUploadResponseDTO> uploadFiles(Doctor doctor, MultipartFile[] file) {
         String subDirectoryLocation = doctor.getName();

@@ -41,12 +41,10 @@ public class DoctorResource {
         this.doctorService = doctorService;
     }
 
-    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@RequestPart(value = "avatar", required = false) MultipartFile avatar,
-                                  @RequestParam("request") String request) throws IOException {
-        DoctorRequestDTO requestDTO = map(request, DoctorRequestDTO.class);
-        doctorService.save(requestDTO, avatar);
+    public ResponseEntity<?> save(@Valid @RequestBody DoctorRequestDTO requestDTO) {
+        doctorService.save(requestDTO);
         return created(create(API_V1 + BASE_DOCTOR)).build();
     }
 
@@ -105,7 +103,7 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorBySpecializationId(specializationId));
     }
 
-//    todo:Can be Removed
+    //    todo:Can be Removed
     @GetMapping(HOSPITAL_WISE)
     @ApiOperation(FETCH_ACTIVE_DOCTORS_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId() {

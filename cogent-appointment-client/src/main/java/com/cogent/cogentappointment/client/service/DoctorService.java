@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface DoctorService {
 
-    String save(DoctorRequestDTO requestDTO, MultipartFile avatar);
+    String save(DoctorRequestDTO requestDTO);
 
     void update(DoctorUpdateRequestDTO requestDTO, MultipartFile avatar);
 

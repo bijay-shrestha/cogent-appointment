@@ -480,6 +480,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
+        System.out.println(query);
+
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);

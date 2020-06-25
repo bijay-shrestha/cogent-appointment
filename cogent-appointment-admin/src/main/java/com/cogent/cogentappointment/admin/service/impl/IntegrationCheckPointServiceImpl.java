@@ -326,7 +326,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 refundRequestDTO.getRemarks(),
                 appointment,
                 refundAppointmentDetail,
-                null);
+                refundRequestDTO);
 
 
     }
@@ -364,7 +364,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                               String frontEndRemarks,
                                                               Appointment appointment,
                                                               AppointmentRefundDetail refundAppointmentDetail,
-                                                              AppointmentRefundRejectDTO refundRejectDTO) {
+                                                              IntegrationRefundRequestDTO integrationRefundRequestDTO) {
 
         switch (response) {
 
@@ -383,7 +383,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             case SUCCESS:
-                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO,
+                saveAppointmentRefundDetail(parseRefundRejectDetails(integrationRefundRequestDTO,
                         refundAppointmentDetail));
                 break;
 

@@ -205,7 +205,8 @@ public class AppointmentUtils {
      * results[2] = appointment number*/
     public static String generateAppointmentNumber(List results,
                                                    String startingFiscalYear,
-                                                   String endingFiscalYear) {
+                                                   String endingFiscalYear,
+                                                   String hospitalCode) {
 
         String startingYear = startingFiscalYear.split(HYPHEN)[0];
         String splitStartingYear = startingYear.substring(startingYear.length() - 2);
@@ -219,10 +220,10 @@ public class AppointmentUtils {
             appointmentNumber = "0001";
         else
             appointmentNumber = results.get(0).toString().contains(HYPHEN) ?
-                    String.format("%04d", Integer.parseInt(results.get(0).toString().split(HYPHEN)[2]) + 1)
-                    : String.format("%04d", Integer.parseInt(results.get(0).toString()) + 1);
+                    String.format("%01d", Integer.parseInt(results.get(0).toString().split(HYPHEN)[2]) + 1)
+                    : String.format("%01d", Integer.parseInt(results.get(0).toString()) + 1);
 
-        appointmentNumber = splitStartingYear + HYPHEN + splitEndingYear + HYPHEN + appointmentNumber;
+        appointmentNumber = hospitalCode + splitStartingYear + splitEndingYear + appointmentNumber;
 
         return appointmentNumber;
     }

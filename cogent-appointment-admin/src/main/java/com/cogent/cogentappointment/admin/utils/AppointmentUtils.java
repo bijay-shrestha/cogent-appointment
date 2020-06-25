@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -27,10 +27,10 @@ import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils
  */
 public class AppointmentUtils {
 
-    public static AppointmentRefundDetail parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
+    public static AppointmentRefundDetail parseRefundRejectDetails(IntegrationRefundRequestDTO refundRequestDTO,
                                                                    AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
-        refundDetail.setRemarks(refundRejectDTO.getRemarks());
+        refundDetail.setRemarks(refundRequestDTO.getRemarks());
 
         return refundDetail;
     }

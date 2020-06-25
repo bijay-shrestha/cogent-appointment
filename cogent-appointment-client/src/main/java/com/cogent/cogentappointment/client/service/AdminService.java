@@ -7,9 +7,7 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailRespons
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
-import com.cogent.cogentappointment.persistence.model.AdminConfirmationToken;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,7 +17,7 @@ import java.util.List;
  */
 public interface AdminService {
 
-    void save(AdminRequestDTO adminRequestDTO, MultipartFile files);
+    void save(AdminRequestDTO adminRequestDTO);
 
     List<DropDownResponseDTO> fetchActiveMinAdmin();
 
@@ -33,9 +31,9 @@ public interface AdminService {
 
     void resetPassword(AdminResetPasswordRequestDTO resetPasswordRequestDTO);
 
-    void updateAvatar(MultipartFile files, Long adminId);
+    void updateAvatar(AdminAvatarUpdateRequestDTO requestDTO);
 
-    void update(AdminUpdateRequestDTO updateRequestDTO, MultipartFile files);
+    void update(AdminUpdateRequestDTO updateRequestDTO);
 
     void verifyConfirmationToken(String token);
 

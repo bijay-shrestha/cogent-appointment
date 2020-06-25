@@ -34,13 +34,10 @@ public class AdminResource {
         this.adminService = adminService;
     }
 
-    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@RequestParam(value = "file", required = false) MultipartFile file,
-                                  @RequestParam("request") String request) throws IOException {
-
-        AdminRequestDTO adminRequestDTO = ObjectMapperUtils.map(request, AdminRequestDTO.class);
-        adminService.save(adminRequestDTO, file);
+    public ResponseEntity<?> save(@Valid @RequestBody AdminRequestDTO requestDTO) {
+        adminService.save(requestDTO);
         return created(create(API_V1 + BASE_ADMIN)).build();
     }
 
@@ -86,7 +83,7 @@ public class AdminResource {
         return ok().build();
     }
 
-    @PutMapping(value = AVATAR, consumes = MULTIPART_FORM_DATA_VALUE)
+    @PutMapping
     @ApiOperation(UPDATE_AVATAR_OPERATION)
     public ResponseEntity<?> updateAvatar(@RequestParam(value = "files", required = false) MultipartFile file,
                                           @RequestParam("adminId") Long adminId) {
@@ -111,7 +108,7 @@ public class AdminResource {
         return ok().build();
     }
 
-    @GetMapping(VERIFY+EMAIL)
+    @GetMapping(VERIFY + EMAIL)
     @ApiOperation(VERIFY_EMAIL_ADMIN)
     public ResponseEntity<?> verifyUpdatedEmail(@RequestParam(name = "token") String token) {
         adminService.verifyConfirmationTokenForEmail(token);

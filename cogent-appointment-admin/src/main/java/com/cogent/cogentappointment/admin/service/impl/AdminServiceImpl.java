@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.admin.dto.response.admin.AdminDetailResponse
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -33,7 +31,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -104,13 +103,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void save(@Valid AdminRequestDTO adminRequestDTO, MultipartFile files) {
+    public void save(AdminRequestDTO adminRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, ADMIN);
-
-        validateConstraintViolation(validator.validate(adminRequestDTO));
 
         validateAdminCount(adminRequestDTO.getHospitalId());
 
@@ -125,9 +122,9 @@ public class AdminServiceImpl implements AdminService {
                 adminRequestDTO.getHospitalId()
         );
 
-        Admin admin = save(adminRequestDTO);
+        Admin admin = saveAdmin(adminRequestDTO);
 
-        saveAdminAvatar(admin, files);
+        saveAdminAvatar(admin, adminRequestDTO.getAvatar());
 
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
@@ -220,20 +217,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateAvatar(MultipartFile files, Long adminId) {
+    public void updateAvatar(AdminAvatarUpdateRequestDTO updateRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR);
 
-        Admin admin = findById(adminId);
+        Admin admin = findById(updateRequestDTO.getAdminId());
 
-        updateAvatar(admin, files);
+        updateAvatar(admin, updateRequestDTO.getAvatar());
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public void update(@Valid AdminUpdateRequestDTO updateRequestDTO, MultipartFile files) {
+    public void update(@Valid AdminUpdateRequestDTO updateRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -254,15 +251,15 @@ public class AdminServiceImpl implements AdminService {
                 updateRequestDTO.getHospitalId()
         );
 
-        emailIsNotUpdated(updateRequestDTO, admin, files);
+        emailIsNotUpdated(updateRequestDTO, admin);
 
-        emailIsUpdated(updateRequestDTO, admin, files);
+        emailIsUpdated(updateRequestDTO, admin);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void emailIsNotUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                   Admin admin, MultipartFile files) {
+                                   Admin admin) {
 
         if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
@@ -271,7 +268,7 @@ public class AdminServiceImpl implements AdminService {
             update(updateRequestDTO, updateRequestDTO.getStatus(), admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -284,7 +281,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void emailIsUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                Admin admin, MultipartFile files) {
+                                Admin admin) {
 
         if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
@@ -298,7 +295,7 @@ public class AdminServiceImpl implements AdminService {
             update(updateRequestDTO, INACTIVE, admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -417,7 +414,7 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private Admin save(AdminRequestDTO adminRequestDTO) {
+    private Admin saveAdmin(AdminRequestDTO adminRequestDTO) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId());
@@ -427,26 +424,9 @@ public class AdminServiceImpl implements AdminService {
         return save(admin);
     }
 
-    private void saveAdminAvatar(Admin admin, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            saveAdminAvatar(convertFileToAdminAvatar(responseList.get(0), admin));
-        }
-    }
-
-    private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getEmail();
-
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
-    }
-
-    private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            setFileProperties(responseList.get(0), adminAvatar);
-        } else adminAvatar.setStatus(INACTIVE);
-
-        saveAdminAvatar(adminAvatar);
+    private void saveAdminAvatar(Admin admin, String avatar) {
+        if (!Objects.isNull(avatar))
+            saveAdminAvatar(convertFileToAdminAvatar(new AdminAvatar(), avatar, admin));
     }
 
     private void saveAdminAvatar(AdminAvatar adminAvatar) {
@@ -575,11 +555,22 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
-    private void updateAvatar(Admin admin, MultipartFile files) {
+    private void updateAvatar(Admin admin, String avatar) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
-        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, files);
-        else updateAdminAvatar(admin, adminAvatar, files);
+        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, avatar);
+        else updateAdminAvatar(admin, adminAvatar, avatar);
+    }
+
+    private void updateAdminAvatar(Admin admin,
+                                   AdminAvatar adminAvatar,
+                                   String avatar) {
+
+        if (!Objects.isNull(avatar)) {
+            convertFileToAdminAvatar(adminAvatar, avatar, admin);
+        } else adminAvatar.setStatus(INACTIVE);
+
+        saveAdminAvatar(adminAvatar);
     }
 
     public void update(AdminUpdateRequestDTO adminRequestDTO, Character status, Admin admin) {

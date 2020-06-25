@@ -85,31 +85,14 @@ public class DoctorUtils {
         return doctorAppointmentCharge;
     }
 
-    public static DoctorAvatar convertFileToDoctorAvatar(String avatar,
+    public static DoctorAvatar convertFileToDoctorAvatar(DoctorAvatar doctorAvatar,
+                                                         String avatar,
                                                          Doctor doctor) {
 
-        DoctorAvatar doctorAvatar = new DoctorAvatar();
         doctorAvatar.setDoctorId(doctor);
         doctorAvatar.setFileUri(avatar);
         doctorAvatar.setStatus(ACTIVE);
         return doctorAvatar;
-    }
-
-    public static DoctorAvatar convertFileToDoctorAvatar(FileUploadResponseDTO uploadResponseDTO,
-                                                         Doctor doctor) {
-
-        DoctorAvatar doctorAvatar = new DoctorAvatar();
-        setAvatarFileProperties(uploadResponseDTO, doctorAvatar);
-        doctorAvatar.setDoctorId(doctor);
-        return doctorAvatar;
-    }
-
-    public static void setAvatarFileProperties(FileUploadResponseDTO uploadResponseDTO,
-                                               DoctorAvatar doctorAvatar) {
-        doctorAvatar.setFileSize(uploadResponseDTO.getFileSize());
-        doctorAvatar.setFileUri(uploadResponseDTO.getFileUri());
-        doctorAvatar.setFileType(uploadResponseDTO.getFileType());
-        doctorAvatar.setStatus(ACTIVE);
     }
 
     public static void parseDoctorAppointmentChargeDetails(DoctorAppointmentCharge doctorAppointmentCharge,

@@ -6,21 +6,21 @@ package com.cogent.cogentappointment.client.query;
 public class AppointmentServiceTypeQuery {
 
     public static final String QUERY_TO_FETCH_MIN_APPOINTMENT_SERVICE_TYPE =
-            "SELECT" +
+            " SELECT" +
                     " a.id as value," +
                     " a.name as label" +
                     " FROM AppointmentServiceType a" +
                     " WHERE a.status = 'Y'";
 
     public static final String QUERY_TO_FETCH_APPOINTMENT_SERVICE_TYPE_NAME_AND_CODE =
-            "SELECT" +
+            " SELECT" +
                     " a.name as name," +
                     " a.code as code" +
                     " FROM AppointmentServiceType a" +
                     " WHERE a.status = 'Y'";
 
     public static final String QUERY_TO_FETCH_PRIMARY_APPOINTMENT_SERVICE_TYPE_BY_HOSPIAL_ID =
-            "SELECT" +
+            " SELECT" +
                     " hast.id as value," +
                     " ast.name as name" +
                     " FROM HospitalAppointmentServiceType hast" +

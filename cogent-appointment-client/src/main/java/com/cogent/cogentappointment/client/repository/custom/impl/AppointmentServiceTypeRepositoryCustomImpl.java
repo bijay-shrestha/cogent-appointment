@@ -66,7 +66,7 @@ public class AppointmentServiceTypeRepositoryCustomImpl implements AppointmentSe
         Query query = createQuery.apply(entityManager, AppointmentServiceTypeQuery.QUERY_TO_FETCH_PRIMARY_APPOINTMENT_SERVICE_TYPE_BY_HOSPIAL_ID)
                 .setParameter(QueryConstants.HOSPITAL_ID,hospitalId);
 
-        PrimaryAppointmentServiceTypeResponse results = transformNativeQueryToSingleResult(query,
+        PrimaryAppointmentServiceTypeResponse results = transformQueryToSingleResult(query,
                 PrimaryAppointmentServiceTypeResponse.class);
 
         if (results==null)

@@ -89,12 +89,16 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
     }
 
     @Override
-    public Long findAppointmentModeWiseFeatureAndRequestMethod(Long appointmentModeId, Long featureTypeId, Long requestMethodId) {
+    public Long findAppointmentModeWiseFeatureAndRequestMethod(Long appointmentModeId,
+                                                               Long featureTypeId,
+                                                               Long requestMethodId,
+                                                               Long hospitalId) {
         Query query = createQuery.apply(entityManager,
                 IntegrationAdminModeQuery.VALIDATE_ADMIN_MODE_REQUEST_METHOD_AND_FEATURE)
                 .setParameter(API_FEATURE_ID, featureTypeId)
                 .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
-                .setParameter(API_REQUEST_METHOD_ID, requestMethodId);
+                .setParameter(API_REQUEST_METHOD_ID, requestMethodId)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
 
         return (Long) query.getSingleResult();

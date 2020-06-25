@@ -40,6 +40,8 @@ public class CompanyAdminLoggedInInfoResponseDTO implements Serializable {
 
     private Character isSideBarCollapse;
 
+    private String companyCode;
+
     Map<String, String> requestBody;
 
     Map<String, List<?>> apiIntegration;

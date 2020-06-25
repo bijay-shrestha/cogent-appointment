@@ -106,7 +106,6 @@ public class DoctorServiceImpl implements DoctorService {
                 fetchGender(requestDTO.getGenderCode()),
                 fetchHospitalById(hospitalId));
 
-
         saveDoctor(doctor);
 
         if (requestDTO.getSalutationIds().size() > 0) {
@@ -240,7 +239,6 @@ public class DoctorServiceImpl implements DoctorService {
                 .collect(Collectors.joining(SPACE));
 
     }
-
 
     private Salutation findActiveSalutation(Long salutationId) {
 

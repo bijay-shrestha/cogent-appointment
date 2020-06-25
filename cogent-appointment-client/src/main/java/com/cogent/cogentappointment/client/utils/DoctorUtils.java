@@ -91,6 +91,7 @@ public class DoctorUtils {
         DoctorAvatar doctorAvatar = new DoctorAvatar();
         doctorAvatar.setDoctorId(doctor);
         doctorAvatar.setFileUri(avatar);
+        doctorAvatar.setStatus(ACTIVE);
         return doctorAvatar;
     }
 

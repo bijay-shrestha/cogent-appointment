@@ -18,10 +18,12 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentServiceTypeLog.APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.client.query.AppointmentServiceTypeQuery.QUERY_TO_FETCH_APPOINTMENT_SERVICE_TYPE_NAME_AND_CODE;
 import static com.cogent.cogentappointment.client.query.AppointmentServiceTypeQuery.QUERY_TO_FETCH_MIN_APPOINTMENT_SERVICE_TYPE;
+import static com.cogent.cogentappointment.client.query.AppointmentServiceTypeQuery.QUERY_TO_FETCH_PRIMARY_APPOINTMENT_SERVICE_TYPE_BY_HOSPIAL_ID;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -63,8 +65,8 @@ public class AppointmentServiceTypeRepositoryCustomImpl implements AppointmentSe
 
     @Override
     public PrimaryAppointmentServiceTypeResponse fetchAppointmentServiceTypeByHospital(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, AppointmentServiceTypeQuery.QUERY_TO_FETCH_PRIMARY_APPOINTMENT_SERVICE_TYPE_BY_HOSPIAL_ID)
-                .setParameter(QueryConstants.HOSPITAL_ID,hospitalId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PRIMARY_APPOINTMENT_SERVICE_TYPE_BY_HOSPIAL_ID)
+                .setParameter(HOSPITAL_ID,hospitalId);
 
         PrimaryAppointmentServiceTypeResponse results = transformQueryToSingleResult(query,
                 PrimaryAppointmentServiceTypeResponse.class);

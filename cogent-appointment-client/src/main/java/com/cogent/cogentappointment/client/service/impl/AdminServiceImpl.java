@@ -443,6 +443,7 @@ public class AdminServiceImpl implements AdminService {
         PrimaryAppointmentServiceTypeResponse serviceTypeResponses = appointmentServiceTypeRepository.
                 fetchAppointmentServiceTypeByHospital(getLoggedInHospitalId());
 
+        responseDTO.setPrimaryAppointmentServiceType(serviceTypeResponses);
         responseDTO.setApiIntegration(getApiIntegrations());
         responseDTO.setRequestBody(map);
 

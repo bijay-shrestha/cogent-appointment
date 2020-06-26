@@ -552,5 +552,4 @@ public class AppointmentStatusUtils {
         return parseAppointmentStatusCountValues(vacantCount, bookedCount, checkedInCount,
                 cancelledCount, followUpCount);
     }
-
 }

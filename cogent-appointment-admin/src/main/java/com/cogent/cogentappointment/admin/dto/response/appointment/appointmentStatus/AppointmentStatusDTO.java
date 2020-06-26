@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author smriti on 16/02/20
@@ -21,5 +22,5 @@ public class AppointmentStatusDTO implements Serializable {
 
     private List<DoctorDropdownDTO> doctorInfo;
 
-    private AppointmentStatusCountResponseDTO appointmentStatusCount;
+    private Map<String, Integer> appointmentStatusCount;
 }

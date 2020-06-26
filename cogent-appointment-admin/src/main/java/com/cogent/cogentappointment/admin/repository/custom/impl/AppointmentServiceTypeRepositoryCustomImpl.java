@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.ApptServiceTypeDropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentServiceTypeRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AppointmentServiceType;
@@ -47,11 +47,11 @@ public class AppointmentServiceTypeRepositoryCustomImpl implements AppointmentSe
     }
 
     @Override
-    public List<ApptServiceTypeDropDownResponseDTO> fetchSerivceTypeNameAndCodeList() {
+    public List<AppointmentServiceTypeDropDownResponseDTO> fetchServiceTypeNameAndCodeList() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_SERVICE_TYPE_NAME_AND_CODE);
 
-        List<ApptServiceTypeDropDownResponseDTO> results = transformQueryToResultList(query,
-                ApptServiceTypeDropDownResponseDTO.class);
+        List<AppointmentServiceTypeDropDownResponseDTO> results = transformQueryToResultList(query,
+                AppointmentServiceTypeDropDownResponseDTO.class);
 
         if (results.isEmpty())
             NO_APPOINTMENT_SERVICE_TYPE_FOUND.get();

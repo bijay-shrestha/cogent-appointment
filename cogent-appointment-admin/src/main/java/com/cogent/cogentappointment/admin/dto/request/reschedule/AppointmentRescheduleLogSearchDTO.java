@@ -35,4 +35,8 @@ public class AppointmentRescheduleLogSearchDTO {
     private Long specializationId;
 
     private Character patientType;
+
+    private String appointmentServiceTypeCode;
+
+    private Long hospitalDepartmentId;
 }

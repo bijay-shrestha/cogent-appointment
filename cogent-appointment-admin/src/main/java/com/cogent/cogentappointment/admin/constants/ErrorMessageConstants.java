@@ -98,6 +98,8 @@ public class ErrorMessageConstants {
     }
 
     //E
+    public static final String EQUAL_DATE_TIME_MESSAGE = "Start time cannot be equal to end time";
+    public static final String EQUAL_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
 
     //F
     public interface FileServiceMessages {
@@ -143,6 +145,7 @@ public class ErrorMessageConstants {
     }
 
     //I
+    public static final String INVALID_APPOINTMENT_SERVICE_TYPE_CODE = "Invalid Appointment Service Type Code : '%s'";
 
     public interface IntegrationApiMessages {
         String INTEGRATION_PARAMETER_NOT_FOUND = "Integration parameters not found";
@@ -168,8 +171,7 @@ public class ErrorMessageConstants {
     public static final String INVALID_DATE_TIME_MESSAGE = "Start time cannot be greater than end time";
     public static final String INVALID_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
 
-    public static final String EQUAL_DATE_TIME_MESSAGE = "Start time cannot be equal to end time";
-    public static final String EQUAL_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
+
     //J
 
     //K

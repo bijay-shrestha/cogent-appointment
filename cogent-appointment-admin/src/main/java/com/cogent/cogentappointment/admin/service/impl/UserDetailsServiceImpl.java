@@ -28,7 +28,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public LoggedInAdminDTO getAdmin(String email) {
-        return adminRepository.getLoggedInAdmin(email);
+
+        try {
+            return adminRepository.getLoggedInAdmin(email);
+        } catch (NoContentFoundException ex) {
+            throw new NoContentFoundException("USER NOT FOUND");
+        }
     }
 
     @Override
@@ -40,12 +45,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //            throw new NoContentFoundException("USER NOT FOUND");
 //        }
 
-        try{
-            return UserDetailsImpl.build(getAdmin(email));
-        }catch (NoContentFoundException e){
+        try {
+            loggedInAdminDTO = getAdmin(email);
+        } catch (NoContentFoundException e) {
             log.error(USER_NOT_FOUND, email);
             throw new NoContentFoundException("USER NOT FOUND");
         }
-
+        return UserDetailsImpl.build(loggedInAdminDTO);
     }
 }

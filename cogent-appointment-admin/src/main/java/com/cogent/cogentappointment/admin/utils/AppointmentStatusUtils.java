@@ -454,7 +454,7 @@ public class AppointmentStatusUtils {
         return appointmentTimeSlots;
     }
 
-    private static AppointmentStatusCountResponseDTO parseAppointmentStatusCount(
+    private static Map<String, Integer> parseAppointmentStatusCount(
             List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterInfo) {
 
         Integer vacantCount = 0;
@@ -491,21 +491,7 @@ public class AppointmentStatusUtils {
                 cancelledCount, followUpCount);
     }
 
-    private static AppointmentStatusCountResponseDTO parseAppointmentStatusCountValues(Integer vacantCount,
-                                                                                       Integer bookedCount,
-                                                                                       Integer checkedInCount,
-                                                                                       Integer cancelledCount,
-                                                                                       Integer followUpCount) {
-        return AppointmentStatusCountResponseDTO.builder()
-                .vacantCount(vacantCount)
-                .bookedCount(bookedCount)
-                .checkedInCount(checkedInCount)
-                .cancelledCount(cancelledCount)
-                .followUpCount(followUpCount)
-                .build();
-    }
-
-    private static AppointmentStatusCountResponseDTO parseHospitalDepartmentAppointmentStatusCount(
+    private static Map<String, Integer> parseHospitalDepartmentAppointmentStatusCount(
             List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRostersInfo) {
 
         Integer vacantCount = 0;
@@ -516,7 +502,7 @@ public class AppointmentStatusUtils {
 
         for (HospitalDeptDutyRosterStatusResponseDTO doctorDutyRoster : hospitalDeptDutyRostersInfo) {
             for (AppointmentTimeSlotResponseDTO timeSlots : doctorDutyRoster.getAppointmentTimeSlots()) {
-                switch (timeSlots.getStatus()) {
+                switch (timeSlots.getStatus().trim().toUpperCase()) {
                     case VACANT:
                         vacantCount++;
                         break;
@@ -541,4 +527,25 @@ public class AppointmentStatusUtils {
         return parseAppointmentStatusCountValues(vacantCount, bookedCount, checkedInCount,
                 cancelledCount, followUpCount);
     }
+
+    private static Map<String, Integer> parseAppointmentStatusCountValues(Integer vacantStatusCount,
+                                                                          Integer bookedStatusCount,
+                                                                          Integer checkedInStatusCount,
+                                                                          Integer cancelledStatusCount,
+                                                                          Integer followUpStatusCount) {
+
+        HashMap<String, Integer> appointmentStatusCount = new HashMap<>();
+        Integer allStatusCount = vacantStatusCount + bookedStatusCount
+                + checkedInStatusCount + cancelledStatusCount + followUpStatusCount;
+
+        appointmentStatusCount.put(VACANT, vacantStatusCount);
+        appointmentStatusCount.put(BOOKED, bookedStatusCount);
+        appointmentStatusCount.put(APPROVED, checkedInStatusCount);
+        appointmentStatusCount.put(CANCELLED, cancelledStatusCount);
+        appointmentStatusCount.put(FOLLOW_UP, followUpStatusCount);
+        appointmentStatusCount.put(ALL, allStatusCount);
+
+        return appointmentStatusCount;
+    }
+
 }

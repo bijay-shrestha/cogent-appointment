@@ -48,7 +48,8 @@ public class SwaggerConstants {
 
     public interface AdminFavouriteConstant {
         String BASE_API_VALUE = "This is Admin Favourite Resource";
-
+        String SAVE_ADMIN_FAVOURITE_OPERATION = "Save new Admin Favourite";
+        String UPDATE_OPERATION = "Update Admin Favourite flag of corresponding admin";
     }
 
     public interface AdminFeatureConstant {
@@ -288,6 +289,7 @@ public class SwaggerConstants {
         String DETAILS_OPERATION = "Fetch hospital details by id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal hospital details (id and name) for dropdown";
         String FETCH_ALIAS_BY_ID = "Fetch alias by hospital id";
+        String FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE = "Fetch assigned hospital appointment service type";
     }
 
     public interface HospitalDeptDutyRosterConstant {

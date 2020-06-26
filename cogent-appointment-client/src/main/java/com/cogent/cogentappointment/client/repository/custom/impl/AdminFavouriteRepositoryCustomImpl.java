@@ -3,8 +3,10 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.response.favourite.FavouriteDropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.log.constants.AdminLog;
+import com.cogent.cogentappointment.client.query.AdminFavouriteQuery;
 import com.cogent.cogentappointment.client.repository.custom.AdminFavouriteRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminFavourite;
+import com.cogent.cogentappointment.persistence.model.AdminFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,22 @@ public class AdminFavouriteRepositoryCustomImpl implements AdminFavouriteReposit
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN);
 
         List<FavouriteDropDownResponseDTO> list = transformQueryToResultList(query, FavouriteDropDownResponseDTO.class);
+
+        if (list.isEmpty()) {
+            error();
+            throw NO_ADMIN_FAVOURITE_FOUND.get();
+        } else return list;
+    }
+
+    @Override
+    public List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon() {
+
+        Query query = createQuery.apply(entityManager,
+                AdminFavouriteQuery.QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN_WITH_ICON);
+
+        List<FavouriteDropDownResponseDTO> list =
+                transformQueryToResultList(query,
+                        FavouriteDropDownResponseDTO.class);
 
         if (list.isEmpty()) {
             error();

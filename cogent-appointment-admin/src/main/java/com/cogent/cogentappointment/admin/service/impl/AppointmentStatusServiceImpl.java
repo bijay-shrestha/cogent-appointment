@@ -151,7 +151,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         List<HospitalDeptAppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO);
 
-
         hospitalDeptDutyRosterStatus = setDepartmentAppointmentTimeSlot(requestDTO.getStatus(),
                 hospitalDeptDutyRosterStatus, appointments);
 

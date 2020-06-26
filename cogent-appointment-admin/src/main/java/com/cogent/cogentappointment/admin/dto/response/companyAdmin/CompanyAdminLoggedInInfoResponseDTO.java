@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.dto.response.companyAdmin;
 
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientIntegrationResponseDTO;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.response.favourite.FavouriteDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.query.AdminFavouriteQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AdminFavouriteRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminFavourite;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,21 @@ public class AdminFavouriteRepositoryCustomImpl implements AdminFavouriteReposit
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN);
 
         List<FavouriteDropDownResponseDTO> list = transformQueryToResultList(query, FavouriteDropDownResponseDTO.class);
+
+        if (list.isEmpty()) {
+            error();
+            throw NO_ADMIN_FAVOURITE_FOUND.get();
+        } else return list;
+    }
+
+    @Override
+    public List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon() {
+        Query query = createQuery.apply(entityManager,
+                AdminFavouriteQuery.QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN_WITH_ICON);
+
+        List<FavouriteDropDownResponseDTO> list =
+                transformQueryToResultList(query,
+                        FavouriteDropDownResponseDTO.class);
 
         if (list.isEmpty()) {
             error();

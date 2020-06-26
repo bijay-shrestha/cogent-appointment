@@ -190,6 +190,8 @@ public class WebResourceKeyConstants {
     }
 
     //I
+    public static final String ICON = "/icon";
+
     public interface IntegrationConstants {
         String BASE_INTEGRATION = "/integration";
         String CLIENT_API_INTEGRATION = "/client-api-integration";

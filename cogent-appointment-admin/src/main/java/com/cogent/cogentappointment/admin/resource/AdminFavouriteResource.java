@@ -1,17 +1,21 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
+import com.cogent.cogentappointment.admin.dto.request.favourite.AdminFavouriteSaveRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminFavouriteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminFavouriteConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminFavouriteConstant.SAVE_ADMIN_FAVOURITE_OPERATION;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminFavouriteConstants.BASE_ADMIN_FAVOURITE;
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -26,6 +30,13 @@ public class AdminFavouriteResource {
 
     public AdminFavouriteResource(AdminFavouriteService adminFavouriteService) {
         this.adminFavouriteService = adminFavouriteService;
+    }
+
+    @PostMapping
+    @ApiOperation(SAVE_ADMIN_FAVOURITE_OPERATION)
+    public ResponseEntity<?> save(@RequestBody AdminFavouriteSaveRequestDTO adminFavouriteSaveRequestDTO) {
+        adminFavouriteService.save(adminFavouriteSaveRequestDTO);
+        return created(URI.create(API_V1 + BASE_ADMIN_FAVOURITE)).build();
     }
 
     @GetMapping(ACTIVE + MIN)

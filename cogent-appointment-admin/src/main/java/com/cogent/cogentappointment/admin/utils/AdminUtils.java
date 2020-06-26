@@ -273,5 +273,15 @@ public class AdminUtils {
                 .build();
     }
 
+    public static AdminFavourite parseToSaveFavourtie(Favourite favourite, Admin admin) {
+
+        AdminFavourite adminFavourite = new AdminFavourite();
+        adminFavourite.setFavouriteId(favourite);
+        adminFavourite.setAdminId(admin);
+        adminFavourite.setStatus(ACTIVE);
+
+        return adminFavourite;
+    }
+
 
 }

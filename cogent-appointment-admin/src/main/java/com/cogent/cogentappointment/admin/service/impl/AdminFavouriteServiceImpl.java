@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.favourite.AdminFavouriteSaveRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.favourite.AdminFavouriteUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.favourite.FavouriteDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AdminFavouriteRepository;
@@ -8,6 +9,7 @@ import com.cogent.cogentappointment.admin.repository.AdminRepository;
 import com.cogent.cogentappointment.admin.repository.FavouriteRepository;
 import com.cogent.cogentappointment.admin.service.AdminFavouriteService;
 import com.cogent.cogentappointment.persistence.model.Admin;
+import com.cogent.cogentappointment.persistence.model.AdminFavourite;
 import com.cogent.cogentappointment.persistence.model.Favourite;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -88,6 +90,27 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
                 .orElseThrow(() -> FAVOURITE_WITH_GIVEN_ID_NOT_FOUND.apply(saveRequestDTO.getFavouriteId()));
 
         adminFavouriteRepository.save(parseToSaveFavourtie(favourite, admin));
+
+        log.info(SAVING_ADMIN_FAVOURITE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+    }
+
+    @Override
+    public void update(AdminFavouriteUpdateRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_ADMIN_FAVOURITE_PROCESS_STARTED, ADMIN_FAVOURITE_WITH_ICON);
+
+        Admin admin = adminRepository.findAdminById(requestDTO.getAdminId())
+                .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getAdminId()));
+
+        Favourite favourite = favouriteRepository.findActiveFavouriteById(requestDTO.getFavouriteId())
+                .orElseThrow(() -> FAVOURITE_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getFavouriteId()));
+
+        AdminFavourite adminFavourite=adminFavouriteRepository.findAdminFavourite(admin.getId(),favourite.getId())
+                .orElseThrow(() -> FAVOURITE_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getFavouriteId()));
+        adminFavourite.setStatus(requestDTO.getStatus());
 
         log.info(SAVING_ADMIN_FAVOURITE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 

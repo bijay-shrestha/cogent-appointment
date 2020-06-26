@@ -94,9 +94,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     private final AdminFeatureService adminFeatureService;
 
     private final IntegrationRepository integrationRepository;
+
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
-    private final AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository;
-    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
+
     private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
 
     public CompanyAdminServiceImpl(Validator validator,
@@ -112,8 +112,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    AdminFeatureService adminFeatureService,
                                    IntegrationRepository integrationRepository,
                                    IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
-                                   AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository,
-                                   AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
                                    AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
@@ -129,8 +127,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
-        this.appointmentModeHospitalInfoRepository = appointmentModeHospitalInfoRepository;
-        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
     }
 

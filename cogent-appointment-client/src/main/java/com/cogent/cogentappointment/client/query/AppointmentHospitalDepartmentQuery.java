@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.query;
 
+import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import org.springframework.util.ObjectUtils;
@@ -16,7 +17,6 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDa
  */
 public class AppointmentHospitalDepartmentQuery {
 
-    /*admin*/
     public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS(
             HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
@@ -32,7 +32,7 @@ public class AppointmentHospitalDepartmentQuery {
                 QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE + "," +                                                      //[8]
                 "  a.id as appointmentId, " +                                                                      //[9]
                 "  a.is_follow_up as isFollowUp, " +                                                              //[10]
-                "  a.has_transferred as hasTransferred " +                                                        //[1]
+                "  a.has_transferred as hasTransferred " +                                                        //[11]
                 " FROM appointment_hospital_department_info ahdi " +
                 " LEFT JOIN appointment a ON a.id = ahdi.appointment_id " +
                 " LEFT JOIN hospital_department hd ON hd.id=ahdi.hospital_department_id  " +
@@ -45,7 +45,7 @@ public class AppointmentHospitalDepartmentQuery {
                 " WHERE " +
                 " a.appointment_date BETWEEN :fromDate AND :toDate " +
                 " AND a.status IN ('PA', 'A', 'C') " +
-                " AND h.id =:hospitalId"+
+                " AND h.id =:hospitalId" +
                 " AND ast.code=:appointmentServiceTypeCode";
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
@@ -66,7 +66,6 @@ public class AppointmentHospitalDepartmentQuery {
         return SQL;
     }
 
-    /*admin*/
     public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS_ROOM_WISE(
             HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
@@ -142,7 +141,7 @@ public class AppointmentHospitalDepartmentQuery {
                             " ELSE" +
                             " hpi.address" +
                             " end as address," +                                                         //[15]
-                            QUERY_TO_CALCULATE_PATIENT_AGE+
+                            QUERY_TO_CALCULATE_PATIENT_AGE +
                             " FROM Appointment a" +
                             " INNER JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN HospitalDepartment hd ON hd.id = ad.hospitalDepartment.id" +
@@ -280,4 +279,85 @@ public class AppointmentHospitalDepartmentQuery {
                     " WHERE a.id =:appointmentId" +
                     " AND a.status='PA'" +
                     " AND h.id =:hospitalId";
+
+    public static Function<AppointmentLogSearchDTO, String> QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOGS =
+            (appointmentLogSearchDTO) ->
+                    "SELECT" +
+                            " a.appointmentDate as appointmentDate," +                                           //[0]
+                            " a.appointmentNumber as appointmentNumber," +                                       //[1]
+                            " DATE_FORMAT(a.appointmentTime , '%h:%i %p') as appointmentTime," +                 //[2]
+                            " p.eSewaId as esewaId," +                                                           //[3]
+                            " CASE WHEN hpi.registrationNumber IS NULL " +
+                            " THEN 'N/A'" +
+                            " ELSE hpi.registrationNumber" +
+                            " END AS registrationNumber," +                                                      //[4]
+                            " p.name as patientName," +                                                          //[5]
+                            " p.gender as patientGender," +                                                      //[6]
+                            " hpi.isRegistered as isRegistered," +                                              //[7]
+                            " p.mobileNumber as mobileNumber," +                                                //[8]
+                            " atd.transactionNumber as transactionNumber," +                                    //[9]
+                            " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                        //[10]
+                            " a.status as status, " +                                                           //[11]
+                            " COALESCE(ard.refundAmount,0) as refundAmount," +                                  //[12]
+                            " hpi.address as patientAddress," +                                                 //[13]
+                            " atd.transactionDate as transactionDate," +                                        //[14]
+                            " a.appointmentModeId.name as appointmentMode," +                                   //[15]
+                            " a.isFollowUp as isFollowUp," +                                                    //[16]
+                            " atd.appointmentAmount - COALESCE(ard.refundAmount ,0) as revenueAmount," +        //[17]
+                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                              //[18]
+                            " hd.name as hospitalDepartmentName," +                                             //[19]
+                            " hb.billingMode.name as billingModeName," +                                        //[20]
+                            " case when hr.id is null then null" +
+                            " when hr.id is not null then r.roomNumber" +
+                            " end as roomNumber" +                                                             //[21]
+                            " FROM Appointment a" +
+                            " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
+                            " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                            " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                            " LEFT JOIN HospitalBillingModeInfo hb ON hb.id = ahd.hospitalDepartmentBillingModeInfo.id" +
+                            " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ahd.hospitalDepartmentRoomInfo.id" +
+                            " LEFT JOIN Room r ON r.id = hr.room.id" +
+                            " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                            " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                            " LEFT JOIN AppointmentRefundDetail ard ON a.id = ard.appointmentId" +
+                            " WHERE" +
+                            " has.appointmentServiceType.code = :appointmentServiceTypeCode"
+                            + GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
+
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOG_DETAILS(
+            AppointmentLogSearchDTO appointmentLogSearchDTO) {
+
+        String whereClause = " AND hd.status!='D'" +
+                " AND h.id =:hospitalId";
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getFromDate())
+                && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getToDate()))
+            whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(appointmentLogSearchDTO.getFromDate())
+                    + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getToDate()) + "')";
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
+            whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getPatientMetaInfoId()))
+            whereClause += " AND pmi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getPatientType()))
+            whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentCategory()))
+            whereClause += " AND a.isSelf = '" + appointmentLogSearchDTO.getAppointmentCategory() + "'";
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getHospitalDepartmentId()))
+            whereClause += " AND hd.id = " + appointmentLogSearchDTO.getHospitalDepartmentId();
+
+        whereClause += " ORDER BY a.appointmentDate DESC ";
+
+        return whereClause;
+    }
 }

@@ -37,8 +37,8 @@ public class AppointmentServiceTypeResource {
 
     @GetMapping(NAME + CODE)
     @ApiOperation(FETCH_NAME_AND_CODE_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchSerivceTypeNameAndCodeList() {
-        return ok(appointmentServiceTypeService.fetchSerivceTypeNameAndCodeList());
+    public ResponseEntity<?> fetchServiceTypeNameAndCodeList() {
+        return ok(appointmentServiceTypeService.fetchServiceTypeNameAndCodeList());
     }
 
 }

@@ -217,19 +217,7 @@ public class AppointmentQuery {
                             " a.appointmentNumber as appointmentNumber," +                                          //[5]
                             " hpi.registrationNumber as registrationNumber," +                                     //[6]
                             " p.name as patientName," +                                                            //[7]
-                            " CASE" +
-                            " WHEN" +
-                            " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
-                            " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
-                            " THEN" +
-                            " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
-                            " WHEN" +
-                            " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
-                            " THEN" +
-                            " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
-                            " ELSE" +
-                            " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
-                            " END AS patientAge," +                                                       //[8]
+                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                        //[8]
                             " p.gender as patientGender," +                                               //[9]
                             " p.mobileNumber as mobileNumber," +                                         //[10]
                             " sp.name as specializationName," +                                         //[11]
@@ -267,7 +255,7 @@ public class AppointmentQuery {
                 " AND sp.status!='D'" +
                 " AND d.status!='D'" +
                 " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate" +
-                " AND h.id =:hospitalId"+
+                " AND h.id =:hospitalId" +
                 " AND has.appointmentServiceType.code = :appointmentServiceTypeCode";
 
         if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))

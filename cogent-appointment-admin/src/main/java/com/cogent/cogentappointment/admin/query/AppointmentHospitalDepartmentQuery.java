@@ -381,19 +381,7 @@ public class AppointmentHospitalDepartmentQuery {
                             " a.appointmentNumber as appointmentNumber," +                                          //[5]
                             " hpi.registrationNumber as registrationNumber," +                                     //[6]
                             " p.name as patientName," +                                                            //[7]
-                            " CASE" +
-                            " WHEN" +
-                            " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
-                            " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
-                            " THEN" +
-                            " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
-                            " WHEN" +
-                            " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
-                            " THEN" +
-                            " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
-                            " ELSE" +
-                            " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
-                            " END AS patientAge," +                                                       //[8]
+                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                      //[8]
                             " p.gender as patientGender," +                                               //[9]
                             " p.mobileNumber as mobileNumber," +                                         //[10]
                             " atd.transactionNumber as transactionNumber," +                            //[11]
@@ -405,7 +393,7 @@ public class AppointmentHospitalDepartmentQuery {
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
                             " end as roomNumber," +                                                      //[17]
-                            " h.name as hospitalName"+                                                  //[18]
+                            " h.name as hospitalName" +                                                  //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +

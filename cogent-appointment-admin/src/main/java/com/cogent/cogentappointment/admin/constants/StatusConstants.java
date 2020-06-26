@@ -20,5 +20,6 @@ public class StatusConstants {
         String REFUNDED = "RE";
         String VACANT = "V";
         String ALL = "";
+        String FOLLOW_UP = "F";
     }
 }

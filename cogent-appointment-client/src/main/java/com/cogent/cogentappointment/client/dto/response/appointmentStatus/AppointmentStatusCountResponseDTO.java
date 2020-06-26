@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.dto.response.appointmentStatus;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * @author smriti on 24/06/20
@@ -14,13 +15,16 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppointmentStatusCountResponseDTO implements Serializable {
 
-    private Integer vacantCount;
+    /*eg <V, 10> -> status, count*/
+    private HashMap<String, Integer> vacantCount;
 
-    private Integer bookedCount;
+    private HashMap<String, Integer> bookedCount;
 
-    private Integer checkedInCount;
+    private HashMap<String, Integer> checkedInCount;
 
-    private Integer cancelledCount;
+    private HashMap<String, Integer> cancelledCount;
 
-    private Integer followUpCount;
+    private HashMap<String, Integer> followUpCount;
+
+    private HashMap<String, Integer> allCount;
 }

@@ -491,17 +491,40 @@ public class AppointmentStatusUtils {
                 cancelledCount, followUpCount);
     }
 
-    private static AppointmentStatusCountResponseDTO parseAppointmentStatusCountValues(Integer vacantCount,
-                                                                                       Integer bookedCount,
-                                                                                       Integer checkedInCount,
-                                                                                       Integer cancelledCount,
-                                                                                       Integer followUpCount) {
+    private static AppointmentStatusCountResponseDTO parseAppointmentStatusCountValues(Integer vacantStatusCount,
+                                                                                       Integer bookedStatusCount,
+                                                                                       Integer checkedInStatusCount,
+                                                                                       Integer cancelledStatusCount,
+                                                                                       Integer followUpStatusCount) {
+
+        Integer allStatusCount = vacantStatusCount + bookedStatusCount + checkedInStatusCount
+                + cancelledStatusCount + followUpStatusCount;
+
+        HashMap<String, Integer> vacantCount = new HashMap<>();
+        vacantCount.put(VACANT, vacantStatusCount);
+
+        HashMap<String, Integer> bookedCount = new HashMap<>();
+        bookedCount.put(BOOKED, bookedStatusCount);
+
+        HashMap<String, Integer> checkedInCount = new HashMap<>();
+        checkedInCount.put(APPROVED, checkedInStatusCount);
+
+        HashMap<String, Integer> cancelledCount = new HashMap<>();
+        cancelledCount.put(CANCELLED, cancelledStatusCount);
+
+        HashMap<String, Integer> followUpCount = new HashMap<>();
+        followUpCount.put(FOLLOW_UP, followUpStatusCount);
+
+        HashMap<String, Integer> allCount = new HashMap<>();
+        allCount.put(ALL, allStatusCount);
+
         return AppointmentStatusCountResponseDTO.builder()
                 .vacantCount(vacantCount)
                 .bookedCount(bookedCount)
                 .checkedInCount(checkedInCount)
                 .cancelledCount(cancelledCount)
                 .followUpCount(followUpCount)
+                .allCount(allCount)
                 .build();
     }
 

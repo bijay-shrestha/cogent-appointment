@@ -88,7 +88,7 @@ public class CompanyAdminResource {
         return ok().build();
     }
 
-    @PutMapping
+    @PutMapping(AVATAR)
     @ApiOperation(UPDATE_AVATAR_OPERATION)
     public ResponseEntity<?> updateAvatar(@Valid @RequestBody AdminAvatarUpdateRequestDTO requestDTO) {
         companyAdminService.updateAvatar(requestDTO);

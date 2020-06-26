@@ -79,7 +79,7 @@ public class AdminResource {
         return ok().build();
     }
 
-    @PutMapping
+    @PutMapping(AVATAR)
     @ApiOperation(UPDATE_AVATAR_OPERATION)
     public ResponseEntity<?> updateAvatar(@Valid @RequestBody AdminAvatarUpdateRequestDTO updateRequestDTO) {
         adminService.updateAvatar(updateRequestDTO);

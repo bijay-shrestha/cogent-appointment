@@ -40,6 +40,8 @@ public class SwaggerConstants {
 
     public interface AdminFavouriteConstant {
         String BASE_API_VALUE = "This is Admin Favourite Resource";
+        String SAVE_ADMIN_FAVOURITE_OPERATION = "Save new Admin Favourite";
+        String UPDATE_OPERATION = "Update Admin Favourite flag of corresponding admin";
 
     }
 

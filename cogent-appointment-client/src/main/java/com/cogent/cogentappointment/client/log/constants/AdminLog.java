@@ -19,6 +19,16 @@ public class AdminLog {
     public static final String FORGOT_PASSWORD_PROCESS_STARTED = ":::: FORGOT PASSWORD PROCESS STARTED ::::";
     public static final String FORGOT_PASSWORD_PROCESS_COMPLETED = ":::: FORGOT PASSWORD PROCESS COMPLETED IN :::: {} ms";
 
+    public static final String FAVOURITE ="FAVOURITE" ;
+
+    public static final String FETCHING_ADMIN_FAVOURITE_PROCESS_STARTED = ":::: FETCHING ADMIN FAVOURITE PROCESS STARTED ::::";
+    public static final String FETCHING_ADMIN_FAVOURITE_PROCESS_COMPLETED = ":::: FETCHING ADMIN FAVOURITE PROCESS COMPLETED IN :::: {} ms";
+
+    public static final String SAVING_ADMIN_FAVOURITE_PROCESS_STARTED = ":::: SAVING ADMIN FAVOURITE PROCESS STARTED ::::";
+    public static final String SAVING_ADMIN_FAVOURITE_PROCESS_COMPLETED = ":::: SAVING ADMIN FAVOURITE PROCESS COMPLETED IN :::: {} ms";
+
+
+
     public static final String SAVING_PASSWORD_PROCESS_STARTED = ":::: SAVING PASSWORD PROCESS STARTED ::::";
     public static final String SAVING_PASSWORD_PROCESS_COMPLETED = ":::: SAVING PASSWORD PROCESS COMPLETED IN :::: {} ms";
 
@@ -41,5 +51,4 @@ public class AdminLog {
     public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH EMAIL : {} NOT FOUND ::::";
 
     public final static String CONFORMATION_TOKEN_NOT_FOUND=":::: CONFORMATION TOKEN : {} NOT FOUND  ::::";
-
 }

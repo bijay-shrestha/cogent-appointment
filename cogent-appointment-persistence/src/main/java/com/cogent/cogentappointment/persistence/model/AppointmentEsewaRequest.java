@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.persistence.model;
 
-import com.cogent.cogentappointment.persistence.listener.AppointmentEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

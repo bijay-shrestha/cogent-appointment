@@ -36,4 +36,11 @@ public class AppointmentLogSearchDTO implements Serializable {
     private Character appointmentCategory;
 
     private String status;
+
+    /*DOC = DOCTOR CONSULTATION
+    * DEP = DEPARTMENT CONSULTATION*/
+    private String appointmentServiceTypeCode;
+
+    private Long hospitalDepartmentId;
+
 }

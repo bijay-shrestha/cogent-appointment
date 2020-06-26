@@ -66,4 +66,16 @@ public class HospitalQuery {
                     " WHERE h.id =:hospitalId" +
                     " AND h.status = 'Y' AND h.isCompany = 'N'";
 
+    public static String QUERY_TO_FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE =
+            " SELECT " +
+                    " ast.name as name," +                          //[0]
+                    " ast.code as code," +                          //[1]
+                    " has.isPrimary as isPrimary"+                  //[2]
+                    " FROM Hospital h " +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON h.id = has.hospital.id" +
+                    " LEFT JOIN AppointmentServiceType ast ON ast.id = has.appointmentServiceType.id" +
+                    " WHERE" +
+                    " has.status = 'Y'" +
+                    " AND h.id =:hospitalId";
+
 }

@@ -34,4 +34,8 @@ public class AppointmentRescheduleLogSearchDTO implements Serializable{
     private Long specializationId;
 
     private Character patientType;
+
+    private String appointmentServiceTypeCode;
+
+    private Long hospitalDepartmentId;
 }

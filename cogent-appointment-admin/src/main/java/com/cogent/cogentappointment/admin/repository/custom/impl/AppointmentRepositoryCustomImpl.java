@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentAppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
@@ -14,7 +12,6 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequest
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
@@ -28,8 +25,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
@@ -37,13 +33,12 @@ import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogDTO;
-import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.AppointmentQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
+import com.cogent.cogentappointment.commons.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentDoctorInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +60,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentTransferMessage.APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_SERVICE_TYPE_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
@@ -72,35 +68,28 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.query.AppointmentDoctorInfoQuery.QUERY_TO_FETCH_APPOINTMENT_DETAIL_FOR_DOCTOR_WISE_CHECK_IN;
 import static com.cogent.cogentappointment.admin.query.AppointmentDoctorInfoQuery.QUERY_TO_GET_CURRENT_APPOINTMENT_DOCTOR_INFO;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.*;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentLogQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
 import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentQuery.*;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentTransactionLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentTransactionLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentTransactionLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentTransactionLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentTransactionLogQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentTransactionLogQuery.*;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentTransactionLogQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentTransactionLogQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
 import static com.cogent.cogentappointment.admin.query.AppointmentQuery.*;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.*;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP;
-import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT;
 import static com.cogent.cogentappointment.admin.utils.AppointmentLogUtils.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.*;
-import static com.cogent.cogentappointment.admin.utils.TransactionLogUtils.parseQueryResultToTransactionLogResponse;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -354,7 +343,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         try {
-            HospitalDeptAppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query, HospitalDeptAppointmentDetailsForStatus.class);
+            HospitalDeptAppointmentDetailsForStatus responseDTO = transformQueryToSingleResult(query,
+                    HospitalDeptAppointmentDetailsForStatus.class);
             return responseDTO;
         } catch (NoResultException e) {
             throw APPOINTMENT_NOT_FOUND.get();
@@ -435,165 +425,135 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
-                                                           Pageable pageable) {
+    public AppointmentLogResponseDTO searchDoctorAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
+                                                                 Pageable pageable,
+                                                                 String appointmentServiceTypeCode) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_LOGS.apply(searchRequestDTO));
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_APPOINTMENT_LOGS.apply(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<Object[]> objects = query.getResultList();
+        List<AppointmentLogDTO> appointmentLogs = transformQueryToResultList(query, AppointmentLogDTO.class);
 
-        AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
-
-        if (results.getAppointmentLogs().isEmpty())
+        if (appointmentLogs.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
         else {
-            results.setTotalItems(totalItems);
-            calculateAppointmentStatisticsForAppointmentLog(searchRequestDTO, results);
-            return results;
+            AppointmentLogResponseDTO responseDTO = new AppointmentLogResponseDTO();
+            responseDTO.setAppointmentLogs(appointmentLogs);
+            responseDTO.setTotalItems(totalItems);
+            calculateAppointmentStatisticsForAppointmentLog(searchRequestDTO, responseDTO, appointmentServiceTypeCode);
+            return responseDTO;
         }
     }
 
     @Override
-    public HospitalDepartmentAppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(
-            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
-            Pageable pageable) {
+    public AppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(
+            AppointmentLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            String appointmentServiceTypeCode) {
 
-        HospitalDepartmentAppointmentLogResponseDTO results = new HospitalDepartmentAppointmentLogResponseDTO();
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOGS
-                .apply(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_LOGS.apply(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<HospitalDepartmentAppointmentLogDTO> appointmentLogs = transformQueryToResultList
-                (query, HospitalDepartmentAppointmentLogDTO.class);
-        if (appointmentLogs.isEmpty()) {
-            throw APPOINTMENT_NOT_FOUND.get();
-        } else {
-            results.setTotalItems(totalItems);
-            results.setAppointmentLogs(appointmentLogs);
-            calculateAppointmentStatisticsForHospitalDepartmentAppointmentLog(searchRequestDTO, results);
-            return results;
-        }
+        List<AppointmentLogDTO> appointmentLogs = transformQueryToResultList(query, AppointmentLogDTO.class);
 
-    }
-
-    @Override
-    public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO,
-                                                           Pageable pageable) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TRANSACTION_LOGS.apply(searchRequestDTO));
-
-        int totalItems = query.getResultList().size();
-
-        addPagination.accept(pageable, query);
-
-        List<Object[]> objects = query.getResultList();
-
-        TransactionLogResponseDTO results = parseQueryResultToTransactionLogResponse(objects);
-
-        if (results.getTransactionLogs().isEmpty())
+        if (appointmentLogs.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
         else {
-            results.setTotalItems(totalItems);
-            calculateAppointmentStatisticsForTransactionLog(searchRequestDTO, results);
-            return results;
+            AppointmentLogResponseDTO responseDTO = new AppointmentLogResponseDTO();
+            responseDTO.setAppointmentLogs(appointmentLogs);
+            responseDTO.setTotalItems(totalItems);
+            calculateHospitalDepartmentAppointmentStatistics(
+                    searchRequestDTO, responseDTO, appointmentServiceTypeCode);
+            return responseDTO;
         }
     }
 
     @Override
-    public HospitalDepartmentTransactionLogResponseDTO searchHospitalDepartmentTransactionLogs(
-            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO, Pageable pageable) {
+    public TransactionLogResponseDTO searchDoctorAppointmentTransactionLogs(TransactionLogSearchDTO searchRequestDTO,
+                                                                            Pageable pageable,
+                                                                            String appointmentServiceTypeCode) {
 
-        HospitalDepartmentTransactionLogResponseDTO results = new HospitalDepartmentTransactionLogResponseDTO();
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TRANSACTION_LOGS.apply(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<TransactionLogDTO> transactionLogs = transformQueryToResultList(query, TransactionLogDTO.class);
+
+        if (transactionLogs.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+            TransactionLogResponseDTO responseDTO = new TransactionLogResponseDTO();
+            responseDTO.setTransactionLogs(transactionLogs);
+            responseDTO.setTotalItems(totalItems);
+            calculateDoctorAppointmentStatisticsForTransactionLog(
+                    searchRequestDTO, responseDTO, appointmentServiceTypeCode);
+            return responseDTO;
+        }
+    }
+
+    @Override
+    public TransactionLogResponseDTO searchHospitalDepartmentTransactionLogs(
+            TransactionLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            String appointmentServiceTypeCode) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_TRANSACTION_LOGS
                 .apply(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, searchRequestDTO.getAppointmentServiceTypeCode());
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<HospitalDepartmentTransactionLogDTO> appointmentLogs = transformQueryToResultList
-                (query, HospitalDepartmentTransactionLogDTO.class);
-        if (appointmentLogs.isEmpty()) {
-            throw APPOINTMENT_NOT_FOUND.get();
-        } else {
-            results.setTotalItems(totalItems);
-            results.setTransactionLogs(appointmentLogs);
-            calculateAppointmentStatisticsForHospitalDepartmentTransactionLog(searchRequestDTO, results);
-            return results;
-        }
+        List<TransactionLogDTO> transactionLogs = transformQueryToResultList(query, TransactionLogDTO.class);
 
+        if (transactionLogs.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+            TransactionLogResponseDTO responseDTO = new TransactionLogResponseDTO();
+            responseDTO.setTotalItems(totalItems);
+            responseDTO.setTransactionLogs(transactionLogs);
+            calculateHospitalDepartmentAppointmentStatisticsForTransactionLog(
+                    searchRequestDTO, responseDTO, appointmentServiceTypeCode);
+            return responseDTO;
+        }
     }
 
     @Override
     public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
                                                                           Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()));
+        String appointmentServiceTypeCode = rescheduleDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
-        int totalItems = query.getResultList().size();
+        switch (appointmentServiceTypeCode) {
 
-        addPagination.accept(pageable, query);
+            case DOCTOR_CONSULTATION_CODE:
+                return fetchRescheduleDoctorAppointment(rescheduleDTO, pageable, appointmentServiceTypeCode);
 
-        List<AppointmentRescheduleLogDTO> rescheduleAppointments =
-                transformQueryToResultList(query, AppointmentRescheduleLogDTO.class);
+            case DEPARTMENT_CONSULTATION_CODE:
+                return fetchRescheduleHospitalDepartmentAppointment(rescheduleDTO, pageable,
+                        appointmentServiceTypeCode);
 
-        if (rescheduleAppointments.isEmpty())
-            throw APPOINTMENT_NOT_FOUND.get();
-
-        else {
-            Double totalRescheduleAmount = calculateTotalRescheduleAmount(rescheduleDTO);
-
-            return AppointmentRescheduleLogResponseDTO.builder()
-                    .appointmentRescheduleLogDTOS(rescheduleAppointments)
-                    .totalItems(totalItems)
-                    .totalAmount(totalRescheduleAmount)
-                    .build();
-        }
-    }
-
-    @Override
-    public HospitalDepartmentAppointmentRescheduleLogResponseDTO searchHospitalDepartmentRescheduleLogs(
-            HospitalDepartmentAppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_APPOINTMENT_LOGS
-                .apply(rescheduleDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, rescheduleDTO.getServiceTypeId());
-
-        int totalItems = query.getResultList().size();
-
-        addPagination.accept(pageable, query);
-
-        List<HospitalDepartmentAppointmentRescheduleLogDTO> rescheduleAppointments =
-                transformQueryToResultList(query, HospitalDepartmentAppointmentRescheduleLogDTO.class);
-
-        if (rescheduleAppointments.isEmpty())
-            throw APPOINTMENT_NOT_FOUND.get();
-
-        else {
-            Double totalRescheduleAmount = calculateTotalHospitalDepartmentApptRescheduleAmount(rescheduleDTO);
-
-            return HospitalDepartmentAppointmentRescheduleLogResponseDTO.builder()
-                    .appointmentRescheduleLogDTOS(rescheduleAppointments)
-                    .totalItems(totalItems)
-                    .totalAmount(totalRescheduleAmount)
-                    .build();
+            default:
+                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE,
+                        appointmentServiceTypeCode));
         }
     }
 
@@ -716,18 +676,23 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private void calculateAppointmentStatisticsForAppointmentLog(AppointmentLogSearchDTO searchRequestDTO,
-                                                                 AppointmentLogResponseDTO appointmentLogResponse) {
+                                                                 AppointmentLogResponseDTO appointmentLogResponse,
+                                                                 String appointmentServiceTypeCode) {
 
-        BookedAppointmentResponseDTO bookedInfo = getBookedAppointmentDetails(searchRequestDTO);
+        BookedAppointmentResponseDTO bookedInfo = getBookedAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInAppointmentDetails(searchRequestDTO);
+        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        CancelledAppointmentResponseDTO cancelledInfo = getCancelledAppointmentDetails(searchRequestDTO);
+        CancelledAppointmentResponseDTO cancelledInfo = getCancelledAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        RefundAppointmentResponseDTO refundInfo = getRefundedAppointmentDetails(searchRequestDTO);
+        RefundAppointmentResponseDTO refundInfo = getRefundedAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
         RevenueFromRefundAppointmentResponseDTO revenueFromRefund =
-                getRevenueFromRefundedAppointmentDetails(searchRequestDTO);
+                getRevenueFromRefundedAppointmentDetails(searchRequestDTO, appointmentServiceTypeCode);
 
         parseToAppointmentLogResponseDTO(
                 appointmentLogResponse,
@@ -738,25 +703,30 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 revenueFromRefund
         );
 
-        calculateTotalAppointmentAmount(searchRequestDTO, appointmentLogResponse);
+        calculateTotalAppointmentAmount(searchRequestDTO, appointmentLogResponse, appointmentServiceTypeCode);
     }
 
-    private void calculateAppointmentStatisticsForHospitalDepartmentAppointmentLog(
-            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
-            HospitalDepartmentAppointmentLogResponseDTO appointmentLogResponse) {
+    private void calculateHospitalDepartmentAppointmentStatistics(
+            AppointmentLogSearchDTO searchRequestDTO,
+            AppointmentLogResponseDTO appointmentLogResponse,
+            String appointmentServiceTypeCode) {
 
-        BookedAppointmentResponseDTO bookedInfo = getBookedHospitalDepartmentAppointmentDetails(searchRequestDTO);
+        BookedAppointmentResponseDTO bookedInfo =
+                getBookedHospitalDepartmentAppointmentDetails(searchRequestDTO, appointmentServiceTypeCode);
 
-        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInHospitalDepartmentAppointmentDetails(searchRequestDTO);
+        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInHospitalDepartmentAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        CancelledAppointmentResponseDTO cancelledInfo = getCancelledHospitalDepartmentAppointmentDetails(searchRequestDTO);
+        CancelledAppointmentResponseDTO cancelledInfo = getCancelledHospitalDepartmentAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        RefundAppointmentResponseDTO refundInfo = getRefundedHospitalDepartmentAppointmentDetails(searchRequestDTO);
+        RefundAppointmentResponseDTO refundInfo = getRefundedHospitalDepartmentAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
         RevenueFromRefundAppointmentResponseDTO revenueFromRefund =
-                getRevenueFromRefundedHospitalDepartmentAppointmentDetails(searchRequestDTO);
+                getRevenueFromRefundedHospitalDepartmentAppointmentDetails(searchRequestDTO, appointmentServiceTypeCode);
 
-        parseToHospitalDepartmentAppointmentLogResponseDTO(
+        parseToAppointmentLogResponseDTO(
                 appointmentLogResponse,
                 bookedInfo,
                 checkedInInfo,
@@ -765,22 +735,28 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 revenueFromRefund
         );
 
-        calculateTotalHospitalDepartmentAppointmentAmount(searchRequestDTO, appointmentLogResponse);
+        calculateTotalHospitalDepartmentAppointmentAmount(
+                searchRequestDTO, appointmentLogResponse, appointmentServiceTypeCode);
     }
 
-    private void calculateAppointmentStatisticsForTransactionLog(TransactionLogSearchDTO searchRequestDTO,
-                                                                 TransactionLogResponseDTO txnLogResponse) {
+    private void calculateDoctorAppointmentStatisticsForTransactionLog(TransactionLogSearchDTO searchRequestDTO,
+                                                                       TransactionLogResponseDTO txnLogResponse,
+                                                                       String appointmentServiceTypeCode) {
 
-        BookedAppointmentResponseDTO bookedInfo = getBookedAppointmentDetails(searchRequestDTO);
+        BookedAppointmentResponseDTO bookedInfo = getBookedAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInAppointmentDetails(searchRequestDTO);
+        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        CancelledAppointmentResponseDTO cancelledInfo = getCancelledAppointmentDetails(searchRequestDTO);
+        CancelledAppointmentResponseDTO cancelledInfo = getCancelledAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        RefundAppointmentResponseDTO refundInfo = getRefundedAppointmentDetails(searchRequestDTO);
+        RefundAppointmentResponseDTO refundInfo = getRefundedAppointmentDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
         RevenueFromRefundAppointmentResponseDTO revenueFromRefund =
-                getRevenueFromRefundedAppointmentDetails(searchRequestDTO);
+                getRevenueFromRefundedAppointmentDetails(searchRequestDTO, appointmentServiceTypeCode);
 
         parseToTxnLogResponseDTO(
                 txnLogResponse,
@@ -791,26 +767,30 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 revenueFromRefund
         );
 
-        calculateTotalAppointmentAmount(searchRequestDTO, txnLogResponse);
+        calculateTotalAppointmentAmount(searchRequestDTO, txnLogResponse, appointmentServiceTypeCode);
     }
 
-    private void calculateAppointmentStatisticsForHospitalDepartmentTransactionLog(
-            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO,
-            HospitalDepartmentTransactionLogResponseDTO txnLogResponse) {
+    private void calculateHospitalDepartmentAppointmentStatisticsForTransactionLog(
+            TransactionLogSearchDTO searchRequestDTO,
+            TransactionLogResponseDTO txnLogResponse,
+            String appointmentServiceTypeCode) {
 
+        BookedAppointmentResponseDTO bookedInfo = getBookedAppointmentTxnDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        BookedAppointmentResponseDTO bookedInfo = getBookedAppointmentTxnDetails(searchRequestDTO);
+        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInHospitalDepartmentAppointmentTxnDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        CheckedInAppointmentResponseDTO checkedInInfo = getCheckedInHospitalDepartmentAppointmentTxnDetails(searchRequestDTO);
+        CancelledAppointmentResponseDTO cancelledInfo = getCancelledAppointmentTxnDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
-        CancelledAppointmentResponseDTO cancelledInfo = getCancelledAppointmentTxnDetails(searchRequestDTO);
-
-        RefundAppointmentResponseDTO refundInfo = getRefundedAppointmentTxnDetails(searchRequestDTO);
+        RefundAppointmentResponseDTO refundInfo = getRefundedAppointmentTxnDetails(
+                searchRequestDTO, appointmentServiceTypeCode);
 
         RevenueFromRefundAppointmentResponseDTO revenueFromRefund =
-                getRevenueFromRefundedAppointmentTxnDetails(searchRequestDTO);
+                getRevenueFromRefundedAppointmentTxnDetails(searchRequestDTO, appointmentServiceTypeCode);
 
-        parseToHospitalDeptTxnLogResponseDTO(
+        parseToTxnLogResponseDTO(
                 txnLogResponse,
                 bookedInfo,
                 checkedInInfo,
@@ -819,81 +799,96 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 revenueFromRefund
         );
 
-        calculateTotalAppointmentTxnAmount(searchRequestDTO, txnLogResponse);
+        calculateTotalAppointmentTxnAmount(searchRequestDTO, txnLogResponse, appointmentServiceTypeCode);
     }
 
     private void calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,
-                                                 AppointmentLogResponseDTO responseDTO) {
+                                                 AppointmentLogResponseDTO responseDTO,
+                                                 String appointmentServiceTypeCode) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         Double totalAppointmentAmount = (Double) query.getSingleResult();
 
         responseDTO.setTotalAmount(totalAppointmentAmount);
     }
 
-    private BookedAppointmentResponseDTO getBookedAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
+    private BookedAppointmentResponseDTO getBookedAppointmentDetails(TransactionLogSearchDTO searchRequestDTO,
+                                                                     String appointmentServiceTypeCode) {
 
         /*BOOKED INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_BOOKED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedResult = query.getResultList();
 
         /*BOOKED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_BOOKED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_BOOKED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedWithFollowUpResult = query1.getResultList();
 
         return parseBookedAppointmentDetails(bookedResult.get(0), bookedWithFollowUpResult.get(0));
     }
 
-    private CheckedInAppointmentResponseDTO getCheckedInAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
+    private CheckedInAppointmentResponseDTO getCheckedInAppointmentDetails(
+            TransactionLogSearchDTO searchRequestDTO,
+            String appointmentServiceTypeCode) {
 
         /*CHECK IN INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> checkInResult = query.getResultList();
 
         /*CHECK IN INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> checkInWithFollowUpResult = query1.getResultList();
 
         return parseCheckedInAppointmentDetails(checkInResult.get(0), checkInWithFollowUpResult.get(0));
     }
 
-
-    private CancelledAppointmentResponseDTO getCancelledAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
+    private CancelledAppointmentResponseDTO getCancelledAppointmentDetails(TransactionLogSearchDTO searchRequestDTO,
+                                                                           String appointmentServiceTypeCode) {
 
         /*CANCELLED INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_CANCELLED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_CANCELLED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> cancelledResult = query.getResultList();
 
         /*CANCELLED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> cancelledWithFollowUpResult = query1.getResultList();
 
         return parseCancelledAppointmentDetails(cancelledResult.get(0), cancelledWithFollowUpResult.get(0));
     }
 
-    private RefundAppointmentResponseDTO getRefundedAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
+    private RefundAppointmentResponseDTO getRefundedAppointmentDetails(TransactionLogSearchDTO searchRequestDTO,
+                                                                       String appointmentServiceTypeCode) {
 
         /*REFUND INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_REFUNDED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_REFUNDED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundResult = query.getResultList();
 
         /*REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundWithFollowUpResult = query1.getResultList();
 
@@ -901,17 +896,21 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private RevenueFromRefundAppointmentResponseDTO getRevenueFromRefundedAppointmentDetails
-            (TransactionLogSearchDTO searchRequestDTO) {
+            (TransactionLogSearchDTO searchRequestDTO,
+             String appointmentServiceTypeCode) {
 
         /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+        ;
 
         List<Object[]> refundResult = query.getResultList();
 
         /*REVENUE FROM REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundWithFollowUpResult = query1.getResultList();
 
@@ -919,10 +918,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private void calculateTotalAppointmentAmount(TransactionLogSearchDTO searchRequestDTO,
-                                                 TransactionLogResponseDTO responseDTO) {
+                                                 TransactionLogResponseDTO responseDTO,
+                                                 String appointmentServiceTypeCode) {
 
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(searchRequestDTO));
+                QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         Double totalAppointmentAmount = (Double) query.getSingleResult();
 
@@ -940,64 +941,76 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         throw new NoContentFoundException(Appointment.class);
     };
 
-    private BookedAppointmentResponseDTO getBookedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO) {
+    private BookedAppointmentResponseDTO getBookedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                                     String appointmentServiceTypeCode) {
 
         /*BOOKED INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedResult = query.getResultList();
 
         /*BOOKED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_BOOKED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
+                QUERY_TO_FETCH_BOOKED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedWithFollowUpResult = query1.getResultList();
 
         return parseBookedAppointmentDetails(bookedResult.get(0), bookedWithFollowUpResult.get(0));
     }
 
-    private CheckedInAppointmentResponseDTO getCheckedInAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO) {
+    private CheckedInAppointmentResponseDTO getCheckedInAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                                           String appointmentServiceTypeCode) {
 
         /*CHECK IN INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> checkInResult = query.getResultList();
 
         /*CHECK IN INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
+                QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> checkInWithFollowUpResult = query1.getResultList();
 
         return parseCheckedInAppointmentDetails(checkInResult.get(0), checkInWithFollowUpResult.get(0));
     }
 
-    private CancelledAppointmentResponseDTO getCancelledAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO) {
+    private CancelledAppointmentResponseDTO getCancelledAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                                           String appointmentServiceTypeCode) {
 
         /*CANCELLED INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> cancelledResult = query.getResultList();
 
         /*CANCELLED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
+                QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> cancelledWithFollowUpResult = query1.getResultList();
 
         return parseCancelledAppointmentDetails(cancelledResult.get(0), cancelledWithFollowUpResult.get(0));
     }
 
-    private RefundAppointmentResponseDTO getRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO) {
+    private RefundAppointmentResponseDTO getRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                                       String appointmentServiceTypeCode) {
 
         /*REFUND INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundResult = query.getResultList();
 
         /*REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
+                QUERY_TO_FETCH_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundWithFollowUpResult = query1.getResultList();
 
@@ -1005,55 +1018,40 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private RevenueFromRefundAppointmentResponseDTO getRevenueFromRefundedAppointmentDetails
-            (AppointmentLogSearchDTO searchRequestDTO) {
+            (AppointmentLogSearchDTO searchRequestDTO,
+             String appointmentServiceTypeCode) {
 
         /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundResult = query.getResultList();
 
         /*REVENUE FROM REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO));
+                QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundWithFollowUpResult = query1.getResultList();
 
         return parseRevenueFromRefundAppointmentDetails(refundResult.get(0), refundWithFollowUpResult.get(0));
     }
 
-    private Double calculateTotalRescheduleAmount(AppointmentRescheduleLogSearchDTO searchDTO) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_TOTAL_RESCHEDULE_AMOUNT(searchDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
-
-        return (Double) query.getSingleResult();
-    }
-
-    private Double calculateTotalHospitalDepartmentApptRescheduleAmount(
-            HospitalDepartmentAppointmentRescheduleLogSearchDTO searchDTO) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_TOTAL_HOSPITAL_DEPARTMENT_APPT_RESCHEDULE_AMOUNT(searchDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchDTO.getServiceTypeId());
-
-        return (Double) query.getSingleResult();
-    }
-
     private BookedAppointmentResponseDTO getBookedHospitalDepartmentAppointmentDetails(
-            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
+            AppointmentLogSearchDTO searchRequestDTO,
+            String appointmentServiceTypeCode) {
 
          /*BOOKED INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedResult = query.getResultList();
 
          /*BOOKED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedWithFollowUpResult = query1.getResultList();
 
@@ -1061,19 +1059,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private CheckedInAppointmentResponseDTO getCheckedInHospitalDepartmentAppointmentDetails
-            (HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
+            (AppointmentLogSearchDTO searchRequestDTO,
+             String appointmentServiceTypeCode) {
 
          /*CHECK IN INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> checkInResult = query.getResultList();
 
          /*CHECK IN INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_WITH_FOLLOW_UP(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> checkInWithFollowUpResult = query1.getResultList();
 
@@ -1081,18 +1080,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private CancelledAppointmentResponseDTO getCancelledHospitalDepartmentAppointmentDetails
-            (HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
+            (AppointmentLogSearchDTO searchRequestDTO,
+             String appointmentServiceTypeCode) {
 
          /*CANCELLED INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> cancelledResult = query.getResultList();
 
          /*CANCELLED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> cancelledWithFollowUpResult = query1.getResultList();
 
@@ -1100,18 +1101,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private RefundAppointmentResponseDTO getRefundedHospitalDepartmentAppointmentDetails(
-            HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
+            AppointmentLogSearchDTO searchRequestDTO,
+            String appointmentServiceTypeCode) {
 
          /*REFUND INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundResult = query.getResultList();
 
          /*REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundWithFollowUpResult = query1.getResultList();
 
@@ -1119,29 +1122,33 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private RevenueFromRefundAppointmentResponseDTO getRevenueFromRefundedHospitalDepartmentAppointmentDetails
-            (HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO) {
+            (AppointmentLogSearchDTO searchRequestDTO,
+             String appointmentServiceTypeCode) {
 
            /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_REVENUE_REFUNDED_FROM_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundResult = query.getResultList();
 
          /*REVENUE FROM REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                QUERY_TO_FETCH_REVENUE_REFUNDED_FROM_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundWithFollowUpResult = query1.getResultList();
 
         return parseRevenueFromRefundAppointmentDetails(refundResult.get(0), refundWithFollowUpResult.get(0));
     }
 
-    private void calculateTotalHospitalDepartmentAppointmentAmount(HospitalDepartmentAppointmentLogSearchDTO searchRequestDTO,
-                                                                   HospitalDepartmentAppointmentLogResponseDTO responseDTO) {
+    private void calculateTotalHospitalDepartmentAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,
+                                                                   AppointmentLogResponseDTO responseDTO,
+                                                                   String appointmentServiceTypeCode) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_TOTAL_HOSPITAL_DEPARTMENT_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         Double totalAppointmentAmount = (Double) query.getSingleResult();
 
@@ -1149,18 +1156,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private BookedAppointmentResponseDTO getBookedAppointmentTxnDetails(
-            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
+            TransactionLogSearchDTO searchRequestDTO,
+            String appointmentServiceTypeCode) {
 
          /*BOOKED INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> bookedResult = query.getResultList();
 
          /*BOOKED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_BOOKED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, searchRequestDTO.getAppointmentServiceTypeCode());
 
         List<Object[]> bookedWithFollowUpResult = query1.getResultList();
 
@@ -1168,18 +1177,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private CheckedInAppointmentResponseDTO getCheckedInHospitalDepartmentAppointmentTxnDetails
-            (HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
+            (TransactionLogSearchDTO searchRequestDTO,
+             String appointmentServiceTypeCode) {
 
         /*CHECK IN INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> checkInResult = query.getResultList();
 
          /*CHECK IN INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CHECKED_IN_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> checkInWithFollowUpResult = query1.getResultList();
 
@@ -1187,18 +1198,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private CancelledAppointmentResponseDTO getCancelledAppointmentTxnDetails
-            (HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
+            (TransactionLogSearchDTO searchRequestDTO,
+             String appointmentServiceTypeCode) {
 
          /*CANCELLED INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> cancelledResult = query.getResultList();
 
          /*CANCELLED INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> cancelledWithFollowUpResult = query1.getResultList();
 
@@ -1206,18 +1219,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private RefundAppointmentResponseDTO getRefundedAppointmentTxnDetails(
-            HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
+            TransactionLogSearchDTO searchRequestDTO,
+            String appointmentServiceTypeCode) {
 
          /*REFUND INFO WITHOUT FOLLOW UP*/
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundResult = query.getResultList();
 
          /*REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundWithFollowUpResult = query1.getResultList();
 
@@ -1225,31 +1240,33 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private RevenueFromRefundAppointmentResponseDTO getRevenueFromRefundedAppointmentTxnDetails
-            (HospitalDepartmentTransactionLogSearchDTO searchRequestDTO) {
+            (TransactionLogSearchDTO searchRequestDTO,
+             String appointmentServiceTypeCode) {
 
               /*REVENUE FROM REFUND INFO WITHOUT FOLLOW UP*/
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundResult = query.getResultList();
 
          /*REVENUE FROM REFUND INFO WITH FOLLOW UP*/
         Query query1 = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_REVENUE_REFUNDED_HOSPITAL_DEPARTMENT_APPOINTMENT_WITH_FOLLOW_UP(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         List<Object[]> refundWithFollowUpResult = query1.getResultList();
 
         return parseRevenueFromRefundAppointmentDetails(refundResult.get(0), refundWithFollowUpResult.get(0));
     }
 
-    private void calculateTotalAppointmentTxnAmount(HospitalDepartmentTransactionLogSearchDTO searchRequestDTO,
-                                                    HospitalDepartmentTransactionLogResponseDTO responseDTO) {
+    private void calculateTotalAppointmentTxnAmount(TransactionLogSearchDTO searchRequestDTO,
+                                                    TransactionLogResponseDTO responseDTO,
+                                                    String appointmentServiceTypeCode) {
 
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_TOTAL_HOSPITAL_APPOINTMENT_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_ID, searchRequestDTO.getServiceTypeId());
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         Double totalAppointmentAmount = (Double) query.getSingleResult();
 
@@ -1261,5 +1278,92 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
 
+    private AppointmentRescheduleLogResponseDTO fetchRescheduleDoctorAppointment(
+            AppointmentRescheduleLogSearchDTO rescheduleDTO,
+            Pageable pageable,
+            String appointmentServiceTypeCode) {
 
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<AppointmentRescheduleLogDTO> rescheduleAppointments =
+                transformQueryToResultList(query, AppointmentRescheduleLogDTO.class);
+
+        if (rescheduleAppointments.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+            Double totalRescheduleAmount = calculateTotalRescheduleDoctorAppointmentAmount(
+                    rescheduleDTO, appointmentServiceTypeCode);
+
+            return AppointmentRescheduleLogResponseDTO.builder()
+                    .appointmentRescheduleLogDTOS(rescheduleAppointments)
+                    .totalItems(totalItems)
+                    .totalAmount(totalRescheduleAmount)
+                    .build();
+        }
+    }
+
+    private AppointmentRescheduleLogResponseDTO fetchRescheduleHospitalDepartmentAppointment(
+            AppointmentRescheduleLogSearchDTO rescheduleDTO,
+            Pageable pageable,
+            String appointmentServiceTypeCode) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<AppointmentRescheduleLogDTO> rescheduleAppointments =
+                transformQueryToResultList(query, AppointmentRescheduleLogDTO.class);
+
+        if (rescheduleAppointments.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+            Double totalRescheduleAmount = calculateTotalRescheduleHospitalDepartmentAppointmentAmount(
+                    rescheduleDTO, appointmentServiceTypeCode);
+
+            return AppointmentRescheduleLogResponseDTO.builder()
+                    .appointmentRescheduleLogDTOS(rescheduleAppointments)
+                    .totalItems(totalItems)
+                    .totalAmount(totalRescheduleAmount)
+                    .build();
+        }
+    }
+
+    private Double calculateTotalRescheduleDoctorAppointmentAmount(AppointmentRescheduleLogSearchDTO searchDTO,
+                                                                   String appointmentServiceTypeCode) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_TOTAL_RESCHEDULE_AMOUNT(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        return (Double) query.getSingleResult();
+    }
+
+    private Double calculateTotalRescheduleHospitalDepartmentAppointmentAmount(
+            AppointmentRescheduleLogSearchDTO searchDTO,
+            String appointmentServiceTypeCode) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_CALCULATE_TOTAL_HOSPITAL_DEPT_RESCHEDULE_AMOUNT(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        return (Double) query.getSingleResult();
+    }
 }

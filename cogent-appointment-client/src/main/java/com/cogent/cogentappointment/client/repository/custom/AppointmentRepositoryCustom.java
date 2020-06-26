@@ -108,11 +108,25 @@ public interface AppointmentRepositoryCustom {
                                                                    Pageable pageable,
                                                                    Long hospitalId);
 
-    AppointmentLogResponseDTO searchAppointmentLogs(
-            AppointmentLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
+    AppointmentLogResponseDTO searchDoctorAppointmentLogs(
+            AppointmentLogSearchDTO searchRequestDTO, Pageable pageable,
+            Long hospitalId, String appointmentServiceTypeCode);
 
-    TransactionLogResponseDTO searchTransactionLogs(
-            TransactionLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
+    AppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(
+            AppointmentLogSearchDTO searchRequestDTO, Pageable pageable,
+            Long hospitalId, String appointmentServiceTypeCode);
+
+    TransactionLogResponseDTO searchDoctorTransactionLogs(
+            TransactionLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            Long hospitalId,
+            String appointmentServiceTypeCode);
+
+    TransactionLogResponseDTO searchHospitalDepartmentTransactionLogs(
+            TransactionLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            Long hospitalId,
+            String appointmentServiceTypeCode);
 
     List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                        Long hospitalId,
@@ -151,7 +165,7 @@ public interface AppointmentRepositoryCustom {
     HospitalDeptAppointmentDetailsForStatus fetchHospitalDeptAppointmentByApptNumber(String apptNumber);
 
     AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber,
-                                                                         String appointmentServiceTypeCode);
+                                                             String appointmentServiceTypeCode);
 
     DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO,
                                                                                Pageable pageable);

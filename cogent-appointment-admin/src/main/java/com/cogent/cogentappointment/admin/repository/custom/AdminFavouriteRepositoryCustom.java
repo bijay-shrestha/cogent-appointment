@@ -11,4 +11,6 @@ import java.util.List;
 public interface AdminFavouriteRepositoryCustom {
 
     List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDown();
+
+    List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon();
 }

@@ -8,5 +8,5 @@ public interface AdminFavouriteService {
 
     List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDown();
 
-    List<FavoriteDropDownWithIconResponseDTO> fetchAdminFavouriteForDropDownWithIcon();
+    List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon();
 }

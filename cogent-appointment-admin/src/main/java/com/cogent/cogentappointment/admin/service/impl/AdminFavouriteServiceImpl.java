@@ -46,12 +46,12 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService{
     }
 
     @Override
-    public List<FavoriteDropDownWithIconResponseDTO> fetchAdminFavouriteForDropDownWithIcon() {
+    public List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, ADMIN_FAVOURITE_WITH_ICON);
 
-        List<FavoriteDropDownWithIconResponseDTO> responseDTOList =
+        List<FavouriteDropDownResponseDTO> responseDTOList =
                 adminFavouriteRepository.fetchAdminFavouriteForDropDownWithIcon();
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));

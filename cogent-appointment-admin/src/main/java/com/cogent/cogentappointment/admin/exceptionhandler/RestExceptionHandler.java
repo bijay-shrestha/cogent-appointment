@@ -51,6 +51,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(ex.getException());
     }
 
+    @ExceptionHandler
+    public ResponseEntity<Object> handleUnauthorisedException(UnauthorisedException ex) {
+        log.error("------- INVALID REQUEST EXCEPTION -------");
+        return buildResponseEntity(ex.getException());
+    }
+
     @Override
     @SuppressWarnings("NullableProblems")
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,

@@ -38,7 +38,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
         } catch (Exception e) {
-            throw new UnauthorisedException(Admin.class, "Invalid Username or Password");
+            System.out.println(e.getLocalizedMessage());
+            throw new UnauthorisedException( "Invalid Email or Password");
         }
         return hmacUtils.getHash(authentication);
 

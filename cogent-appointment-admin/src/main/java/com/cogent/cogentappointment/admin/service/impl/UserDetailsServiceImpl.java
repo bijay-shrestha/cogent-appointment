@@ -33,11 +33,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetailsImpl loadUserByUsername(String email) throws UsernameNotFoundException {
-        LoggedInAdminDTO loggedInAdminDTO = getAdmin(email);
-        if (loggedInAdminDTO == null) {
+        LoggedInAdminDTO loggedInAdminDTO = null;
+
+//        if (loggedInAdminDTO == null) {
+//            log.error(USER_NOT_FOUND, email);
+//            throw new NoContentFoundException("USER NOT FOUND");
+//        }
+
+        try{
+            return UserDetailsImpl.build(getAdmin(email));
+        }catch (NoContentFoundException e){
             log.error(USER_NOT_FOUND, email);
             throw new NoContentFoundException("USER NOT FOUND");
         }
-        return UserDetailsImpl.build(loggedInAdminDTO);
+
     }
 }

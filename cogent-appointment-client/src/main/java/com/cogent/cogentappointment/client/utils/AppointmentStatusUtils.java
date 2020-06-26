@@ -513,6 +513,7 @@ public class AppointmentStatusUtils {
         appointmentStatusCount.put(FOLLOW_UP, followUpStatusCount);
         appointmentStatusCount.put(ALL, allStatusCount);
 
+
         return appointmentStatusCount;
     }
 
@@ -527,7 +528,7 @@ public class AppointmentStatusUtils {
 
         for (HospitalDeptDutyRosterStatusResponseDTO doctorDutyRoster : hospitalDeptDutyRostersInfo) {
             for (AppointmentTimeSlotResponseDTO timeSlots : doctorDutyRoster.getAppointmentTimeSlots()) {
-                switch (timeSlots.getStatus()) {
+                switch (timeSlots.getStatus().trim().toUpperCase()) {
                     case VACANT:
                         vacantCount++;
                         break;

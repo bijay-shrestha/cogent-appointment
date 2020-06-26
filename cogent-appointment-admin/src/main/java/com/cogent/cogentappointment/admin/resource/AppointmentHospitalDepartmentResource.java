@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentHospitalDepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +15,8 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.APPROVE_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_APPOINTMENTS_CANCEL_APPROVALS;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.*;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
@@ -26,7 +26,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author Sauravi Thapa ON 6/12/20
  */
-@RequestMapping(API_V1 + BASE_APPOINTMENT+ BASE_HOSPITAL_DEPARTMENT)
+@RequestMapping(API_V1 + BASE_APPOINTMENT + BASE_HOSPITAL_DEPARTMENT)
 @RestController
 @Api(BASE_API_VALUE)
 public class AppointmentHospitalDepartmentResource {
@@ -35,18 +35,6 @@ public class AppointmentHospitalDepartmentResource {
 
     public AppointmentHospitalDepartmentResource(AppointmentHospitalDepartmentService appointmentHospitalDepartmentService) {
         this.appointmentHospitalDepartmentService = appointmentHospitalDepartmentService;
-    }
-
-    //    todo: test left
-    @PutMapping(RESCHEDULE + LOG)
-    @ApiOperation(FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_LOG)
-    public ResponseEntity<?> fetchHospitalDepartmentRescheduleLog(
-            @RequestBody HospitalDepartmentAppointmentRescheduleLogSearchDTO searchRequestDTO,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentHospitalDepartmentService.searchRescheduleLogs(searchRequestDTO, pageable));
     }
 
     @PutMapping(PENDING_APPROVAL)
@@ -75,8 +63,8 @@ public class AppointmentHospitalDepartmentResource {
     @PutMapping(REFUND)
     @ApiOperation(FETCH_APPOINTMENTS_CANCEL_APPROVALS)
     public ResponseEntity<?> fetchRefundDepartmentAppointments(@RequestBody DepartmentCancelApprovalSearchDTO searchDTO,
-                                                     @RequestParam("page") int page,
-                                                     @RequestParam("size") int size) {
+                                                               @RequestParam("page") int page,
+                                                               @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentHospitalDepartmentService.fetchDepartmentAppointmentCancelApprovals(searchDTO, pageable));
     }

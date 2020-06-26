@@ -48,6 +48,7 @@ import com.cogent.cogentappointment.client.repository.custom.AppointmentReposito
 import com.cogent.cogentappointment.client.utils.AppointmentUtils;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
+import com.cogent.cogentappointment.commons.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentDoctorInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +71,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentTransferMessage.APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_SERVICE_TYPE_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.*;
@@ -347,29 +349,21 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                           Pageable pageable,
                                                                           Long hospitalId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, hospitalId);
+        String appointmentServiceTypeCode = rescheduleDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
-        int totalItems = query.getResultList().size();
+        switch (appointmentServiceTypeCode) {
 
-        addPagination.accept(pageable, query);
+            case DOCTOR_CONSULTATION_CODE:
+                return fetchRescheduleDoctorAppointment(rescheduleDTO, pageable, hospitalId,
+                        appointmentServiceTypeCode);
 
-        List<AppointmentRescheduleLogDTO> rescheduleAppointments =
-                transformQueryToResultList(query, AppointmentRescheduleLogDTO.class);
+            case DEPARTMENT_CONSULTATION_CODE:
+                return fetchRescheduleHospitalDepartmentAppointment(rescheduleDTO, pageable, hospitalId,
+                        appointmentServiceTypeCode);
 
-        if (rescheduleAppointments.isEmpty())
-            throw APPOINTMENT_NOT_FOUND.get();
-
-        else {
-            Double totalRescheduleAmount = calculateTotalRescheduleAmount(rescheduleDTO, hospitalId);
-
-            return AppointmentRescheduleLogResponseDTO.builder()
-                    .appointmentRescheduleLogDTOS(rescheduleAppointments)
-                    .totalItems(totalItems)
-                    .totalAmount(totalRescheduleAmount)
-                    .build();
+            default:
+                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE,
+                        appointmentServiceTypeCode));
         }
     }
 
@@ -1413,17 +1407,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         responseDTO.setTotalAmount(totalAppointmentAmount);
     }
 
-    private Double calculateTotalRescheduleAmount(AppointmentRescheduleLogSearchDTO searchDTO,
-                                                  Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_TOTAL_RESCHEDULE_AMOUNT(searchDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (Double) query.getSingleResult();
-    }
-
     private BookedAppointmentResponseDTO getBookedAppointmentTxnDetails(
             TransactionLogSearchDTO searchRequestDTO,
             Long hospitalId,
@@ -1559,4 +1542,100 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         responseDTO.setTotalAmount(totalAppointmentAmount);
     }
 
+    private AppointmentRescheduleLogResponseDTO fetchRescheduleDoctorAppointment(
+            AppointmentRescheduleLogSearchDTO rescheduleDTO,
+            Pageable pageable,
+            Long hospitalId,
+            String appointmentServiceTypeCode) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<AppointmentRescheduleLogDTO> rescheduleAppointments =
+                transformQueryToResultList(query, AppointmentRescheduleLogDTO.class);
+
+        if (rescheduleAppointments.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+            Double totalRescheduleAmount = calculateTotalRescheduleDoctorAppointmentAmount(
+                    rescheduleDTO, hospitalId, appointmentServiceTypeCode);
+
+            return AppointmentRescheduleLogResponseDTO.builder()
+                    .appointmentRescheduleLogDTOS(rescheduleAppointments)
+                    .totalItems(totalItems)
+                    .totalAmount(totalRescheduleAmount)
+                    .build();
+        }
+    }
+
+    private AppointmentRescheduleLogResponseDTO fetchRescheduleHospitalDepartmentAppointment(
+            AppointmentRescheduleLogSearchDTO rescheduleDTO,
+            Pageable pageable,
+            Long hospitalId,
+            String appointmentServiceTypeCode) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<AppointmentRescheduleLogDTO> rescheduleAppointments =
+                transformQueryToResultList(query, AppointmentRescheduleLogDTO.class);
+
+        if (rescheduleAppointments.isEmpty())
+            throw APPOINTMENT_NOT_FOUND.get();
+
+        else {
+            Double totalRescheduleAmount = calculateTotalRescheduleHospitalDepartmentAppointmentAmount(
+                    rescheduleDTO, hospitalId, appointmentServiceTypeCode);
+
+            return AppointmentRescheduleLogResponseDTO.builder()
+                    .appointmentRescheduleLogDTOS(rescheduleAppointments)
+                    .totalItems(totalItems)
+                    .totalAmount(totalRescheduleAmount)
+                    .build();
+        }
+    }
+
+    private Double calculateTotalRescheduleDoctorAppointmentAmount(AppointmentRescheduleLogSearchDTO searchDTO,
+                                                                   Long hospitalId,
+                                                                   String appointmentServiceTypeCode) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_TOTAL_RESCHEDULE_AMOUNT(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        return (Double) query.getSingleResult();
+    }
+
+    private Double calculateTotalRescheduleHospitalDepartmentAppointmentAmount(
+            AppointmentRescheduleLogSearchDTO searchDTO,
+            Long hospitalId,
+            String appointmentServiceTypeCode) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_CALCULATE_TOTAL_HOSPITAL_DEPT_RESCHEDULE_AMOUNT(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+
+        return (Double) query.getSingleResult();
+    }
 }

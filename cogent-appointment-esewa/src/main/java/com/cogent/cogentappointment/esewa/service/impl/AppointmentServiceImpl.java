@@ -55,8 +55,6 @@ import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.*;
-import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.esewa.constants.StringConstant.NO_SPACE;
 import static com.cogent.cogentappointment.esewa.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.*;

@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentServiceTypeConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentServiceTypeConstant.FETCH_DETAILS_FOR_DROPDOWN;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentServiceTypeConstant.FETCH_NAME_AND_CODE_FOR_DROPDOWN;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentServiceTypeConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentServiceTypeConstants.BASE_APPOINTMENT_SERVICE_TYPE;
 import static org.springframework.http.ResponseEntity.ok;

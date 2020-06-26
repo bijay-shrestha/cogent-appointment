@@ -101,10 +101,11 @@ public class AppointmentUtils {
         return false;
     }
 
-    public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
+    public static Appointment parseToAppointment(String hyphenatedAppointmentNumber,
+                                                 String appointmentNumber,
+                                                 AppointmentRequestDTO requestDTO,
                                                  Date appointmentDate,
                                                  Date appointmentTime,
-                                                 String appointmentNumber,
                                                  Character isSelf,
                                                  Patient patient,
                                                  Hospital hospital,
@@ -115,6 +116,7 @@ public class AppointmentUtils {
         appointment.setAppointmentDate(appointmentDate);
         appointment.setAppointmentTime(appointmentTime);
         appointment.setAppointmentNumber(appointmentNumber);
+        appointment.setHyphenatedAppointmentNumber(hyphenatedAppointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
         appointment.setIsSelf(isSelf);
@@ -203,7 +205,7 @@ public class AppointmentUtils {
      * results[0] = start fiscal year
      * results[1] = end fiscal year
      * results[2] = appointment number*/
-    public static String generateAppointmentNumber(List results,
+    public static String generateAppointmentNumber(List<String> results,
                                                    String startingFiscalYear,
                                                    String endingFiscalYear,
                                                    String hospitalCode) {
@@ -219,13 +221,23 @@ public class AppointmentUtils {
         if (results.isEmpty())
             appointmentNumber = "0001";
         else
-            appointmentNumber = results.get(0).toString().contains(HYPHEN) ?
-                    String.format("%01d", Integer.parseInt(results.get(0).toString().split(HYPHEN)[2]) + 1)
-                    : String.format("%01d", Integer.parseInt(results.get(0).toString()) + 1);
 
-        appointmentNumber = hospitalCode + splitStartingYear + splitEndingYear + appointmentNumber;
+            //resultes=CHEERS-76-77-1;CHEERS-76-77-2
+            appointmentNumber = extractAppointmentNumber(results);
+
+        appointmentNumber = hospitalCode.concat(HYPHEN)
+                .concat(splitStartingYear).concat(HYPHEN)
+                .concat(splitEndingYear).concat(HYPHEN)
+                .concat(appointmentNumber);
 
         return appointmentNumber;
+    }
+
+    private static String extractAppointmentNumber(List<String> results) {
+
+        String incrementNumber = results.get(0).split(HYPHEN)[3];
+        return String.format("%01d", Integer.parseInt(incrementNumber) + 1);
+
     }
 
     public static List<String> calculateAvailableTimeSlots(String startTime,

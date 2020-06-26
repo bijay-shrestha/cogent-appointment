@@ -75,6 +75,9 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "appointment_number", updatable = false)
     private String appointmentNumber;
 
+    @Column(name = "hyphenated_appointment_number", updatable = false)
+    private String hyphenatedAppointmentNumber;
+
     /*maintained to avoid duplicate row persist*/
     @Column(name = "serial_number")
     private String serialNumber;
@@ -127,6 +130,7 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
                 ", appointmentNumber='" + appointmentNumber + '\'' +
+                ", hyphenatedAppointmentNumber='" + hyphenatedAppointmentNumber + '\'' +
                 ", serialNumber='" + serialNumber + '\'' +
                 ", createdDateNepali='" + createdDateNepali + '\'' +
                 ", status='" + status + '\'' +

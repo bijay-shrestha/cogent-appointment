@@ -274,30 +274,53 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-            ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
-                    appointment,
-                    appointmentTransactionDetail,
-                    refundAppointmentDetail,
-                    true);
+            //condition to check transaction number for follow up case.
+            //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+            //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+            if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                    appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
 
-            if (!Objects.isNull(response.getCode())) {
-                throw new BadRequestException(response.getMessage(), response.getMessage());
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRequestDTO.getRemarks(),
+                        refundAppointmentDetail));
+            } else {
+
+                ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                        appointment,
+                        appointmentTransactionDetail,
+                        refundAppointmentDetail,
+                        false);
+
+                if (!Objects.isNull(response.getCode())) {
+                    throw new BadRequestException(response.getMessage(), response.getMessage());
+                }
+
+                updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                        refundRequestDTO.getRemarks(),
+                        appointment,
+                        refundAppointmentDetail,
+                        refundRequestDTO);
             }
 
-            updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
-                    refundRequestDTO.getRemarks(),
-                    appointment,
-                    refundAppointmentDetail,
-                    refundRequestDTO);
         }
 
         if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
 
-            updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
-                    refundRequestDTO.getRemarks(),
-                    appointment,
-                    refundAppointmentDetail,
-                    null);
+            //condition to check transaction number for follow up case.
+            //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+            //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+            if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                    appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRequestDTO.getRemarks(),
+                        refundAppointmentDetail));
+            } else {
+
+                updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                        refundRequestDTO.getRemarks(),
+                        appointment,
+                        refundAppointmentDetail,
+                        null);
+            }
         }
     }
 

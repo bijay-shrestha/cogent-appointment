@@ -727,6 +727,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .integrationChannelCode(refundRejectDTO.getIntegrationChannelCode())
                 .featureCode(refundRejectDTO.getFeatureCode())
                 .status(refundRejectDTO.getStatus())
+                .remarks(refundRejectDTO.getRemarks())
                 .build();
 
 

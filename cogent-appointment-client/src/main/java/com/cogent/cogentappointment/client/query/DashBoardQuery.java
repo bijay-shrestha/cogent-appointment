@@ -505,25 +505,6 @@ public class DashBoardQuery {
         return whereClause;
     }
 
-    public static String QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_COMPANY_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
-
-        return "SELECT" +
-                " ad.hospitalDepartment.id as hospitalDepartmentId," +
-                " ad.hospitalDepartment.name as hospitalDepartmentName," +
-                " COUNT(a.id) as successfulAppointments," +
-                " COALESCE(SUM(atd.appointmentAmount),0) as departmentRevenue" +
-                " FROM Appointment a" +
-                " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
-                " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
-                " WHERE" +
-                " a.status ='RE'" +
-                " AND ard.status='A'" +
-                GET_WHERE_CLAUSE_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(requestDTO);
-    }
-
     public static String QUERY_TO_GET_HOSPITAL_DEPARTMENT_FOLLOW_UP =
             "SELECT" +
                     " Count(a.id) as count," +
@@ -540,17 +521,25 @@ public class DashBoardQuery {
                     " AND ad.hospitalDepartment.id=:hospitalDepartmentId" +
                     " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
 
-    public static String QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_COMPANY_REVENUE_CANCELLED =
-            "SELECT" +
-                    " COUNT(a.id) as count," +
-                    " COALESCE(SUM(atd.appointmentAmount ),0) as amount" +
-                    " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
-                    " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
-                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                    " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
-                    " WHERE" +
-                    " a.status ='C'" +
-                    " AND ad.hospitalDepartment.id=:hospitalDepartmentId" +
-                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+    public static String QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
+
+        return "SELECT" +
+                " ad.hospitalDepartment.id as hospitalDepartmentId," +
+                " ad.hospitalDepartment.name as hospitalDepartmentName," +
+                " COUNT(a.id) as cancelledAppointments," +
+                " CASE" +
+                " WHEN ard.status='PA'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
+                " WHEN ard.status='R'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
+                " WHEN ard.status='A'THEN (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 )) " +
+                " END  as cancelledRevenue" +
+                " FROM Appointment a" +
+                " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
+                " WHERE" +
+                " a.status IN ('RE','C')" +
+                GET_WHERE_CLAUSE_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(requestDTO);
+    }
 }

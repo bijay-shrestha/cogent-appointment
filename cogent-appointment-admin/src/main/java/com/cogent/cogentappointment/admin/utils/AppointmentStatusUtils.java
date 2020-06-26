@@ -14,7 +14,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
@@ -216,7 +217,8 @@ public class AppointmentStatusUtils {
 
         return AppointmentStatusDTO.builder()
                 .doctorDutyRosterInfo(doctorDutyRostersInfo)
-                .doctorInfo((Objects.isNull(doctorInfo))? new ArrayList<>():doctorInfo )
+                .doctorInfo((Objects.isNull(doctorInfo)) ? new ArrayList<>() : doctorInfo)
+                .appointmentStatusCount(parseAppointmentStatusCount(doctorDutyRostersInfo))
                 .build();
     }
 
@@ -227,29 +229,30 @@ public class AppointmentStatusUtils {
         return HospitalDeptAppointmentStatusDTO.builder()
                 .hospitalDeptDutyRosterInfo(hospitalDeptDutyRostersInfo)
                 .hospitalDeptAndDoctorInfo(hospitalDeptAndDoctorDTOS)
+                .appointmentStatusCount(parseHospitalDepartmentAppointmentStatusCount(hospitalDeptDutyRostersInfo))
                 .build();
     }
 
     public static List<AppointmentTimeSlotResponseDTO> parseToAppointmentTimeSlotResponseDTOS(
             HospitalDeptAppointmentDetailsForStatus hospitalDeptAppointmentDetailsForStatus) {
 
-        List<AppointmentTimeSlotResponseDTO> responseDTOS= new ArrayList<> ();
+        List<AppointmentTimeSlotResponseDTO> responseDTOS = new ArrayList<>();
 
-        AppointmentTimeSlotResponseDTO response=AppointmentTimeSlotResponseDTO.builder()
-                        .appointmentTime(convert24HourTo12HourFormat(
-                                hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
-                        .status(hospitalDeptAppointmentDetailsForStatus.getStatus())
-                        .appointmentNumber(hospitalDeptAppointmentDetailsForStatus.getAppointmentNumber())
-                        .mobileNumber(hospitalDeptAppointmentDetailsForStatus.getMobileNumber())
-                        .age(hospitalDeptAppointmentDetailsForStatus.getAge())
-                        .gender(String.valueOf(hospitalDeptAppointmentDetailsForStatus.getGender()))
-                        .patientName(hospitalDeptAppointmentDetailsForStatus.getPatientName())
-                        .appointmentId(hospitalDeptAppointmentDetailsForStatus.getAppointmentId())
-                        .hasTransferred(hospitalDeptAppointmentDetailsForStatus.getHasTransferred())
-                        .isFollowUp(hospitalDeptAppointmentDetailsForStatus.getIsFollowUp())
-                        .hasTimePassed(hasTimePassed(hospitalDeptAppointmentDetailsForStatus.getAppointmentDate(),
-                                hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
-                        .build();
+        AppointmentTimeSlotResponseDTO response = AppointmentTimeSlotResponseDTO.builder()
+                .appointmentTime(convert24HourTo12HourFormat(
+                        hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
+                .status(hospitalDeptAppointmentDetailsForStatus.getStatus())
+                .appointmentNumber(hospitalDeptAppointmentDetailsForStatus.getAppointmentNumber())
+                .mobileNumber(hospitalDeptAppointmentDetailsForStatus.getMobileNumber())
+                .age(hospitalDeptAppointmentDetailsForStatus.getAge())
+                .gender(String.valueOf(hospitalDeptAppointmentDetailsForStatus.getGender()))
+                .patientName(hospitalDeptAppointmentDetailsForStatus.getPatientName())
+                .appointmentId(hospitalDeptAppointmentDetailsForStatus.getAppointmentId())
+                .hasTransferred(hospitalDeptAppointmentDetailsForStatus.getHasTransferred())
+                .isFollowUp(hospitalDeptAppointmentDetailsForStatus.getIsFollowUp())
+                .hasTimePassed(hasTimePassed(hospitalDeptAppointmentDetailsForStatus.getAppointmentDate(),
+                        hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
+                .build();
         responseDTOS.add(response);
 
         return responseDTOS;
@@ -289,9 +292,9 @@ public class AppointmentStatusUtils {
     public static List<DoctorTimeSlotResponseDTO> parseToDoctorTimeSlotResponseDTOS(
             AppointmentDetailsForStatus appointmentDetailsForStatus) {
 
-        List<DoctorTimeSlotResponseDTO> responseDTOS= new ArrayList<> ();
+        List<DoctorTimeSlotResponseDTO> responseDTOS = new ArrayList<>();
 
-        DoctorTimeSlotResponseDTO response=DoctorTimeSlotResponseDTO.builder()
+        DoctorTimeSlotResponseDTO response = DoctorTimeSlotResponseDTO.builder()
                 .appointmentTime(convert24HourTo12HourFormat(appointmentDetailsForStatus.getAppointmentTime()))
                 .status(appointmentDetailsForStatus.getStatus())
                 .appointmentNumber(appointmentDetailsForStatus.getAppointmentNumber())
@@ -450,4 +453,99 @@ public class AppointmentStatusUtils {
 
         return appointmentTimeSlots;
     }
+
+    private static Map<String, Integer> parseAppointmentStatusCount(
+            List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterInfo) {
+
+        Integer vacantCount = 0;
+        Integer bookedCount = 0;
+        Integer checkedInCount = 0;
+        Integer cancelledCount = 0;
+        Integer followUpCount = 0;
+
+        for (DoctorDutyRosterStatusResponseDTO doctorDutyRoster : doctorDutyRosterInfo) {
+            for (DoctorTimeSlotResponseDTO timeSlots : doctorDutyRoster.getDoctorTimeSlots()) {
+                switch (timeSlots.getStatus().trim().toUpperCase()) {
+                    case VACANT:
+                        vacantCount += 1;
+                        break;
+                    case BOOKED:
+                        bookedCount += 1;
+                        break;
+                    case APPROVED:
+                        checkedInCount += 1;
+                        break;
+                    case CANCELLED:
+                        cancelledCount += 1;
+                        break;
+                }
+
+                if (!Objects.isNull(timeSlots.getIsFollowUp())) {
+                    if (timeSlots.getIsFollowUp().equals(YES))
+                        followUpCount += 1;
+                }
+            }
+        }
+
+        return parseAppointmentStatusCountValues(vacantCount, bookedCount, checkedInCount,
+                cancelledCount, followUpCount);
+    }
+
+    private static Map<String, Integer> parseHospitalDepartmentAppointmentStatusCount(
+            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRostersInfo) {
+
+        Integer vacantCount = 0;
+        Integer bookedCount = 0;
+        Integer checkedInCount = 0;
+        Integer cancelledCount = 0;
+        Integer followUpCount = 0;
+
+        for (HospitalDeptDutyRosterStatusResponseDTO doctorDutyRoster : hospitalDeptDutyRostersInfo) {
+            for (AppointmentTimeSlotResponseDTO timeSlots : doctorDutyRoster.getAppointmentTimeSlots()) {
+                switch (timeSlots.getStatus().trim().toUpperCase()) {
+                    case VACANT:
+                        vacantCount++;
+                        break;
+                    case BOOKED:
+                        bookedCount++;
+                        break;
+                    case APPROVED:
+                        checkedInCount++;
+                        break;
+                    case CANCELLED:
+                        cancelledCount++;
+                        break;
+                }
+
+                if (!Objects.isNull(timeSlots.getIsFollowUp())) {
+                    if (timeSlots.getIsFollowUp().equals(YES))
+                        followUpCount++;
+                }
+            }
+        }
+
+        return parseAppointmentStatusCountValues(vacantCount, bookedCount, checkedInCount,
+                cancelledCount, followUpCount);
+    }
+
+    private static Map<String, Integer> parseAppointmentStatusCountValues(Integer vacantStatusCount,
+                                                                          Integer bookedStatusCount,
+                                                                          Integer checkedInStatusCount,
+                                                                          Integer cancelledStatusCount,
+                                                                          Integer followUpStatusCount) {
+
+        HashMap<String, Integer> appointmentStatusCount = new HashMap<>();
+        Integer allStatusCount = vacantStatusCount + bookedStatusCount
+                + checkedInStatusCount + cancelledStatusCount + followUpStatusCount;
+
+        appointmentStatusCount.put(VACANT, vacantStatusCount);
+        appointmentStatusCount.put(BOOKED, bookedStatusCount);
+        appointmentStatusCount.put(APPROVED, checkedInStatusCount);
+        appointmentStatusCount.put(CANCELLED, cancelledStatusCount);
+        appointmentStatusCount.put(FOLLOW_UP, followUpStatusCount);
+        appointmentStatusCount.put(ALL, allStatusCount);
+
+        return appointmentStatusCount;
+    }
+
 }

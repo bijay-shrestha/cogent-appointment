@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailRespons
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.PrimaryAppointmentServiceTypeResponse;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
@@ -91,7 +92,10 @@ public class AdminServiceImpl implements AdminService {
 
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
 
+    private final AppointmentServiceTypeRepository appointmentServiceTypeRepository;
+
     private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
+
     private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
 
     public AdminServiceImpl(Validator validator,
@@ -108,6 +112,7 @@ public class AdminServiceImpl implements AdminService {
                             AdminFeatureService adminFeatureService,
                             IntegrationRepository integrationRepository,
                             IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
+                            AppointmentServiceTypeRepository appointmentServiceTypeRepository,
                             AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
                             AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
@@ -124,6 +129,7 @@ public class AdminServiceImpl implements AdminService {
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
+        this.appointmentServiceTypeRepository = appointmentServiceTypeRepository;
         this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
     }
@@ -434,6 +440,10 @@ public class AdminServiceImpl implements AdminService {
             });
         }
 
+        PrimaryAppointmentServiceTypeResponse serviceTypeResponses = appointmentServiceTypeRepository.
+                fetchAppointmentServiceTypeByHospital(getLoggedInHospitalId());
+
+        responseDTO.setPrimaryAppointmentServiceType(serviceTypeResponses);
         responseDTO.setApiIntegration(getApiIntegrations());
         responseDTO.setRequestBody(map);
 

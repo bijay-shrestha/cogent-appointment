@@ -133,7 +133,8 @@ public class IntegrationAdminModeQuery {
                     " AND aif.status='Y'" +
                     " AND f.id=:featureId" +
                     " AND hrm.id=:requestMethodId" +
-                    " AND amfi.appointmentModeId.id=:appointmentModeId";
+                    " AND amfi.appointmentModeId.id=:appointmentModeId"+
+                    " AND amfi.hospitalId.id=:hospitalId";
 
     public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY =
             " SELECT" +

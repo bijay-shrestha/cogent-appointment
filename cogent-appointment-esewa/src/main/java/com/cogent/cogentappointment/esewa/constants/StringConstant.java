@@ -40,7 +40,7 @@ public class StringConstant {
     //M
 
     //N
-
+    public static final String NO_SPACE = "";
 
     //O
     public static final String OR = "|";

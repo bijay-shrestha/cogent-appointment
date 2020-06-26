@@ -55,6 +55,8 @@ import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.esewa.constants.StringConstant.NO_SPACE;
 import static com.cogent.cogentappointment.esewa.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.*;
@@ -305,22 +307,30 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateEsewaId(requestDTO.getTransactionInfo().getAppointmentModeCode(),
                 requestDTO.getPatientInfo().getESewaId());
 
-        if (Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode()))
-            requestDTO.getAppointmentInfo().setAppointmentServiceTypeCode(DOCTOR_CONSULTATION_CODE);
+        //todo: remove if case
+        String code;
+        HospitalAppointmentServiceType hospitalAppointmentServiceType = null;
 
-        String code = requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
+        if (Objects.isNull(requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId())) {
+            code = DOCTOR_CONSULTATION_CODE;
+
+        } else {
+            hospitalAppointmentServiceType = fetchAssignedAppointmentServiceType(
+                    requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId());
+            code = hospitalAppointmentServiceType.getAppointmentServiceType().getCode();
+        }
 
         AppointmentSuccessResponseDTO responseDTO;
         switch (code.trim().toUpperCase()) {
 
             case DOCTOR_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForSelfDoctorWise(
-                        requestDTO, appointmentMode, transactionRequestLog);
+                        requestDTO, appointmentMode, transactionRequestLog, hospitalAppointmentServiceType);
                 break;
 
             case DEPARTMENT_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForSelfDepartmentWise(
-                        requestDTO, appointmentMode, transactionRequestLog);
+                        requestDTO, appointmentMode, transactionRequestLog, hospitalAppointmentServiceType);
                 break;
 
             default:
@@ -354,22 +364,30 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentMode appointmentMode = fetchActiveAppointmentModeIdByCode
                 (requestDTO.getTransactionInfo().getAppointmentModeCode());
 
-        if (Objects.isNull(requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode()))
-            requestDTO.getAppointmentInfo().setAppointmentServiceTypeCode(DOCTOR_CONSULTATION_CODE);
+        //todo: remove if case
+        String code;
+        HospitalAppointmentServiceType hospitalAppointmentServiceType = null;
 
-        String code = requestDTO.getAppointmentInfo().getAppointmentServiceTypeCode();
+        if (Objects.isNull(requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId())) {
+            code = DOCTOR_CONSULTATION_CODE;
+
+        } else {
+            hospitalAppointmentServiceType = fetchAssignedAppointmentServiceType(
+                    requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId());
+            code = hospitalAppointmentServiceType.getAppointmentServiceType().getCode();
+        }
 
         AppointmentSuccessResponseDTO responseDTO;
         switch (code.trim().toUpperCase()) {
 
             case DOCTOR_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForOthersDoctorWise(
-                        requestDTO, appointmentMode, transactionRequestLog);
+                        requestDTO, appointmentMode, transactionRequestLog, hospitalAppointmentServiceType);
                 break;
 
             case DEPARTMENT_CONSULTATION_CODE:
                 responseDTO = saveAppointmentForOthersDepartmentWise(
-                        requestDTO, appointmentMode, transactionRequestLog);
+                        requestDTO, appointmentMode, transactionRequestLog, hospitalAppointmentServiceType);
                 break;
 
             default:
@@ -429,7 +447,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = findPendingAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
-        switch (appointment.getHospitalAppointmentServiceType().getAppointmentServiceType().getCode()) {
+        String appointmentServiceTypeCode = appointment.getHospitalAppointmentServiceType()
+                .getAppointmentServiceType().getCode();
+
+        switch (appointmentServiceTypeCode.trim().toUpperCase()) {
 
             case DOCTOR_CONSULTATION_CODE: {
                 AppointmentDoctorInfo appointmentDoctorInfo = fetchAppointmentDoctorInfo(appointment.getId());
@@ -1078,7 +1099,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentSuccessResponseDTO saveAppointmentForSelfDoctorWise(
             AppointmentRequestDTOForSelf requestDTO,
             AppointmentMode appointmentMode,
-            AppointmentTransactionRequestLog transactionRequestLog) {
+            AppointmentTransactionRequestLog transactionRequestLog,
+            HospitalAppointmentServiceType hospitalAppointmentServiceType) {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
@@ -1087,8 +1109,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
 
-        HospitalAppointmentServiceType hospitalAppointmentServiceType =
-                fetchHospitalAppointmentServiceType(hospital.getId(), appointmentInfo.getAppointmentServiceTypeCode());
+        if (Objects.isNull(hospitalAppointmentServiceType))
+            hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(
+                    hospital.getId(), DOCTOR_CONSULTATION_CODE);
+
+        validateHospitalAppointmentServiceType(hospital.getId(),
+                hospitalAppointmentServiceType.getHospital().getId(),
+                hospital.getName()
+        );
 
         Patient patient = fetchPatientForSelf(
                 appointmentInfo.getIsNewRegistration(),
@@ -1098,16 +1126,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 NO
         );
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+        String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
-                appointmentReservationLog.getHospitalId()
+                hospital.getId(),
+                hospital.getCode()
         );
 
-        Appointment appointment = parseToAppointment(
+        Appointment appointment = parseToAppointment(hyphenatedAppointmentNumber,
+                hyphenatedAppointmentNumber.replaceAll(HYPHEN, NO_SPACE),
                 requestDTO.getAppointmentInfo(),
                 appointmentReservationLog.getAppointmentDate(),
                 appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
                 YES,
                 patient,
                 hospital,
@@ -1134,7 +1163,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentSuccessResponseDTO saveAppointmentForSelfDepartmentWise(
             AppointmentRequestDTOForSelf requestDTO,
             AppointmentMode appointmentMode,
-            AppointmentTransactionRequestLog transactionRequestLog) {
+            AppointmentTransactionRequestLog transactionRequestLog,
+            HospitalAppointmentServiceType hospitalAppointmentServiceType) {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
@@ -1143,8 +1173,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Hospital hospital = fetchHospital(appointmentReservationLog.getHospital().getId());
 
-        HospitalAppointmentServiceType hospitalAppointmentServiceType =
-                fetchHospitalAppointmentServiceType(hospital.getId(), appointmentInfo.getAppointmentServiceTypeCode());
+        if (Objects.isNull(hospitalAppointmentServiceType))
+            hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(
+                    hospital.getId(), DEPARTMENT_CONSULTATION_CODE);
+
+        validateHospitalAppointmentServiceType(hospital.getId(),
+                hospitalAppointmentServiceType.getHospital().getId(),
+                hospital.getName()
+        );
 
         Patient patient = fetchPatientForSelf(
                 appointmentInfo.getIsNewRegistration(),
@@ -1154,16 +1190,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 YES
         );
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+        String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
-                appointmentReservationLog.getHospital().getId()
+                hospital.getId(),
+                hospital.getCode()
         );
 
-        Appointment appointment = parseToAppointment(
+        Appointment appointment = parseToAppointment(hyphenatedAppointmentNumber,
+                hyphenatedAppointmentNumber.replaceAll(HYPHEN, NO_SPACE),
                 requestDTO.getAppointmentInfo(),
                 appointmentReservationLog.getAppointmentDate(),
                 appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
                 YES,
                 patient,
                 hospital,
@@ -1266,7 +1303,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentSuccessResponseDTO saveAppointmentForOthersDoctorWise(
             AppointmentRequestDTOForOthers requestDTO,
             AppointmentMode appointmentMode,
-            AppointmentTransactionRequestLog transactionRequestLog) {
+            AppointmentTransactionRequestLog transactionRequestLog,
+            HospitalAppointmentServiceType hospitalAppointmentServiceType) {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
@@ -1275,8 +1313,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
 
-        HospitalAppointmentServiceType hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(
-                hospital.getId(), appointmentInfo.getAppointmentServiceTypeCode()
+        if (Objects.isNull(hospitalAppointmentServiceType))
+            hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(hospital.getId(),
+                    DOCTOR_CONSULTATION_CODE);
+
+        validateHospitalAppointmentServiceType(hospital.getId(),
+                hospitalAppointmentServiceType.getHospital().getId(),
+                hospital.getName()
         );
 
         Patient patient = fetchPatientForOthers(
@@ -1290,14 +1333,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
-                appointmentReservationLog.getHospitalId()
+                hospital.getId(),
+                hospital.getCode()
+        );
+
+        String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
+                appointmentInfo.getCreatedDateNepali(),
+                hospital.getId(),
+                hospital.getCode()
         );
 
         Appointment appointment = parseToAppointment(
+                hyphenatedAppointmentNumber,
+                hyphenatedAppointmentNumber.replaceAll(HYPHEN, NO_SPACE),
                 appointmentInfo,
                 appointmentReservationLog.getAppointmentDate(),
                 appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
                 NO,
                 patient,
                 hospital,
@@ -1324,7 +1375,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentSuccessResponseDTO saveAppointmentForOthersDepartmentWise(
             AppointmentRequestDTOForOthers requestDTO,
             AppointmentMode appointmentMode,
-            AppointmentTransactionRequestLog transactionRequestLog) {
+            AppointmentTransactionRequestLog transactionRequestLog,
+            HospitalAppointmentServiceType hospitalAppointmentServiceType) {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
@@ -1333,8 +1385,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Hospital hospital = appointmentReservationLog.getHospital();
 
-        HospitalAppointmentServiceType hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(
-                hospital.getId(), appointmentInfo.getAppointmentServiceTypeCode()
+        if (Objects.isNull(hospitalAppointmentServiceType))
+            hospitalAppointmentServiceType = fetchHospitalAppointmentServiceType(hospital.getId(),
+                    DEPARTMENT_CONSULTATION_CODE);
+
+        validateHospitalAppointmentServiceType(hospital.getId(),
+                hospitalAppointmentServiceType.getHospital().getId(),
+                hospital.getName()
         );
 
         Patient patient = fetchPatientForOthers(
@@ -1346,16 +1403,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                 YES
         );
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+        String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
-                hospital.getId()
+                hospital.getId(),
+                hospital.getCode()
         );
 
         Appointment appointment = parseToAppointment(
+                hyphenatedAppointmentNumber,
+                hyphenatedAppointmentNumber.replaceAll(HYPHEN, NO_SPACE),
                 appointmentInfo,
                 appointmentReservationLog.getAppointmentDate(),
                 appointmentReservationLog.getAppointmentTime(),
-                appointmentNumber,
                 NO,
                 patient,
                 hospital,
@@ -1443,5 +1502,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return hospitalAppointmentServiceTypeRepository.fetchHospitalAppointmentServiceType(
                 hospitalId, appointmentServiceTypeCode);
+    }
+
+    private HospitalAppointmentServiceType fetchAssignedAppointmentServiceType(Long hospitalAppointmentServiceTypeId) {
+        return hospitalAppointmentServiceTypeRepository.fetchAssignedAppointmentServiceType(
+                hospitalAppointmentServiceTypeId);
+    }
+
+    private void validateHospitalAppointmentServiceType(Long hospitalId, Long requestedHospitalId,
+                                                        String hospitalName) {
+        if (!hospitalId.equals(requestedHospitalId))
+            throw new BadRequestException(String.format(INVALID_HOSPITAL_APPOINTMENT_SERVICE_TYPE, hospitalName));
     }
 }

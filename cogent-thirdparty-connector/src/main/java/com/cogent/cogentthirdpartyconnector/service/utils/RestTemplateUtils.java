@@ -41,7 +41,6 @@ public class RestTemplateUtils {
                     request,
                     uri,
                     exception);
-
         }
 
         if (response == null || response.getBody() == null) {

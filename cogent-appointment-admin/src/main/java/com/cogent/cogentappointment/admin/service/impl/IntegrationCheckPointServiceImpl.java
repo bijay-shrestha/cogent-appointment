@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
@@ -312,21 +311,61 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                              AppointmentRefundDetail refundAppointmentDetail,
                                                              IntegrationRefundRequestDTO refundRequestDTO) {
 
-        ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
-                appointment,
-                appointmentTransactionDetail,
-                refundAppointmentDetail,
-                false);
+        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
-        if (!Objects.isNull(response.getCode())) {
-            throw new BadRequestException(response.getMessage());
+            //condition to check transaction number for follow up case.
+            //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+            //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+            if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                    appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRequestDTO,
+                        refundAppointmentDetail));
+
+
+            } else {
+
+                ThirdPartyResponse response = processRefundRequest(refundRequestDTO,
+                        appointment,
+                        appointmentTransactionDetail,
+                        refundAppointmentDetail,
+                        false);
+
+                if (!Objects.isNull(response.getCode())) {
+                    throw new BadRequestException(response.getMessage());
+                }
+
+                updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
+                        refundRequestDTO.getRemarks(),
+                        appointment,
+                        refundAppointmentDetail,
+                        refundRequestDTO);
+            }
+
         }
 
-        updateAppointmentAndAppointmentRefundDetails(response.getStatus(),
-                refundRequestDTO.getRemarks(),
-                appointment,
-                refundAppointmentDetail,
-                null);
+        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+            //condition to check transaction number for follow up case.
+            //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+            //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+            if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                    appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRequestDTO,
+                        refundAppointmentDetail));
+
+            } else {
+
+                updateAppointmentAndAppointmentRefundDetails(refundRequestDTO.getStatus(),
+                        refundRequestDTO.getRemarks(),
+                        appointment,
+                        refundAppointmentDetail,
+                        refundRequestDTO);
+
+            }
+
+        }
 
 
     }
@@ -364,7 +403,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                               String frontEndRemarks,
                                                               Appointment appointment,
                                                               AppointmentRefundDetail refundAppointmentDetail,
-                                                              AppointmentRefundRejectDTO refundRejectDTO) {
+                                                              IntegrationRefundRequestDTO integrationRefundRequestDTO) {
 
         switch (response) {
 
@@ -383,7 +422,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             case SUCCESS:
-                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO,
+                saveAppointmentRefundDetail(parseRefundRejectDetails(integrationRefundRequestDTO,
                         refundAppointmentDetail));
                 break;
 

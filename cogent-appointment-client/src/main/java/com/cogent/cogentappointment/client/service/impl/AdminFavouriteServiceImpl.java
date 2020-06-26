@@ -10,8 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.client.log.constants.AdminLog.ADMIN_FAVOURITE;
-import static com.cogent.cogentappointment.client.log.constants.AdminLog.SAVING_PASSWORD_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -36,6 +35,20 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN_FAVOURITE);
 
         List<FavouriteDropDownResponseDTO> responseDTOList= adminFavouriteRepository.fetchAdminFavouriteForDropDown();
+
+        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOList;
+    }
+
+    @Override
+    public List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, ADMIN_FAVOURITE_WITH_ICON);
+
+        List<FavouriteDropDownResponseDTO> responseDTOList =
+                adminFavouriteRepository.fetchAdminFavouriteForDropDownWithIcon();
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 

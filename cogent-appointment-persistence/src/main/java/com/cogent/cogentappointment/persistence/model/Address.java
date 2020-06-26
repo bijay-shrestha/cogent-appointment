@@ -53,6 +53,9 @@ public class Address implements Serializable {
 
     private boolean isNew;
 
+    @Column(name = "government_value")
+    private String governmentValue;
+
     @Override
     public String toString() {
         return "Address{" +

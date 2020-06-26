@@ -26,5 +26,6 @@ public interface AdminModeFeatureIntegrationRepositoryCustom {
 
     Long findAppointmentModeWiseFeatureAndRequestMethod(Long appointmentModeId,
                                                         Long featureTypeId,
-                                                        Long requestMethodId);
+                                                        Long requestMethodId,
+                                                        Long hospitalId);
 }

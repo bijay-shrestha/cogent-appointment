@@ -34,4 +34,11 @@ public class AdminFavouriteResource {
         return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
     }
 
+    @GetMapping(ICON + ACTIVE + MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchHospitalForDropDownWithIcon() {
+        return ok(adminFavouriteService.fetchAdminFavouriteForDropDownWithIcon());
+    }
+
+
 }

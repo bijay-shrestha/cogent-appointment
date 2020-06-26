@@ -7,4 +7,6 @@ import java.util.List;
 public interface AdminFavouriteService {
 
     List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDown();
+
+    List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon();
 }

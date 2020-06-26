@@ -288,29 +288,17 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     @Override
     public List<HospitalDepartmentRevenueDTO> calculateCancelledHospitalDepartmentRevenue(
             HospitalDepartmentRevenueRequestDTO requestDTO, Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_COMPANY_REVENUE(requestDTO))
+        Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REVENUE(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
-        addPagination.accept(pageable, query);
+        addPagination.accept(pageable, cancelled);
 
-        List<HospitalDepartmentRevenueDTO> revenueDTOList = transformQueryToResultList(query, HospitalDepartmentRevenueDTO.class);
-
-        revenueDTOList.forEach(revenueDTO -> {
-            Query queryToGetCancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_COMPANY_REVENUE_CANCELLED)
-                    .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                    .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                    .setParameter(HOSPITAL_DEPARTMENT_ID, revenueDTO.getHospitalDepartmentId());
-
-            FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetCancelled,
-                    FollowUpResponse.class);
-            revenueDTO.setCancelledAppointments(revenueDTO.getCancelledAppointments() + followUpResponse.getCount());
-            revenueDTO.setCancelledRevenue(revenueDTO.getCancelledRevenue() + followUpResponse.getAmount());
-
-        });
+        List<HospitalDepartmentRevenueDTO> revenueDTOList = transformQueryToResultList(cancelled, HospitalDepartmentRevenueDTO.class);
 
         return revenueDTOList;
+
     }
 
     private String getQueryByFilter(Long hospitalId, Character filter) {

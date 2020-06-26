@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.ApptServiceTypeDropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentServiceTypeRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentServiceTypeService;
@@ -52,12 +52,13 @@ public class AppointmentServiceTypeServiceImpl implements AppointmentServiceType
     }
 
     @Override
-    public List<ApptServiceTypeDropDownResponseDTO> fetchServiceTypeNameAndCodeList() {
+    public List<AppointmentServiceTypeDropDownResponseDTO> fetchServiceTypeNameAndCodeList() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, APPOINTMENT_SERVICE_TYPE);
 
-        List<ApptServiceTypeDropDownResponseDTO> minInfo = appointmentServiceTypeRepository.fetchSerivceTypeNameAndCodeList();
+        List<AppointmentServiceTypeDropDownResponseDTO> minInfo =
+                appointmentServiceTypeRepository.fetchServiceTypeNameAndCodeList();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, APPOINTMENT_SERVICE_TYPE, getDifferenceBetweenTwoTime(startTime));
 

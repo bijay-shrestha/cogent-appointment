@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailRespons
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
@@ -91,8 +92,9 @@ public class AdminServiceImpl implements AdminService {
 
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
 
-    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
     private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
+
+    private final HospitalRepository hospitalRepository;
 
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
@@ -108,8 +110,8 @@ public class AdminServiceImpl implements AdminService {
                             AdminFeatureService adminFeatureService,
                             IntegrationRepository integrationRepository,
                             IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
-                            AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
-                            AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
+                            AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository,
+                            HospitalRepository hospitalRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -124,8 +126,8 @@ public class AdminServiceImpl implements AdminService {
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
-        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     @Override
@@ -420,8 +422,10 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
+        Long hospitalId = getLoggedInHospitalId();
+
         AdminLoggedInInfoResponseDTO responseDTO =
-                adminRepository.fetchLoggedInAdminInfo(requestDTO, getLoggedInHospitalId());
+                adminRepository.fetchLoggedInAdminInfo(requestDTO, hospitalId);
 
         List<IntegrationBodyAttributeResponse> responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributes();
@@ -437,11 +441,12 @@ public class AdminServiceImpl implements AdminService {
         responseDTO.setApiIntegration(getApiIntegrations());
         responseDTO.setRequestBody(map);
 
+        responseDTO.setHospitalAppointmentServiceType(fetchAppointmentServiceType(hospitalId));
+
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
-
 
     private Map<String, List<?>> getApiIntegrations() {
 
@@ -923,5 +928,9 @@ public class AdminServiceImpl implements AdminService {
 
     private Profile fetchProfile(Long profileId, Long hospitalId) {
         return profileService.findActiveProfileByIdAndHospitalId(profileId, hospitalId);
+    }
+
+    private List<AppointmentServiceTypeDropDownResponseDTO> fetchAppointmentServiceType(Long hospitalId){
+        return hospitalRepository.fetchAssignedAppointmentServiceType(hospitalId);
     }
 }

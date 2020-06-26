@@ -182,8 +182,7 @@ public class AdminQuery {
                     " CASE " +
                     "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
                     "    ELSE hl.fileUri" +
-                    " END as hospitalLogo," +                                              //[10]
-                    " has.appointmentServiceType.code as primaryAppointmentServiceTypeCode" + //[11]
+                    " END as hospitalLogo" +                                              //[10]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -191,13 +190,10 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " LEFT JOIN HospitalLogo hl ON hl.hospital.id=h.id" +
                     " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
-                    " LEFT JOIN HospitalAppointmentServiceType has ON h.id = has.hospital.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
                     " AND a.status='Y'" +
-                    " AND h.id=:hospitalId" +
-                    " AND has.status = 'Y'" +
-                    " AND has.isPrimary= 'Y'";
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
             " SELECT ami.id as adminMetaInfoId," +                   //[0]

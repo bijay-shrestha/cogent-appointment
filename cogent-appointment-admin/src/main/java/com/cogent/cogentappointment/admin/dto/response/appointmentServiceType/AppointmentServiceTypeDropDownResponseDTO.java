@@ -12,9 +12,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApptServiceTypeDropDownResponseDTO implements Serializable {
+public class AppointmentServiceTypeDropDownResponseDTO implements Serializable {
 
     private String name;
 
     private String code;
+
+    private Character isPrimary;
 }

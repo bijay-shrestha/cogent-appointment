@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.admin;
 
+import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,5 +43,5 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
 
     private Map<String, String> requestBody;
 
-    private String primaryAppointmentServiceTypeCode;
+    private List<AppointmentServiceTypeDropDownResponseDTO> hospitalAppointmentServiceType;
 }

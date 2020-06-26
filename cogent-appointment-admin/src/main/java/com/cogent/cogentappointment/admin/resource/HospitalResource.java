@@ -20,7 +20,9 @@ import java.security.NoSuchAlgorithmException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentServiceTypeConstants.BASE_APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -99,5 +101,12 @@ public class HospitalResource {
     @ApiOperation(FETCH_ALIAS_BY_ID)
     public ResponseEntity<?> fetchAliasById(@PathVariable("id") Long id) {
         return ok(hospitalService.fetchAliasById(id));
+    }
+
+    @GetMapping(BASE_APPOINTMENT_SERVICE_TYPE+HOSPITAL_ID_PATH_VARIABLE_BASE )
+    @ApiOperation(FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE)
+    public ResponseEntity<?> fetchAssignedHospitalAppointmentServiceType(@PathVariable("hospitalId")Long hospitalId){
+        return ok(hospitalService.fetchAssignedAppointmentServiceType(hospitalId));
+
     }
 }

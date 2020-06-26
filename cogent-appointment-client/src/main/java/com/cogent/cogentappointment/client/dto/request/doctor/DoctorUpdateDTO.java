@@ -44,7 +44,6 @@ public class DoctorUpdateDTO implements Serializable {
     @NotNull
     private Character genderCode;
 
-    @NotNull
     private Long hospitalId;
 
     @NotNull

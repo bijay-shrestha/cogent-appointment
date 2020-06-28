@@ -54,6 +54,7 @@ public class SwaggerConstants {
 
     public interface AdminFeatureConstant {
         String BASE_API_VALUE = "This is Admin Feature Resource";
+        String FAVOURITE_DETAILS_BY_ADMIN_ID = "Fetch Favourite Details by admin Id";
         String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";
 
     }

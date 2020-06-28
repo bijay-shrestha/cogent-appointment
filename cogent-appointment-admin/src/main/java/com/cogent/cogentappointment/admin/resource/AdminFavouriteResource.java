@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminFavouriteConstant.*;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminFeatureConstant.FAVOURITE_DETAILS_BY_ADMIN_ID;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminFavouriteConstants.BASE_ADMIN_FAVOURITE;
@@ -52,6 +53,14 @@ public class AdminFavouriteResource {
     public ResponseEntity<?> fetchHospitalForDropDown() {
         return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
     }
+
+    @GetMapping
+    @ApiOperation(FAVOURITE_DETAILS_BY_ADMIN_ID)
+    public ResponseEntity<?> getAdminFavouriteByAdminId() {
+        return ok(adminFavouriteService.getAdminFavouriteByAdminId());
+    }
+
+
 //
 //    @GetMapping(ICON + ACTIVE + MIN)
 //    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)

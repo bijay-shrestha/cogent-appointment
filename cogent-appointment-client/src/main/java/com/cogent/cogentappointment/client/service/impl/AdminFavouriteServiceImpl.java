@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -23,6 +24,7 @@ import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.client.utils.AdminUtils.parseToSaveFavourtie;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author rupak ON 2020/06/16-12:35 PM
@@ -102,11 +104,26 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
         Admin admin = adminRepository.findAdminById(requestDTO.getAdminId())
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getAdminId()));
 
-        AdminFavourite adminFavourite=adminFavouriteRepository.findAdminFavourite(admin.getId(),requestDTO.getUserMenuId())
+        AdminFavourite adminFavourite = adminFavouriteRepository.findAdminFavourite(admin.getId(), requestDTO.getUserMenuId())
                 .orElseThrow(() -> FAVOURITE_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getUserMenuId()));
         adminFavourite.setStatus(requestDTO.getStatus());
 
         log.info(SAVING_ADMIN_FAVOURITE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+    }
+
+    @Override
+    public List<Long> getAdminFavouriteByAdminId() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_ADMIN_FAVOURITE_PROCESS_STARTED, ADMIN_FAVOURITE);
+
+        List<Long> favouriteUserMenuIds = adminFavouriteRepository.findUserMenuIdByAdmin(getLoggedInHospitalId())
+                .orElse(Collections.emptyList());
+
+        log.info(FETCHING_ADMIN_FAVOURITE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
+
+        return favouriteUserMenuIds;
 
     }
 

@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminConstant.FETCH_DETAILS_FOR_DROPDOWN;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.SAVE_ADMIN_FAVOURITE_OPERATION;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.UPDATE_OPERATION;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.*;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFeatureConstant.FAVOURITE_DETAILS_BY_ADMIN_ID;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AdminFavouriteConstants.BASE_ADMIN_FAVOURITE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -47,6 +45,13 @@ public class AdminFavouriteResource {
         adminFavouriteService.update(requestDTO);
         return ok().build();
     }
+
+    @GetMapping
+    @ApiOperation(FAVOURITE_DETAILS_BY_ADMIN_ID)
+    public ResponseEntity<?> getAdminFavouriteByAdminId() {
+        return ok(adminFavouriteService.getAdminFavouriteByAdminId());
+    }
+
 
 
 //    @GetMapping(ACTIVE + MIN)

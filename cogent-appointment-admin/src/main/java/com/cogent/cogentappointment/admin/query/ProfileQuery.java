@@ -150,22 +150,15 @@ public class ProfileQuery {
                     " AND p.status = 'Y'" +
                     " AND a.status ='Y'" +
                     " AND " +
-                    " a.email =:email " +
+                    " (a.email =:email OR a.mobile_number =:email)" +
                     " AND h.is_company ='Y'" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
 
-    public static String PROFILE_AUDITABLE_QUERY() {
+    private static String PROFILE_AUDITABLE_QUERY() {
         return " p.createdBy as createdBy," +
                 " p.createdDate as createdDate," +
                 " p.lastModifiedBy as lastModifiedBy," +
                 " p.lastModifiedDate as lastModifiedDate";
-    }
-
-    public static String PROFILE_MENUS_AUDITABLE_QUERY() {
-        return " pm.createdBy as createdBy," +
-                " pm.createdDate as createdDate," +
-                " pm.lastModifiedBy as lastModifiedBy," +
-                " pm.lastModifiedDate as lastModifiedDate";
     }
 
 }

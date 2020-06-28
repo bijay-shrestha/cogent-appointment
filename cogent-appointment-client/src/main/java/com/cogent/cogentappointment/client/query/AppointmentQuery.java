@@ -506,12 +506,24 @@ public class AppointmentQuery {
                             " CONCAT_WS(' ',d.salutation, d.name)" +
                             " END as doctorName," +                                                //[13]
                             " a.status as status," +                                               //[14]
-                            " ard.refundAmount as refundAmount," +                                 //[15]
-                            " hpi.address as patientAddress," +                                    //[16]
+                            " CASE WHEN" +
+                            " a.status = 'RE'" +
+                            " THEN " +
+                            " (COALESCE(ard.refundAmount,0))" +                                                   //[12]
+                            " ELSE" +
+                            " 0" +
+                            " END AS refundAmount," +
+                            " hpi.address as patientAddress," +                                    //[15]
                             " atd.transactionDate as transactionDate," +                           //[17]
                             " am.name as appointmentMode," +                                        //[18]
                             " a.isFollowUp as isFollowUp," +                                        //[19]
-                            " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[20]
+                            " CASE WHEN" +
+                            " a.status!= 'RE'" +
+                            " THEN" +
+                            " atd.appointmentAmount" +
+                            " ELSE" +
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
+                            " END AS revenueAmount," +
                             " CASE WHEN" +
                             " (da.status is null OR da.status = 'N')" +
                             " THEN null" +

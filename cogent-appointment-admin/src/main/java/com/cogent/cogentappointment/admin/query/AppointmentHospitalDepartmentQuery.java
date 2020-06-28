@@ -305,12 +305,24 @@ public class AppointmentHospitalDepartmentQuery {
                             " atd.transactionNumber as transactionNumber," +                                    //[10]
                             " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                        //[11]
                             " a.status as status, " +                                                           //[12]
-                            " COALESCE(ard.refundAmount,0) as refundAmount," +                                  //[13]
+                            " CASE WHEN" +
+                            " a.status = 'RE'" +
+                            " THEN " +
+                            " (COALESCE(ard.refundAmount,0))" +                                                 //[12]
+                            " ELSE" +
+                            " 0" +
+                            " END AS refundAmount," +
                             " hpi.address as patientAddress," +                                                 //[14]
                             " atd.transactionDate as transactionDate," +                                       //[15]
                             " a.appointmentModeId.name as appointmentMode," +                                   //[16]
                             " a.isFollowUp as isFollowUp," +                                                    //[17]
-                            " atd.appointmentAmount - COALESCE(ard.refundAmount ,0) as revenueAmount," +        //[18]
+                            " CASE WHEN" +
+                            " a.status!= 'RE'" +
+                            " THEN" +
+                            " atd.appointmentAmount" +
+                            " ELSE" +
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
+                            " END AS revenueAmount," +
                             QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                                //[19]
                             " hd.name as hospitalDepartmentName," +                                             //[20]
                             " hb.billingMode.name as billingModeName," +                                        //[21]

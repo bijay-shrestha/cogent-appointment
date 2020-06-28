@@ -335,7 +335,7 @@ public class AppointmentQuery {
         return whereClause;
     }
 
-    public static Function<AppointmentLogSearchDTO, String> QUERY_TO_FETCH_APPOINTMENT_LOGS =
+    public static Function<AppointmentLogSearchDTO, String> QUERY_TO_FETCH_DOCTOR_APPOINTMENT_LOGS =
             (appointmentLogSearchDTO) ->
                     "SELECT" +
                             " h.name as hospitalName," +                                    //[0]
@@ -359,12 +359,24 @@ public class AppointmentQuery {
                             " CONCAT_WS(' ',d.salutation, d.name)" +
                             " END as doctorName," +                                          //[14]
                             " a.status as status," +                                       //[15]
-                            " ard.refundAmount as refundAmount," +                         //[16]
+                            " CASE WHEN" +
+                            " a.status = 'RE'" +
+                            " THEN " +
+                            " (COALESCE(ard.refundAmount,0))" +                                                   //[12]
+                            " ELSE" +
+                            " 0" +
+                            " END AS refundAmount," +
                             " hpi.address as patientAddress," +                            //[17]
                             " atd.transactionDate as transactionDate," +                    //[18]
                             " am.name as appointmentMode," +                                //[19]
                             " a.isFollowUp as isFollowUp," +                                //[20]
-                            " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[21]
+                            " CASE WHEN" +
+                            " a.status!= 'RE'" +
+                            " THEN" +
+                            " atd.appointmentAmount" +
+                            " ELSE" +
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
+                            " END AS revenueAmount," +
                             " da.fileUri as fileUri," +
                             QUERY_TO_CALCULATE_PATIENT_AGE +
                             " FROM Appointment a" +

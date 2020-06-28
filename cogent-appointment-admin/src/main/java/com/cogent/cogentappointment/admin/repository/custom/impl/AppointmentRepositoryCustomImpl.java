@@ -429,7 +429,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                  String appointmentServiceTypeCode) {
 
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_APPOINTMENT_LOGS.apply(searchRequestDTO))
+                QUERY_TO_FETCH_DOCTOR_APPOINTMENT_LOGS.apply(searchRequestDTO))
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
         int totalItems = query.getResultList().size();

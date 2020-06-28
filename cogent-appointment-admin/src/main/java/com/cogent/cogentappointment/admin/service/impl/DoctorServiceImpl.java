@@ -59,8 +59,8 @@ public class DoctorServiceImpl implements DoctorService {
     private final HospitalService hospitalService;
 
     private final DoctorAppointmentChargeRepository doctorAppointmentChargeRepository;
-
-    private final MinioFileService minioFileService;
+//
+//    private final MinioFileService minioFileService;
 
     private final DoctorAvatarRepository doctorAvatarRepository;
 
@@ -78,7 +78,9 @@ public class DoctorServiceImpl implements DoctorService {
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
                              FileService fileService,
-                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository, SalutationRepository salutationRepository, DoctorSalutationRepository doctorSalutationRepository, Validator validator) {
+                             DoctorAvatarRepository doctorAvatarRepository,
+                             SalutationRepository salutationRepository,
+                             DoctorSalutationRepository doctorSalutationRepository, Validator validator) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -86,7 +88,6 @@ public class DoctorServiceImpl implements DoctorService {
         this.doctorQualificationRepository = doctorQualificationRepository;
         this.hospitalService = hospitalService;
         this.doctorAppointmentChargeRepository = doctorAppointmentChargeRepository;
-        this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
         this.salutationRepository = salutationRepository;
         this.doctorSalutationRepository = doctorSalutationRepository;
@@ -496,7 +497,9 @@ public class DoctorServiceImpl implements DoctorService {
     private List<FileUploadResponseDTO> uploadFiles(Doctor doctor, MultipartFile[] file) {
         String subDirectoryLocation = doctor.getName() + HYPHEN + getTimeInMillisecondsFromLocalDate();
 
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectoryLocation, file);
+//        return minioFileService.addAttachmentIntoSubDirectory(subDirectoryLocation, file);
+
+        return null;
     }
 
     private void saveDoctorAppointmentCharge(Doctor doctor, Double appointmentCharge, Double appointmentFollowUpCharge) {

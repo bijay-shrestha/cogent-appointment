@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.commons.configuration;
+package com.cogent.cogentappointment.client.configuration;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,19 +11,19 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class MinIOProperties {
 
-    @Value("${url}")
+    @Value("${spring.minio.url}")
     private String URL;
 
-    @Value("${bucket-name}")
+    @Value("${spring.minio.bucket}")
     private String BUCKET_NAME;
 
-    @Value("${access-key}")
+    @Value("${spring.minio.access-key}")
     private String ACCESS_KEY;
 
-    @Value("${secret-key}")
+    @Value("${spring.minio.secret-key}")
     private String SECRET_KEY;
 
-    @Value("${expiry-time}")
+    @Value("${spring.minio.expiry-time}")
     private String EXPIRY_TIME;
 
 

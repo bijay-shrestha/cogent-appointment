@@ -33,7 +33,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -70,8 +71,6 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
-    private final MinioFileService minioFileService;
-
     private final EmailService emailService;
 
     private final ProfileService profileService;
@@ -97,7 +96,6 @@ public class AdminServiceImpl implements AdminService {
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
-        this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
         this.adminFeatureService = adminFeatureService;
@@ -437,7 +435,9 @@ public class AdminServiceImpl implements AdminService {
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
         String subDirectory = admin.getEmail();
 
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+//        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+
+        return null;
     }
 
     private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {

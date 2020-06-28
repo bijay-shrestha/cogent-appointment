@@ -81,7 +81,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
 
-    private final MinioFileService minioFileService;
+//    private final MinioFileService minioFileService;
 
     private final EmailService emailService;
 
@@ -111,7 +111,6 @@ public class AdminServiceImpl implements AdminService {
                             AdminConfirmationTokenRepository confirmationTokenRepository,
                             DashboardFeatureRepository dashboardFeatureRepository,
                             AdminDashboardFeatureRepository adminDashboardFeatureRepository,
-                            MinioFileService minioFileService,
                             EmailService emailService,
                             ProfileService profileService,
                             AdminFeatureService adminFeatureService,
@@ -129,7 +128,6 @@ public class AdminServiceImpl implements AdminService {
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
-        this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
         this.adminFeatureService = adminFeatureService;
@@ -735,7 +733,9 @@ public class AdminServiceImpl implements AdminService {
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
         String subDirectory = admin.getEmail();
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+//        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+
+        return null;
     }
 
     private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.commons.dto.request.file.FileRequestDTO;
+import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
 import com.cogent.cogentappointment.commons.service.MinIOService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
  * @author rupak ON 2020/06/28-11:42 AM
  */
 @RestController
-@RequestMapping(API_V1 +"/file")
+@RequestMapping(API_V1 + "/file")
 public class MinIOResource {
 
     private final MinIOService minIOService;
@@ -25,9 +25,9 @@ public class MinIOResource {
     }
 
     @PutMapping
-    public ResponseEntity<?> getPresignedObjectURL(@RequestBody FileRequestDTO fileRequestDTO) {
+    public ResponseEntity<?> getPresignedObjectURL(@RequestBody FileURLRequestDTO fileURLRequestDTO) {
 
-        String url = minIOService.getPresignedObjectURL(fileRequestDTO);
+        String url = minIOService.getPresignedObjectURL(fileURLRequestDTO);
 
         return new ResponseEntity<>(url, HttpStatus.OK);
 

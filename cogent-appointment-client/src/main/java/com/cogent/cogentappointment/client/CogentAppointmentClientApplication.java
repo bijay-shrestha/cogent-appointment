@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client;
 
 import com.cogent.cogentappointment.client.configuration.YamlPropertySourceFactory;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -70,6 +71,10 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
         return new RestTemplate();
     }
 
+    @Bean
+    public MinIOProperties minIOProperties() {
+        return new MinIOProperties();
+    }
 
 
 }

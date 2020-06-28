@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.file.FileURLRequestDTO;
-import com.cogent.cogentappointment.client.service.MinIOService;
+import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
+import com.cogent.cogentappointment.commons.service.MinIOService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +23,7 @@ public class MinIOResource {
     public MinIOResource(MinIOService minIOService) {
         this.minIOService = minIOService;
     }
+
 
     @PutMapping
     public ResponseEntity<?> getPresignedObjectURL(@RequestBody FileURLRequestDTO fileURLRequestDTO) {

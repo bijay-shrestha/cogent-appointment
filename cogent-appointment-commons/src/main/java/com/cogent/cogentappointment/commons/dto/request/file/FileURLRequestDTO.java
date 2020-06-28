@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.file;
+package com.cogent.cogentappointment.commons.dto.request.file;
 
 import lombok.Getter;
 

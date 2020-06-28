@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * @author rupak ON 2020/06/28-12:47 PM
  */
-@Servicecl
+@Service
 @Slf4j
 @Transactional
 public class MinIOServiceImpl implements MinIOService {
@@ -40,7 +40,7 @@ public class MinIOServiceImpl implements MinIOService {
 //
 //            String url = minioClient.getObjectUrl("my-bucketname", "my-objectname");
 
-            MinioClient minioClient = new MinioClient("https://uat-presigned.cogenthealth.com.np",
+            MinioClient minioClient = new MinioClient("http://10.13.186.179:9000",
                     minIOProperties.getACCESS_KEY(),
                     minIOProperties.getSECRET_KEY());
 

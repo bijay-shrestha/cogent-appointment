@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author rupak ON 2020/06/28-11:42 AM
  */
-//@RestController
-//@RequestMapping("/minio")
-//public class MinIOResource {
-//
-//
-//
-//}
+@RestController
+@RequestMapping("/minio")
+public class MinIOResource {
+
+
+
+}

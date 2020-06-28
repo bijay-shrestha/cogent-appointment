@@ -49,17 +49,17 @@ public class AdminFavouriteResource {
     }
 
 
-    @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchHospitalForDropDown() {
-        return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
-    }
-
-    @GetMapping(ICON + ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchHospitalForDropDownWithIcon() {
-        return ok(adminFavouriteService.fetchAdminFavouriteForDropDownWithIcon());
-    }
+//    @GetMapping(ACTIVE + MIN)
+//    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+//    public ResponseEntity<?> fetchHospitalForDropDown() {
+//        return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
+//    }
+//
+//    @GetMapping(ICON + ACTIVE + MIN)
+//    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+//    public ResponseEntity<?> fetchHospitalForDropDownWithIcon() {
+//        return ok(adminFavouriteService.fetchAdminFavouriteForDropDownWithIcon());
+//    }
 
 
 }

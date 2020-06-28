@@ -40,6 +40,8 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
 
     private Character isSideBarCollapse;
 
+    private List<Long> favouriteUserMenuId;
+
     private Map<String, List<?>> apiIntegration;
 
     private Map<String, String> requestBody;

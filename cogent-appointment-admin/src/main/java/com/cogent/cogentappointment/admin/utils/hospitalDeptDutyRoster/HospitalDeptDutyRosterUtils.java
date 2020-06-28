@@ -4,7 +4,9 @@ import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.count.AppointmentCountWithStatusDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.count.HospitalDeptAppointmentStatusCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
@@ -18,6 +20,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.*;
+import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.getAppointmentSlotCounts;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocalDateBetweenInclusive;
 
@@ -132,7 +136,7 @@ public class HospitalDeptDutyRosterUtils {
 
                                 HospitalDeptDutyRosterStatusResponseDTO responseDTO = HospitalDeptDutyRosterStatusResponseDTO.builder()
                                         .uniqueIdentifier(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString())
-                                                +"-"+
+                                                + "-" +
                                                 localDate)
                                         .date(localDate)
                                         .startTime(weekMatchedSplit[0])
@@ -163,7 +167,7 @@ public class HospitalDeptDutyRosterUtils {
 
         List<HospitalDeptDutyRosterStatusResponseDTO> unmatchedList = hospitalDeptDutyRosterStatus.stream()
                 .filter(rosterStatus -> (hospitalDeptDutyRosterOverrideStatus.stream()
-                        .filter(overrideStatus -> !Objects.isNull(overrideStatus.getHospitalDepartmentRoomInfoId())?
+                        .filter(overrideStatus -> !Objects.isNull(overrideStatus.getHospitalDepartmentRoomInfoId()) ?
                                 ((overrideStatus.getDate().equals(rosterStatus.getDate()))
                                         && (overrideStatus.getHospitalDepartmentId().equals(rosterStatus.getHospitalDepartmentId()))
                                         && (overrideStatus.getHospitalDepartmentRoomInfoId()
@@ -271,7 +275,6 @@ public class HospitalDeptDutyRosterUtils {
 
         return responseDTO;
     }
-
 
 
 }

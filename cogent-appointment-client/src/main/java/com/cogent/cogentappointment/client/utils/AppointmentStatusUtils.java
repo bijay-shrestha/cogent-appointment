@@ -553,4 +553,26 @@ public class AppointmentStatusUtils {
         return parseAppointmentStatusCountValues(vacantCount, bookedCount, checkedInCount,
                 cancelledCount, followUpCount);
     }
+
+    public static Long getAppointmentSlotCounts(
+            String startTime,
+            String endTime,
+            int durationInMinutes) {
+
+        final Duration duration = Minutes.minutes(durationInMinutes).toStandardDuration();
+
+        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+
+        Long count=0L;
+
+        do {
+
+            dateTime = dateTime.plus(duration);
+
+            count+=1;
+
+        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return count;
+    }
 }

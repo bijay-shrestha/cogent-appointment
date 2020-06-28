@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.repository.custom;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
@@ -47,4 +48,7 @@ public interface HospitalDeptDutyRosterRepositoryCustom {
     RosterDetailsForStatus fetchHospitalDepartmentDutyRosterDetailsByDeptId(Long hospitalDepartmentId,
                                                                             Long hospitalDepartmentRoomInfoId,
                                                                             Date date);
+
+    List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterDetails(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO);
 }

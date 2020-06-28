@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.service;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.HospitalDeptAppointmentStatusCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 
@@ -19,5 +20,8 @@ public interface AppointmentStatusService {
             HospitalDeptAppointmentStatusRequestDTO requestDTO);
 
     List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptAppointmentStatusRoomwise(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO);
+
+    HospitalDeptAppointmentStatusCountResponseDTO fetchHospitalDeptAppointmentStatusCount(
             HospitalDeptAppointmentStatusRequestDTO requestDTO);
 }

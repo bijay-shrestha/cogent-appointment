@@ -86,6 +86,7 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
         String FETCH_DEPARTMENT_APPOINTMENT_STATUS = "Fetch department appointment status.";
         String FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "Fetch department appointment status by specific roomId.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS_COUNT = "Fetch department appointment status count.";
     }
 
     public interface AppointmentTransferConstant {

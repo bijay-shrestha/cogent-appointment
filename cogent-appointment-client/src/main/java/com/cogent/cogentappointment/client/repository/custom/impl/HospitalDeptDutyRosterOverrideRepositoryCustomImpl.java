@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.query.AppointmentStatusCountQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS_COUNT;
 import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOverrideQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createNativeQuery;
@@ -159,5 +161,27 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
         }catch (NoResultException e){
             return rosterDetailsForStatus;
         }
+    }
+
+    @Override
+    public List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterOverrideDetails(HospitalDeptAppointmentStatusRequestDTO requestDTO,
+                                                                                                 List<Long> rosterIdList) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS_COUNT(requestDTO,
+                rosterIdList))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+
+        if (rosterIdList.size() > 0)
+            query.setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID, rosterIdList);
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        List<Object[]> results = query.getResultList();
+
+        return parseQueryResultToHospitalDeptDutyRosterStatusCountResponseDTO(results,
+                requestDTO.getFromDate(),
+                requestDTO.getToDate());
     }
 }

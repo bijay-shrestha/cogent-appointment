@@ -31,6 +31,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepar
 import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.AppointmentCountWithStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
@@ -169,4 +170,8 @@ public interface AppointmentRepositoryCustom {
 
     DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO,
                                                                                Pageable pageable);
+
+    List<AppointmentCountWithStatusDTO> getAppointmentCountWithStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO);
+
+    Long getAppointmentFollowUpCount(HospitalDeptAppointmentStatusRequestDTO requestDTO);
 }

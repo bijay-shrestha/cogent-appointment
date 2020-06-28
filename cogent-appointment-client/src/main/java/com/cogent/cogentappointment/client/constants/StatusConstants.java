@@ -22,5 +22,6 @@ public class StatusConstants {
         String VACANT = "V";
         String ALL = "";
         String FOLLOW_UP = "F";
+        String BOOKED = "PA";
     }
 }

@@ -11,19 +11,19 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class MinIOProperties {
 
-    @Value("${spring.minio.url}")
+    @Value("${minio.url}")
     private String URL;
 
-    @Value("${spring.minio.bucket}")
+    @Value("${minio.bucket}")
     private String BUCKET_NAME;
 
-    @Value("${spring.minio.access-key}")
+    @Value("${minio.access-key}")
     private String ACCESS_KEY;
 
-    @Value("${spring.minio.secret-key}")
+    @Value("${minio.secret-key}")
     private String SECRET_KEY;
 
-    @Value("${spring.minio.expiry-time}")
+    @Value("${minio.expiry-time}")
     private String EXPIRY_TIME;
 
 

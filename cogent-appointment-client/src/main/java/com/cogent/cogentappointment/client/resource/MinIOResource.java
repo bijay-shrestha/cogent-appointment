@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.configuration.MinIOProperties;
 import com.cogent.cogentappointment.client.dto.request.file.FileURLRequestDTO;
-import com.cogent.cogentappointment.commons.dto.request.file.FileRequestDTO;
-import com.cogent.cogentappointment.commons.service.MinIOService;
+import com.cogent.cogentappointment.client.service.MinIOService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,26 +19,15 @@ import static com.cogent.cogentappointment.client.constants.WebResourceKeyConsta
 public class MinIOResource {
 
     private final MinIOService minIOService;
-    private final MinIOProperties minIOProperties;
 
-    public MinIOResource(MinIOService minIOService, MinIOProperties minIOProperties) {
+    public MinIOResource(MinIOService minIOService) {
         this.minIOService = minIOService;
-        this.minIOProperties = minIOProperties;
     }
 
     @PutMapping
     public ResponseEntity<?> getPresignedObjectURL(@RequestBody FileURLRequestDTO fileURLRequestDTO) {
 
-        FileRequestDTO requestDTO = FileRequestDTO.builder()
-                .accessKey(minIOProperties.getACCESS_KEY())
-                .secretKey(minIOProperties.getSECRET_KEY())
-                .url(minIOProperties.getURL())
-                .bucket(minIOProperties.getBUCKET_NAME())
-                .fileName(fileURLRequestDTO.getFileName())
-                .expiryTime(minIOProperties.getEXPIRY_TIME())
-                .build();
-
-        String url = minIOService.getPresignedObjectURL(requestDTO);
+        String url = minIOService.getPresignedObjectURL(fileURLRequestDTO);
 
         return new ResponseEntity<>(url, HttpStatus.OK);
 

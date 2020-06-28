@@ -37,13 +37,15 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public String loginUser(LoginRequestDTO requestDTO) {
-        Authentication authentication = null;
-        try {
-            authentication = authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
-        } catch (Exception e) {
-            throw new UnauthorisedException(Admin.class, "Invalid Username or Password");
-        }
+
+//        try {
+//            authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
+//        } catch (Exception e) {
+//            throw new UnauthorisedException(Admin.class, "Invalid Username or Password");
+//        }
         return hmacUtils.getHash(authentication);
     }
 

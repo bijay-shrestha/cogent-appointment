@@ -235,6 +235,31 @@ public class AppointmentUtils {
 
         hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
 
+        List<String> strings=
+                hospitalDeptAppointmentStatusCountResponseDTO.getAppointmentStatusCount().entrySet()
+                        .stream().map(Map.Entry::getKey).collect(Collectors.toList());
+
+        if (!strings.contains(APPROVED)){
+            appointmentStatusCount.put(APPROVED,0L);
+            hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+        }
+
+        if (!strings.contains(FOLLOW_UP)){
+            appointmentStatusCount.put(FOLLOW_UP,0L);
+            hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+        }
+
+        if (!strings.contains(BOOKED)){
+            appointmentStatusCount.put(BOOKED,0L);
+            hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+        }
+
+        if (!strings.contains(CANCELLED)){
+            appointmentStatusCount.put(CANCELLED,0L);
+            hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+        }
+
+
         return hospitalDeptAppointmentStatusCountResponseDTO;
 
     }

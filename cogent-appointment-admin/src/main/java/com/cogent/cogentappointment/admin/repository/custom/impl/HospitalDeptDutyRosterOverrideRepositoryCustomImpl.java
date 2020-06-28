@@ -1,10 +1,11 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalDeptDutyRosterOverrideRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRosterOverride;
@@ -26,7 +27,6 @@ import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterOve
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createNativeQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.parseQueryResultToHospitalDeptDutyRosterStatusCountResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.parseQueryResultToHospitalDeptDutyRosterStatusResponseDTO;
 
@@ -152,23 +152,25 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
     @Override
     public RosterDetailsForStatus fetchOverrideRosterDetails(RosterDetailsForStatus rosterDetailsForStatus,
                                                              Date appointmentDate) {
-        Query query =createNativeQuery.apply(entityManager,QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID)
-                .setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID,rosterDetailsForStatus.getRosterId())
-                .setParameter(DATE,utilDateToSqlDate(appointmentDate));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID)
+                .setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID, rosterDetailsForStatus.getRosterId())
+                .setParameter(DATE, utilDateToSqlDate(appointmentDate));
 
-        try{
-            Object[] result= (Object[]) query.getSingleResult();
+        try {
+            Object[] result = (Object[]) query.getSingleResult();
             rosterDetailsForStatus.setStartTime(result[0].toString());
             rosterDetailsForStatus.setEndTime(result[1].toString());
             return rosterDetailsForStatus;
-        }catch (NoResultException e){
+        } catch (NoResultException e) {
             return rosterDetailsForStatus;
         }
     }
 
     @Override
-    public List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterOverrideDetails(HospitalDeptAppointmentStatusRequestDTO requestDTO,
-                                                                                                 List<Long> rosterIdList) {
+    public List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterOverrideDetails(
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO,
+            List<Long> rosterIdList) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS_COUNT(requestDTO,
                 rosterIdList))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))

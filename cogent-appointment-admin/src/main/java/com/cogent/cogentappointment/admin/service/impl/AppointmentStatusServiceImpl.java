@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAndWeekdaysDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.*;
@@ -224,7 +225,9 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     @Override
-    public HospitalDeptAppointmentStatusCountResponseDTO fetchHospitalDeptAppointmentStatusCount(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public HospitalDeptAppointmentStatusCountResponseDTO fetchHospitalDeptAppointmentStatusCount(
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_APPOINTMENT_STATUS_COUNT);
@@ -248,7 +251,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         return responseDTO;
     }
 
-    private List<HospitalDepartmentRosterDetailsDTO> getRosterDetailsForAppointmentStatusCount(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    private List<HospitalDepartmentRosterDetailsDTO> getRosterDetailsForAppointmentStatusCount(HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
         List<HospitalDepartmentRosterDetailsDTO> rosterDetailsDTOS =
                 deptDutyRosterRepository.fetchHospitalDepartmentRosterDetails(requestDTO);
 
@@ -648,14 +651,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     private List<AppointmentCountWithStatusDTO> getAppointmentCountWithStatus(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         return appointmentRepository.getAppointmentCountWithStatus(requestDTO);
 
     }
 
     private Long getAppointmentFollowUpCount(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         return appointmentRepository.getAppointmentFollowUpCount(requestDTO);
 

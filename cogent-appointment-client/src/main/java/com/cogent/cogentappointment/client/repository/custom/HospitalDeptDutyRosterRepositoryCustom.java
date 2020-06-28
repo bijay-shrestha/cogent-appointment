@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
@@ -50,5 +51,5 @@ public interface HospitalDeptDutyRosterRepositoryCustom {
                                                                             Date date);
 
     List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterDetails(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO);
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO);
 }

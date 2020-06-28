@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class AppointmentStatusCountQuery {
 //                    " AND wd.name IN (:weekDayName)";
 
     public static String QUERY_TO_FETCH_ROSTER_DETAILS_FOR_STATUS_COUNT(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         String SQL =
                 "SELECT" +
@@ -68,7 +69,7 @@ public class AppointmentStatusCountQuery {
     }
 
     public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS_COUNT(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO, List<Long> rosterIdList) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO, List<Long> rosterIdList) {
 
         String SQL =
                 "SELECT" +
@@ -106,7 +107,7 @@ public class AppointmentStatusCountQuery {
     }
 
     public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS_COUNT(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         String SQL = "SELECT " +
                 " COUNT(a.id) as count," +
@@ -136,7 +137,7 @@ public class AppointmentStatusCountQuery {
     }
 
     public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOR_APPOINTMENT_STATUS_FOLLOW_UP_COUNT(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         String SQL = "SELECT " +
                 " COUNT(a.id) as count" +

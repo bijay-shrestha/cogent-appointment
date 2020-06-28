@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.RosterDetailsForStatus;
@@ -44,7 +45,7 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
     RosterDetailsForStatus fetchOverrideRosterDetails(RosterDetailsForStatus rosterDetailsForStatus,
                                                       Date appointmentDate);
 
-    List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterOverrideDetails(HospitalDeptAppointmentStatusRequestDTO requestDTO,
+    List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterOverrideDetails(HospitalDeptAppointmentStatusCountRequestDTO requestDTO,
                                                                                           List<Long> rosterIdList);
 
 }

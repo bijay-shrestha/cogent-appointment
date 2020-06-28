@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentStatusService;
 import io.swagger.annotations.Api;
@@ -47,19 +48,22 @@ public class AppointmentStatusResource {
     @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS)
     public ResponseEntity<?> fetchHospitalDeptAppointmentStatus(
             @Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
         return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusResponseDTO(requestDTO));
     }
 
     @PutMapping(BASE_HOSPITAL_DEPARTMENT +ROOM+ STATUS)
     @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE)
-    public ResponseEntity<?> fetchHospitalDeptAppointmentStatusRoomwise(@Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchHospitalDeptAppointmentStatusRoomwise(
+            @Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
         return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusRoomwise(requestDTO));
     }
 
     @PutMapping(BASE_HOSPITAL_DEPARTMENT + STATUS +COUNT)
     @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS_COUNT)
     public ResponseEntity<?> fetchHospitalDeptAppointmentStatusCount(
-            @Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            @Valid @RequestBody HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusCount(requestDTO));
     }

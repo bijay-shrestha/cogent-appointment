@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAndWeekdaysDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentDetailsForStatus;
@@ -183,7 +184,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     @Override
     public HospitalDeptAppointmentStatusCountResponseDTO fetchHospitalDeptAppointmentStatusCount(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -208,7 +209,9 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         return responseDTO;
     }
 
-    private List<HospitalDepartmentRosterDetailsDTO> getRosterDetailsForAppointmentStatusCount(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    private List<HospitalDepartmentRosterDetailsDTO> getRosterDetailsForAppointmentStatusCount(
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
+
         List<HospitalDepartmentRosterDetailsDTO> rosterDetailsDTOS =
                 deptDutyRosterRepository.fetchHospitalDepartmentRosterDetails(requestDTO);
 
@@ -703,14 +706,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     private List<AppointmentCountWithStatusDTO> getAppointmentCountWithStatus(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         return appointmentRepository.getAppointmentCountWithStatus(requestDTO);
 
     }
 
     private Long getAppointmentFollowUpCount(
-            HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         return appointmentRepository.getAppointmentFollowUpCount(requestDTO);
 

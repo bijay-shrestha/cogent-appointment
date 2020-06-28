@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
@@ -232,7 +233,8 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     }
 
     @Override
-    public List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterDetails(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterDetails
+            (HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
 
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_ROSTER_DETAILS_FOR_STATUS_COUNT(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))

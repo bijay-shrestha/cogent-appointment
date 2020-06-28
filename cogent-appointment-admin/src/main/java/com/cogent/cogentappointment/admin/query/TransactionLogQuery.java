@@ -42,7 +42,7 @@ public class TransactionLogQuery {
                     " am.name as appointmentMode," +                                            //[18]
                     " a.isFollowUp as isFollowUp," +                                            //[19]
                     " hpi.address as patientAddress," +                                         //[20]
-                    " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," +   //[21]
+                    " DATE_FORMAT(atd.transactionDate, '%h:%i %p') as transactionTime," +       //[21]
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[22]
                     " da.fileUri as fileUri," +                                                     //[23]
                     QUERY_TO_CALCULATE_PATIENT_AGE +                                                //[24]

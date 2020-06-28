@@ -43,7 +43,8 @@ public class TransactionLogQuery {
                     " a.isFollowUp as isFollowUp," +                                //[19]
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," +     //[21]
                     " da.fileUri as fileUri," +                                                        //[22]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " DATE_FORMAT(atd.transactionDate, '%h:%i %p') as transactionTime," +                //[23]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                                                   //[24]
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +

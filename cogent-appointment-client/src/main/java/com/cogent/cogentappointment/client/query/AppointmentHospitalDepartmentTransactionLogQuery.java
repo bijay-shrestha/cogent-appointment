@@ -43,7 +43,8 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
                             " hb.billingMode.name as billingModeName," +                                        //[21]
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
-                            " end as roomNumber" +                                                             //[22]
+                            " end as roomNumber," +                                                             //[22]
+                            " DATE_FORMAT(atd.transactionDate, '%h:%i %p') as transactionTime" +                //[23]
                             " FROM Appointment a" +
                             " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +

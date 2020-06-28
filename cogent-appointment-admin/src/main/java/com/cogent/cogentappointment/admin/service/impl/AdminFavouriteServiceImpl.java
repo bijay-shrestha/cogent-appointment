@@ -21,7 +21,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
-import static com.cogent.cogentappointment.admin.utils.AdminUtils.parseToSaveFavourtie;
+import static com.cogent.cogentappointment.admin.utils.AdminUtils.parseToSaveFavourite;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -86,10 +86,8 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
         Admin admin = adminRepository.findAdminById(saveRequestDTO.getAdminId())
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(saveRequestDTO.getAdminId()));
 
-        Favourite favourite = favouriteRepository.findActiveFavouriteById(saveRequestDTO.getFavouriteId())
-                .orElseThrow(() -> FAVOURITE_WITH_GIVEN_ID_NOT_FOUND.apply(saveRequestDTO.getFavouriteId()));
 
-        adminFavouriteRepository.save(parseToSaveFavourtie(favourite, admin));
+        adminFavouriteRepository.save(parseToSaveFavourite(saveRequestDTO.getUserMenuId(),admin));
 
         log.info(SAVING_ADMIN_FAVOURITE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
@@ -105,11 +103,8 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
         Admin admin = adminRepository.findAdminById(requestDTO.getAdminId())
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getAdminId()));
 
-        Favourite favourite = favouriteRepository.findActiveFavouriteById(requestDTO.getFavouriteId())
-                .orElseThrow(() -> FAVOURITE_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getFavouriteId()));
-
-        AdminFavourite adminFavourite=adminFavouriteRepository.findAdminFavourite(admin.getId(),favourite.getId())
-                .orElseThrow(() -> FAVOURITE_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getFavouriteId()));
+        AdminFavourite adminFavourite=adminFavouriteRepository.findAdminFavourite(admin.getId(),requestDTO.getUserMenuId())
+                .orElseThrow(() -> FAVOURITE_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getUserMenuId()));
         adminFavourite.setStatus(requestDTO.getStatus());
 
         log.info(SAVING_ADMIN_FAVOURITE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));

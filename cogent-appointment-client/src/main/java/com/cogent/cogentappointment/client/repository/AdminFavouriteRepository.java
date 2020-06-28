@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface AdminFavouriteRepository extends JpaRepository<AdminFavourite, Long>,
         AdminFavouriteRepositoryCustom {
 
-    @Query("SELECT af FROM AdminFavourite af WHERE af.adminId.id=:adminId AND af.favouriteId.id=:favouriteId AND af.status!='D'")
-    Optional<AdminFavourite> findAdminFavourite(@Param("adminId") Long id, @Param("favouriteId") Long favouriteId);
+    @Query("SELECT af FROM AdminFavourite af WHERE af.adminId.id=:adminId AND af.userMenuId=:userMenuId AND af.status!='D'")
+    Optional<AdminFavourite> findAdminFavourite(@Param("adminId") Long id, @Param("userMenuId") Long userMenuId);
 }

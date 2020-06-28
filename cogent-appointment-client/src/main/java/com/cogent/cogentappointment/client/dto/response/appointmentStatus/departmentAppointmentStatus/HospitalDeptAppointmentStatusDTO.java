@@ -19,6 +19,4 @@ public class HospitalDeptAppointmentStatusDTO implements Serializable {
     private List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterInfo;
 
     private List<HospitalDeptAndDoctorDTO> hospitalDeptAndDoctorInfo;
-
-    private Map<String, Integer> appointmentStatusCount;
 }

@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
@@ -185,15 +186,16 @@ public class HospitalDeptDutyRosterUtils {
         return hospitalDeptDutyRosterOverrideStatus;
     }
 
-    public static List<HospitalDeptDutyRosterStatusResponseDTO> mergeOverrideAndActualHospitalDeptDutyRosterWithoutRoom(
-            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus,
-            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus) {
+    public static List<HospitalDepartmentRosterDetailsDTO> mergeOverrideAndActualHospitalDeptDutyRosterForCount(
+            List<HospitalDepartmentRosterDetailsDTO> hospitalDeptDutyRosterOverrideStatus,
+            List<HospitalDepartmentRosterDetailsDTO> hospitalDeptDutyRosterStatus) {
 
 
         /*COUNT <1 WILL RETURN UNMATCHED VALUES AND COUNT > 0 WILL RETURN MATCHED VALUES*/
-        List<HospitalDeptDutyRosterStatusResponseDTO> unmatchedList = hospitalDeptDutyRosterStatus.stream()
+        List<HospitalDepartmentRosterDetailsDTO> unmatchedList = hospitalDeptDutyRosterStatus.stream()
                 .filter(rosterStatus -> (hospitalDeptDutyRosterOverrideStatus.stream()
-                        .filter(overrideStatus -> (overrideStatus.getDate().equals(rosterStatus.getDate()))
+                        .filter(overrideStatus -> (overrideStatus.getRosterId().equals(rosterStatus.getRosterId())
+                                && overrideStatus.getDate().equals(rosterStatus.getDate()))
                                 && (overrideStatus.getHospitalDepartmentId().equals(rosterStatus.getHospitalDepartmentId())))
                         .count()) < 1)
                 .collect(Collectors.toList());
@@ -202,11 +204,73 @@ public class HospitalDeptDutyRosterUtils {
         hospitalDeptDutyRosterOverrideStatus.addAll(unmatchedList);
 
         /*SORT BY DATE*/
-        hospitalDeptDutyRosterOverrideStatus.sort(Comparator.comparing(HospitalDeptDutyRosterStatusResponseDTO::getDate));
+        hospitalDeptDutyRosterOverrideStatus.sort(Comparator.comparing(HospitalDepartmentRosterDetailsDTO::getDate));
 
         return hospitalDeptDutyRosterOverrideStatus;
     }
 
+    public static List<HospitalDepartmentRosterDetailsDTO> parseQueryResultToHospitalDeptDutyRosterStatusCountResponseDTOS(
+            List<Object[]> queryResults,
+            Date searchFromDate,
+            Date searchToDate) {
+
+        List<HospitalDepartmentRosterDetailsDTO> responseDTO = new ArrayList<>();
+
+        LocalDate searchFromLocalDate = convertDateToLocalDate(searchFromDate);
+        LocalDate searchToLocalDate = convertDateToLocalDate(searchToDate);
+
+        queryResults.forEach(result -> {
+
+            final int START_DATE_INDEX = 0;
+            final int END_DATE_INDEX = 1;
+            final int ROSTER_GAP_DURATION_INDEX = 2;
+            final int HOSPITAL_DEPARTMENT_ID_INDEX = 3;
+            final int HOSPITAL_DEPARTMENT_NAME_INDEX = 4;
+            final int DEPARTMENT_TIME_DETAILS_INDEX = 5;
+            final int DUTY_ROSTER_ID_INDEX = 6;
+
+
+            LocalDate startLocalDate = convertDateToLocalDate((Date) result[START_DATE_INDEX]);
+            LocalDate endLocalDate = convertDateToLocalDate((Date) result[END_DATE_INDEX]);
+
+            List<String> timeDetails = Arrays.asList(result[DEPARTMENT_TIME_DETAILS_INDEX].toString()
+                    .split(StringConstant.COMMA_SEPARATED));
+
+            Stream.iterate(startLocalDate, date -> date.plusDays(1))
+                    .limit(ChronoUnit.DAYS.between(startLocalDate, endLocalDate) + 1)
+                    .forEach(localDate -> {
+
+                        if (isLocalDateBetweenInclusive(searchFromLocalDate, searchToLocalDate, localDate)) {
+
+                            String dayOfWeek = localDate.getDayOfWeek().toString();
+
+                            String weekMatched = timeDetails.stream()
+                                    .filter(str -> str.contains(dayOfWeek))
+                                    .findAny().orElse(null);
+
+                            if (!Objects.isNull(weekMatched)) {
+
+                                /*START TIME - END TIME - DAY OFF STATUS - WEEK NAME*/
+                                String[] weekMatchedSplit = weekMatched.split(StringConstant.HYPHEN);
+
+                                HospitalDepartmentRosterDetailsDTO response = HospitalDepartmentRosterDetailsDTO.builder()
+                                        .date(localDate)
+                                        .startTime(weekMatchedSplit[0])
+                                        .endTime(weekMatchedSplit[1])
+                                        .hospitalDepartmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
+                                        .hospitalDepartmentName(result[HOSPITAL_DEPARTMENT_NAME_INDEX].toString())
+                                        .rosterGapDuration(Integer.parseInt(result[ROSTER_GAP_DURATION_INDEX].toString()))
+                                        .rosterId(Long.parseLong(result[DUTY_ROSTER_ID_INDEX].toString()))
+                                        .build();
+
+                                responseDTO.add(response);
+                            }
+                        }
+                    });
+        });
+
+        return responseDTO;
+    }
 
 
 

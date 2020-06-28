@@ -459,4 +459,5 @@ public class AppointmentHospitalDepartmentQuery {
                         GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
     }
 
+
 }

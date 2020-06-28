@@ -17,6 +17,7 @@ import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.Appo
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.COUNT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.STATUS;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.ROOM;
@@ -56,5 +57,13 @@ public class AppointmentStatusResource {
             @Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusRoomwise(requestDTO));
+    }
+
+    @PutMapping(BASE_HOSPITAL_DEPARTMENT + STATUS +COUNT)
+    @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS_COUNT)
+    public ResponseEntity<?> fetchHospitalDeptAppointmentStatusCount(
+            @Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
+        return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusCount(requestDTO));
     }
 }

@@ -4,6 +4,10 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.save.Appointme
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 
+import java.util.Date;
+
+import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.datePlusTime;
+
 /**
  * @author smriti ON 04/02/2020
  */
@@ -15,7 +19,7 @@ public class AppointmentTransactionDetailUtils {
 
         AppointmentTransactionDetail transactionDetail = new AppointmentTransactionDetail();
         transactionDetail.setAppointment(appointment);
-        transactionDetail.setTransactionDate(requestDTO.getTransactionDate());
+        transactionDetail.setTransactionDate(datePlusTime(requestDTO.getTransactionDate(), new Date()));
         transactionDetail.setTransactionNumber(requestDTO.getTransactionNumber());
         transactionDetail.setAppointmentAmount(requestDTO.getAppointmentAmount());
         transactionDetail.setDiscountAmount(requestDTO.getDiscountAmount());

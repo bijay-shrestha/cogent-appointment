@@ -36,7 +36,7 @@ public class AppointmentTransactionDetail extends Auditable<String> implements S
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "transaction_date")
     private Date transactionDate;
 

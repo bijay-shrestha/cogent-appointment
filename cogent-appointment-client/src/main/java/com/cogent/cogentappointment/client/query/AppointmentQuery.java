@@ -26,7 +26,7 @@ public class AppointmentQuery {
     public static String QUERY_TO_VALIDATE_APPOINTMENT_EXISTS =
             "SELECT COUNT(a.id)" +
                     " FROM  Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " WHERE a.appointmentDate =:appointmentDate" +
                     " AND adi.doctor.id =:doctorId" +
                     " AND adi.specialization.id =:specializationId" +
@@ -47,7 +47,7 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =
             "SELECT DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime" +               //[0]
                     " FROM Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " WHERE" +
                     " a.appointmentDate = :date" +
                     " AND adi.doctor.id = :doctorId" +
@@ -71,7 +71,7 @@ public class AppointmentQuery {
             "SELECT" +
                     " COUNT(a.appointmentDate) as appointmentDate" +
                     " FROM Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " WHERE" +
                     " a.status='PA'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
@@ -98,7 +98,7 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentAmount," +                          //[8]
                     " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " LEFT JOIN Specialization s ON s.id = adi.specialization.id" +
@@ -139,7 +139,7 @@ public class AppointmentQuery {
                     " atd.serviceChargeAmount as serviceChargeAmount," +                    //[12]
                     " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " LEFT JOIN Specialization s ON s.id = adi.specialization.id" +
@@ -174,7 +174,7 @@ public class AppointmentQuery {
                     " s.name as specializationName," +                                       //[14]
                     " d.salutation as doctorSalutation" +
                     " FROM Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " LEFT JOIN Specialization s ON s.id = adi.specialization.id" +
@@ -257,12 +257,15 @@ public class AppointmentQuery {
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(
             AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
 
+        String fromDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 23:59:59";
+
         String whereClause = " WHERE " +
                 " hpi.status='Y'" +
                 " AND arl.status='RES'" +
                 " AND sp.status!='D'" +
                 " AND d.status!='D'" +
-                " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate" +
+                " AND arl.rescheduleDate BETWEEN '" + fromDate + "' AND '" + toDate + "'" +
                 " AND h.id =:hospitalId" +
                 " AND has.appointmentServiceType.code = :appointmentServiceTypeCode";
 

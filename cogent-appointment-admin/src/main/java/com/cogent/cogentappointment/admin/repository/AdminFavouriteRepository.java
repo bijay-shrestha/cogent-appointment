@@ -17,6 +17,6 @@ public interface AdminFavouriteRepository extends JpaRepository<AdminFavourite, 
     @Query("SELECT af FROM AdminFavourite af WHERE af.adminId.id=:adminId AND af.userMenuId=:userMenuId AND af.status!='D'")
     Optional<AdminFavourite> findAdminFavourite(@Param("adminId") Long id, @Param("userMenuId") Long userMenuId);
 
-    @Query("SELECT af.userMenuId FROM AdminFavourite af WHERE af.adminId.id=:adminId AND af.status!='Y'")
+    @Query("SELECT af.userMenuId FROM AdminFavourite af WHERE af.adminId.id=:adminId AND af.status='Y'")
     Optional<List<Long>> findUserMenuIdByAdmin(@Param("adminId") Long adminId);
 }

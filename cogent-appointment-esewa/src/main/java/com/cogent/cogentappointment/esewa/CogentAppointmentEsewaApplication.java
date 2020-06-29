@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa;
 
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.esewa.configuration.YamlPropertySourceFactory;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
@@ -58,8 +60,20 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
     }
 
     @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer placeholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        placeholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
+
+        return placeholderConfigurer;
+    }
+
+    @Bean
     public BeanUtil beanUtil() {
         return new BeanUtil();
     }
 
+    @Bean
+    public MinIOProperties minIOProperties() {
+        return new MinIOProperties();
+    }
 }

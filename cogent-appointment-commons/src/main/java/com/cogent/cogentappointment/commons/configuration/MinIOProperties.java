@@ -2,15 +2,16 @@ package com.cogent.cogentappointment.commons.configuration;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author rupak ON 2020/06/28-1:08 PM
  */
-//@ConfigurationProperties(prefix = "minio",
-//        ignoreUnknownFields = true,
-//        ignoreInvalidFields = true)
 @Configuration
+@ConfigurationProperties(
+        ignoreUnknownFields = true,
+        ignoreInvalidFields = true)
 @Getter
 public class MinIOProperties {
 

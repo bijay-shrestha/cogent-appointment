@@ -12,6 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
         value =
                 {
                         "file:${catalina.home}/conf/client/application-${spring.profiles.active}.yml"
+//                        "file:${catalina.home}/conf/client/minio.properties"
                 })
 @EnableJpaRepositories(basePackages = {
         "com.cogent.cogentappointment.commons.repository",
@@ -62,6 +64,14 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
     }
 
     @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer placeholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        placeholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
+
+        return placeholderConfigurer;
+    }
+
+    @Bean
     public BeanUtil beanUtil() {
         return new BeanUtil();
     }
@@ -71,10 +81,9 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
         return new RestTemplate();
     }
 
+
     @Bean
-    public MinIOProperties minIOProperties() {
-        return new MinIOProperties();
-    }
+    public MinIOProperties minIOProperties() { return new MinIOProperties();}
 
 
 }

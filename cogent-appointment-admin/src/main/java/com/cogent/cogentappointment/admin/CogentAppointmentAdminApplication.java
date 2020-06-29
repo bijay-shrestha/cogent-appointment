@@ -12,6 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
@@ -62,6 +63,14 @@ public class CogentAppointmentAdminApplication extends SpringBootServletInitiali
         System.out.println("Value of `spring.minio.access-key` = " + env.getProperty("spring.minio.access-key"));
         System.out.println("Value of `mail.host` = " + env.getProperty("mail.host"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer placeholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        placeholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
+
+        return placeholderConfigurer;
     }
 
     @Bean

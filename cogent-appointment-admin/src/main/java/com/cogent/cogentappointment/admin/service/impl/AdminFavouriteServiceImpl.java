@@ -88,7 +88,6 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
         Admin admin = adminRepository.findAdminById(saveRequestDTO.getAdminId())
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(saveRequestDTO.getAdminId()));
 
-
         adminFavouriteRepository.save(parseToSaveFavourite(saveRequestDTO.getUserMenuId(), admin));
 
         log.info(SAVING_ADMIN_FAVOURITE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));

@@ -14,9 +14,9 @@ import java.io.Serializable;
 public class AdminFavouriteSaveRequestDTO implements Serializable {
 
     @NotNull
-    private Long  userMenuId;
+    private Long  adminId;
 
     @NotNull
-    private Long adminId;
+    private Long  userMenuId;
 
 }

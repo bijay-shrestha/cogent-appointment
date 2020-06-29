@@ -52,7 +52,7 @@ public class HospitalDepartmentQuery {
     public static final String QUERY_TO_FETCH_AVAILABLE_ROOM_FOR_DROPDOWN =
             "SELECT" +
                     " r.id as value," +
-                    " CONCAT('Room No',' - ',r.roomNumber) AS label" +
+                    " r.roomNumber AS label" +
                     " FROM" +
                     " Room r" +
                     " WHERE" +
@@ -195,7 +195,7 @@ public class HospitalDepartmentQuery {
                     "  hb.hospitalDepartment.id = :hospitalDepartmentId " +
                     " AND hb.status!='D'";
 
-    public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {
+    private static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {
         return " hd.createdBy as createdBy," +
                 " hd.createdDate as createdDate," +
                 " hd.lastModifiedBy as lastModifiedBy," +

@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -11,14 +10,14 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQ
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.history.AppointmentResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.history.AppointmentResponseWithStatusDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.AppointmentCountWithStatusDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.HospitalDeptAppointmentStatusCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
-import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -37,7 +36,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.client.utils.AppointmentStatusUtils.getAppointmentSlotCounts;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -532,5 +531,99 @@ public class AppointmentUtils {
 
         return HospitalDeptAppointmentStatusResponseDTOS;
     }
+
+
+    public static HospitalDeptAppointmentStatusCountResponseDTO getVacantAppointmentSlotsCount(
+            List<AppointmentCountWithStatusDTO> countWithStatusDTOS,
+            Long totalAppointmentSlotCount,
+            Long appointmentFollowUpCount) {
+
+        HospitalDeptAppointmentStatusCountResponseDTO hospitalDeptAppointmentStatusCountResponseDTO = new
+                HospitalDeptAppointmentStatusCountResponseDTO();
+
+        HashMap<String, Long> appointmentStatusCount = new HashMap<>();
+
+        Long totalOccupiedSlots = getOccupiedCount(countWithStatusDTOS).stream().mapToLong(i -> i).sum();
+
+        Long vacantSlot = totalAppointmentSlotCount - totalOccupiedSlots;
+
+        appointmentStatusCount.put(ALL, totalAppointmentSlotCount);
+
+        appointmentStatusCount.put(VACANT, vacantSlot);
+
+        for (AppointmentCountWithStatusDTO timeSlots : countWithStatusDTOS) {
+            switch (timeSlots.getStatus()) {
+
+                case BOOKED:
+                    appointmentStatusCount.put(BOOKED, timeSlots.getCount());
+                    break;
+
+                case APPROVED:
+                    appointmentStatusCount.put(APPROVED, timeSlots.getCount());
+                    break;
+
+                case CANCELLED:
+                    appointmentStatusCount.put(CANCELLED, timeSlots.getCount());
+                    break;
+            }
+        }
+
+        if (!appointmentFollowUpCount.equals(0L)) {
+            appointmentStatusCount.put(FOLLOW_UP, appointmentFollowUpCount);
+        }
+
+
+        hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+
+        List<String> strings=
+                hospitalDeptAppointmentStatusCountResponseDTO.getAppointmentStatusCount().entrySet()
+                        .stream().map(Map.Entry::getKey).collect(Collectors.toList());
+
+        if (!strings.contains(APPROVED)){
+            appointmentStatusCount.put(APPROVED,0L);
+            hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+        }
+
+        if (!strings.contains(FOLLOW_UP)){
+            appointmentStatusCount.put(FOLLOW_UP,0L);
+            hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+        }
+
+        if (!strings.contains(BOOKED)){
+            appointmentStatusCount.put(BOOKED,0L);
+            hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+        }
+
+        if (!strings.contains(CANCELLED)){
+            appointmentStatusCount.put(CANCELLED,0L);
+            hospitalDeptAppointmentStatusCountResponseDTO.setAppointmentStatusCount(appointmentStatusCount);
+        }
+
+        return hospitalDeptAppointmentStatusCountResponseDTO;
+
+    }
+
+    public static List<Long> getOccupiedCount(List<AppointmentCountWithStatusDTO> countWithStatusDTOS) {
+        return countWithStatusDTOS
+                .stream()
+                .map(AppointmentCountWithStatusDTO::getCount)
+                .collect(Collectors.toList());
+    }
+
+    public static Long getTotalAppointmentTimeSlotCount(List<HospitalDepartmentRosterDetailsDTO> rosterDetailsDTOS) {
+
+        final Long[] count = {0L};
+
+        rosterDetailsDTOS.forEach(rosterDetailsDTO -> {
+            Long data = getAppointmentSlotCounts(rosterDetailsDTO.getStartTime(),
+                    rosterDetailsDTO.getEndTime(),
+                    rosterDetailsDTO.getRosterGapDuration());
+
+            count[0] += data;
+        });
+
+        return count[0];
+    }
+
 
 }

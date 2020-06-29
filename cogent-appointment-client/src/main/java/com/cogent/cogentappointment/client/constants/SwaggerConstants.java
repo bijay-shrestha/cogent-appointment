@@ -58,7 +58,9 @@ public class SwaggerConstants {
         String CHECK_CURRENT_APPOINTMENT_AVAILABILITY = "Check current available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
-        String FETCH_APPOINTMENTS_CANCEL_APPROVALS = "Fetch  Appointment cancel approval List";
+        String FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS = "Fetch cancelled Hospital Department Appointment" +
+                " List";
+        String FETCH_CANCELLED_APPOINTMENTS_DETAIL = "Fetch Cancelled Appointment Detail By appointmentId";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
@@ -87,6 +89,7 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
         String FETCH_DEPARTMENT_APPOINTMENT_STATUS = "Fetch department appointment status.";
         String FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "Fetch department appointment status by specific roomId.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS_COUNT = "Fetch department appointment status count.";
     }
 
     public interface AppointmentTransferConstant {

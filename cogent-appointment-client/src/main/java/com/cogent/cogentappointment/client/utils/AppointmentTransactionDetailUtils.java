@@ -23,7 +23,6 @@ public class AppointmentTransactionDetailUtils {
         transactionDetail.setDiscountAmount(requestDTO.getDiscountAmount());
         transactionDetail.setServiceChargeAmount(requestDTO.getServiceChargeAmount());
         transactionDetail.setTaxAmount(requestDTO.getTaxAmount());
-        transactionDetail.setTransactionDateTime(new Date());
         return transactionDetail;
     }
 }

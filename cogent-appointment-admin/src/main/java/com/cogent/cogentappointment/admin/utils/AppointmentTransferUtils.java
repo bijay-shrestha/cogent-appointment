@@ -171,7 +171,6 @@ public class AppointmentTransferUtils {
         transferTransactionDetail.setPreviousServiceChargeAmount(transactionDetail.getServiceChargeAmount());
         transferTransactionDetail.setPreviousTaxAmount(transactionDetail.getTaxAmount());
         transferTransactionDetail.setPreviousTransactionDate(transactionDetail.getTransactionDate());
-        transferTransactionDetail.setPreviousTransactionDateTime(transactionDetail.getTransactionDateTime());
         transferTransactionDetail.setRemarks(remarks);
         transferTransactionDetail.setAppointmentTransfer(appointmentTransfer);
         transferTransactionDetail.setCurrentAppointmentAmount(currentAppointmentCharge);
@@ -184,7 +183,6 @@ public class AppointmentTransferUtils {
             AppointmentTransferRequestDTO requestDTO) {
         transactionDetail.setAppointmentAmount(requestDTO.getAppointmentCharge());
         transactionDetail.setTransactionDate(new Date());
-        transactionDetail.setTransactionDateTime(new Date());
 
         return transactionDetail;
     }

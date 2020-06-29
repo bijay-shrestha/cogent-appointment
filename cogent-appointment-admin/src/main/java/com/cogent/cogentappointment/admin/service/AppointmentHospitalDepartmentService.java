@@ -1,11 +1,12 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.CancelledHospitalDeptAppointmentSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.HospitalDeptCancelledAppointmentDetailResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -24,5 +25,8 @@ public interface AppointmentHospitalDepartmentService {
 
     void approveAppointment(IntegrationBackendRequestDTO integrationRequestDTO);
 
-    DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO, Pageable pageable);
+    CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(
+            CancelledHospitalDeptAppointmentSearchDTO searchDTO, Pageable pageable);
+
+    HospitalDeptCancelledAppointmentDetailResponseDTO fetchCancelledAppointmentDetail(Long appointmentId);
 }

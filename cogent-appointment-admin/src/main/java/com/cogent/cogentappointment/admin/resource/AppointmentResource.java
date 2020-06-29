@@ -40,7 +40,7 @@ public class AppointmentResource {
     }
 
     @PutMapping(REFUND)
-    @ApiOperation(FETCH_APPOINTMENTS_CANCEL_APPROVALS)
+    @ApiOperation(FETCH_DOCTOR_APPOINTMENTS_CANCEL_APPROVALS)
     public ResponseEntity<?> fetchRefundAppointments(@RequestBody AppointmentCancelApprovalSearchDTO searchDTO,
                                                      @RequestParam("page") int page,
                                                      @RequestParam("size") int size) {

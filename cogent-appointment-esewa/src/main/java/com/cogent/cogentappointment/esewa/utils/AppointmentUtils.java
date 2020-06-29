@@ -219,10 +219,10 @@ public class AppointmentUtils {
         String appointmentNumber;
 
         if (results.isEmpty())
-            appointmentNumber = "0001";
+            appointmentNumber = "1";
         else
 
-            //resultes=CHEERS-76-77-1;CHEERS-76-77-2
+            //results = CHEERS-76-77-1; CHEERS-76-77-2
             appointmentNumber = extractAppointmentNumber(results);
 
         appointmentNumber = hospitalCode.concat(HYPHEN)

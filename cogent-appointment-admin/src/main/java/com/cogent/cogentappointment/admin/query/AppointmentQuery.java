@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.CancelledHospitalDeptAppointmentSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
@@ -109,81 +109,6 @@ public class AppointmentQuery {
 
         if (!Objects.isNull(searchDTO.getSpecializationId()))
             whereClause += " AND s.id=" + searchDTO.getSpecializationId();
-
-        if (!Objects.isNull(searchDTO.getHospitalId()))
-            whereClause += " AND h.id=" + searchDTO.getHospitalId();
-
-        if (!ObjectUtils.isEmpty(searchDTO.getPatientType()))
-            whereClause += " AND hpi.isRegistered='" + searchDTO.getPatientType() + "'";
-
-        return whereClause + " ORDER BY a.appointmentDate DESC";
-    }
-
-
-    public static final String QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_CANCEL_APPROVALS(DepartmentCancelApprovalSearchDTO searchDTO) {
-
-        return " SELECT" +
-                "  a.id as appointmentId," +
-                "  a.appointmentDate as appointmentDate," +
-                "  a.appointmentNumber as appointmentNumber," +
-                "  DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
-                "  p.name as patientName," +
-                "  p.eSewaId as eSewaId," +
-                "  p.mobileNumber as mobileNumber," +
-                "  CASE WHEN" +
-                "  (hpi.registrationNumber IS NULL)" +
-                "  THEN 'N/A'" +
-                "  ELSE" +
-                "  hpi.registrationNumber" +
-                "  END as registrationNumber," +
-                "  hd.name as departmentName," +
-                " atd.transactionNumber as transactionNumber," +
-                " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
-                " p.gender as gender," +
-                " ard.refundAmount as refundAmount," +
-                " a.appointmentModeId.name as appointmentMode," +
-                " hpi.isRegistered as isRegistered," +
-                " r.roomNumber  as roomNumber,"+
-                QUERY_TO_CALCULATE_PATIENT_AGE +
-                " FROM Appointment a" +
-                " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
-                " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
-                " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
-                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = ahd.hospitalDepartment.id" +
-                " LEFT JOIN Room r ON r.id = hdri.room.id" +
-                " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
-                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
-                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id AND pm.status='Y'" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                GET_WHERE_CLAUSE_TO_FETCH_DEPARTMENT_REFUND_APPOINTMENTS(searchDTO);
-    }
-
-    private static String GET_WHERE_CLAUSE_TO_FETCH_DEPARTMENT_REFUND_APPOINTMENTS(DepartmentCancelApprovalSearchDTO searchDTO) {
-        String whereClause = " WHERE ard.status = 'PA'" +
-                " AND hd.status!='D'" +
-                " AND apst.status!='D'" +
-                " AND hdri.status!='D'" +
-                " AND r.status!='D'";
-
-        if (!ObjectUtils.isEmpty(searchDTO.getFromDate()) && !ObjectUtils.isEmpty(searchDTO.getToDate()))
-            whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchDTO.getFromDate())
-                    + "' AND '"
-                    + utilDateToSqlDate(searchDTO.getToDate()) + "' )";
-
-        if (!ObjectUtils.isEmpty(searchDTO.getAppointmentNumber()))
-            whereClause += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
-
-        if (!Objects.isNull(searchDTO.getPatientMetaInfoId()))
-            whereClause += " AND pm.id =" + searchDTO.getPatientMetaInfoId();
-
-        if (!Objects.isNull(searchDTO.getHospitalDepartmentId()))
-            whereClause += " AND hd.id=" + searchDTO.getHospitalDepartmentId();
-
-        if (!Objects.isNull(searchDTO.getRoomId()))
-            whereClause += " AND r.id=" + searchDTO.getRoomId();
 
         if (!Objects.isNull(searchDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchDTO.getHospitalId();
@@ -335,7 +260,7 @@ public class AppointmentQuery {
         return whereClause;
     }
 
-    public static Function<AppointmentLogSearchDTO, String> QUERY_TO_FETCH_APPOINTMENT_LOGS =
+    public static Function<AppointmentLogSearchDTO, String> QUERY_TO_FETCH_DOCTOR_APPOINTMENT_LOGS =
             (appointmentLogSearchDTO) ->
                     "SELECT" +
                             " h.name as hospitalName," +                                    //[0]
@@ -359,12 +284,24 @@ public class AppointmentQuery {
                             " CONCAT_WS(' ',d.salutation, d.name)" +
                             " END as doctorName," +                                          //[14]
                             " a.status as status," +                                       //[15]
-                            " ard.refundAmount as refundAmount," +                         //[16]
+                            " CASE WHEN" +
+                            " a.status = 'RE'" +
+                            " THEN " +
+                            " (COALESCE(ard.refundAmount,0))" +                                                   //[12]
+                            " ELSE" +
+                            " 0" +
+                            " END AS refundAmount," +
                             " hpi.address as patientAddress," +                            //[17]
                             " atd.transactionDate as transactionDate," +                    //[18]
                             " am.name as appointmentMode," +                                //[19]
                             " a.isFollowUp as isFollowUp," +                                //[20]
-                            " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[21]
+                            " CASE WHEN" +
+                            " a.status!= 'RE'" +
+                            " THEN" +
+                            " atd.appointmentAmount" +
+                            " ELSE" +
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
+                            " END AS revenueAmount," +
                             " da.fileUri as fileUri," +
                             QUERY_TO_CALCULATE_PATIENT_AGE +
                             " FROM Appointment a" +
@@ -467,12 +404,15 @@ public class AppointmentQuery {
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
 
+        String fromDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 23:59:59";
+
         String whereClause = " WHERE " +
                 " hpi.status='Y' " +
                 " AND arl.status='RES'" +
                 " AND sp.status!='D'" +
                 " AND d.status!='D'" +
-                " AND (arl.rescheduleDate BETWEEN :fromDate AND :toDate)" +
+                " AND arl.rescheduleDate BETWEEN '" + fromDate + "' AND '" + toDate + "'" +
                 " AND has.appointmentServiceType.code = :appointmentServiceTypeCode";
 
         if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
@@ -1020,6 +960,148 @@ public class AppointmentQuery {
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
+
+
+    public static final String QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(
+            CancelledHospitalDeptAppointmentSearchDTO searchDTO) {
+
+        return " SELECT" +
+                "  a.id as appointmentId," +
+                "  a.appointmentDate as appointmentDate," +
+                "  a.appointmentNumber as appointmentNumber," +
+                "  DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
+                "  p.name as patientName," +
+                "  p.eSewaId as eSewaId," +
+                "  p.mobileNumber as mobileNumber," +
+                "  CASE WHEN" +
+                "  (hpi.registrationNumber IS NULL)" +
+                "  THEN 'N/A'" +
+                "  ELSE" +
+                "  hpi.registrationNumber" +
+                "  END as registrationNumber," +
+                "  hd.name as departmentName," +
+                " atd.transactionNumber as transactionNumber," +
+                " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
+                " p.gender as gender," +
+                " ard.refundAmount as refundAmount," +
+                " a.appointmentModeId.name as appointmentMode," +
+                " hpi.isRegistered as isRegistered," +
+                " CASE " +
+                " WHEN ahd.hospitalDepartmentRoomInfo.id IS NULL " +
+                " THEN 'N/A'" +
+                " ELSE r.roomNumber END as roomNumber," +
+                QUERY_TO_CALCULATE_PATIENT_AGE +
+                " FROM Appointment a" +
+                " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                " LEFT JOIN Room r ON r.id = hdri.room.id" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id AND pm.status='Y'" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                GET_WHERE_CLAUSE_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(searchDTO);
+    }
+
+    public static String QUERY_TO_FETCH_TOTAL_HOSPITAL_DEPARTMENT_REFUND_AMOUNT(
+            CancelledHospitalDeptAppointmentSearchDTO searchDTO) {
+
+        return " SELECT SUM(ard.refundAmount)" +
+                " FROM Appointment a" +
+                " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
+                " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = ahd.hospitalDepartment.id" +
+                " LEFT JOIN Room r ON r.id = hdri.room.id" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id AND pm.status='Y'" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                GET_WHERE_CLAUSE_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(searchDTO);
+    }
+
+    private static String GET_WHERE_CLAUSE_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(
+            CancelledHospitalDeptAppointmentSearchDTO searchDTO) {
+
+        String whereClause = " WHERE" +
+                " ard.status = 'PA'" +
+                " AND a.status='C'" +
+                " AND hd.status!='D'";
+
+        if (!ObjectUtils.isEmpty(searchDTO.getFromDate()) && !ObjectUtils.isEmpty(searchDTO.getToDate()))
+            whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchDTO.getFromDate())
+                    + "' AND '"
+                    + utilDateToSqlDate(searchDTO.getToDate()) + "' )";
+
+        if (!ObjectUtils.isEmpty(searchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
+
+        if (!Objects.isNull(searchDTO.getPatientMetaInfoId()))
+            whereClause += " AND pm.id =" + searchDTO.getPatientMetaInfoId();
+
+        if (!Objects.isNull(searchDTO.getHospitalDepartmentId()))
+            whereClause += " AND hd.id=" + searchDTO.getHospitalDepartmentId();
+
+        if (!Objects.isNull(searchDTO.getRoomId()))
+            whereClause += " AND hdri.id=" + searchDTO.getRoomId();
+
+        if (!Objects.isNull(searchDTO.getHospitalId()))
+            whereClause += " AND h.id=" + searchDTO.getHospitalId();
+
+        if (!ObjectUtils.isEmpty(searchDTO.getPatientType()))
+            whereClause += " AND hpi.isRegistered='" + searchDTO.getPatientType() + "'";
+
+        return whereClause + " ORDER BY a.appointmentDate DESC";
+    }
+
+    public static final String QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS_DETAIL_BY_APPOINTMENT_ID =
+            " SELECT" +
+                    " a.appointmentDate as appointmentDate," +
+                    " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
+                    " a.appointmentNumber as appointmentNumber," +
+                    " a.id as appointmentId," +
+                    " a.appointmentModeId.id as appointmentModeId," +
+                    " h.id as hospitalId," +
+                    " h.name as hospitalName," +
+                    " p.name as patientName," +
+                    " CASE WHEN" +
+                    " (hpi.registrationNumber IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " hpi.registrationNumber" +
+                    " END as registrationNumber," +
+                    " p.gender as gender," +
+                    " hd.name as hospitalDepartmentName," +
+                    " CASE " +
+                    " WHEN ahd.hospitalDepartmentRoomInfo.id IS NULL " +
+                    " THEN 'N/A'" +
+                    " ELSE r.roomNumber END as roomNumber," +
+                    " p.eSewaId as eSewaId," +
+                    " atd.transactionNumber as transactionNumber," +
+                    " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
+                    " ard.refundAmount as refundAmount," +
+                    " p.mobileNumber as mobileNumber," +
+                    " atd.appointmentAmount as appointmentCharge," +
+                    " a.appointmentModeId.name as appointmentMode," +
+                    " a.remarks as remarks," +
+                    " hpi.isRegistered as isRegistered," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " FROM Appointment a" +
+                    " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                    " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                    " LEFT JOIN Room r ON r.id = hdri.room.id" +
+                    " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                    " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
+                    " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id AND pm.status='Y'" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " WHERE a.id=:appointmentId";
 
 
 }

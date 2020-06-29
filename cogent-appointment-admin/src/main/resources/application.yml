@@ -2,10 +2,10 @@
 ## Note: ENABLE THIS ONLY IN CASE OF EMBEDDED TOMCAT DEPLOYMENT  ###
 ######___ ***** ENTER PATH TO YOUR STAND-ALONE TOMCAT SERVER ***** ____ ############
 
-##### [END] CATALINA HOME CONFIG [/END] #########
-
+#catalina:
+#  home: Path/to/your/external/tomcat
 catalina:
-  home: /home/rupak/Softwares/tomcat
+  home: /home/f1soft/Softwares/tomcat
 
 spring:
   profiles:

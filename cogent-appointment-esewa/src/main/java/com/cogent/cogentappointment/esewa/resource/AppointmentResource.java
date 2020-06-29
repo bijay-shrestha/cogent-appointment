@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.EsewaConstant.*;
@@ -92,7 +95,7 @@ public class AppointmentResource {
     @PutMapping(RESCHEDULE)
     @ApiOperation(RESCHEDULE_OPERATION)
     public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
-        return ok( appointmentService.rescheduleAppointment(requestDTO));
+        return ok(appointmentService.rescheduleAppointment(requestDTO));
     }
 
     @GetMapping(DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)

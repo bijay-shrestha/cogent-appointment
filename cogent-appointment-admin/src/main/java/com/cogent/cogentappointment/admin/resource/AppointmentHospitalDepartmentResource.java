@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.APPROVE_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
@@ -67,5 +66,11 @@ public class AppointmentHospitalDepartmentResource {
                                                                     @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentHospitalDepartmentService.fetchCancelledHospitalDeptAppointments(searchDTO, pageable));
+    }
+
+    @GetMapping(REFUND + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_CANCELLED_APPOINTMENTS_DETAIL)
+    public ResponseEntity<?> fetchCancelledAppointmentDetail(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(appointmentHospitalDepartmentService.fetchCancelledAppointmentDetail(appointmentId));
     }
 }

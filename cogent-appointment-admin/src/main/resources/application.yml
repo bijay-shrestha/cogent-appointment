@@ -5,9 +5,7 @@
 #catalina:
 #  home: Path/to/your/external/tomcat
 catalina:
-  home: C:\Users\Cogent\Desktop\apache-tomcat
-
-##### [END] CATALINA HOME CONFIG [/END] #########
+  home: /home/f1soft/Softwares/tomcat
 
 spring:
   profiles:

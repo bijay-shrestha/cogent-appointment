@@ -59,6 +59,7 @@ public class SwaggerConstants {
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS = "Fetch cancelled Hospital Department Appointment" +
                 " List";
+        String FETCH_CANCELLED_APPOINTMENTS_DETAIL = "Fetch Cancelled Appointment Detail By appointmentId";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";

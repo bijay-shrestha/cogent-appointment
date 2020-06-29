@@ -16,7 +16,4 @@ public class AdminFavouriteSaveRequestDTO implements Serializable {
     @NotNull
     private Long  userMenuId;
 
-    @NotNull
-    private Long adminId;
-
 }

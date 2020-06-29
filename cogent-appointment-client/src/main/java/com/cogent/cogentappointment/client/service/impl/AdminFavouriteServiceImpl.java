@@ -82,8 +82,8 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
 
         log.info(SAVING_ADMIN_FAVOURITE_PROCESS_STARTED, ADMIN_FAVOURITE_WITH_ICON);
 
-        Admin admin = adminRepository.findAdminById(getLoggedInHospitalId())
-                .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(getLoggedInHospitalId()));
+        Admin admin = adminRepository.findAdminById(saveRequestDTO.getAdminId())
+                .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(saveRequestDTO.getAdminId()));
 
         adminFavouriteRepository.save(parseToSaveFavourtie(saveRequestDTO.getUserMenuId(), admin));
 

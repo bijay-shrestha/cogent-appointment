@@ -23,6 +23,7 @@ import static com.cogent.cogentappointment.client.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.dateDifference;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculatePercentage;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
@@ -71,20 +72,20 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getCurrentToDate(),
                 requestDTO.getCurrentFromDate(),
                 hospitalId,
-                "DOC");
+                requestDTO.getAppointmentServiceTypeCode());
 
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getPreviousToDate(),
                 requestDTO.getPreviousFromDate(),
                 hospitalId,
-                "DOC");
+                requestDTO.getAppointmentServiceTypeCode());
 
         AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
-                        requestDTO.getCurrentToDate(),
-                        requestDTO.getCurrentFromDate(),
+                        utilDateToSqlDate(requestDTO.getCurrentToDate()),
+                        utilDateToSqlDate(requestDTO.getCurrentFromDate()),
                         hospitalId,
-                        "DOC");
+                        requestDTO.getAppointmentServiceTypeCode());
 
         RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(
                 currentTransaction,

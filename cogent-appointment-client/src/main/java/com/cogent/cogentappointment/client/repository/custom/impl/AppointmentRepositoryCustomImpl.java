@@ -13,7 +13,7 @@ import com.cogent.cogentappointment.client.dto.request.appointmentStatus.Appoint
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.CancelledHospitalDeptAppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
@@ -39,8 +39,8 @@ import com.cogent.cogentappointment.client.dto.response.appointmentStatus.Appoin
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.AppointmentCountWithStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
-import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientRelationInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
@@ -771,25 +771,28 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO, Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_CANCEL_APPROVALS(searchDTO))
+    public CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments
+            (CancelledHospitalDeptAppointmentSearchDTO searchDTO, Pageable pageable) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(searchDTO))
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<DepartmentCancelApprovalResponseDTO> cancelApprovalResponseDTOList =
-                transformQueryToResultList(query, DepartmentCancelApprovalResponseDTO.class);
+        List<CancelledHospitalDeptAppointmentDTO> cancelledAppointments =
+                transformQueryToResultList(query, CancelledHospitalDeptAppointmentDTO.class);
 
-        if (cancelApprovalResponseDTOList.isEmpty())
+        if (cancelledAppointments.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
         else {
-
-            return DepartmentCancelApprovalResponse.builder()
-                    .response(cancelApprovalResponseDTOList)
+            Double totalRefundAmount = calculateTotalHospitalDeptRefundAmount(searchDTO);
+            return CancelledHospitalDeptAppointmentResponseDTO.builder()
+                    .cancelledAppointments(cancelledAppointments)
                     .totalItems(totalItems)
+                    .totalRefundAmount(totalRefundAmount)
                     .build();
         }
 
@@ -811,7 +814,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(FROM_DATE, requestDTO.getFromDate())
                 .setParameter(TO_DATE, requestDTO.getToDate())
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, "DEP")
-                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
@@ -830,14 +833,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(FROM_DATE, requestDTO.getFromDate())
                 .setParameter(TO_DATE, requestDTO.getToDate())
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, "DEP")
-                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
 
 
         try {
-            return  (Long) query.getSingleResult();
+            return (Long) query.getSingleResult();
         } catch (NoResultException e) {
             return 0L;
         }
@@ -931,6 +934,17 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Double) query.getSingleResult();
+    }
+
+    private Double calculateTotalHospitalDeptRefundAmount(CancelledHospitalDeptAppointmentSearchDTO searchDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_HOSPITAL_DEPARTMENT_REFUND_AMOUNT(searchDTO))
+                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+
+        try {
+            return (Double) query.getSingleResult();
+        } catch (NoResultException e) {
+            return 0D;
+        }
     }
 
     private void calculateDoctorAppointmentStatistics(AppointmentLogSearchDTO searchRequestDTO,

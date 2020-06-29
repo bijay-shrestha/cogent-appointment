@@ -8,6 +8,8 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_REFUND = "REFUND REQUEST APPOINTMENT";
 
+    public final static String CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS = "CANCELLED HOSPITAL DEPARTMENT APPOINTMENTS";
+
     public final static String APPOINTMENT_REFUND_DETAIL = "APPOINTMENT REFUND DETAIL";
 
     public final static String APPOINTMENT_LOG = "APPOINTMENT LOG";
@@ -40,6 +42,7 @@ public class AppointmentLog {
     public static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
 
     public final static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";
+
     public final static String APPROVE_PROCESS_COMPLETED = ":::: APPROVING {} COMPLETED IN {} ms ::::";
 
     public final static String REJECT_PROCESS_STARTED = ":::: REJECTING {} STARTED ::::";

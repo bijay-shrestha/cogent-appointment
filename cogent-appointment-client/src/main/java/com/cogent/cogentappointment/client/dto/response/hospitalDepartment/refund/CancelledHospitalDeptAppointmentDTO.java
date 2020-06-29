@@ -15,7 +15,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentCancelApprovalResponseDTO implements Serializable {
+public class CancelledHospitalDeptAppointmentDTO implements Serializable {
 
     private Long appointmentId;
 

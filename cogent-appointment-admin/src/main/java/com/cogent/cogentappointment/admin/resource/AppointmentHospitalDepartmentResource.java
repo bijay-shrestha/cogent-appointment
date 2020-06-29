@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.CancelledHospitalDeptAppointmentSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentHospitalDepartmentService;
 import io.swagger.annotations.Api;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.APPROVE_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_APPOINTMENTS_CANCEL_APPROVALS;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalDepartmentAppointmentLogConstant.FETCH_PENDING_HOSPITAL_DEPARTMENT_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
@@ -61,11 +61,11 @@ public class AppointmentHospitalDepartmentResource {
     }
 
     @PutMapping(REFUND)
-    @ApiOperation(FETCH_APPOINTMENTS_CANCEL_APPROVALS)
-    public ResponseEntity<?> fetchRefundDepartmentAppointments(@RequestBody DepartmentCancelApprovalSearchDTO searchDTO,
-                                                               @RequestParam("page") int page,
-                                                               @RequestParam("size") int size) {
+    @ApiOperation(FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS)
+    public ResponseEntity<?> fetchCancelledHospitalDeptAppointments(@RequestBody CancelledHospitalDeptAppointmentSearchDTO searchDTO,
+                                                                    @RequestParam("page") int page,
+                                                                    @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentHospitalDepartmentService.fetchDepartmentAppointmentCancelApprovals(searchDTO, pageable));
+        return ok().body(appointmentHospitalDepartmentService.fetchCancelledHospitalDeptAppointments(searchDTO, pageable));
     }
 }

@@ -10,7 +10,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentSta
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.CancelledHospitalDeptAppointmentSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
@@ -31,8 +31,8 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLo
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
-import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -641,27 +641,28 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO,
-                                                                                      Pageable pageable) {
+    public CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(CancelledHospitalDeptAppointmentSearchDTO searchDTO,
+                                                                                              Pageable pageable) {
 
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_CANCEL_APPROVALS(searchDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(searchDTO));
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<DepartmentCancelApprovalResponseDTO> cancelApprovalResponseDTOList =
-                transformQueryToResultList(query, DepartmentCancelApprovalResponseDTO.class);
+        List<CancelledHospitalDeptAppointmentDTO> cancelledAppointments =
+                transformQueryToResultList(query, CancelledHospitalDeptAppointmentDTO.class);
 
-        if (cancelApprovalResponseDTOList.isEmpty())
+        if (cancelledAppointments.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
         else {
-
-            return DepartmentCancelApprovalResponse.builder()
-                    .response(cancelApprovalResponseDTOList)
+            Double totalRefundAmount = calculateTotalHospitalDeptRefundAmount(searchDTO);
+            return CancelledHospitalDeptAppointmentResponseDTO.builder()
+                    .cancelledAppointments(cancelledAppointments)
                     .totalItems(totalItems)
+                    .totalRefundAmount(totalRefundAmount)
                     .build();
         }
 
@@ -713,7 +714,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
 
         try {
-            return  (Long) query.getSingleResult();
+            return (Long) query.getSingleResult();
         } catch (NoResultException e) {
             return 0L;
         }
@@ -727,6 +728,17 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO));
 
         return (Double) query.getSingleResult();
+    }
+
+
+    private Double calculateTotalHospitalDeptRefundAmount(CancelledHospitalDeptAppointmentSearchDTO searchDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_HOSPITAL_DEPARTMENT_REFUND_AMOUNT(searchDTO));
+
+        try {
+            return (Double) query.getSingleResult();
+        } catch (NoResultException e) {
+            return 0D;
+        }
     }
 
     private void calculateAppointmentStatisticsForAppointmentLog(AppointmentLogSearchDTO searchRequestDTO,

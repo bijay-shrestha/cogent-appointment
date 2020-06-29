@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptDutyRosterOverrideRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateResponseDTO;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
@@ -110,7 +111,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
                             HospitalDeptDutyRosterStatusResponseDTO responseDTO =
                                     HospitalDeptDutyRosterStatusResponseDTO.builder()
                                             .uniqueIdentifier(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString())
-                                                    +"-"+
+                                                    + "-" +
                                                     localDate)
                                             .date(localDate)
                                             .startTime(result[START_TIME_INDEX].toString())
@@ -123,6 +124,55 @@ public class HospitalDeptOverrideDutyRosterUtils {
                                                     null : Long.parseLong(result[ROOM_ID_INDEX].toString()))
                                             .roomNumber(result[ROOM_NUMBER_INDEX].toString())
                                             .hospitalDepartmentDutyRosterId(Long.parseLong(result[DUTY_ROSTER_ID_INDEX].toString()))
+                                            .build();
+
+                            hospitalDeptDutyRosterStatusResponseDTOS.add(responseDTO);
+                        }
+                    });
+        });
+
+        return hospitalDeptDutyRosterStatusResponseDTOS;
+    }
+
+    public static List<HospitalDepartmentRosterDetailsDTO> parseQueryResultToHospitalDeptDutyRosterStatusCountResponseDTO
+            (List<Object[]> results,
+             Date searchFromDate,
+             Date searchToDate) {
+
+        LocalDate searchFromLocalDate = convertDateToLocalDate(searchFromDate);
+        LocalDate searchToLocalDate = convertDateToLocalDate(searchToDate);
+
+        List<HospitalDepartmentRosterDetailsDTO> hospitalDeptDutyRosterStatusResponseDTOS = new ArrayList<>();
+
+        results.forEach(result -> {
+
+            final int FROM_DATE_INDEX = 0;
+            final int TO_DATE_INDEX = 1;
+            final int START_TIME_INDEX = 2;
+            final int END_TIME_INDEX = 3;
+            final int ROSTER_GAP_DURATION_INDEX = 4;
+            final int HOSPITAL_DEPARTMENT_ID_INDEX = 5;
+            final int HOSPITAL_DEPARTMENT_NAME_INDEX = 6;
+            final int DUTY_ROSTER_ID_INDEX = 7;
+
+            LocalDate startLocalDate = convertDateToLocalDate((Date) result[FROM_DATE_INDEX]);
+            LocalDate endLocalDate = convertDateToLocalDate((Date) result[TO_DATE_INDEX]);
+
+            Stream.iterate(startLocalDate, date -> date.plusDays(1))
+                    .limit(ChronoUnit.DAYS.between(startLocalDate, endLocalDate) + 1)
+                    .forEach(localDate -> {
+
+                        if (isLocalDateBetweenInclusive(searchFromLocalDate, searchToLocalDate, localDate)) {
+
+                            HospitalDepartmentRosterDetailsDTO responseDTO =
+                                    HospitalDepartmentRosterDetailsDTO.builder()
+                                            .date(localDate)
+                                            .startTime(result[START_TIME_INDEX].toString())
+                                            .endTime(result[END_TIME_INDEX].toString())
+                                            .rosterGapDuration(Integer.parseInt(result[ROSTER_GAP_DURATION_INDEX].toString()))
+                                            .hospitalDepartmentId(Long.parseLong(result[HOSPITAL_DEPARTMENT_ID_INDEX].toString()))
+                                            .hospitalDepartmentName(result[HOSPITAL_DEPARTMENT_NAME_INDEX].toString())
+                                            .rosterId(Long.parseLong(result[DUTY_ROSTER_ID_INDEX].toString()))
                                             .build();
 
                             hospitalDeptDutyRosterStatusResponseDTOS.add(responseDTO);

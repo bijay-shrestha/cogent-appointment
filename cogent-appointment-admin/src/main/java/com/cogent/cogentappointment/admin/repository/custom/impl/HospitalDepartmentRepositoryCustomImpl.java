@@ -116,11 +116,11 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();
 
         }
-            response.setHospitalDepartmentList(minimalResponseDTOS);
+        response.setHospitalDepartmentList(minimalResponseDTOS);
 
-            response.setTotalItems(totalItems);
+        response.setTotalItems(totalItems);
 
-            return response;
+        return response;
 
 
     }
@@ -158,6 +158,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
             throw new NoContentFoundException(HospitalDepartment.class, "id", hospitalDepartmentId.toString());
         }
     }
+
 
     //    Hospital Department = Department in frontend
     private Supplier<NoContentFoundException> HOSPITAL_DEPARTMENT_NOT_FOUND = () -> {

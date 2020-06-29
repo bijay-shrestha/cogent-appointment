@@ -213,7 +213,6 @@ public class AppointmentStatusUtils {
         return HospitalDeptAppointmentStatusDTO.builder()
                 .hospitalDeptDutyRosterInfo(hospitalDeptDutyRostersInfo)
                 .hospitalDeptAndDoctorInfo(hospitalDeptAndDoctorDTOS)
-                .appointmentStatusCount(parseHospitalDepartmentAppointmentStatusCount(hospitalDeptDutyRostersInfo))
                 .build();
     }
 
@@ -517,40 +516,25 @@ public class AppointmentStatusUtils {
         return appointmentStatusCount;
     }
 
-    private static Map<String, Integer> parseHospitalDepartmentAppointmentStatusCount(
-            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRostersInfo) {
+    public static Long getAppointmentSlotCounts(
+            String startTime,
+            String endTime,
+            int durationInMinutes) {
 
-        Integer vacantCount = 0;
-        Integer bookedCount = 0;
-        Integer checkedInCount = 0;
-        Integer cancelledCount = 0;
-        Integer followUpCount = 0;
+        final Duration duration = Minutes.minutes(durationInMinutes).toStandardDuration();
 
-        for (HospitalDeptDutyRosterStatusResponseDTO doctorDutyRoster : hospitalDeptDutyRostersInfo) {
-            for (AppointmentTimeSlotResponseDTO timeSlots : doctorDutyRoster.getAppointmentTimeSlots()) {
-                switch (timeSlots.getStatus().trim().toUpperCase()) {
-                    case VACANT:
-                        vacantCount++;
-                        break;
-                    case PENDING_APPROVAL:
-                        bookedCount++;
-                        break;
-                    case APPROVED:
-                        checkedInCount++;
-                        break;
-                    case CANCELLED:
-                        cancelledCount++;
-                        break;
-                }
+        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
 
-                if (!Objects.isNull(timeSlots.getIsFollowUp())) {
-                    if (timeSlots.getIsFollowUp().equals(YES))
-                        followUpCount++;
-                }
-            }
-        }
+        Long count=0L;
 
-        return parseAppointmentStatusCountValues(vacantCount, bookedCount, checkedInCount,
-                cancelledCount, followUpCount);
+        do {
+
+            dateTime = dateTime.plus(duration);
+
+            count+=1;
+
+        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return count;
     }
 }

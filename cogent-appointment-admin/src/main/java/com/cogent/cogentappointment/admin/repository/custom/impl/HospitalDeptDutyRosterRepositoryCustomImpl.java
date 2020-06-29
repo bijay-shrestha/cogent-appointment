@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.RosterDetailsForStatus;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
@@ -34,19 +36,19 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalDepartmentDutyRosterLog.HOSPITAL_DEPARTMENT_DUTY_ROSTER;
+import static com.cogent.cogentappointment.admin.query.AppointmentStatusCountQuery.QUERY_TO_FETCH_ROSTER_DETAILS_FOR_STATUS_COUNT;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_CHECK_IF_OVERRIDE_EXISTS;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_HDD_ROSTER_OVERRIDE_DETAILS;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptWeekDaysDutyRosterDoctorInfoQuery.QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDayNames;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
-import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseHDDRosterDetails;
-import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS;
-import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToExistingRosterDetails;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.*;
 
 /**
  * @author smriti on 20/05/20
@@ -219,8 +221,8 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(DATE, utilDateToSqlDate(date));
 
-        if(!Objects.isNull(hospitalDepartmentRoomInfoId)){
-            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID,hospitalDepartmentRoomInfoId);
+        if (!Objects.isNull(hospitalDepartmentRoomInfoId)) {
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId);
         }
 
         try {
@@ -230,6 +232,30 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
             throw HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND.get();
         }
 
+    }
+
+    @Override
+    public List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterDetails(
+            HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_ROSTER_DETAILS_FOR_STATUS_COUNT(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            query.setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        List<Object[]> results = query.getResultList();
+
+        List<HospitalDepartmentRosterDetailsDTO> rosterDetailsDTO =
+                parseQueryResultToHospitalDeptDutyRosterStatusCountResponseDTOS(results,
+                        requestDTO.getFromDate(),
+                        requestDTO.getToDate());
+
+        return rosterDetailsDTO;
     }
 
     private Query queryToGetRosterWithRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO) {

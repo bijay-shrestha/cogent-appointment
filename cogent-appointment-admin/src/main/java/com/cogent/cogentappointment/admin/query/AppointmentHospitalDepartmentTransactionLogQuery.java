@@ -33,18 +33,31 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
                             " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                        //[11]
                             " hd.name as hospitalDepartmentName," +                                             //[12]
                             " a.status as status, " +                                                           //[13]
-                            " COALESCE(ard.refundAmount,0) as refundAmount," +                                  //[14]
+                            " CASE WHEN" +
+                            " a.status = 'RE'" +
+                            " THEN " +
+                            " (COALESCE(ard.refundAmount,0))" +
+                            " ELSE" +
+                            " 0" +
+                            " END AS refundAmount," +                                                           //[14]
                             " hpi.address as patientAddress," +                                                 //[15]
                             " atd.transactionDate as transactionDate," +                                         //[16]
                             " a.appointmentModeId.name as appointmentMode," +                                    //[17]
                             " a.isFollowUp as isFollowUp," +                                                     //[18]
-                            " atd.appointmentAmount - COALESCE(ard.refundAmount ,0) as revenueAmount," +         //[19]
+                            " CASE WHEN" +
+                            " a.status!= 'RE'" +
+                            " THEN" +
+                            " atd.appointmentAmount" +
+                            " ELSE" +
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +
+                            " END AS revenueAmount," +                                                           //[19]
                             QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                               //[20]
                             " hb.billingMode.name as billingModeName," +                                        //[21]
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
                             " end as roomNumber," +                                                             //[22]
-                            " p.dateOfBirth as patientDob" +                                                    //[23]
+                            " p.dateOfBirth as patientDob," +                                                  //[23]
+                            " DATE_FORMAT(atd.transactionDate, '%h:%i %p') as transactionTime" +              //[24]
                             " FROM Appointment a" +
                             " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +

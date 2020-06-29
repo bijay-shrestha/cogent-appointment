@@ -37,13 +37,25 @@ public class TransactionLogQuery {
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +                                                      //[14]
                     " a.status as status," +                                                     //[15]
-                    " ard.refundAmount as refundAmount," +                                       //[16]
+                    " CASE WHEN" +
+                    " a.status = 'RE'" +
+                    " THEN " +
+                    " (COALESCE(ard.refundAmount,0))" +
+                    " ELSE" +
+                    " 0" +
+                    " END AS refundAmount," +
                     " atd.transactionDate as transactionDate," +                                //[17]
                     " am.name as appointmentMode," +                                            //[18]
                     " a.isFollowUp as isFollowUp," +                                            //[19]
                     " hpi.address as patientAddress," +                                         //[20]
-                    " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," +   //[21]
-                    " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[22]
+                    " DATE_FORMAT(atd.transactionDate, '%h:%i %p') as transactionTime," +       //[21]
+                    " CASE WHEN" +
+                    " a.status!= 'RE'" +
+                    " THEN" +
+                    " atd.appointmentAmount" +
+                    " ELSE" +
+                    " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +
+                    " END AS revenueAmount," +                                                      //[22]
                     " da.fileUri as fileUri," +                                                     //[23]
                     QUERY_TO_CALCULATE_PATIENT_AGE +                                                //[24]
                     " FROM Appointment a" +

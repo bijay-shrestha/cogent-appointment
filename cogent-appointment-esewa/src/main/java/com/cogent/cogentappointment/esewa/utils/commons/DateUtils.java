@@ -11,8 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
@@ -275,5 +273,18 @@ public class DateUtils {
     public static String convertToString(Date date, String format) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
+    }
+
+    public static Date addCurrentTimeToDate(Date date) {
+        Calendar calDateThen = Calendar.getInstance();
+        Calendar calTimeNow = Calendar.getInstance();
+
+        calDateThen.setTime(date);
+        calDateThen.set(Calendar.HOUR_OF_DAY, calTimeNow.get(Calendar.HOUR_OF_DAY));
+        calDateThen.set(Calendar.MINUTE, calTimeNow.get(Calendar.MINUTE));
+        calDateThen.set(Calendar.SECOND, calTimeNow.get(Calendar.SECOND));
+        date = calDateThen.getTime();
+
+        return date;
     }
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -36,6 +37,7 @@ public class AppointmentRescheduleLogSearchDTO {
 
     private Character patientType;
 
+    @NotNull
     private String appointmentServiceTypeCode;
 
     private Long hospitalDepartmentId;

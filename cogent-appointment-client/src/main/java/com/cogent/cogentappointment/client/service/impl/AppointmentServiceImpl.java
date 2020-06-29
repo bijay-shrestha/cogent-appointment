@@ -705,7 +705,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 (refundRequestDTO.getAppointmentId(), getLoggedInHospitalId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(refundRequestDTO.getAppointmentId()));
 
-        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(refundRequestDTO.getAppointmentId());
+        AppointmentTransactionDetail appointmentTransactionDetail =
+                fetchAppointmentTransactionDetail(refundRequestDTO.getAppointmentId());
 
         integrationCheckPointService.apiIntegrationCheckpointForRefundAppointment(appointment,
                 appointmentTransactionDetail,

@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
@@ -313,7 +314,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(SEARCHING_PROCESS_STARTED, TRANSACTION_LOG);
 
-        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+        String appointmentServiceTypeCode = Objects.isNull(searchRequestDTO.getAppointmentServiceTypeCode()) ?
+                DOCTOR_CONSULTATION_CODE : searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
         TransactionLogResponseDTO transactionLogs;
 

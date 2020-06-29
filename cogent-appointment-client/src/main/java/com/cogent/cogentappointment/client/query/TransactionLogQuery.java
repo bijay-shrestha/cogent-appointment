@@ -36,14 +36,27 @@ public class TransactionLogQuery {
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +                                         //[13]
                     " a.status as status," +                                       //[14]
-                    " ard.refundAmount as refundAmount," +                         //[15]
-                    " hpi.address as patientAddress," +                            //[16]
-                    " atd.transactionDate as transactionDate," +                    //[17]
-                    " am.name as appointmentMode," +                                //[18]
-                    " a.isFollowUp as isFollowUp," +                                //[19]
-                    " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," +     //[21]
-                    " da.fileUri as fileUri," +                                                        //[22]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " CASE WHEN" +
+                    " a.status = 'RE'" +
+                    " THEN " +
+                    " (COALESCE(ard.refundAmount,0))" +
+                    " ELSE" +
+                    " 0" +
+                    " END AS refundAmount," +
+                    " hpi.address as patientAddress," +                            //[15]
+                    " atd.transactionDate as transactionDate," +                    //[16]
+                    " am.name as appointmentMode," +                                //[17]
+                    " a.isFollowUp as isFollowUp," +                                //[18]
+                    " CASE WHEN" +
+                    " a.status!= 'RE'" +
+                    " THEN" +
+                    " atd.appointmentAmount" +
+                    " ELSE" +
+                    " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +
+                    " END AS revenueAmount," +
+                    " da.fileUri as fileUri," +                                                        //[19]
+                    " DATE_FORMAT(atd.transactionDate, '%h:%i %p') as transactionTime," +              //[20]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                                                   //[21]
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +

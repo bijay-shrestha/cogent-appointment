@@ -169,7 +169,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         } catch (NoResultException e) {
-            throw ADMIN_NOT_FOUND.apply(email);
+            throw new NoContentFoundException("Admin not found");
         }
     }
 

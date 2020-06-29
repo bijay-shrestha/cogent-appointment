@@ -121,18 +121,10 @@ public class CompanyProfileQuery {
                     " AND p.company.id =:companyId" +
                     " ORDER BY p.name ASC";
 
-    public static String COMPANY_PROFILES_AUDITABLE_QUERY() {
+    private static String COMPANY_PROFILES_AUDITABLE_QUERY() {
         return " p.createdBy as createdBy," +
                 " p.createdDate as createdDate," +
                 " p.lastModifiedBy as lastModifiedBy," +
                 " p.lastModifiedDate as lastModifiedDate";
     }
-
-    public static String COMPANY_PROFILE_MENU_AUDITABLE_QUERY() {
-        return " pm.createdBy as createdBy," +
-                " pm.createdDate as createdDate," +
-                " pm.lastModifiedBy as lastModifiedBy," +
-                " pm.lastModifiedDate as lastModifiedDate";
-    }
-
 }

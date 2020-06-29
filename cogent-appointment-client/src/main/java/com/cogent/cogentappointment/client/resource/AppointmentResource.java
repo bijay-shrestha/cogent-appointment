@@ -29,6 +29,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.FETCH_CLIENT_API_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;

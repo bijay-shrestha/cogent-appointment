@@ -229,7 +229,6 @@ public class AppointmentStatusUtils {
         return HospitalDeptAppointmentStatusDTO.builder()
                 .hospitalDeptDutyRosterInfo(hospitalDeptDutyRostersInfo)
                 .hospitalDeptAndDoctorInfo(hospitalDeptAndDoctorDTOS)
-                .appointmentStatusCount(parseHospitalDepartmentAppointmentStatusCount(hospitalDeptDutyRostersInfo))
                 .build();
     }
 
@@ -491,43 +490,6 @@ public class AppointmentStatusUtils {
                 cancelledCount, followUpCount);
     }
 
-    private static Map<String, Integer> parseHospitalDepartmentAppointmentStatusCount(
-            List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRostersInfo) {
-
-        Integer vacantCount = 0;
-        Integer bookedCount = 0;
-        Integer checkedInCount = 0;
-        Integer cancelledCount = 0;
-        Integer followUpCount = 0;
-
-        for (HospitalDeptDutyRosterStatusResponseDTO doctorDutyRoster : hospitalDeptDutyRostersInfo) {
-            for (AppointmentTimeSlotResponseDTO timeSlots : doctorDutyRoster.getAppointmentTimeSlots()) {
-                switch (timeSlots.getStatus().trim().toUpperCase()) {
-                    case VACANT:
-                        vacantCount++;
-                        break;
-                    case BOOKED:
-                        bookedCount++;
-                        break;
-                    case APPROVED:
-                        checkedInCount++;
-                        break;
-                    case CANCELLED:
-                        cancelledCount++;
-                        break;
-                }
-
-                if (!Objects.isNull(timeSlots.getIsFollowUp())) {
-                    if (timeSlots.getIsFollowUp().equals(YES))
-                        followUpCount++;
-                }
-            }
-        }
-
-        return parseAppointmentStatusCountValues(vacantCount, bookedCount, checkedInCount,
-                cancelledCount, followUpCount);
-    }
-
     private static Map<String, Integer> parseAppointmentStatusCountValues(Integer vacantStatusCount,
                                                                           Integer bookedStatusCount,
                                                                           Integer checkedInStatusCount,
@@ -546,6 +508,28 @@ public class AppointmentStatusUtils {
         appointmentStatusCount.put(ALL, allStatusCount);
 
         return appointmentStatusCount;
+    }
+
+    public static Long getAppointmentSlotCounts(
+            String startTime,
+            String endTime,
+            int durationInMinutes) {
+
+        final Duration duration = Minutes.minutes(durationInMinutes).toStandardDuration();
+
+        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+
+        Long count=0L;
+
+        do {
+
+            dateTime = dateTime.plus(duration);
+
+            count+=1;
+
+        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return count;
     }
 
 }

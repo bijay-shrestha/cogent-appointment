@@ -1331,12 +1331,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 NO
         );
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
-                appointmentInfo.getCreatedDateNepali(),
-                hospital.getId(),
-                hospital.getCode()
-        );
-
         String hyphenatedAppointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
                 hospital.getId(),

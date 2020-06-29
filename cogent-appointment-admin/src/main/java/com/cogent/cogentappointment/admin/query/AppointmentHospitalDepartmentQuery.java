@@ -305,12 +305,24 @@ public class AppointmentHospitalDepartmentQuery {
                             " atd.transactionNumber as transactionNumber," +                                    //[10]
                             " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                        //[11]
                             " a.status as status, " +                                                           //[12]
-                            " COALESCE(ard.refundAmount,0) as refundAmount," +                                  //[13]
+                            " CASE WHEN" +
+                            " a.status = 'RE'" +
+                            " THEN " +
+                            " (COALESCE(ard.refundAmount,0))" +                                                 //[12]
+                            " ELSE" +
+                            " 0" +
+                            " END AS refundAmount," +
                             " hpi.address as patientAddress," +                                                 //[14]
                             " atd.transactionDate as transactionDate," +                                       //[15]
                             " a.appointmentModeId.name as appointmentMode," +                                   //[16]
                             " a.isFollowUp as isFollowUp," +                                                    //[17]
-                            " atd.appointmentAmount - COALESCE(ard.refundAmount ,0) as revenueAmount," +        //[18]
+                            " CASE WHEN" +
+                            " a.status!= 'RE'" +
+                            " THEN" +
+                            " atd.appointmentAmount" +
+                            " ELSE" +
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
+                            " END AS revenueAmount," +
                             QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                                //[19]
                             " hd.name as hospitalDepartmentName," +                                             //[20]
                             " hb.billingMode.name as billingModeName," +                                        //[21]
@@ -412,11 +424,14 @@ public class AppointmentHospitalDepartmentQuery {
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(
             AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
 
+        String fromDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 23:59:59";
+
         String whereClause = " WHERE " +
                 " hpi.status='Y'" +
                 " AND arl.status='RES'" +
                 " AND hd.status!='D'" +
-                " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate" +
+                " AND arl.rescheduleDate BETWEEN '" + fromDate + "' AND '" + toDate + "'" +
                 " AND has.appointmentServiceType.code = :appointmentServiceTypeCode";
 
         if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
@@ -458,5 +473,6 @@ public class AppointmentHospitalDepartmentQuery {
                         " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                         GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
     }
+
 
 }

@@ -83,8 +83,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
-    private final MinioFileService minioFileService;
-
     private final EmailService emailService;
 
     private final ProfileService profileService;
@@ -109,7 +107,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    AdminMetaInfoRepository adminMetaInfoRepository,
                                    AdminAvatarRepository adminAvatarRepository,
                                    AdminConfirmationTokenRepository confirmationTokenRepository,
-                                   MinioFileService minioFileService, EmailService emailService,
+                                   EmailService emailService,
                                    ProfileService profileService,
                                    DashboardFeatureRepository dashboardFeatureRepository,
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
@@ -124,7 +122,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
-        this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
@@ -751,7 +748,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
         String subDirectory = admin.getEmail();
 
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+        return null;
+//        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
 
     private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {

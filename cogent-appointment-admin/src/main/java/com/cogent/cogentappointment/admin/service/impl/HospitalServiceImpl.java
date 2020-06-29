@@ -65,8 +65,6 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final BillingModeRepository billingModeRepository;
 
-    private final MinioFileService minioFileService;
-
     private final Validator validator;
 
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
@@ -80,7 +78,6 @@ public class HospitalServiceImpl implements HospitalService {
                                HmacApiInfoRepository hmacApiInfoRepository,
                                HospitalBillingModeInfoRepository hospitalBillingModeInfoRepository,
                                BillingModeRepository billingModeRepository,
-                               MinioFileService minioFileService,
                                Validator validator,
                                HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
                                AppointmentServiceTypeService appointmentServiceTypeService) {
@@ -91,7 +88,6 @@ public class HospitalServiceImpl implements HospitalService {
         this.hmacApiInfoRepository = hmacApiInfoRepository;
         this.hospitalBillingModeInfoRepository = hospitalBillingModeInfoRepository;
         this.billingModeRepository = billingModeRepository;
-        this.minioFileService = minioFileService;
         this.validator = validator;
         this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
         this.appointmentServiceTypeService = appointmentServiceTypeService;
@@ -395,7 +391,9 @@ public class HospitalServiceImpl implements HospitalService {
 //        String subDirectory = hospital.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + hospital.getName();
 
         String subDirectory = hospital.getName();
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+
+        return null;
+//        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
 
     private void saveHospitalLogo(HospitalLogo hospitalLogo) {

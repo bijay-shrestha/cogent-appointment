@@ -85,7 +85,7 @@ public class AdminServiceImpl implements AdminService {
                             DashboardFeatureRepository dashboardFeatureRepository,
                             AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                             AdminConfirmationTokenRepository confirmationTokenRepository,
-                            MinioFileService minioFileService, EmailService emailService,
+                            EmailService emailService,
                             ProfileService profileService,
                             AdminFeatureService adminFeatureService) {
         this.validator = validator;

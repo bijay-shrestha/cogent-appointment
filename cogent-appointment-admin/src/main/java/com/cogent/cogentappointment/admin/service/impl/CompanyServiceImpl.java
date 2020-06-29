@@ -61,21 +61,17 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
-    private final MinioFileService minioFileService;
-
     private final Validator validator;
 
     public CompanyServiceImpl(HospitalRepository hospitalRepository,
                               HospitalContactNumberRepository hospitalContactNumberRepository,
                               HospitalLogoRepository hospitalLogoRepository,
                               HmacApiInfoRepository hmacApiInfoRepository,
-                              MinioFileService minioFileService,
                               Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
-        this.minioFileService = minioFileService;
         this.validator = validator;
     }
 
@@ -243,7 +239,8 @@ public class CompanyServiceImpl implements CompanyService {
 
     private List<FileUploadResponseDTO> uploadFiles(Hospital company, MultipartFile[] files) {
         String subDirectory = company.getName();
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+        return null;
+//        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
 
     private void saveCompanyLogo(HospitalLogo companyLogo) {

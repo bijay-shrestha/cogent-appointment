@@ -16,5 +16,5 @@ public interface AdminFavouriteService {
 
     void update(AdminFavouriteUpdateRequestDTO requestDTO);
 
-    List<Long> getAdminFavouriteByAdminId();
+    List<Long> getAdminFavouriteByAdminId(Long adminId);
 }

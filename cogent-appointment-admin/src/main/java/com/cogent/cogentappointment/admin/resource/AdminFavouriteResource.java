@@ -54,10 +54,10 @@ public class AdminFavouriteResource {
         return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
     }
 
-    @GetMapping
+    @GetMapping(ID_PATH_VARIABLE_BASE)
     @ApiOperation(FAVOURITE_DETAILS_BY_ADMIN_ID)
-    public ResponseEntity<?> getAdminFavouriteByAdminId() {
-        return ok(adminFavouriteService.getAdminFavouriteByAdminId());
+    public ResponseEntity<?> getAdminFavouriteByAdminId(@PathVariable("id") Long id) {
+        return ok(adminFavouriteService.getAdminFavouriteByAdminId(id));
     }
 
 

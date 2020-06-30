@@ -25,7 +25,6 @@ import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.parseToSaveFavourite;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 
 /**
  * @author rupak ON 2020/06/16-12:17 PM
@@ -113,12 +112,12 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
     }
 
     @Override
-    public List<Long> getAdminFavouriteByAdminId() {
+    public List<Long> getAdminFavouriteByAdminId(Long adminId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_ADMIN_FAVOURITE_PROCESS_STARTED, ADMIN_FAVOURITE);
 
-        List<Long> favouriteUserMenuIds = adminFavouriteRepository.findUserMenuIdByAdmin(getLoggedInCompanyId())
+        List<Long> favouriteUserMenuIds = adminFavouriteRepository.findUserMenuIdByAdmin(adminId)
                 .orElse(Collections.emptyList());
 
         log.info(FETCHING_ADMIN_FAVOURITE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));

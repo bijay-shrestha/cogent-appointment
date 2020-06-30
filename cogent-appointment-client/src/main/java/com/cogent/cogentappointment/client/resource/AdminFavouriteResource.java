@@ -15,6 +15,7 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Adm
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFeatureConstant.FAVOURITE_DETAILS_BY_ADMIN_ID;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AdminFavouriteConstants.BASE_ADMIN_FAVOURITE;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -46,10 +47,10 @@ public class AdminFavouriteResource {
         return ok().build();
     }
 
-    @GetMapping
+    @GetMapping(ID_PATH_VARIABLE_BASE)
     @ApiOperation(FAVOURITE_DETAILS_BY_ADMIN_ID)
-    public ResponseEntity<?> getAdminFavouriteByAdminId() {
-        return ok(adminFavouriteService.getAdminFavouriteByAdminId());
+    public ResponseEntity<?> getAdminFavouriteByAdminId(@PathVariable("id") Long id) {
+        return ok(adminFavouriteService.getAdminFavouriteByAdminId(id));
     }
 
 

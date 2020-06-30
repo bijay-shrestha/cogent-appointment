@@ -23,7 +23,7 @@ public interface AppointmentTransactionDetailRepositoryCustom {
 
     Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId,String appointmentServiceTypeCode);
 
-    AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(Date toDate, Date fromDate, Long hospitalId,
+    AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(String toDate, String fromDate, Long hospitalId,
                                                                            String appointmentServiceTypeCode );
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO,

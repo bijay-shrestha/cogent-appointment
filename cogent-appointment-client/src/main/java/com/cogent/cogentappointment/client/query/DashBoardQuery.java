@@ -7,6 +7,8 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.HospitalDepartm
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDateInString;
+
 /**
  * @author Sauravi Thapa २०/२/१०
  */
@@ -21,7 +23,8 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE " +
-                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " AND a.hospitalId.id=:hospitalId";
 
@@ -35,7 +38,7 @@ public class DashBoardQuery {
 
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
             " WHERE " +
-                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
@@ -154,10 +157,11 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE " +
-                    " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                    " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
-                    " GROUP BY atd.transactionDate" +
+                    " GROUP BY DATE_FORMAT(atd.transactionDate, '%b %e')" +
                     " ORDER BY atd.transactionDate";
 
 
@@ -170,7 +174,8 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE" +
-                    " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                    " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
@@ -185,10 +190,11 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE" +
-                    " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                    " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
-                    " GROUP BY atd.transactionDate" +
+                    " GROUP BY DATE_FORMAT(atd.transactionDate , '%e %b')" +
                     " ORDER BY atd.transactionDate";
 
     public static String QUERY_TO_FETCH_REVENUE_DAILY =
@@ -202,11 +208,12 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                     " WHERE" +
-                    " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                    " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
                     " AND a.hospitalId.id =:hospitalId" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY" +
-                    " atd.transactionDate" +
+                    " DATE_FORMAT(atd.transactionDate , '%e %b,%Y')" +
                     " ORDER BY" +
                     " atd.transactionDate";
 
@@ -359,7 +366,7 @@ public class DashBoardQuery {
                     " a.status ='C'" +
                     " AND d.id=:doctorId" +
                     " AND s.id=:specializationId" +
-                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate";
 
 
     public static String QUERY_TO_GET_FOLLOW_UP =
@@ -379,14 +386,15 @@ public class DashBoardQuery {
                     " AND a.isFollowUp='Y'" +
                     " AND d.id=:doctorId" +
                     " AND s.id=:specializationId" +
-                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate";
 
     public static String QUERY_TO_GET_FOLLOW_UP_CANCELLED =
             "SELECT" +
                     " Count(a.id) as count," +
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as amount" +
                     " FROM Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Doctor d ON d.id= adi.doctor.id" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
@@ -409,7 +417,7 @@ public class DashBoardQuery {
         if (requestDTO.getDoctorId() != 0 && !Objects.isNull(requestDTO.getDoctorId()))
             whereClause += " AND d.id=" + requestDTO.getDoctorId();
 
-        whereClause += " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
+        whereClause += " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate" +
                 " GROUP BY d.id,da.id,s.id ";
 
         return whereClause;
@@ -421,7 +429,7 @@ public class DashBoardQuery {
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
-                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                 " WHERE" +
                 " ard.status = 'A'" +
                 " AND ard.refundedDate BETWEEN :fromDate AND :toDate" +
@@ -499,7 +507,7 @@ public class DashBoardQuery {
             whereClause += " AND ad.hospitalDepartment.id=" + requestDTO.getHospitalDepartmentId();
 
 
-        whereClause += " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
+        whereClause += " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate" +
                 " GROUP BY ad.hospitalDepartment.id ";
 
         return whereClause;
@@ -519,7 +527,7 @@ public class DashBoardQuery {
                     " (a.status !='RE' OR a.status !='C')" +
                     " AND a.isFollowUp='Y'" +
                     " AND ad.hospitalDepartment.id=:hospitalDepartmentId" +
-                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate";
 
     public static String QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
 

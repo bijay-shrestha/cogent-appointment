@@ -7,6 +7,8 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.HospitalDepartm
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+
 /**
  * @author Sauravi Thapa २०/२/१०
  */
@@ -294,11 +296,11 @@ public class DashBoardQuery {
                 " COUNT(a.id) as successfulAppointments," +                                      //[5]
                 " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
                 " FROM Appointment a" +
+                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Specialization s ON s.id=ad.specialization.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
@@ -330,6 +332,7 @@ public class DashBoardQuery {
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 )" +
                 " as cancelledRevenue" +                                       //[6]
                 " FROM Appointment a" +
+                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
@@ -386,7 +389,7 @@ public class DashBoardQuery {
                     " Count(a.id) as count," +
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as amount" +
                     " FROM Appointment a" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Doctor d ON d.id= adi.doctor.id" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
@@ -401,7 +404,8 @@ public class DashBoardQuery {
                     " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
 
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(DoctorRevenueRequestDTO requestDTO) {
-        String whereClause = " AND h.id=:hospitalId ";
+        String whereClause = " AND h.id=:hospitalId " +
+                " AND hast.appointmentServiceType.code= :appointmentServiceTypeCode";
 
         if (requestDTO.getSpecializationId() != 0 && !Objects.isNull(requestDTO.getSpecializationId()))
             whereClause += " AND s.id=" + requestDTO.getSpecializationId();
@@ -409,8 +413,11 @@ public class DashBoardQuery {
         if (requestDTO.getDoctorId() != 0 && !Objects.isNull(requestDTO.getDoctorId()))
             whereClause += " AND d.id=" + requestDTO.getDoctorId();
 
-        whereClause += " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " GROUP BY d.id,da.id,s.id ";
+        String fromDate = utilDateToSqlDate(requestDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(requestDTO.getToDate()) + " 23:59:59";
+
+        whereClause += " AND atd.transactionDate BETWEEN '" + fromDate + "' AND '" + toDate + "'" +
+                " GROUP BY d.id, s.id ";
 
         return whereClause;
     }
@@ -421,7 +428,7 @@ public class DashBoardQuery {
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
-                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                 " WHERE" +
                 " ard.status = 'A'" +
                 " AND ard.refundedDate BETWEEN :fromDate AND :toDate" +

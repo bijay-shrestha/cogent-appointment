@@ -4,8 +4,8 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardReques
 import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.HospitalDepartmentRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.FollowUpResponse;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.FollowUpResponse;
 import com.cogent.cogentappointment.client.dto.response.dashboard.HospitalDepartmentRevenueDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentRevenueStatisticsUtils.*;
@@ -66,15 +67,15 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
         AppointmentRevenueStatisticsResponseDTO responseDTO = new AppointmentRevenueStatisticsResponseDTO();
 
-        calculateBookedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO,appointmentServiceTypeCode);
+        calculateBookedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO, appointmentServiceTypeCode);
 
-        calculateCheckedInAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO,appointmentServiceTypeCode);
+        calculateCheckedInAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO, appointmentServiceTypeCode);
 
-        calculateCancelledAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO,appointmentServiceTypeCode);
+        calculateCancelledAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO, appointmentServiceTypeCode);
 
-        calculateRefundedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO,appointmentServiceTypeCode);
+        calculateRefundedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO, appointmentServiceTypeCode);
 
-        calculateRevenueFromRefundedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO,appointmentServiceTypeCode);
+        calculateRevenueFromRefundedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO, appointmentServiceTypeCode);
 
         calculateTotalRevenueExcludingBooked(responseDTO);
 
@@ -214,11 +215,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     public List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REVENUE(doctorRevenueRequestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
-
-        addPagination.accept(pagable, query);
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId())
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
 
         List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
 
@@ -242,9 +240,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE(doctorRevenueRequestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId())
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
 
         addPagination.accept(pagable, query);
 

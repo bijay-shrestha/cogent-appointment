@@ -5,14 +5,12 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalRequestDT
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.HospitalService;
-import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -43,23 +41,16 @@ public class HospitalResource {
 
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@RequestParam(value = "logo", required = false) MultipartFile logo,
-                                  @RequestParam(value = "banner", required = false) MultipartFile banner,
-                                  @RequestParam("request") String request) throws IOException, NoSuchAlgorithmException {
-
-        HospitalRequestDTO requestDTO = ObjectMapperUtils.map(request, HospitalRequestDTO.class);
-        hospitalService.save(requestDTO, logo, banner);
+    public ResponseEntity<?> save(@Valid @RequestBody HospitalRequestDTO requestDTO) throws NoSuchAlgorithmException {
+        hospitalService.save(requestDTO);
         return created(create(API_V1 + BASE_HOSPITAL)).build();
     }
 
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@RequestParam(value = "logo", required = false) MultipartFile logo,
-                                    @RequestParam(value = "banner", required = false) MultipartFile banner,
-                                    @RequestParam("request") String request) throws IOException, NoSuchAlgorithmException {
-
-        HospitalUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, HospitalUpdateRequestDTO.class);
-        hospitalService.update(updateRequestDTO, logo, banner);
+    public ResponseEntity<?> update(@Valid @RequestBody HospitalUpdateRequestDTO updateRequestDTO) throws IOException,
+            NoSuchAlgorithmException {
+        hospitalService.update(updateRequestDTO);
         return ok().build();
     }
 

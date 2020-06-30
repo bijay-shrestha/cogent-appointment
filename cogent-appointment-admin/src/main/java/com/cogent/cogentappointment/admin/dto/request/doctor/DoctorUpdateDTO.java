@@ -72,4 +72,6 @@ public class DoctorUpdateDTO implements Serializable {
     * N-> AVATAR IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE AVATAR*/
     @NotNull
     private Character isAvatarUpdate;
+
+    private String avatar;
 }

@@ -139,11 +139,13 @@ public class AdminUtils {
                 .build();
     }
 
-    public static AdminAvatar convertFileToAdminAvatar(FileUploadResponseDTO fileUploadResponseDTO,
+    public static AdminAvatar convertFileToAdminAvatar(AdminAvatar adminAvatar,
+                                                       String avatar,
                                                        Admin admin) {
-        AdminAvatar adminAvatar = new AdminAvatar();
-        setFileProperties(fileUploadResponseDTO, adminAvatar);
+
         adminAvatar.setAdmin(admin);
+        adminAvatar.setFileUri(avatar);
+        adminAvatar.setStatus(ACTIVE);
         return adminAvatar;
     }
 

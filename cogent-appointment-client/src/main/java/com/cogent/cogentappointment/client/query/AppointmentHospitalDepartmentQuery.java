@@ -358,7 +358,7 @@ public class AppointmentHospitalDepartmentQuery {
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getPatientMetaInfoId()))
-            whereClause += " AND pmi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
+            whereClause += " AND pi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
 
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";

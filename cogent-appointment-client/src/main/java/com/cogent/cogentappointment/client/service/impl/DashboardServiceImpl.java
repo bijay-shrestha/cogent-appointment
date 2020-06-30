@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DashboardMessages.DOCTOR_REVENUE_NOT_FOUND;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
@@ -119,7 +120,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient,followUpPatient, pillType);
+        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient, followUpPatient, pillType);
     }
 
     @Override
@@ -283,7 +284,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
             log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_REVENUE);
-            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE);
+            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND);
         }
     }
 

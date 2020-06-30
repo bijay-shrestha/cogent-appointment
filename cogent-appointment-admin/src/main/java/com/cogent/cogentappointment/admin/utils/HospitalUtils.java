@@ -109,6 +109,26 @@ public class HospitalUtils {
         return hospitalLogo;
     }
 
+    public static HospitalLogo convertFileToHospitalLogo(HospitalLogo hospitalLogo,
+                                                         String hospitalLogoImage,
+                                                         Hospital hospital) {
+
+        hospitalLogo.setHospital(hospital);
+        hospitalLogo.setFileUri(hospitalLogoImage);
+        hospitalLogo.setStatus(ACTIVE);
+        return hospitalLogo;
+    }
+
+    public static HospitalBanner convertFileToHospitalBanner(HospitalBanner hospitalBanner,
+                                                             String hospitalBannerImage,
+                                                             Hospital hospital) {
+
+        hospitalBanner.setHospital(hospital);
+        hospitalBanner.setFileUri(hospitalBannerImage);
+        hospitalBanner.setStatus(ACTIVE);
+        return hospitalBanner;
+    }
+
     public static void setLogoFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
                                              HospitalLogo hospitalLogo) {
         hospitalLogo.setFileSize(fileUploadResponseDTO.getFileSize());

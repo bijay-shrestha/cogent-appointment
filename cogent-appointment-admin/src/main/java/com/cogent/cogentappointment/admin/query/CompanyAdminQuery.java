@@ -157,18 +157,19 @@ public class CompanyAdminQuery {
                     " a.fullName as fullName," +                                            //[2]
                     " CASE " +
                     " WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
-                    " ELSE av.fileUri END as fileUri," +                                    //[3]
-                    " p.id as profileId," +                                                 //[4]
-                    " p.name as profileName," +                                             //[5]
-                    " h.id as hospitalId," +                                                //[6]
-                    " h.name as hospitalName," +                                            //[7]
-                    " h.isCompany as isCompany," +                                          //[8]
-                    " p.isAllRoleAssigned as isAllRoleAssigned," +                          //[9]
-                    " af.isSideBarCollapse as isSideBarCollapse," +                         //[10]
+                    " ELSE av.fileUri END as fileUri," +                                //[2]
+                    " p.id as profileId," +                                                 //[3]
+                    " p.name as profileName," +                                             //[4]
+                    " h.id as hospitalId," +                                                //[5]
+                    " h.name as hospitalName," +                                            //[6]
+                    " h.isCompany as isCompany," +                                          //[7]
+                    " p.isAllRoleAssigned as isAllRoleAssigned," +                          //[8]
+                    " af.isSideBarCollapse as isSideBarCollapse," +                         //[9]
                     " CASE " +
                     "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
                     "    ELSE hl.fileUri" +
-                    " END as hospitalLogo" +                                                //[11]
+                    " END as hospitalLogo," +                                              //[10]
+                    " hl.code as companyCode" +                                              //[11]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +

@@ -61,4 +61,6 @@ public class DoctorRequestDTO implements Serializable {
 
     @NotNull
     private Double appointmentFollowUpCharge;
+
+    private String avatar;
 }

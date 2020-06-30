@@ -78,11 +78,12 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
 
         String whereClause = " AND hd.status!='D' AND h.id = :hospitalId";
 
+        String fromDate = utilDateToSqlDate(searchRequestDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(searchRequestDTO.getToDate()) + " 23:59:59";
+
         if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
                 && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
-            whereClause += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
+            whereClause += " AND atd.transactionDate BETWEEN '" + fromDate + "' AND '" + toDate + "'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
             whereClause += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";

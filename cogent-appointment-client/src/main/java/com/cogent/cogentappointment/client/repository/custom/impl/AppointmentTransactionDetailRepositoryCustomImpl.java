@@ -243,29 +243,18 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable) {
+    public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO requestDTO, Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE(doctorRevenueRequestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()).toString())
-                .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()).toString())
-                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
+            Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_COMPANY_REVENUE(requestDTO))
+                    .setParameter(FROM_DATE, utilDateToSqlDateInString(requestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDateInString(requestDTO.getToDate()))
+                    .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
-        addPagination.accept(pagable, query);
+            addPagination.accept(pageable, cancelled);
 
-        List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
-        doctorRevenueDTOList.forEach(doctorRevenueDTO -> {
-            Query queryToGetCancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE_CANCELLED)
-                    .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()).toString())
-                    .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()).toString())
-                    .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId())
-                    .setParameter(SPECIALIZATION_ID, doctorRevenueDTO.getSpecializationId());
-            FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetCancelled,
-                    FollowUpResponse.class);
-            doctorRevenueDTO.setCancelledAppointments(doctorRevenueDTO.getCancelledAppointments() + followUpResponse.getCount());
-            doctorRevenueDTO.setCancelledRevenue(doctorRevenueDTO.getCancelledRevenue() + followUpResponse.getAmount());
-        });
+            List<DoctorRevenueDTO> revenueDTOList = transformQueryToResultList(cancelled, DoctorRevenueDTO.class);
 
-        return doctorRevenueDTOList;
+            return revenueDTOList;
     }
 
     @Override

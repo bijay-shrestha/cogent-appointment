@@ -92,7 +92,7 @@ public class MinIOServiceImpl implements MinIOService {
     }
 
     @Override
-    public String getObjectUrl(String url) {
+    public String getObjectUrl(String fileUri) {
         try {
 
             MinioClient minioClient = new MinioClient(minIOProperties.getURL(),
@@ -100,7 +100,7 @@ public class MinIOServiceImpl implements MinIOService {
                     minIOProperties.getSECRET_KEY());
 
             String objectUrl = minioClient.getObjectUrl (minIOProperties.getBUCKET_NAME(),
-                    url);
+                    fileUri );
 
             log.info("MinIO Error {}::", objectUrl);
 

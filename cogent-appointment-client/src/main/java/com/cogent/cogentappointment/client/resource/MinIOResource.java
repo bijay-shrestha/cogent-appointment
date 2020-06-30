@@ -37,10 +37,10 @@ public class MinIOResource {
 
     }
 
-    @GetMapping("/{url}")
-    public ResponseEntity<?> getPreviewObject(@PathVariable("url") String url) {
+    @GetMapping("/location")
+    public ResponseEntity<?> getPreviewObject(@RequestParam("fileUri") String fileUri) {
 
-        String objectUrl = minIOService.getObjectUrl(url);
+        String objectUrl = minIOService.getObjectUrl(fileUri);
 
         return new ResponseEntity<>(objectUrl, HttpStatus.OK);
 

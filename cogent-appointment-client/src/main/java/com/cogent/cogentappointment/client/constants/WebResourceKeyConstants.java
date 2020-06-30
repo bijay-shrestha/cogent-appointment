@@ -222,7 +222,6 @@ public class WebResourceKeyConstants {
         String BASE_FILE = "/file";
         String PUT_PERSIGNED_URL = "putPresignedURL";
         String GET_PERSIGNED_URL = "getPresignedURL";
-        String FETCH_FILE = "/{subDirectory}/{object}";
     }
 
     //N

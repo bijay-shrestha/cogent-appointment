@@ -23,9 +23,7 @@ import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercentage;
 
 
@@ -82,8 +80,8 @@ public class DashboardServiceImpl implements DashboardService {
 
         AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
-                        utilDateToSqlDate(requestDTO.getCurrentToDate()),
-                        utilDateToSqlDate(requestDTO.getCurrentFromDate()),
+                        utilDateToSqlDateInString(requestDTO.getCurrentToDate()),
+                        utilDateToSqlDateInString(requestDTO.getCurrentFromDate()),
                         requestDTO.getHospitalId(),
                         "DOC"
                 );

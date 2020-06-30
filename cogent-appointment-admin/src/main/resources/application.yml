@@ -9,4 +9,4 @@ catalina:
 
 spring:
   profiles:
-    active: rc
+    active: ir

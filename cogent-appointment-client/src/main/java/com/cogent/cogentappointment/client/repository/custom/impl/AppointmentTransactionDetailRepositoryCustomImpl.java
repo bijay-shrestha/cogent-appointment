@@ -31,6 +31,7 @@ import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentRevenueStatisticsUtils.*;
 import static com.cogent.cogentappointment.client.utils.DashboardUtils.revenueStatisticsResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDateInString;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -49,8 +50,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     @Override
     public Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId, String appointmentServiceTypeCode) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_REVENUE_BY_DATE)
-                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
-                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(toDate))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(fromDate))
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
@@ -60,8 +61,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(Date toDate,
-                                                                                  Date fromDate,
+    public AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(String toDate,
+                                                                                  String fromDate,
                                                                                   Long hospitalId,
                                                                                   String appointmentServiceTypeCode) {
 
@@ -85,8 +86,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     /*Revenue from Booked*/
-    private void calculateBookedAppointmentStatistics(Date toDate,
-                                                      Date fromDate,
+    private void calculateBookedAppointmentStatistics(String toDate,
+                                                      String fromDate,
                                                       Long hospitalId,
                                                       AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                       String appointmentServiceTypeCode) {
@@ -103,8 +104,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     /*Revenue from Checked-In*/
-    private void calculateCheckedInAppointmentStatistics(Date toDate,
-                                                         Date fromDate,
+    private void calculateCheckedInAppointmentStatistics(String toDate,
+                                                         String fromDate,
                                                          Long hospitalId,
                                                          AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                          String appointmentServiceTypeCode) {
@@ -121,8 +122,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     /*Revenue from Cancelled*/
-    private void calculateCancelledAppointmentStatistics(Date toDate,
-                                                         Date fromDate,
+    private void calculateCancelledAppointmentStatistics(String toDate,
+                                                         String fromDate,
                                                          Long hospitalId,
                                                          AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                          String appointmentServiceTypeCode) {
@@ -139,8 +140,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     /*Refund Amount*/
-    private void calculateRefundedAppointmentStatistics(Date toDate,
-                                                        Date fromDate,
+    private void calculateRefundedAppointmentStatistics(String toDate,
+                                                        String fromDate,
                                                         Long hospitalId,
                                                         AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                         String appointmentServiceTypeCode) {
@@ -157,8 +158,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     /*Revenue from Refund*/
-    private void calculateRevenueFromRefundedAppointmentStatistics(Date toDate,
-                                                                   Date fromDate,
+    private void calculateRevenueFromRefundedAppointmentStatistics(String toDate,
+                                                                   String fromDate,
                                                                    Long hospitalId,
                                                                    AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                                    String appointmentServiceTypeCode) {
@@ -199,8 +200,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         final String queryByFilter = getQueryByFilter(filter);
 
         Query query = createQuery.apply(entityManager, queryByFilter)
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, dashBoardRequestDTO.getAppointmentServiceTypeCode());
 
@@ -223,8 +224,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         doctorRevenueDTOList.forEach(doctorRevenueDTO -> {
             Query queryToGetFollowUp = createQuery.apply(entityManager, QUERY_TO_GET_FOLLOW_UP)
                     .setParameter(SPECIALIZATION_ID, doctorRevenueDTO.getSpecializationId())
-                    .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
-                    .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
+                    .setParameter(FROM_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getToDate()))
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId());
             FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetFollowUp,
                     FollowUpResponse.class);
@@ -239,26 +240,15 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     @Override
     public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE(doctorRevenueRequestDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_COMPANY_REVENUE(doctorRevenueRequestDTO))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId())
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
 
         addPagination.accept(pagable, query);
 
-        List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
-        doctorRevenueDTOList.forEach(doctorRevenueDTO -> {
-            Query queryToGetCancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE_CANCELLED)
-                    .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
-                    .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
-                    .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId())
-                    .setParameter(SPECIALIZATION_ID, doctorRevenueDTO.getSpecializationId());
-            FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetCancelled,
-                    FollowUpResponse.class);
-            doctorRevenueDTO.setCancelledAppointments(doctorRevenueDTO.getCancelledAppointments() + followUpResponse.getCount());
-            doctorRevenueDTO.setCancelledRevenue(doctorRevenueDTO.getCancelledRevenue() + followUpResponse.getAmount());
-        });
+        List<DoctorRevenueDTO> revenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
 
-        return doctorRevenueDTOList;
+        return revenueDTOList;
     }
 
     @Override
@@ -266,8 +256,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
             HospitalDepartmentRevenueRequestDTO requestDTO, Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(requestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(requestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         addPagination.accept(pageable, query);
@@ -277,8 +267,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
         revenueDTOList.forEach(revenueDTO -> {
             Query queryToGetFollowUp = createQuery.apply(entityManager, QUERY_TO_GET_HOSPITAL_DEPARTMENT_FOLLOW_UP)
-                    .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                    .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                    .setParameter(FROM_DATE, utilDateToSqlDateInString(requestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDateInString(requestDTO.getToDate()))
                     .setParameter(HOSPITAL_DEPARTMENT_ID, revenueDTO.getHospitalDepartmentId());
 
             FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetFollowUp,
@@ -295,8 +285,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     public List<HospitalDepartmentRevenueDTO> calculateCancelledHospitalDepartmentRevenue(
             HospitalDepartmentRevenueRequestDTO requestDTO, Pageable pageable) {
         Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REVENUE(requestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(requestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         addPagination.accept(pageable, cancelled);

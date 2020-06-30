@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminI
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminAvatarUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminChangePasswordRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminPasswordRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminResetPasswordRequestDTO;
@@ -14,7 +15,6 @@ import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdmin
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public interface CompanyAdminService {
 
-    void save(CompanyAdminRequestDTO adminRequestDTO, MultipartFile files);
+    void save(CompanyAdminRequestDTO adminRequestDTO);
 
     List<DropDownResponseDTO> fetchActiveCompanyAdminsForDropdown();
 
@@ -37,9 +37,9 @@ public interface CompanyAdminService {
 
     void resetPassword(AdminResetPasswordRequestDTO resetPasswordRequestDTO);
 
-    void updateAvatar(MultipartFile files, Long adminId);
+    void updateAvatar(AdminAvatarUpdateRequestDTO requestDTO);
 
-    void update(CompanyAdminUpdateRequestDTO updateRequestDTO, MultipartFile files);
+    void update(CompanyAdminUpdateRequestDTO updateRequestDTO);
 
     void verifyConfirmationToken(String token);
 

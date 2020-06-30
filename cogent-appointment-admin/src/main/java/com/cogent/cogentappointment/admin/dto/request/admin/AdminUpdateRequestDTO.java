@@ -65,4 +65,6 @@ public class AdminUpdateRequestDTO implements Serializable {
     private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;
 
     private String baseUrl;
+
+    private String avatar;
 }

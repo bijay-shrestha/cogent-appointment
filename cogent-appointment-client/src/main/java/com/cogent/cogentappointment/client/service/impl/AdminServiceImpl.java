@@ -13,7 +13,6 @@ import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiInf
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.integration.IntegrationBodyAttributeResponse;
 import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
@@ -22,7 +21,10 @@ import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
-import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.client.service.AdminFeatureService;
+import com.cogent.cogentappointment.client.service.AdminService;
+import com.cogent.cogentappointment.client.service.EmailService;
+import com.cogent.cogentappointment.client.service.ProfileService;
 import com.cogent.cogentappointment.client.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -30,10 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import javax.validation.Validator;
 import java.util.*;
 import java.util.function.Consumer;
@@ -80,8 +80,6 @@ public class AdminServiceImpl implements AdminService {
     private final DashboardFeatureRepository dashboardFeatureRepository;
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
-
-//    private final MinioFileService minioFileService;
 
     private final EmailService emailService;
 
@@ -141,7 +139,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void save(@Valid AdminRequestDTO adminRequestDTO, MultipartFile files) {
+    public void save(AdminRequestDTO adminRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -164,9 +162,9 @@ public class AdminServiceImpl implements AdminService {
                 hospitalId
         );
 
-        Admin admin = save(adminRequestDTO, hospitalId);
+        Admin admin = saveAdmin(adminRequestDTO, hospitalId);
 
-        saveAdminAvatar(admin, files);
+        saveAdminAvatar(admin, adminRequestDTO.getAvatar());
 
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
@@ -240,7 +238,7 @@ public class AdminServiceImpl implements AdminService {
 
         deleteAdminMetaInfo(admin, deleteRequestDTO);
 
-        save(convertAdminToDeleted(admin, deleteRequestDTO));
+        saveAdmin(convertAdminToDeleted(admin, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -268,7 +266,7 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findAdminByIdAndHospitalId(requestDTO.getId(), getLoggedInHospitalId());
 
-        save(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
+        saveAdmin(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
 
         sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getFullName()));
 
@@ -276,26 +274,24 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateAvatar(MultipartFile files, Long adminId) {
+    public void updateAvatar(AdminAvatarUpdateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR);
 
-        Admin admin = findAdminByIdAndHospitalId(adminId, getLoggedInHospitalId());
+        Admin admin = findAdminByIdAndHospitalId(requestDTO.getAdminId(), getLoggedInHospitalId());
 
-        updateAvatar(admin, files);
+        updateAvatar(admin, requestDTO.getAvatar());
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public void update(@Valid AdminUpdateRequestDTO updateRequestDTO, MultipartFile files) {
+    public void update(AdminUpdateRequestDTO updateRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN);
-
-        validateConstraintViolation(validator.validate(updateRequestDTO));
 
         Long hospitalId = getLoggedInHospitalId();
 
@@ -312,22 +308,23 @@ public class AdminServiceImpl implements AdminService {
                 hospitalId
         );
 
-        emailIsNotUpdated(updateRequestDTO, admin, files, hospitalId);
+        emailIsNotUpdated(updateRequestDTO, admin, hospitalId);
 
-        emailIsUpdated(updateRequestDTO, admin, files, hospitalId);
+        emailIsUpdated(updateRequestDTO, admin, hospitalId);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void emailIsNotUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                   Admin admin, MultipartFile files, Long hospitalId) {
+                                   Admin admin, Long hospitalId) {
+
         if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
             update(updateRequestDTO, updateRequestDTO.getStatus(), admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -340,7 +337,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void emailIsUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                Admin admin, MultipartFile files, Long hospitalId) {
+                                Admin admin,
+                                Long hospitalId) {
+
         if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -354,7 +353,7 @@ public class AdminServiceImpl implements AdminService {
             update(updateRequestDTO, INACTIVE, admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -398,7 +397,7 @@ public class AdminServiceImpl implements AdminService {
 
         admin.setStatus(ACTIVE);
 
-        save(admin);
+        saveAdmin(admin);
 
         adminConfirmationToken.setStatus(INACTIVE);
 
@@ -450,11 +449,6 @@ public class AdminServiceImpl implements AdminService {
 
         List<Long> favouriteUserMenuId = adminFavouriteRepository.
                 findUserMenuIdByAdmin(getLoggedInHospitalId()).orElse(emptyList());
-
-//        PrimaryAppointmentServiceTypeResponse serviceTypeResponses = appointmentServiceTypeRepository.
-//                fetchAppointmentServiceTypeByHospital(getLoggedInHospitalId());
-//        responseDTO.setPrimaryAppointmentServiceType(serviceTypeResponses);
-
 
         responseDTO.setFavouriteUserMenuId(favouriteUserMenuId);
         responseDTO.setApiIntegration(getApiIntegrations());
@@ -714,34 +708,27 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private Admin save(AdminRequestDTO adminRequestDTO, Long hospitalId) {
+    private Admin saveAdmin(AdminRequestDTO adminRequestDTO, Long hospitalId) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId(), hospitalId);
 
         Admin admin = parseAdminDetails(adminRequestDTO, gender, profile);
 
-        return save(admin);
+        return saveAdmin(admin);
     }
 
-    private void saveAdminAvatar(Admin admin, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            saveAdminAvatar(convertFileToAdminAvatar(responseList.get(0), admin));
-        }
+    private void saveAdminAvatar(Admin admin, String avatar) {
+        if (!Objects.isNull(avatar))
+            saveAdminAvatar(convertFileToAdminAvatar(new AdminAvatar(), avatar, admin));
     }
 
-    private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getEmail();
-//        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+    private void updateAdminAvatar(Admin admin,
+                                   AdminAvatar adminAvatar,
+                                   String avatar) {
 
-        return null;
-    }
-
-    private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            setFileProperties(responseList.get(0), adminAvatar);
+        if (!Objects.isNull(avatar)) {
+            convertFileToAdminAvatar(adminAvatar, avatar, admin);
         } else adminAvatar.setStatus(INACTIVE);
 
         saveAdminAvatar(adminAvatar);
@@ -763,7 +750,7 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private Admin save(Admin admin) {
+    private Admin saveAdmin(Admin admin) {
         return adminRepository.save(admin);
     }
 
@@ -843,11 +830,11 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
-    private void updateAvatar(Admin admin, MultipartFile files) {
+    private void updateAvatar(Admin admin, String avatar) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
-        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, files);
-        else updateAdminAvatar(admin, adminAvatar, files);
+        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, avatar);
+        else updateAdminAvatar(admin, adminAvatar, avatar);
     }
 
     public void update(AdminUpdateRequestDTO adminRequestDTO, Character status, Admin admin, Long hospitalId) {

@@ -39,4 +39,13 @@ public class MinIOResource {
         return new ResponseEntity<>(url, HttpStatus.OK);
 
     }
+
+    @GetMapping("/objectUrl")
+    public ResponseEntity<?> getPreviewObject(@RequestBody FileURLRequestDTO fileURLRequestDTO) {
+
+        String url = minIOService.getObjectUrl(fileURLRequestDTO);
+
+        return new ResponseEntity<>(url, HttpStatus.OK);
+
+    }
 }

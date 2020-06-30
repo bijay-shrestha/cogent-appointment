@@ -10,4 +10,6 @@ public interface MinIOService {
      String putPresignedObjectURL(FileURLRequestDTO fileRequestDTO);
 
      String getPresignedObjectURL(FileURLRequestDTO fileURLRequestDTO);
+
+     String getObjectUrl(FileURLRequestDTO fileURLRequestDTO);
 }

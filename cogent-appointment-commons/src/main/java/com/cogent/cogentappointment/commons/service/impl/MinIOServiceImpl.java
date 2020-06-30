@@ -90,4 +90,32 @@ public class MinIOServiceImpl implements MinIOService {
 
         return null;
     }
+
+    @Override
+    public String getObjectUrl(FileURLRequestDTO fileRequestDTO) {
+        try {
+
+            MinioClient minioClient = new MinioClient(minIOProperties.getURL(),
+                    minIOProperties.getACCESS_KEY(),
+                    minIOProperties.getSECRET_KEY());
+
+            String url = minioClient.getObjectUrl (minIOProperties.getBUCKET_NAME(),
+                    fileRequestDTO.getFileName());
+
+            log.info("MinIO Error {}::", url);
+
+            return url;
+
+        } catch (MinioException e) {
+            System.out.println("Error occurred: " + e);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

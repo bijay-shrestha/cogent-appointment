@@ -4,7 +4,8 @@ import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
 import com.cogent.cogentappointment.commons.service.MinIOService;
 import io.minio.MinioClient;
-import io.minio.errors.MinioException;
+import io.minio.errors.*;
+import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +36,7 @@ public class MinIOServiceImpl implements MinIOService {
 
         try {
 
-            MinioClient minioClient = new MinioClient(minIOProperties.getURL(),
-                    minIOProperties.getACCESS_KEY(),
-                    minIOProperties.getSECRET_KEY());
+            MinioClient minioClient = createMinioClient();
 
             String url = minioClient.getPresignedObjectUrl(PUT, minIOProperties.getBUCKET_NAME(),
                     fileRequestDTO.getFileName(),
@@ -65,9 +64,7 @@ public class MinIOServiceImpl implements MinIOService {
     public String getPresignedObjectURL(FileURLRequestDTO fileRequestDTO) {
         try {
 
-            MinioClient minioClient = new MinioClient(minIOProperties.getURL(),
-                    minIOProperties.getACCESS_KEY(),
-                    minIOProperties.getSECRET_KEY());
+            MinioClient minioClient = createMinioClient();
 
             String url = minioClient.getPresignedObjectUrl(GET, minIOProperties.getBUCKET_NAME(),
                     fileRequestDTO.getFileName(),
@@ -95,9 +92,7 @@ public class MinIOServiceImpl implements MinIOService {
     public String getObjectUrl(String fileUri) {
         try {
 
-            MinioClient minioClient = new MinioClient(minIOProperties.getURL(),
-                    minIOProperties.getACCESS_KEY(),
-                    minIOProperties.getSECRET_KEY());
+            MinioClient minioClient = createMinioClient();
 
             String objectUrl = minioClient.getObjectUrl (minIOProperties.getBUCKET_NAME(),
                     fileUri );
@@ -118,4 +113,11 @@ public class MinIOServiceImpl implements MinIOService {
 
         return null;
     }
+
+    private MinioClient createMinioClient() throws InvalidPortException, InvalidEndpointException {
+        return new MinioClient(minIOProperties.getURL(),
+                minIOProperties.getACCESS_KEY(),
+                minIOProperties.getSECRET_KEY());
+    }
+
 }

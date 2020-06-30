@@ -218,8 +218,10 @@ public class WebResourceKeyConstants {
     public static final String MIN = "/min";
     public static final String META_INFO = "/metaInfo";
 
-    public interface MinioFileConstants {
+    public interface MinioResourceConstant {
         String BASE_FILE = "/file";
+        String PUT_PERSIGNED_URL = "putPresignedURL";
+        String GET_PERSIGNED_URL = "getPresignedURL";
         String FETCH_FILE = "/{subDirectory}/{object}";
     }
 

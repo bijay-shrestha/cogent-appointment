@@ -92,19 +92,19 @@ public class MinIOServiceImpl implements MinIOService {
     }
 
     @Override
-    public String getObjectUrl(FileURLRequestDTO fileRequestDTO) {
+    public String getObjectUrl(String url) {
         try {
 
             MinioClient minioClient = new MinioClient(minIOProperties.getURL(),
                     minIOProperties.getACCESS_KEY(),
                     minIOProperties.getSECRET_KEY());
 
-            String url = minioClient.getObjectUrl (minIOProperties.getBUCKET_NAME(),
-                    fileRequestDTO.getFileName());
+            String objectUrl = minioClient.getObjectUrl (minIOProperties.getBUCKET_NAME(),
+                    url);
 
-            log.info("MinIO Error {}::", url);
+            log.info("MinIO Error {}::", objectUrl);
 
-            return url;
+            return objectUrl;
 
         } catch (MinioException e) {
             System.out.println("Error occurred: " + e);

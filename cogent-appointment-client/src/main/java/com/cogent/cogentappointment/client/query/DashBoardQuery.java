@@ -7,7 +7,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.HospitalDepartm
 import java.util.Objects;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDateInString;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -300,12 +300,12 @@ public class DashBoardQuery {
                 " s.name as specializationName," +                                               //[4]
                 " COUNT(a.id) as successfulAppointments," +                                      //[5]
                 " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
-                " FROM AppointmentTransactionDetail atd" +
-                " LEFT JOIN Appointment a ON atd.appointment.id = a.id" +
+                " FROM Appointment a" +
+                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN Specialization s ON s.id=ad.specialization.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
@@ -336,7 +336,8 @@ public class DashBoardQuery {
                     " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate";
 
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(DoctorRevenueRequestDTO requestDTO) {
-        String whereClause = " AND h.id=:hospitalId ";
+        String whereClause = " AND h.id=:hospitalId " +
+                " AND hast.appointmentServiceType.code= :appointmentServiceTypeCode";
 
         if (requestDTO.getSpecializationId() != 0 && !Objects.isNull(requestDTO.getSpecializationId()))
             whereClause += " AND s.id=" + requestDTO.getSpecializationId();
@@ -344,8 +345,11 @@ public class DashBoardQuery {
         if (requestDTO.getDoctorId() != 0 && !Objects.isNull(requestDTO.getDoctorId()))
             whereClause += " AND d.id=" + requestDTO.getDoctorId();
 
-        whereClause += " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate" +
-                " GROUP BY d.id,s.id ";
+        String fromDate = utilDateToSqlDate(requestDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(requestDTO.getToDate()) + " 23:59:59";
+
+        whereClause += " AND atd.transactionDate BETWEEN '" + fromDate + "' AND '" + toDate + "'" +
+                " GROUP BY d.id, s.id ";
 
         return whereClause;
     }
@@ -433,7 +437,6 @@ public class DashBoardQuery {
         if (requestDTO.getHospitalDepartmentId() != 0 && !Objects.isNull(requestDTO.getHospitalDepartmentId()))
             whereClause += " AND ad.hospitalDepartment.id=" + requestDTO.getHospitalDepartmentId();
 
-
         whereClause += " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate" +
                 " GROUP BY ad.hospitalDepartment.id ";
 
@@ -480,7 +483,7 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_CALCULATE_DOCTOR_COMPANY_REVENUE(DoctorRevenueRequestDTO requestDTO) {
 
-        return"SELECT" +
+        return "SELECT" +
                 " d.id as doctorId," +                                          //[0]
                 " CASE WHEN" +
                 " (d.salutation is null)" +
@@ -503,6 +506,7 @@ public class DashBoardQuery {
                 " WHEN ard.status='A'THEN (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 )) " +
                 " END  as cancelledRevenue" +
                 " FROM Appointment a" +
+                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
@@ -512,24 +516,6 @@ public class DashBoardQuery {
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
                 " a.status IN ('RE','C')" +
-                GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(requestDTO);
-    }
-
-    private static String GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(
-            DoctorRevenueRequestDTO requestDTO) {
-
-        String whereClause = " AND h.id=:hospitalId ";
-
-        if (requestDTO.getDoctorId() != 0 && !Objects.isNull(requestDTO.getDoctorId()))
-            whereClause += " AND d.id=" + requestDTO.getDoctorId();
-
-        if (requestDTO.getSpecializationId() != 0 && !Objects.isNull(requestDTO.getSpecializationId()))
-            whereClause += " AND s.id=" + requestDTO.getSpecializationId();
-
-
-        whereClause += " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate" +
-                " GROUP BY d.id,s.id  ";
-
-        return whereClause;
+                GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
 }

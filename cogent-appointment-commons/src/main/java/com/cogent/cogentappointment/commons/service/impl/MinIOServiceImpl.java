@@ -4,8 +4,9 @@ import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
 import com.cogent.cogentappointment.commons.service.MinIOService;
 import io.minio.MinioClient;
-import io.minio.errors.*;
-import io.minio.http.Method;
+import io.minio.errors.InvalidEndpointException;
+import io.minio.errors.InvalidPortException;
+import io.minio.errors.MinioException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,7 +96,7 @@ public class MinIOServiceImpl implements MinIOService {
             MinioClient minioClient = createMinioClient();
 
             String objectUrl = minioClient.getObjectUrl (minIOProperties.getBUCKET_NAME(),
-                    fileUri );
+                    fileUri);
 
             log.info("MinIO Error {}::", objectUrl);
 
@@ -114,7 +115,8 @@ public class MinIOServiceImpl implements MinIOService {
         return null;
     }
 
-    private MinioClient createMinioClient() throws InvalidPortException, InvalidEndpointException {
+    private MinioClient createMinioClient() throws InvalidPortException,
+            InvalidEndpointException {
         return new MinioClient(minIOProperties.getURL(),
                 minIOProperties.getACCESS_KEY(),
                 minIOProperties.getSECRET_KEY());

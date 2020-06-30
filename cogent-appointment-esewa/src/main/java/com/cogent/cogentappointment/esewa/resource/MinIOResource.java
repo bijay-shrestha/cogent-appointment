@@ -7,9 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.MinioResourceConstant.BASE_FILE;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.MinioResourceConstant.GET_PERSIGNED_URL;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.MinioResourceConstant.PUT_PERSIGNED_URL;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.MinioResourceConstant.*;
 
 /**
  * @author rupak ON 2020/06/28-11:42 AM
@@ -42,7 +40,9 @@ public class MinIOResource {
 
     @GetMapping
     public ResponseEntity<?> getObjectURL(@RequestParam("fileUri") String fileUri) {
+
         String objectUrl = minIOService.getObjectUrl(fileUri);
+
         return new ResponseEntity<>(objectUrl, HttpStatus.OK);
 
     }

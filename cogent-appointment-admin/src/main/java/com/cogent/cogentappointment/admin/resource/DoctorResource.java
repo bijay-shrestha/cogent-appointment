@@ -40,14 +40,14 @@ public class DoctorResource {
         this.doctorService = doctorService;
     }
 
-    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody DoctorRequestDTO requestDTO) {
         doctorService.save(requestDTO);
         return created(create(API_V1 + BASE_DOCTOR)).build();
     }
 
-    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @PutMapping
     @ApiOperation(UPDATE_OPERATION)
     public ResponseEntity<?> update(@Valid @RequestBody DoctorUpdateRequestDTO updateRequestDTO) {
         doctorService.update(updateRequestDTO);

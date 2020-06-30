@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminConstant.FETCH_DETAILS_FOR_DROPDOWN;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.SAVE_ADMIN_FAVOURITE_OPERATION;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.UPDATE_OPERATION;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFavouriteConstant.*;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFeatureConstant.FAVOURITE_DETAILS_BY_ADMIN_ID;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AdminFavouriteConstants.BASE_ADMIN_FAVOURITE;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -48,18 +47,25 @@ public class AdminFavouriteResource {
         return ok().build();
     }
 
-
-    @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchHospitalForDropDown() {
-        return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
+    @GetMapping(ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FAVOURITE_DETAILS_BY_ADMIN_ID)
+    public ResponseEntity<?> getAdminFavouriteByAdminId(@PathVariable("id") Long id) {
+        return ok(adminFavouriteService.getAdminFavouriteByAdminId(id));
     }
 
-    @GetMapping(ICON + ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchHospitalForDropDownWithIcon() {
-        return ok(adminFavouriteService.fetchAdminFavouriteForDropDownWithIcon());
-    }
+
+
+//    @GetMapping(ACTIVE + MIN)
+//    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+//    public ResponseEntity<?> fetchHospitalForDropDown() {
+//        return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
+//    }
+//
+//    @GetMapping(ICON + ACTIVE + MIN)
+//    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+//    public ResponseEntity<?> fetchHospitalForDropDownWithIcon() {
+//        return ok(adminFavouriteService.fetchAdminFavouriteForDropDownWithIcon());
+//    }
 
 
 }

@@ -70,4 +70,6 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
         return new RestTemplate();
     }
 
+
+
 }

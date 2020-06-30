@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminFavouriteConstant.*;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminFeatureConstant.FAVOURITE_DETAILS_BY_ADMIN_ID;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminFavouriteConstants.BASE_ADMIN_FAVOURITE;
@@ -53,11 +54,19 @@ public class AdminFavouriteResource {
         return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
     }
 
-    @GetMapping(ICON + ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchHospitalForDropDownWithIcon() {
-        return ok(adminFavouriteService.fetchAdminFavouriteForDropDownWithIcon());
+    @GetMapping(ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FAVOURITE_DETAILS_BY_ADMIN_ID)
+    public ResponseEntity<?> getAdminFavouriteByAdminId(@PathVariable("id") Long id) {
+        return ok(adminFavouriteService.getAdminFavouriteByAdminId(id));
     }
+
+
+//
+//    @GetMapping(ICON + ACTIVE + MIN)
+//    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+//    public ResponseEntity<?> fetchHospitalForDropDownWithIcon() {
+//        return ok(adminFavouriteService.fetchAdminFavouriteForDropDownWithIcon());
+//    }
 
 
 }

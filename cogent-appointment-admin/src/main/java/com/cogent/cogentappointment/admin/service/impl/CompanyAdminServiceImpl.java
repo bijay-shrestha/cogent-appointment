@@ -58,7 +58,9 @@ import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.par
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 import static java.lang.reflect.Array.get;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;
 
 /**
@@ -95,6 +97,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final IntegrationRepository integrationRepository;
 
+    private final AdminFavouriteRepository adminFavouriteRepository;
+
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
 
     private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
@@ -111,6 +115,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                                    AdminFeatureService adminFeatureService,
                                    IntegrationRepository integrationRepository,
+                                   AdminFavouriteRepository adminFavouriteRepository,
                                    IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
                                    AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
@@ -126,6 +131,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
+        this.adminFavouriteRepository = adminFavouriteRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
     }
@@ -430,6 +436,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             });
         }
 
+        List<Long> favouriteUserMenuId = adminFavouriteRepository.
+                findUserMenuIdByAdmin(getLoggedInCompanyId()).orElse(emptyList());
+
+        responseDTO.setFavouriteUserMenuId(favouriteUserMenuId);
         responseDTO.setApiIntegration(getApiIntegrations());
         responseDTO.setRequestBody(map);
 

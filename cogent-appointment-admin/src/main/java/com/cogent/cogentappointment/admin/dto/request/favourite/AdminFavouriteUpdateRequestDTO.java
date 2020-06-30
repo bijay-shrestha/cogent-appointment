@@ -17,7 +17,7 @@ public class AdminFavouriteUpdateRequestDTO implements Serializable{
     private Long adminId;
 
     @NotNull
-    private Long favouriteId;
+    private Long userMenuId;
 
     @NotNull
     private Character status;

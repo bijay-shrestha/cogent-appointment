@@ -273,10 +273,10 @@ public class AdminUtils {
                 .build();
     }
 
-    public static AdminFavourite parseToSaveFavourtie(Favourite favourite, Admin admin) {
+    public static AdminFavourite parseToSaveFavourite(Long userMenuId, Admin admin) {
 
         AdminFavourite adminFavourite = new AdminFavourite();
-        adminFavourite.setFavouriteId(favourite);
+        adminFavourite.setUserMenuId(userMenuId);
         adminFavourite.setAdminId(admin);
         adminFavourite.setStatus(ACTIVE);
 

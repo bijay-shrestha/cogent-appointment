@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoR
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.PrimaryAppointmentServiceTypeResponse;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
@@ -56,6 +55,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDif
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static java.lang.reflect.Array.get;
+import static java.util.Collections.emptyList;
 
 /**
  * @author smriti on 2019-08-05
@@ -81,7 +81,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
 
-    private final MinioFileService minioFileService;
+//    private final MinioFileService minioFileService;
 
     private final EmailService emailService;
 
@@ -92,6 +92,8 @@ public class AdminServiceImpl implements AdminService {
     private final IntegrationRepository integrationRepository;
 
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
+
+    private final AdminFavouriteRepository adminFavouriteRepository;
 
     private final AppointmentServiceTypeRepository appointmentServiceTypeRepository;
 
@@ -109,13 +111,12 @@ public class AdminServiceImpl implements AdminService {
                             AdminConfirmationTokenRepository confirmationTokenRepository,
                             DashboardFeatureRepository dashboardFeatureRepository,
                             AdminDashboardFeatureRepository adminDashboardFeatureRepository,
-                            MinioFileService minioFileService,
                             EmailService emailService,
                             ProfileService profileService,
                             AdminFeatureService adminFeatureService,
                             IntegrationRepository integrationRepository,
                             IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
-                            HospitalRepository hospitalRepository,
+                            AdminFavouriteRepository adminFavouriteRepository, HospitalRepository hospitalRepository,
                             AppointmentServiceTypeRepository appointmentServiceTypeRepository,
                             AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
                             AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
@@ -127,12 +128,12 @@ public class AdminServiceImpl implements AdminService {
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
-        this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
+        this.adminFavouriteRepository = adminFavouriteRepository;
         this.appointmentServiceTypeRepository = appointmentServiceTypeRepository;
         this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
@@ -447,11 +448,15 @@ public class AdminServiceImpl implements AdminService {
             });
         }
 
+        List<Long> favouriteUserMenuId = adminFavouriteRepository.
+                findUserMenuIdByAdmin(getLoggedInHospitalId()).orElse(emptyList());
+
 //        PrimaryAppointmentServiceTypeResponse serviceTypeResponses = appointmentServiceTypeRepository.
 //                fetchAppointmentServiceTypeByHospital(getLoggedInHospitalId());
 //        responseDTO.setPrimaryAppointmentServiceType(serviceTypeResponses);
 
 
+        responseDTO.setFavouriteUserMenuId(favouriteUserMenuId);
         responseDTO.setApiIntegration(getApiIntegrations());
         responseDTO.setRequestBody(map);
 
@@ -728,7 +733,9 @@ public class AdminServiceImpl implements AdminService {
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
         String subDirectory = admin.getEmail();
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+//        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+
+        return null;
     }
 
     private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {

@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.dto.request.favourite;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -12,8 +13,10 @@ import java.io.Serializable;
 @Setter
 public class AdminFavouriteSaveRequestDTO implements Serializable {
 
-    private Long  favouriteId;
+    @NotNull
+    private Long  adminId;
 
-    private Long adminId;
+    @NotNull
+    private Long  userMenuId;
 
 }

@@ -15,4 +15,6 @@ public interface AdminFavouriteService {
     void save(AdminFavouriteSaveRequestDTO adminFavouriteSaveRequestDTO);
 
     void update(AdminFavouriteUpdateRequestDTO requestDTO);
+
+    List<Long> getAdminFavouriteByAdminId(Long adminId);
 }

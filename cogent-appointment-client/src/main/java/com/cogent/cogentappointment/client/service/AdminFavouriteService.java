@@ -10,11 +10,11 @@ public interface AdminFavouriteService {
 
     List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDown();
 
-    List<FavouriteDropDownResponseDTO>  fetchAdminFavouriteForDropDownWithIcon();
+    List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon();
 
     void save(AdminFavouriteSaveRequestDTO adminFavouriteSaveRequestDTO);
 
     void update(AdminFavouriteUpdateRequestDTO requestDTO);
 
-    List<Long> getAdminFavouriteByAdminId();
+    List<Long> getAdminFavouriteByAdminId(Long adminId);
 }

@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Path;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -54,10 +55,10 @@ public class AdminFavouriteResource {
         return ok(adminFavouriteService.fetchAdminFavouriteForDropDown());
     }
 
-    @GetMapping
+    @GetMapping(ID_PATH_VARIABLE_BASE)
     @ApiOperation(FAVOURITE_DETAILS_BY_ADMIN_ID)
-    public ResponseEntity<?> getAdminFavouriteByAdminId() {
-        return ok(adminFavouriteService.getAdminFavouriteByAdminId());
+    public ResponseEntity<?> getAdminFavouriteByAdminId(@PathVariable("id") Long adminId) {
+        return ok(adminFavouriteService.getAdminFavouriteByAdminId(adminId));
     }
 
 

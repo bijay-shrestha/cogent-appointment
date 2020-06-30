@@ -113,12 +113,12 @@ public class AdminFavouriteServiceImpl implements AdminFavouriteService {
     }
 
     @Override
-    public List<Long> getAdminFavouriteByAdminId() {
+    public List<Long> getAdminFavouriteByAdminId(Long adminId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_ADMIN_FAVOURITE_PROCESS_STARTED, ADMIN_FAVOURITE);
 
-        List<Long> favouriteUserMenuIds = adminFavouriteRepository.findUserMenuIdByAdmin(getLoggedInCompanyId())
+        List<Long> favouriteUserMenuIds = adminFavouriteRepository.findUserMenuIdByAdmin(adminId)
                 .orElse(Collections.emptyList());
 
         log.info(FETCHING_ADMIN_FAVOURITE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));

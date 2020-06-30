@@ -195,7 +195,7 @@ public class DashBoardQuery {
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                     " GROUP BY DATE_FORMAT(atd.transactionDate , '%e %b')" +
-                    " ORDER BY atd.transactionDate";
+                    " ORDER BY DATE_FORMAT(atd.transactionDate , '%e %b')";
 
     public static String QUERY_TO_FETCH_REVENUE_DAILY =
             "SELECT" +

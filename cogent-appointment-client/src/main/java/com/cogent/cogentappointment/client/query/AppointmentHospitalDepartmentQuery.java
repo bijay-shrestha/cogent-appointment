@@ -358,7 +358,7 @@ public class AppointmentHospitalDepartmentQuery {
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getPatientMetaInfoId()))
-            whereClause += " AND pmi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
+            whereClause += " AND pi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
 
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
@@ -417,7 +417,7 @@ public class AppointmentHospitalDepartmentQuery {
             AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
 
         String fromDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 00:00:00";
-        String toDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 23:59:59";
+        String toDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getToDate()) + " 23:59:59";
 
         String whereClause = " WHERE " +
                 " hpi.status='Y'" +

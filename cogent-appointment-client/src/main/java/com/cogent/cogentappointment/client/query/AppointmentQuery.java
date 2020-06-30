@@ -258,7 +258,7 @@ public class AppointmentQuery {
             AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
 
         String fromDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 00:00:00";
-        String toDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getFromDate()) + " 23:59:59";
+        String toDate = utilDateToSqlDate(appointmentRescheduleLogSearchDTO.getToDate()) + " 23:59:59";
 
         String whereClause = " WHERE " +
                 " hpi.status='Y'" +

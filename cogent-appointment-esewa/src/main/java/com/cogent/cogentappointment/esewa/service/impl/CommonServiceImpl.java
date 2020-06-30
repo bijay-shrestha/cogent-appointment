@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.commons.service.MinIOService;
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.common.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.doctor.DoctorMinResponseDTO;
@@ -7,7 +8,6 @@ import com.cogent.cogentappointment.esewa.repository.DoctorRepository;
 import com.cogent.cogentappointment.esewa.repository.SpecializationRepository;
 import com.cogent.cogentappointment.esewa.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +28,16 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 public class CommonServiceImpl implements CommonService {
 
+    private final MinIOService minIOService;
+
     private final DoctorRepository doctorRepository;
 
     private final SpecializationRepository specializationRepository;
 
-    public CommonServiceImpl(DoctorRepository doctorRepository,
+    public CommonServiceImpl(MinIOService minIOService,
+                             DoctorRepository doctorRepository,
                              SpecializationRepository specializationRepository) {
+        this.minIOService = minIOService;
         this.doctorRepository = doctorRepository;
         this.specializationRepository = specializationRepository;
     }
@@ -47,8 +51,17 @@ public class CommonServiceImpl implements CommonService {
 
         List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(hospitalId);
 
+        doctorInfo.forEach(doctor -> {
+
+            if (doctor.getFileUri() != null) {
+                doctor.setFileUri(minIOService.getObjectUrl(doctor.getFileUri()));
+            }
+
+        });
+
         List<DropDownResponseDTO> specializationInfo =
                 specializationRepository.fetchSpecializationByHospitalId(hospitalId);
+
 
         DoctorSpecializationResponseDTO commonInfo = DoctorSpecializationResponseDTO.builder()
                 .doctorInfo(doctorInfo)

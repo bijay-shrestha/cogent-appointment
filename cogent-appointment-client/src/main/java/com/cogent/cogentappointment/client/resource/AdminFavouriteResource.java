@@ -42,7 +42,7 @@ public class AdminFavouriteResource {
 
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> delete(@Valid @RequestBody AdminFavouriteUpdateRequestDTO requestDTO) {
+    public ResponseEntity<?> update(@Valid @RequestBody AdminFavouriteUpdateRequestDTO requestDTO) {
         adminFavouriteService.update(requestDTO);
         return ok().build();
     }

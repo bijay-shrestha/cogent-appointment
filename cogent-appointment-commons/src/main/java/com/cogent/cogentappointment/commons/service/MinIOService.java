@@ -7,5 +7,7 @@ import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
  */
 public interface MinIOService {
 
-     String getPresignedObjectURL(FileURLRequestDTO fileRequestDTO);
+     String putPresignedObjectURL(FileURLRequestDTO fileRequestDTO);
+
+     String getPresignedObjectURL(FileURLRequestDTO fileURLRequestDTO);
 }

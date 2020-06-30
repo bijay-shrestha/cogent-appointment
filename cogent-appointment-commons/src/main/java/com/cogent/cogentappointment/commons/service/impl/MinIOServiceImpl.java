@@ -14,6 +14,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import static io.minio.http.Method.GET;
+import static io.minio.http.Method.PUT;
 
 /**
  * @author rupak ON 2020/06/28-12:47 PM
@@ -30,8 +31,38 @@ public class MinIOServiceImpl implements MinIOService {
     }
 
     @Override
-    public String getPresignedObjectURL(FileURLRequestDTO fileRequestDTO) {
+    public String putPresignedObjectURL(FileURLRequestDTO fileRequestDTO) {
 
+        try {
+
+            MinioClient minioClient = new MinioClient(minIOProperties.getURL(),
+                    minIOProperties.getACCESS_KEY(),
+                    minIOProperties.getSECRET_KEY());
+
+            String url = minioClient.getPresignedObjectUrl(PUT, minIOProperties.getBUCKET_NAME(),
+                    fileRequestDTO.getFileName(),
+                    Integer.parseInt(minIOProperties.getEXPIRY_TIME()),
+                    null);
+
+            log.info("MinIO Error {}::", url);
+
+            return url;
+
+        } catch (MinioException e) {
+            System.out.println("Error occurred: " + e);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getPresignedObjectURL(FileURLRequestDTO fileRequestDTO) {
         try {
 
             MinioClient minioClient = new MinioClient(minIOProperties.getURL(),

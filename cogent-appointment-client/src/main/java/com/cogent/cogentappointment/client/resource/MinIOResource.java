@@ -25,10 +25,19 @@ public class MinIOResource {
     }
 
 
-    @PutMapping
+    @PutMapping("/upload")
     public ResponseEntity<?> getPresignedObjectURL(@RequestBody FileURLRequestDTO fileURLRequestDTO) {
 
         String url = minIOService.getPresignedObjectURL(fileURLRequestDTO);
+
+        return new ResponseEntity<>(url, HttpStatus.OK);
+
+    }
+
+    @PutMapping("/download")
+    public ResponseEntity<?> putPresignedObjectURL(@RequestBody FileURLRequestDTO fileURLRequestDTO) {
+
+        String url = minIOService.putPresignedObjectURL(fileURLRequestDTO);
 
         return new ResponseEntity<>(url, HttpStatus.OK);
 

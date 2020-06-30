@@ -60,8 +60,11 @@ public class SwaggerConstants {
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
-        String FETCH_APPOINTMENTS_CANCEL_APPROVALS = "Fetch  Appointment cancel approval List";
+        String FETCH_DOCTOR_APPOINTMENTS_CANCEL_APPROVALS = "Fetch Doctor Appointment cancel approval List";
+        String FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS = "Fetch cancelled Hospital Department Appointment" +
+                " List";
         String FETCH_REFUND_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
+        String FETCH_CANCELLED_APPOINTMENTS_DETAIL = "Fetch Cancelled Appointment Detail By appointmentId";
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
         String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
@@ -90,6 +93,7 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
         String FETCH_DEPARTMENT_APPOINTMENT_STATUS = "Fetch department appointment status.";
         String FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "Fetch department appointment status by specific roomId.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS_COUNT = "Fetch department appointment status count.";
     }
 
     public interface AppointmentTransferConstant {

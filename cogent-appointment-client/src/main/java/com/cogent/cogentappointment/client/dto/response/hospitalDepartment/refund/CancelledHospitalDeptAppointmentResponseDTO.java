@@ -13,9 +13,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentCancelApprovalResponse implements Serializable{
+public class CancelledHospitalDeptAppointmentResponseDTO implements Serializable{
 
-    private List<DepartmentCancelApprovalResponseDTO> response;
+    private List<CancelledHospitalDeptAppointmentDTO> cancelledAppointments;
 
     private int totalItems;
+
+    private Double totalRefundAmount;
 }

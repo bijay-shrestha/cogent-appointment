@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.hospitalDepartment;
+package com.cogent.cogentappointment.admin.dto.request.hospitalDepartment;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +11,13 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class DepartmentCancelApprovalSearchDTO implements Serializable {
+public class CancelledHospitalDeptAppointmentSearchDTO implements Serializable {
 
     private Date fromDate;
 
     private Date toDate;
+
+    private Long hospitalId;
 
     private Long hospitalDepartmentId;
 

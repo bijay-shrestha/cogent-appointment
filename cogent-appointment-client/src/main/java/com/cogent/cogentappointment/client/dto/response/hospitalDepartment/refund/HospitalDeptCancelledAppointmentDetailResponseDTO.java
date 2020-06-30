@@ -2,22 +2,18 @@ package com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refu
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author rupak ON 2020/06/22-3:31 PM
+ * @author Sauravi Thapa ON 29/06/2020
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class DepartmentCancelApprovalResponseDTO implements Serializable {
-
-    private Long appointmentId;
+public class HospitalDeptCancelledAppointmentDetailResponseDTO implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")
     private Date appointmentDate;
@@ -25,6 +21,14 @@ public class DepartmentCancelApprovalResponseDTO implements Serializable {
     private String appointmentTime;
 
     private String appointmentNumber;
+
+    private Long appointmentId;
+
+    private Long appointmentModeId;
+
+    private Long hospitalId;
+
+    private String hospitalName;
 
     private String patientName;
 
@@ -34,7 +38,9 @@ public class DepartmentCancelApprovalResponseDTO implements Serializable {
 
     private String age;
 
-    private String doctorName;
+    private String hospitalDepartmentName;
+
+    private String roomNumber;
 
     private String eSewaId;
 
@@ -42,15 +48,15 @@ public class DepartmentCancelApprovalResponseDTO implements Serializable {
 
     private String cancelledDate;
 
+    private Double refundAmount;
+
     private String mobileNumber;
 
-    private Double refundAmount;
+    private Double appointmentCharge;
 
     private String appointmentMode;
 
+    private String remarks;
+
     private Character isRegistered;
-
-    private String departmentName;
-
-    private String roomNumber;
 }

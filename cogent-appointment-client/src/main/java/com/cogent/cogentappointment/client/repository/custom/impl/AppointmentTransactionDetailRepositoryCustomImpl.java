@@ -48,8 +48,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     @Override
     public Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId, String appointmentServiceTypeCode) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_REVENUE_BY_DATE)
-                .setParameter(TO_DATE, toDate)
-                .setParameter(FROM_DATE, fromDate)
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
 
@@ -198,10 +198,10 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         final String queryByFilter = getQueryByFilter(filter);
 
         Query query = createQuery.apply(entityManager, queryByFilter)
-                .setParameter(TO_DATE, dashBoardRequestDTO.getToDate())
-                .setParameter(FROM_DATE, dashBoardRequestDTO.getFromDate())
+                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, "DOC");
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, dashBoardRequestDTO.getAppointmentServiceTypeCode());
 
         List<Object[]> objects = query.getResultList();
 

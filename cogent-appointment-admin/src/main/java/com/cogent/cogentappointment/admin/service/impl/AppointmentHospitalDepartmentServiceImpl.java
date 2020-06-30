@@ -1,15 +1,12 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.HospitalDepartmentTransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.DepartmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.CancelledHospitalDeptAppointmentSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.reschedule.HospitalDepartmentAppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.HospitalDepartmentTransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.DepartmentCancelApprovalResponse;
-import com.cogent.cogentappointment.admin.dto.response.reschedule.HospitalDepartmentAppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.HospitalDeptCancelledAppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.admin.repository.AppointmentHospitalDepartmentFollowUpLogRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentHospitalDepartmentInfoRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
@@ -31,6 +28,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -133,19 +131,35 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     }
 
     @Override
-    public DepartmentCancelApprovalResponse fetchDepartmentAppointmentCancelApprovals(DepartmentCancelApprovalSearchDTO searchDTO,
-                                                                                      Pageable pageable) {
+    public CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(CancelledHospitalDeptAppointmentSearchDTO searchDTO,
+                                                                                              Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
+        log.info(FETCHING_PROCESS_STARTED, CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT);
 
-        DepartmentCancelApprovalResponse approvalResponse = appointmentRepository.
-                fetchDepartmentAppointmentCancelApprovals(searchDTO,
+        CancelledHospitalDeptAppointmentResponseDTO cancelledAppointments = appointmentRepository.
+                fetchCancelledHospitalDeptAppointments(searchDTO,
                         pageable);
 
-        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return approvalResponse;
+        return cancelledAppointments;
+    }
+
+    @Override
+    public HospitalDeptCancelledAppointmentDetailResponseDTO fetchCancelledAppointmentDetail(Long appointmentId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT);
+
+        HospitalDeptCancelledAppointmentDetailResponseDTO responseDTO = appointmentRepository.
+                fetchCancelledAppointmentDetail(appointmentId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
     }
 
     private Appointment fetchPendingAppointment(Long appointmentId, Long hospitalId) {

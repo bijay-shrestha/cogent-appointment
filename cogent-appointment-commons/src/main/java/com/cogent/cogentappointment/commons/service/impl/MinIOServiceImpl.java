@@ -39,7 +39,7 @@ public class MinIOServiceImpl implements MinIOService {
                     minIOProperties.getACCESS_KEY(),
                     minIOProperties.getSECRET_KEY());
 
-            String url = minioClient.getPresignedObjectUrl(PUT, minIOProperties.getBUCKET_NAME(),
+            String url = minioClient.getPresignedObjectUrl(GET, minIOProperties.getBUCKET_NAME(),
                     fileRequestDTO.getFileName(),
                     Integer.parseInt(minIOProperties.getEXPIRY_TIME()),
                     null);

@@ -2,12 +2,14 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
+import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
@@ -73,18 +75,22 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
     private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
 
+    private final AppointmentService appointmentService;
+
     public IntegrationCheckPointServiceImpl(IntegrationRepository integrationRepository,
                                             ThirdPartyConnectorService thirdPartyConnectorService,
                                             HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                             AppointmentRepository appointmentRepository,
                                             AppointmentEsewaRequestRepository appointmentEsewaRequestRepository,
-                                            AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
+                                            AppointmentRefundDetailRepository appointmentRefundDetailRepository,
+                                            AppointmentService appointmentService) {
         this.integrationRepository = integrationRepository;
         this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.appointmentRepository = appointmentRepository;
         this.appointmentEsewaRequestRepository = appointmentEsewaRequestRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
+        this.appointmentService = appointmentService;
     }
 
     @Override
@@ -178,33 +184,6 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         return integrationApiInfo;
 
-    }
-
-
-    private ThirdPartyResponse processRefundRequest(IntegrationRefundRequestDTO integrationRefundRequestDTO,
-                                                    Appointment appointment,
-                                                    AppointmentTransactionDetail transactionDetail,
-                                                    AppointmentRefundDetail appointmentRefundDetail,
-                                                    Boolean isRefund) {
-
-        ThirdPartyResponse thirdPartyResponse = null;
-
-        switch (appointment.getAppointmentModeId().getCode()) {
-
-            case APPOINTMENT_MODE_ESEWA_CODE:
-                thirdPartyResponse = requestEsewaForRefund(integrationRefundRequestDTO,
-                        appointment,
-                        transactionDetail,
-                        appointmentRefundDetail,
-                        isRefund);
-                break;
-
-            default:
-                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
-        }
-
-
-        return thirdPartyResponse;
     }
 
     @Override
@@ -322,8 +301,117 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         null);
             }
         }
+
+
     }
 
+    @Override
+    public void apiIntegrationCheckpointForRefundStatus(Appointment appointment,
+                                                        AppointmentRefundDetail appointmentRefundDetail,
+                                                        AppointmentTransactionDetail appointmentTransactionDetail,
+                                                        RefundStatusRequestDTO requestDTO) {
+
+        IntegrationRefundRequestDTO refundRequestDTO = requestDTO.getRefundRequestDTO();
+
+        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+
+            //condition to check transaction number for follow up case.
+            //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+            //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+            if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                    appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+
+                //todo
+            } else {
+
+                ThirdPartyResponse thirdPartyResponse = processRefundRequest(refundRequestDTO,
+                        appointment,
+                        appointmentTransactionDetail,
+                        appointmentRefundDetail,
+                        false);//tp be ask what is boolean in this case.
+
+                updateRefundStatusDetails(appointment,
+                        appointmentRefundDetail,
+                        appointmentTransactionDetail,
+                        refundRequestDTO,
+                        thirdPartyResponse.getStatus());
+
+            }
+
+        }
+
+        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+            //condition to check transaction number for follow up case.
+            //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+            //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+            if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                    appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+//todo
+
+            } else {
+//todo
+
+            }
+        }
+
+    }
+
+    private ThirdPartyResponse processRefundRequest(IntegrationRefundRequestDTO integrationRefundRequestDTO,
+                                                    Appointment appointment,
+                                                    AppointmentTransactionDetail transactionDetail,
+                                                    AppointmentRefundDetail appointmentRefundDetail,
+                                                    Boolean isRefund) {
+
+        ThirdPartyResponse thirdPartyResponse = null;
+
+        switch (appointment.getAppointmentModeId().getCode()) {
+
+            case APPOINTMENT_MODE_ESEWA_CODE:
+                thirdPartyResponse = requestEsewaForRefund(integrationRefundRequestDTO,
+                        appointment,
+                        transactionDetail,
+                        appointmentRefundDetail,
+                        isRefund);
+                break;
+
+            default:
+                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+        }
+
+
+        return thirdPartyResponse;
+    }
+
+    private void updateRefundStatusDetails(Appointment appointment,
+                                           AppointmentRefundDetail appointmentRefundDetail,
+                                           AppointmentTransactionDetail appointmentTransactionDetail,
+                                           IntegrationRefundRequestDTO refundRequestDTO,
+                                           String response) {
+
+        switch (response) {
+
+            case PARTIAL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        refundRequestDTO.getRemarks(),
+                        response);
+                break;
+
+            case FULL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        refundRequestDTO.getRemarks(),
+                        response);
+                break;
+
+            case AMBIGIOUS:
+                appointmentService.approveRefundAppointment(refundRequestDTO);
+
+            default:
+                appointmentService.approveRefundAppointment(refundRequestDTO);
+        }
+    }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,
                                                               String frontEndRemarks,

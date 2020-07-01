@@ -35,6 +35,21 @@ public class AppointmentQuery {
 //                    " AND h.id =:hospitalId" +
 //                    " ORDER BY a.id DESC LIMIT 1";
 
+    public static String TEST =
+            "SELECT a.appointment_number appointment a WHERE a.id=75";
+
+    public static String TEST2 =
+            "SELECT a.hyphenatedAppointmentNumber" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Hospital h ON h.id =a.hospitalId.id" +
+                    " WHERE" +
+                    " a.createdDateNepali" +
+                    " BETWEEN '2076-04-01' AND '2077-03-31'" +
+                    " AND h.id =5" +
+                    " AND a.id=75";
+
+
+
         public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
             "SELECT a.hyphenated_appointment_number" +
                     " FROM appointment a" +

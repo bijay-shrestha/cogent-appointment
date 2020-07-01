@@ -109,13 +109,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER);
         Query query1 = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER_TEST);
 
+        Query test=createNativeQuery.apply(entityManager, TEST);
+
+        Query test2=createQuery.apply(entityManager, TEST2);
+
+
         System.out.println("startingFiscalYear------>"+startingFiscalYear);
         System.out.println("endingFiscalYear------>"+endingFiscalYear);
         System.out.println("HOSPITAL_ID------>"+hospitalId);
 
 
-        System.out.println("QUERY-------TEST"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER);
-        System.out.println("QUERY-------TEST"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER_TEST);
+        System.out.println("QUERY-------"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER);
+        System.out.println("QUERY-------"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER_TEST);
+        System.out.println("QUERY-------TEST"+TEST);
+        System.out.println("QUERY-------TEST2"+TEST2);
 
         System.out.println("QUERY-------" + query.toString());
 
@@ -127,10 +134,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Object result3=query1.getSingleResult();
 
+        Object result4=test.getSingleResult();
+
+        Object result5=test2.getSingleResult();
+
         System.out.println("RESULT LIST*******************"+result.get(0));
         System.out.println("RESULT1 LIST*******************"+result1.get(0));
         System.out.println("RESULT LIST*******************"+result2);
         System.out.println("RESULT1 LIST*******************"+result3);
+        System.out.println("TEST *******************"+result4);
+        System.out.println("TEST2 *******************"+result5);
 
         System.out.println("appointment number ===== TEST"+AppointmentUtils.generateAppointmentNumber(query.getResultList(),
                 startingFiscalYear, endingFiscalYear, hospitalCode));

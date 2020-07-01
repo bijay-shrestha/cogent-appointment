@@ -108,7 +108,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         System.out.println("startingFiscalYear------>"+startingFiscalYear);
         System.out.println("endingFiscalYear------>"+endingFiscalYear);
-        System.out.println("HOSPITAL_ID------>"+HOSPITAL_ID);
+        System.out.println("HOSPITAL_ID------>"+hospitalId);
 
 
         System.out.println("QUERY-------TEST"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER);

@@ -321,8 +321,6 @@ public class AppointmentServiceImpl implements AppointmentService {
             code = hospitalAppointmentServiceType.getAppointmentServiceType().getCode();
         }
 
-        System.out.println("SERVICE TYPE CODE ------> " + code);
-
         AppointmentSuccessResponseDTO responseDTO;
         switch (code.trim().toUpperCase()) {
 

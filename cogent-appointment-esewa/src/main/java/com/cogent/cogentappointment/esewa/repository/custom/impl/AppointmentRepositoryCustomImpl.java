@@ -106,18 +106,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(TO_DATE, endingFiscalYear)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        System.out.println("startingFiscalYear------>"+startingFiscalYear);
-        System.out.println("endingFiscalYear------>"+endingFiscalYear);
-        System.out.println("HOSPITAL_ID------>"+hospitalId);
-
-
-        System.out.println("QUERY-------TEST"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER);
-
-        System.out.println("QUERY-------" + query.toString());
-
-        System.out.println("appointment number ===== TEST"+AppointmentUtils.generateAppointmentNumber(query.getResultList(),
-                startingFiscalYear, endingFiscalYear, hospitalCode));
-
         return AppointmentUtils.generateAppointmentNumber(query.getResultList(),
                 startingFiscalYear, endingFiscalYear, hospitalCode);
     }

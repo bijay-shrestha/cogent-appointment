@@ -210,51 +210,30 @@ public class AppointmentUtils {
                                                    String endingFiscalYear,
                                                    String hospitalCode) {
 
-        System.out.println("ENTERING APPOINTMENT UTILS FOR APPOINTMENT NUMBER GENERATION--------------");
-
-        System.out.println("hospitalCode----------->"+hospitalCode);
-        System.out.println("results----------->"+results);
-        System.out.println("startingFiscalYear----------->"+startingFiscalYear);
-        System.out.println("endingFiscalYear----------->"+endingFiscalYear);
-
         String startingYear = startingFiscalYear.split(HYPHEN)[0];
         String splitStartingYear = startingYear.substring(startingYear.length() - 2);
 
         String endingYear = endingFiscalYear.split(HYPHEN)[0];
         String splitEndingYear = endingYear.substring(endingYear.length() - 2);
 
-        System.out.println("startingYear----------->"+startingYear);
-        System.out.println("splitStartingYear----------->"+splitStartingYear);
-        System.out.println("endingYear----------->"+endingYear);
-        System.out.println("splitEndingYear----------->"+splitEndingYear);
-
-        String appointmentNumber="";
+        String appointmentNumber = "";
 
         if (results.isEmpty())
             appointmentNumber = "1";
-        else {
+        else
             //results = CHEERS-76-77-1; CHEERS-76-77-2
             appointmentNumber = extractAppointmentNumber(results);
-            System.out.println("appointmentNumber----------->"+appointmentNumber);
-        }
 
         appointmentNumber = hospitalCode.concat(HYPHEN)
                 .concat(splitStartingYear).concat(HYPHEN)
                 .concat(splitEndingYear).concat(HYPHEN)
                 .concat(appointmentNumber);
-
-        System.out.println("final appointment Number----------->"+appointmentNumber);
         return appointmentNumber;
     }
 
     private static String extractAppointmentNumber(List<String> results) {
-
-        System.out.println("results.get(0)----------->"+results.get(0));
-        System.out.println("results.get(0).split(HYPHEN)[3]----------->"+results.get(0).split(HYPHEN)[3]);
         String incrementNumber = results.get(0).split(HYPHEN)[3];
-        System.out.println("incrementNumber----------->"+incrementNumber);
         return String.format("%01d", Integer.parseInt(incrementNumber) + 1);
-
     }
 
     public static List<String> calculateAvailableTimeSlots(String startTime,

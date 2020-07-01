@@ -64,36 +64,6 @@ public class AppointmentResource {
     @PostMapping(SELF)
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTOForSelf requestDTO) {
-
-        System.out.println("AppointmentRequestDTO----->  ");
-        System.out.println("isNewRegistration ------->" + requestDTO.getAppointmentInfo().getIsNewRegistration());
-        System.out.println("patientId ------->" + requestDTO.getAppointmentInfo().getPatientId());
-        System.out.println("createdDateNepali ------->" + requestDTO.getAppointmentInfo().getCreatedDateNepali());
-        System.out.println("isFollowUp ------->" + requestDTO.getAppointmentInfo().getIsFollowUp());
-        System.out.println("parentAppointmentId ------->" + requestDTO.getAppointmentInfo().getParentAppointmentId());
-        System.out.println("appointmentReservationId ------->" + requestDTO.getAppointmentInfo().getAppointmentReservationId());
-        System.out.println("hospitalAppointmentServiceTypeId ------->" + requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId());
-
-        System.out.println("PatientRequestByDTO----->  ");
-        System.out.println("name ------->" + requestDTO.getPatientInfo().getName());
-        System.out.println("mobileNumber ------->" + requestDTO.getPatientInfo().getMobileNumber());
-        System.out.println("gender ------->" + requestDTO.getPatientInfo().getGender());
-        System.out.println("dateOfBirth ------->" + requestDTO.getPatientInfo().getDateOfBirth());
-        System.out.println("email ------->" + requestDTO.getPatientInfo().getEmail());
-        System.out.println("eSewaId ------->" + requestDTO.getPatientInfo().getESewaId());
-        System.out.println("address ------->" + requestDTO.getPatientInfo().getAddress());
-        System.out.println("isAgent ------->" + requestDTO.getPatientInfo().getIsAgent());
-        System.out.println("provinceId ------->" + requestDTO.getPatientInfo().getProvinceId());
-        System.out.println("vdcOrMunicipalityId ------->" + requestDTO.getPatientInfo().getVdcOrMunicipalityId());
-        System.out.println("districtId ------->" + requestDTO.getPatientInfo().getDistrictId());
-        System.out.println("wardNumber ------->" + requestDTO.getPatientInfo().getWardNumber());
-
-        System.out.println("AppointmentTransactionRequestDTO----->  ");
-        System.out.println("transactionDate ------->" + requestDTO.getTransactionInfo().getTransactionDate());
-        System.out.println("transactionNumber ------->" + requestDTO.getTransactionInfo().getTransactionNumber());
-        System.out.println("appointmentModeCode ------->" + requestDTO.getTransactionInfo().getAppointmentModeCode());
-
-
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
     }
 

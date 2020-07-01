@@ -20,6 +20,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.*;
 
+import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentRevenueStatisticsUtils.*;
@@ -201,23 +202,19 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     public List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REVENUE(doctorRevenueRequestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
-
-        addPagination.accept(pageable, query);
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId())
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
 
         List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
 
         doctorRevenueDTOList.forEach(doctorRevenueDTO -> {
             Query queryToGetFollowUp = createQuery.apply(entityManager, QUERY_TO_GET_FOLLOW_UP)
-                    .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
-                    .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
+                    .setParameter(SPECIALIZATION_ID, doctorRevenueDTO.getSpecializationId())
+                    .setParameter(FROM_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getToDate()))
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId());
-
             FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetFollowUp,
                     FollowUpResponse.class);
-
             doctorRevenueDTO.setTotalFollowUp(followUpResponse.getCount());
             doctorRevenueDTO.setDoctorRevenue(doctorRevenueDTO.getDoctorRevenue() + followUpResponse.getAmount());
         });

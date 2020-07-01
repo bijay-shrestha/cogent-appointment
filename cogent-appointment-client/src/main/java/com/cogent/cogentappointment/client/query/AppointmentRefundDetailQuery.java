@@ -15,7 +15,6 @@ public class AppointmentRefundDetailQuery {
 
     public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(RefundStatusSearchRequestDTO searchDTO) {
         return "SELECT" +
-                " ard.id as id," +
                 " a.id  as appointmentId," +
                 " a.appointmentDate as appointmentDate," +
                 " a.appointmentNumber as appointmentNumber," +

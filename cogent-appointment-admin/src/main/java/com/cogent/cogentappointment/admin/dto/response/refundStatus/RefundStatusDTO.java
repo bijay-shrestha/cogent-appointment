@@ -15,8 +15,6 @@ import java.util.Date;
 @Setter
 public class RefundStatusDTO implements Serializable {
 
-    private Long id;
-
     private Long appointmentId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")

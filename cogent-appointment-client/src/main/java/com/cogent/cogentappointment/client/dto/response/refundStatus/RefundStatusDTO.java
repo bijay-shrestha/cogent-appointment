@@ -52,6 +52,8 @@ public class RefundStatusDTO implements Serializable {
 
     private String appointmentMode;
 
+    private Long appointmentModeId;
+
     private Character isRegistered;
 
     private String refundStatus;

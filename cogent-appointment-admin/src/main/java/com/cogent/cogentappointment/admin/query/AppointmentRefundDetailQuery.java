@@ -35,6 +35,7 @@ public class AppointmentRefundDetailQuery {
                 " adi.specialization.name as specializationName," +
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
+                " a.appointmentModeId.id as appointmentModeId," +
                 " ard.status as refundStatus," +
                 " ard.remarks as remarks," +
                 " a.hospitalId.name as hospitalName," +

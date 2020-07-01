@@ -35,8 +35,9 @@ public class CompanyQuery {
     public static final String QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]
-                    " h.name as label," +
-                    " h.isCompany as isCompany" +                    //[1]
+                    " h.name as label," +                   //[1]
+                    " h.isCompany as isCompany," +          //[2]
+                    " h.code as companyCode" +               //[3]
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
@@ -99,7 +100,7 @@ public class CompanyQuery {
                     " tbl1.contact_details as contact_details," +               //[8]
                     " h.is_company as isCompany," +                             //[9]
                     " h.alias as alias," +                                       //10]
-                    COMPANY_DETAILS_AUDITABLE_QUERY()+
+                    COMPANY_DETAILS_AUDITABLE_QUERY() +
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

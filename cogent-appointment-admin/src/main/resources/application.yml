@@ -3,6 +3,7 @@
 ######___ ***** ENTER PATH TO YOUR STAND-ALONE TOMCAT SERVER ***** ____ ############
 
 
+
 spring:
   profiles:
     active: uat

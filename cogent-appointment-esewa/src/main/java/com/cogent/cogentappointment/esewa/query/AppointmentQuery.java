@@ -43,7 +43,7 @@ public class AppointmentQuery {
                     " a.created_date_nepali" +
                     " BETWEEN '2076-04-01' AND '2077-03-31'" +
                     " AND h.id =5" +
-                    " ORDER BY a.id DESC LIMIT 1";
+                    " AND a.id=75";
 
     public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER_TEST =
             "SELECT a.hyphenated_appointment_number" +
@@ -53,7 +53,7 @@ public class AppointmentQuery {
                     " a.created_date_nepali >='2076-04-01'" +
                     " AND a.created_date_nepali <= '2077-03-31'" +
                     " AND h.id =5" +
-                    " ORDER BY a.id DESC LIMIT 1";
+                    " AND a.id=75" ;
 
 
 

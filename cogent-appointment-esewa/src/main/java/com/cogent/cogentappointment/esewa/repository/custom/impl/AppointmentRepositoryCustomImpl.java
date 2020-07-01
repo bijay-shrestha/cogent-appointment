@@ -115,15 +115,22 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
 
         System.out.println("QUERY-------TEST"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER);
+        System.out.println("QUERY-------TEST"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER_TEST);
 
         System.out.println("QUERY-------" + query.toString());
 
         List<Object[]> result=query.getResultList();
 
-        List<Object[]> result1=query.getResultList();
+        Object result2=query.getSingleResult();
+
+        List<Object[]> result1=query1.getResultList();
+
+        Object result3=query1.getSingleResult();
 
         System.out.println("RESULT LIST*******************"+result.get(0));
-        System.out.println("RESULT LIST*******************"+result1.get(0));
+        System.out.println("RESULT1 LIST*******************"+result1.get(0));
+        System.out.println("RESULT LIST*******************"+result2);
+        System.out.println("RESULT1 LIST*******************"+result3);
 
         System.out.println("appointment number ===== TEST"+AppointmentUtils.generateAppointmentNumber(query.getResultList(),
                 startingFiscalYear, endingFiscalYear, hospitalCode));

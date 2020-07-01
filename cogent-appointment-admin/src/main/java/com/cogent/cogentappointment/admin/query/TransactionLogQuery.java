@@ -85,11 +85,12 @@ public class TransactionLogQuery {
                 " AND sp.status!='D'" +
                 " AND d.status!='D'";
 
+        String fromDate = utilDateToSqlDate(transactionLogSearchDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(transactionLogSearchDTO.getToDate()) + " 23:59:59";
+
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(transactionLogSearchDTO.getToDate()))
-            whereClause += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(transactionLogSearchDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(transactionLogSearchDTO.getToDate()) + "')";
+            whereClause += " AND atd.transactionDate BETWEEN '" + fromDate + "' AND '" + toDate + "'";
 
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getTransactionNumber()))
             whereClause += " AND atd.transactionNumber LIKE '%" + transactionLogSearchDTO.getTransactionNumber() + "%'";

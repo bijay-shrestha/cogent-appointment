@@ -138,7 +138,7 @@ public class AppointmentHospitalDepartmentQuery {
                             " hpi.hasAddress  = 'Y'" +
                             " THEN" +
                             " CONCAT_WS(', ',COALESCE(pr.value, ' ')," +
-                            " COALESCE(d.value,','),COALESCE(vm.value,','),COALESCE(w.value,'') )" +
+                            " COALESCE(d.value,','),COALESCE(vm.value,','),COALESCE(hpi.wardNumber,'') )" +
                             " ELSE" +
                             " hpi.address" +
                             " end as address," +                                                         //[15]
@@ -156,8 +156,7 @@ public class AppointmentHospitalDepartmentQuery {
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                             " LEFT JOIN Address pr ON pr.id = hpi.province.id" +
                             " LEFT JOIN Address d ON d.id = hpi.district.id" +
-                            " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
-                            " LEFT JOIN Address w ON w.id = hpi.ward.id"
+                            " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
@@ -219,7 +218,7 @@ public class AppointmentHospitalDepartmentQuery {
                     " pr.value as province," +
                     " d.value as district," +
                     " vm.value as vdcOrMunicipality," +
-                    " w.value as ward," +
+                    " hpi.wardNumber as ward," +
                     " hpi.address AS address," +                                                  //[15]
                     QUERY_TO_CALCULATE_PATIENT_AGE_YEAR + "," +
                     QUERY_TO_CALCULATE_PATIENT_AGE_MONTH + "," +
@@ -242,7 +241,6 @@ public class AppointmentHospitalDepartmentQuery {
                     " LEFT JOIN Address pr ON pr.id = hpi.province.id" +
                     " LEFT JOIN Address d ON d.id = hpi.district.id" +
                     " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
-                    " LEFT JOIN Address w ON w.id = hpi.ward.id" +
                     " WHERE a.id =:appointmentId" +
                     " AND a.status='PA'" +
                     " AND h.id =:hospitalId";
@@ -254,9 +252,9 @@ public class AppointmentHospitalDepartmentQuery {
                     QUERY_TO_CALCULATE_PATIENT_AGE_MONTH + "," +                        //[2]
                     QUERY_TO_CALCULATE_PATIENT_AGE_DAY + "," +                          //[3]
                     " p.gender as gender," +                                             //[4]
-                    " COALESCE(d.value, '') as district," +                                           //[5]
-                    " COALESCE(vm.value, '') as vdc," +                                               //[6]
-                    " COALESCE(w.value, '') as wardNo," +                               //[7]
+                    " COALESCE(d.value, '') as district," +                              //[5]
+                    " COALESCE(vm.value, '') as vdc," +                                  //[6]
+                    " COALESCE(hpi.wardNumber, '') as wardNo," +                        //[7]
                     " hpi.address AS address," +                                        //[8]
                     " p.mobileNumber as mobileNo," +                                    //[9]
                     " COALESCE(hpi.email, '') as emailAddress," +                       //[10]
@@ -276,7 +274,6 @@ public class AppointmentHospitalDepartmentQuery {
                     " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                     " LEFT JOIN Address d ON d.id = hpi.district.id" +
                     " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
-                    " LEFT JOIN Address w ON w.id = hpi.ward.id" +
                     " WHERE a.id =:appointmentId" +
                     " AND a.status='PA'" +
                     " AND h.id =:hospitalId";

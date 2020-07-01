@@ -133,9 +133,17 @@ public class PatientQuery {
         String query = " SELECT " +
                 " hpi.address as address," +                             //[0]
                 " hpi.email as email," +                                 //[1]
-                " hpi.registrationNumber as registrationNumber" +        //[2]
+                " hpi.registrationNumber as registrationNumber," +       //[2]
+                " hpi.hasAddress as hasAddress,"+                        //[3]
+                " COALESCE(pr.value, '') as province," +                  //[3]
+                " COALESCE(d.value, '') as district," +                  //[4]
+                " COALESCE(vm.value, '') as vdcOrMunicipality," +        //[5]
+                " COALESCE(hpi.wardNumber, '') as wardNumber" +          //[6]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
+                " LEFT JOIN Address pr ON pr.id = hpi.province.id" +
+                " LEFT JOIN Address d ON d.id = hpi.district.id" +
+                " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
                 " WHERE p.id =:patientId";
 
         if (!Objects.isNull(hospitalId) && hospitalId != 0)

@@ -16,7 +16,7 @@ public class AppointmentDoctorInfoQuery {
                     " p.gender as gender," +                                             //[4]
                     " d.value as district," +                                           //[5]
                     " vm.value as vdc," +                                               //[6]
-                    " COALESCE(w.value, '') as wardNo," +                               //[7]
+                    " COALESCE(hpi.wardNumber, '') as wardNo," +                        //[7]
                     " hpi.address AS address," +                                        //[8]
                     " p.mobileNumber as mobileNo," +                                    //[9]
                     " COALESCE(hpi.email, '') as emailAddress," +                       //[10]
@@ -33,7 +33,6 @@ public class AppointmentDoctorInfoQuery {
                     " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                     " LEFT JOIN Address d ON d.id = hpi.district.id" +
                     " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
-                    " LEFT JOIN Address w ON w.id = hpi.ward.id" +
                     " WHERE a.id =:appointmentId" +
                     " AND a.status='PA'" +
                     " AND h.id =:hospitalId";

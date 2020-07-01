@@ -560,6 +560,9 @@ public class AppointmentQuery {
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(appointmentLogSearchDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getToDate()) + "')";
 
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
+
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
 

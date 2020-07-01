@@ -89,9 +89,9 @@ public class AppointmentResource {
         System.out.println("wardNumber ------->" + requestDTO.getPatientInfo().getWardNumber());
 
         System.out.println("AppointmentTransactionRequestDTO----->  ");
-        System.out.println("transactionDate ------->" + requestDTO.getAppointmentInfo().getIsNewRegistration());
-        System.out.println("transactionNumber ------->" + requestDTO.getAppointmentInfo().getIsNewRegistration());
-        System.out.println("appointmentModeCode ------->" + requestDTO.getAppointmentInfo().getIsNewRegistration());
+        System.out.println("transactionDate ------->" + requestDTO.getTransactionInfo().getTransactionDate());
+        System.out.println("transactionNumber ------->" + requestDTO.getTransactionInfo().getTransactionNumber());
+        System.out.println("appointmentModeCode ------->" + requestDTO.getTransactionInfo().getAppointmentModeCode());
 
 
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));

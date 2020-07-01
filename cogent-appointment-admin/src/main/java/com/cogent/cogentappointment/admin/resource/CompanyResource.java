@@ -43,7 +43,7 @@ public class CompanyResource {
 
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@Valid CompanyUpdateRequestDTO updateRequestDTO) throws NoSuchAlgorithmException {
+    public ResponseEntity<?> update(@Valid @RequestBody CompanyUpdateRequestDTO updateRequestDTO) throws NoSuchAlgorithmException {
         companyService.update(updateRequestDTO);
         return ok().build();
     }

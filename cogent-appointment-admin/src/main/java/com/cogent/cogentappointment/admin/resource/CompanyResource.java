@@ -6,17 +6,14 @@ import com.cogent.cogentappointment.admin.dto.request.company.CompanySearchReque
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.service.CompanyService;
-import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyConstant.*;
@@ -39,20 +36,15 @@ public class CompanyResource {
 
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@RequestParam(value = "logo", required = false) MultipartFile logo,
-                                  @RequestParam("request") String request) throws IOException, NoSuchAlgorithmException {
-
-        CompanyRequestDTO requestDTO = ObjectMapperUtils.map(request, CompanyRequestDTO.class);
-        companyService.save(requestDTO, logo);
+    public ResponseEntity<?> save(@Valid @RequestBody CompanyRequestDTO requestDTO) throws NoSuchAlgorithmException {
+        companyService.save(requestDTO);
         return created(create(API_V1 + BASE_COMPANY)).build();
     }
+
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@RequestParam(value = "logo", required = false) MultipartFile logo,
-                                    @RequestParam("request") String request) throws IOException, NoSuchAlgorithmException {
-
-        CompanyUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, CompanyUpdateRequestDTO.class);
-        companyService.update(updateRequestDTO, logo);
+    public ResponseEntity<?> update(@Valid CompanyUpdateRequestDTO updateRequestDTO) throws NoSuchAlgorithmException {
+        companyService.update(updateRequestDTO);
         return ok().build();
     }
 

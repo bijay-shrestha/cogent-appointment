@@ -16,9 +16,9 @@ import java.util.List;
 
 public interface CompanyService {
 
-    void save(CompanyRequestDTO requestDTO, MultipartFile logo) throws NoSuchAlgorithmException;
+    void save(CompanyRequestDTO requestDTO) throws NoSuchAlgorithmException;
 
-    void update(CompanyUpdateRequestDTO updateRequestDTO, MultipartFile logo)
+    void update(CompanyUpdateRequestDTO updateRequestDTO)
             throws NoSuchAlgorithmException;
 
     void delete(DeleteRequestDTO deleteRequestDTO);

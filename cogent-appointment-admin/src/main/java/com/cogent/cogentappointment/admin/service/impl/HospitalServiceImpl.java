@@ -369,13 +369,6 @@ public class HospitalServiceImpl implements HospitalService {
         hospitalContactNumberRepository.saveAll(hospitalContactNumbers);
     }
 
-    private void saveHospitalLogo(Hospital hospital, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{files});
-            saveHospitalLogo(convertFileToHospitalLogo(responseList.get(0), hospital));
-        }
-    }
-
     private void saveHospitalLogo(Hospital hospital, String hospitalLogo) {
         if (!Objects.isNull(hospitalLogo))
             saveHospitalLogo(convertFileToHospitalLogo(new HospitalLogo(), hospitalLogo, hospital));

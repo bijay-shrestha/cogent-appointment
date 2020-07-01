@@ -42,11 +42,13 @@ public class CompanyUtils {
         return companyContactNumber;
     }
 
-    public static HospitalLogo convertFileToCompanyLogo(FileUploadResponseDTO fileUploadResponseDTO,
+    public static HospitalLogo convertFileToCompanyLogo(HospitalLogo companyLogo,
+                                                        String companyLogoImage,
                                                         Hospital company) {
-        HospitalLogo companyLogo = new HospitalLogo();
-        setLogoFileProperties(fileUploadResponseDTO, companyLogo);
+
         companyLogo.setHospital(company);
+        companyLogo.setFileUri(companyLogoImage);
+        companyLogo.setStatus(ACTIVE);
         return companyLogo;
     }
 

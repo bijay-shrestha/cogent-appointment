@@ -40,7 +40,6 @@ public class DashboardResource {
         this.appointmentService = appointmentService;
     }
 
-    //todo:make service type code dynamic
     @PutMapping(GENERATE_REVENUE)
     @ApiOperation(GENERATE_REVENUE_OPERATION)
     public ResponseEntity<?> getRevenueStatistics(@Valid @RequestBody GenerateRevenueRequestDTO requestDTO) {
@@ -59,14 +58,12 @@ public class DashboardResource {
         return ok(dashboardService.getPatientStatistics());
     }
 
-    //todo:make service type code dynamic
     @PutMapping(REVENUE_STATISTICS)
     @ApiOperation(REVENUE_STATISTICS_OPERATION)
     public ResponseEntity<?> getRevenueTrend(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {
         return ok(dashboardService.getRevenueTrend(countRequestDTO));
     }
 
-    //todo:make service type code dynamic
     @PutMapping(APPOINTMENT_QUEUE)
     @ApiOperation(FETCH_APPOINTMENT_QUEUE)
     public ResponseEntity<?> fetchAppointmentQueueLog(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,

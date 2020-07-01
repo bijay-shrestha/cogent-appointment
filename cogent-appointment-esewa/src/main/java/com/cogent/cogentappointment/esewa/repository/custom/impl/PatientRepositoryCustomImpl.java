@@ -79,8 +79,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         }
     }
 
-    /*FIRST FETCH GENERAL INFO OF PATIENT AND IT EXISTS
-    * FETCH ITS INFO HOSPITAL WISE*/
+    /*FIRST FETCH GENERAL INFO OF PATIENT AND IF EXISTS FETCH ITS INFO HOSPITAL WISE*/
     @Override
     public PatientDetailResponseDTO searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_INFO_FOR_SELF)

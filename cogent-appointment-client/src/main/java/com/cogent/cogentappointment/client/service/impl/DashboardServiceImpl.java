@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DashboardMessages.DOCTOR_REVENUE_NOT_FOUND;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.client.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.dateDifference;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculatePercentage;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
@@ -71,20 +71,20 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getCurrentToDate(),
                 requestDTO.getCurrentFromDate(),
                 hospitalId,
-                "DOC");
+                requestDTO.getAppointmentServiceTypeCode());
 
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getPreviousToDate(),
                 requestDTO.getPreviousFromDate(),
                 hospitalId,
-                "DOC");
+                requestDTO.getAppointmentServiceTypeCode());
 
         AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
-                        requestDTO.getCurrentToDate(),
-                        requestDTO.getCurrentFromDate(),
+                        utilDateToSqlDateInString(requestDTO.getCurrentToDate()),
+                        utilDateToSqlDateInString(requestDTO.getCurrentFromDate()),
                         hospitalId,
-                        "DOC");
+                        requestDTO.getAppointmentServiceTypeCode());
 
         RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(
                 currentTransaction,
@@ -120,7 +120,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient,followUpPatient, pillType);
+        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient, followUpPatient, pillType);
     }
 
     @Override
@@ -284,7 +284,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
             log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_REVENUE);
-            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE);
+            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND);
         }
     }
 

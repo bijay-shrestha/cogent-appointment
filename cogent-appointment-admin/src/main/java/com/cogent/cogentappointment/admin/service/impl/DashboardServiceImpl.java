@@ -16,15 +16,15 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.DOCTOR_REVENUE_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.DYNAMIC_DASHBOARD_FEATURE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercentage;
 
 
@@ -81,8 +81,8 @@ public class DashboardServiceImpl implements DashboardService {
 
         AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
-                        requestDTO.getCurrentToDate(),
-                        requestDTO.getCurrentFromDate(),
+                        utilDateToSqlDateInString(requestDTO.getCurrentToDate()),
+                        utilDateToSqlDateInString(requestDTO.getCurrentFromDate()),
                         requestDTO.getHospitalId(),
                         "DOC"
                 );
@@ -278,7 +278,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
             log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_REVENUE);
-            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE);
+            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND);
         }
     }
 }

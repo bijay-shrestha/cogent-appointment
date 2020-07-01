@@ -49,9 +49,10 @@ public class AdminFavouriteResource {
 
     @GetMapping(ID_PATH_VARIABLE_BASE)
     @ApiOperation(FAVOURITE_DETAILS_BY_ADMIN_ID)
-    public ResponseEntity<?> getAdminFavouriteByAdminId(@PathVariable("id") Long adminId) {
-        return ok(adminFavouriteService.getAdminFavouriteByAdminId(adminId));
+    public ResponseEntity<?> getAdminFavouriteByAdminId(@PathVariable("id") Long id) {
+        return ok(adminFavouriteService.getAdminFavouriteByAdminId(id));
     }
+
 
 
 //    @GetMapping(ACTIVE + MIN)

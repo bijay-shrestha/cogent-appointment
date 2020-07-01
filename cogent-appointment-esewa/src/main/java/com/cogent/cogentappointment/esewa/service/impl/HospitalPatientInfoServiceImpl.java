@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.service.impl;
 import com.cogent.cogentappointment.commons.repository.AddressRepository;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestForDTO;
+import com.cogent.cogentappointment.esewa.exception.BadRequestException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.esewa.service.HospitalPatientInfoService;
@@ -13,10 +14,12 @@ import com.cogent.cogentappointment.persistence.model.Patient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_ADDRESS_INFO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.HOSPITAL_PATIENT_INFO;
@@ -61,7 +64,7 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
                     patientRequestByDTO.getProvinceId(),
                     patientRequestByDTO.getVdcOrMunicipalityId(),
                     patientRequestByDTO.getDistrictId(),
-                    patientRequestByDTO.getWardId()
+                    patientRequestByDTO.getWardNumber()
             );
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_PATIENT_INFO, getDifferenceBetweenTwoTime(startTime));
@@ -87,7 +90,7 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
                     patientRequestForDTO.getProvinceId(),
                     patientRequestForDTO.getVdcOrMunicipalityId(),
                     patientRequestForDTO.getDistrictId(),
-                    patientRequestForDTO.getWardId());
+                    patientRequestForDTO.getWardNumber());
 
         else
             updateHospitalPatientInfo(
@@ -104,19 +107,19 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
                                          Long provinceId,
                                          Long vdcOrMunicipalityId,
                                          Long districtId,
-                                         Long wardId) {
+                                         String wardNumber) {
 
         HospitalPatientInfo hospitalPatientInfo = parseHospitalPatientInfo
-                (hospital, patient, email, address);
+                (hospital, patient, email, address, hasAddress);
 
         if (hasAddress.equals(YES)) {
+            validateAddressInfo(provinceId, districtId, vdcOrMunicipalityId, wardNumber);
 
-            Address province = Objects.isNull(provinceId) ? null : fetchAddress(provinceId);
-            Address vdcOrMunicipality = Objects.isNull(vdcOrMunicipalityId) ? null : fetchAddress(vdcOrMunicipalityId);
-            Address district = Objects.isNull(districtId) ? null : fetchAddress(districtId);
-            Address ward = Objects.isNull(wardId) ? null : fetchAddress(wardId);
+            Address province = fetchAddress(provinceId);
+            Address vdcOrMunicipality = fetchAddress(vdcOrMunicipalityId);
+            Address district = fetchAddress(districtId);
 
-            parsePatientAddressDetails(province, vdcOrMunicipality, district, ward, hospitalPatientInfo, hasAddress);
+            parsePatientAddressDetails(province, vdcOrMunicipality, district, wardNumber, hospitalPatientInfo);
         }
 
         hospitalPatientInfoRepository.save(hospitalPatientInfo);
@@ -139,4 +142,15 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
         log.error(CONTENT_NOT_FOUND_BY_ID, "Address");
         throw new NoContentFoundException(Address.class, "addressId", addressId.toString());
     };
+
+
+    private void validateAddressInfo(Long provinceId,
+                                     Long districtId,
+                                     Long vdcOrMunicipalityId,
+                                     String wardNumber) {
+
+        if (Objects.isNull(provinceId) || Objects.isNull(districtId)
+                || Objects.isNull(vdcOrMunicipalityId) || ObjectUtils.isEmpty(wardNumber))
+            throw new BadRequestException(INVALID_ADDRESS_INFO);
+    }
 }

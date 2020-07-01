@@ -268,6 +268,8 @@ public class SwaggerConstants {
     public interface HospitalConstant {
         String BASE_API_VALUE = "This is Hospital Resource";
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";
+        String FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE = "Fetch assigned hospital appointment service type";
+
     }
 
     public interface HospitalDepartmentConstant {

@@ -161,7 +161,13 @@ public class AppointmentRefundDetailQuery {
                     " a.hospitalId.name as hospitalName," +
                     " ard.remarks as remarks," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " dv.fileUri as fileUri" +
+                    " CASE WHEN" +
+                    " (dv.status IS NULL" +
+                    " OR dv.status = 'N')" +
+                    " THEN NULL" +
+                    " ELSE" +
+                    " dv.fileUri" +
+                    " END as fileUri" +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -171,7 +177,8 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = adi.doctor.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON atd.appointment.id =a.id" +
-                    " WHERE ard.appointmentId.id=:appointmentId" +
-                    " AND ard.status IN ('PA','A','R')";
+                    " WHERE a.id=:appointmentId" +
+                    " AND ard.status IN ('PA','A','R')" +
+                    " GROUP BY a.id";
 
 }

@@ -112,6 +112,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_REFUNDED_DETAIL_BY_ID)
                 .setParameter(APPOINTMENT_ID, appointmentId);
+
         try {
             return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
         } catch (NoResultException e) {

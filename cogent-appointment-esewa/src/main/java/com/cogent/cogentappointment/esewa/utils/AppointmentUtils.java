@@ -210,6 +210,12 @@ public class AppointmentUtils {
                                                    String endingFiscalYear,
                                                    String hospitalCode) {
 
+        System.out.println("ENTERING APPOINTMENT UTILS FOR APPOINTMENT NUMBER GENERATION--------------");
+        System.out.println("hospitalCode----------->"+hospitalCode);
+        System.out.println("results----------->"+results);
+        System.out.println("startingFiscalYear----------->"+startingFiscalYear);
+        System.out.println("endingFiscalYear----------->"+endingFiscalYear);
+
         String startingYear = startingFiscalYear.split(HYPHEN)[0];
         String splitStartingYear = startingYear.substring(startingYear.length() - 2);
 

@@ -101,10 +101,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         String startingFiscalYear = fetchStartingFiscalYear(year, month);
         String endingFiscalYear = fetchEndingFiscalYear(year, month);
 
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER)
-                .setParameter(FROM_DATE, startingFiscalYear)
-                .setParameter(TO_DATE, endingFiscalYear)
-                .setParameter(HOSPITAL_ID, hospitalId);
+//        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER)
+//                .setParameter(FROM_DATE, startingFiscalYear)
+//                .setParameter(TO_DATE, endingFiscalYear)
+//                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER);
+        Query query1 = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER_TEST);
 
         System.out.println("startingFiscalYear------>"+startingFiscalYear);
         System.out.println("endingFiscalYear------>"+endingFiscalYear);
@@ -114,6 +117,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         System.out.println("QUERY-------TEST"+QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER);
 
         System.out.println("QUERY-------" + query.toString());
+
+        List<Object[]> result=query.getResultList();
+
+        List<Object[]> result1=query.getResultList();
+
+        System.out.println("RESULT LIST*******************"+result.get(0));
+        System.out.println("RESULT LIST*******************"+result1.get(0));
 
         System.out.println("appointment number ===== TEST"+AppointmentUtils.generateAppointmentNumber(query.getResultList(),
                 startingFiscalYear, endingFiscalYear, hospitalCode));

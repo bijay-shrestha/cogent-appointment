@@ -25,15 +25,37 @@ public class AppointmentQuery {
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
                     " AND a.status IN ('PA', 'A')";
 
-    public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
+//    public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
+//            "SELECT a.hyphenated_appointment_number" +
+//                    " FROM appointment a" +
+//                    " LEFT JOIN hospital h ON h.id =a.hospital_id" +
+//                    " WHERE" +
+//                    " a.created_date_nepali" +
+//                    " BETWEEN :fromDate AND :toDate" +
+//                    " AND h.id =:hospitalId" +
+//                    " ORDER BY a.id DESC LIMIT 1";
+
+        public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
             "SELECT a.hyphenated_appointment_number" +
                     " FROM appointment a" +
                     " LEFT JOIN hospital h ON h.id =a.hospital_id" +
                     " WHERE" +
                     " a.created_date_nepali" +
-                    " BETWEEN :fromDate AND :toDate" +
-                    " AND h.id =:hospitalId" +
+                    " BETWEEN '2076-04-01' AND '2077-03-31'" +
+                    " AND h.id =5" +
                     " ORDER BY a.id DESC LIMIT 1";
+
+    public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER_TEST =
+            "SELECT a.hyphenated_appointment_number" +
+                    " FROM appointment a" +
+                    " LEFT JOIN hospital h ON h.id =a.hospital_id" +
+                    " WHERE" +
+                    " a.created_date_nepali >='2076-04-01'" +
+                    " AND a.created_date_nepali <= '2077-03-31'" +
+                    " AND h.id =5" +
+                    " ORDER BY a.id DESC LIMIT 1";
+
+
 
     /*USED IN DOCTOR DUTY ROSTER*/
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =

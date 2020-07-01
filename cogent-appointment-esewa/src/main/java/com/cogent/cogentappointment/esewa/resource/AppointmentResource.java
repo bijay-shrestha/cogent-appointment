@@ -1,14 +1,14 @@
 package com.cogent.cogentappointment.esewa.resource;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AvailableDoctorRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForOthers;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.esewa.service.AppointmentService;
@@ -20,19 +20,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.EsewaConstant.*;
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.EsewaConstant.FETCH_AVAILABLE_DATES;
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.EsewaConstant.SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.*;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -71,6 +64,36 @@ public class AppointmentResource {
     @PostMapping(SELF)
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTOForSelf requestDTO) {
+
+        System.out.println("AppointmentRequestDTO----->  ");
+        System.out.println("isNewRegistration ------->" + requestDTO.getAppointmentInfo().getIsNewRegistration());
+        System.out.println("patientId ------->" + requestDTO.getAppointmentInfo().getPatientId());
+        System.out.println("createdDateNepali ------->" + requestDTO.getAppointmentInfo().getCreatedDateNepali());
+        System.out.println("isFollowUp ------->" + requestDTO.getAppointmentInfo().getIsFollowUp());
+        System.out.println("parentAppointmentId ------->" + requestDTO.getAppointmentInfo().getParentAppointmentId());
+        System.out.println("appointmentReservationId ------->" + requestDTO.getAppointmentInfo().getAppointmentReservationId());
+        System.out.println("hospitalAppointmentServiceTypeId ------->" + requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId());
+
+        System.out.println("PatientRequestByDTO----->  ");
+        System.out.println("name ------->" + requestDTO.getPatientInfo().getName());
+        System.out.println("mobileNumber ------->" + requestDTO.getPatientInfo().getMobileNumber());
+        System.out.println("gender ------->" + requestDTO.getPatientInfo().getGender());
+        System.out.println("dateOfBirth ------->" + requestDTO.getPatientInfo().getDateOfBirth());
+        System.out.println("email ------->" + requestDTO.getPatientInfo().getEmail());
+        System.out.println("eSewaId ------->" + requestDTO.getPatientInfo().getESewaId());
+        System.out.println("address ------->" + requestDTO.getPatientInfo().getAddress());
+        System.out.println("isAgent ------->" + requestDTO.getPatientInfo().getIsAgent());
+        System.out.println("provinceId ------->" + requestDTO.getPatientInfo().getProvinceId());
+        System.out.println("vdcOrMunicipalityId ------->" + requestDTO.getPatientInfo().getVdcOrMunicipalityId());
+        System.out.println("districtId ------->" + requestDTO.getPatientInfo().getDistrictId());
+        System.out.println("wardNumber ------->" + requestDTO.getPatientInfo().getWardNumber());
+
+        System.out.println("AppointmentTransactionRequestDTO----->  ");
+        System.out.println("transactionDate ------->" + requestDTO.getAppointmentInfo().getIsNewRegistration());
+        System.out.println("transactionNumber ------->" + requestDTO.getAppointmentInfo().getIsNewRegistration());
+        System.out.println("appointmentModeCode ------->" + requestDTO.getAppointmentInfo().getIsNewRegistration());
+
+
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
     }
 

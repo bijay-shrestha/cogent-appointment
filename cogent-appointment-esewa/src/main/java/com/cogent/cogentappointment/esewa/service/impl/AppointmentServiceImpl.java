@@ -307,6 +307,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateEsewaId(requestDTO.getTransactionInfo().getAppointmentModeCode(),
                 requestDTO.getPatientInfo().getESewaId());
 
+
         //todo: remove if case
         String code;
         HospitalAppointmentServiceType hospitalAppointmentServiceType = null;
@@ -319,6 +320,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                     requestDTO.getAppointmentInfo().getHospitalAppointmentServiceTypeId());
             code = hospitalAppointmentServiceType.getAppointmentServiceType().getCode();
         }
+
+        System.out.println("SERVICE TYPE CODE ------> " + code);
 
         AppointmentSuccessResponseDTO responseDTO;
         switch (code.trim().toUpperCase()) {

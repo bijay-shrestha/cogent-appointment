@@ -74,9 +74,8 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     @JoinColumn(name = "district_id")
     private Address district;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ward_id")
-    private Address ward;
+    @Column(name = "ward_number")
+    private String wardNumber;
 
     /*PATIENT STATUS
     * Y = ACTIVE

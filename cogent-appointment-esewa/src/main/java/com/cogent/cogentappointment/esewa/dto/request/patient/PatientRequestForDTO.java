@@ -44,5 +44,5 @@ public class PatientRequestForDTO implements Serializable {
 
     private Long districtId;
 
-    private Long wardId;
+    private String wardNumber;
 }

@@ -282,7 +282,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_LOG);
 
-        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+//        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+
+        String appointmentServiceTypeCode = DOCTOR_CONSULTATION_CODE;
 
         AppointmentLogResponseDTO appointmentLogs;
 

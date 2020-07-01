@@ -46,7 +46,7 @@ public class AppointmentHospitalDepartmentCheckInResponseDTO implements Serializ
 
     private String hospitalNumber;
 
-    /*Province, District, VDC/Municipality, Ward*/
+    /*Province, District, VDC/Municipality, Ward Number*/
     private String address;
 
     private String hospitalDepartmentName;

@@ -16,7 +16,8 @@ public class HospitalPatientInfoUtils {
     public static HospitalPatientInfo parseHospitalPatientInfo(Hospital hospital,
                                                                Patient patient,
                                                                String email,
-                                                               String address) {
+                                                               String address,
+                                                               Character hasAddress) {
 
         HospitalPatientInfo hospitalPatientInfo = new HospitalPatientInfo();
         hospitalPatientInfo.setHospital(hospital);
@@ -25,21 +26,20 @@ public class HospitalPatientInfoUtils {
         hospitalPatientInfo.setAddress(address);
         hospitalPatientInfo.setIsRegistered(NO);
         hospitalPatientInfo.setStatus(ACTIVE);
+        hospitalPatientInfo.setHasAddress(hasAddress);
         return hospitalPatientInfo;
     }
 
     public static void parsePatientAddressDetails(Address province,
                                                   Address vdcOrMunicipality,
                                                   Address district,
-                                                  Address ward,
-                                                  HospitalPatientInfo hospitalPatientInfo,
-                                                  Character hasAddress) {
+                                                  String wardNumber,
+                                                  HospitalPatientInfo hospitalPatientInfo) {
 
-        hospitalPatientInfo.setHasAddress(hasAddress);
         hospitalPatientInfo.setProvince(province);
         hospitalPatientInfo.setVdcOrMunicipality(vdcOrMunicipality);
         hospitalPatientInfo.setDistrict(district);
-        hospitalPatientInfo.setWard(ward);
+        hospitalPatientInfo.setWardNumber(wardNumber);
     }
 
     public static void updateHospitalPatientInfo(String email,

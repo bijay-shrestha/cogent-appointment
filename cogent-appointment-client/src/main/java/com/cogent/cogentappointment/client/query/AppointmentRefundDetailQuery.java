@@ -5,7 +5,6 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -127,7 +126,8 @@ public class AppointmentRefundDetailQuery {
 
     public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
             "SELECT" +
-                    " a.id as appointmentId,"+
+                    " a.id as appointmentId," +
+                    " a.appointmentModeId.id as appointmentModeId," +
                     " a.appointmentDate as appointmentDate," +
                     " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
                     " a.appointmentNumber as appointmentNumber," +

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
@@ -20,7 +21,6 @@ public interface IntegrationCheckPointService {
                                                           IntegrationBackendRequestDTO integrationRequestDTO);
 
     BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationBackendRequestDTO backendRequestDTO,
-                                                               Long appointmentModeId,
                                                                String generatedHmacKey);
 
     ThirdPartyResponse processEsewaRefundRequest(Appointment appointment,
@@ -38,4 +38,9 @@ public interface IntegrationCheckPointService {
                                                       AppointmentTransactionDetail appointmentTransactionDetail,
                                                       AppointmentRefundDetail refundAppointmentDetail,
                                                       IntegrationRefundRequestDTO refundRequestDTO);
+
+    void apiIntegrationCheckpointForRefundStatus(Appointment appointment,
+                                                 AppointmentRefundDetail appointmentRefundDetail,
+                                                 AppointmentTransactionDetail appointmentTransactionDetail,
+                                                 RefundStatusRequestDTO requestDTO);
 }

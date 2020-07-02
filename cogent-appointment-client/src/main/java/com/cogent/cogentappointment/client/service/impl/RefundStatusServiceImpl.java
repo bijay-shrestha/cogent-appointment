@@ -88,11 +88,6 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointment.getId());
 
-
-        requestDTO.setEsewaMerchantCode(appointment.getHospitalId().getEsewaMerchantCode());
-
-        requestDTO.setAppointmentMode(appointment.getAppointmentModeId().getCode());
-
         integrationCheckPointService.apiIntegrationCheckpointForRefundStatus(appointment,
                 appointmentRefundDetail,
                 appointmentTransactionDetail,
@@ -119,7 +114,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
      * and 'RE' in Appointment table*/
     private String checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO) {
 
-//        EsewaPayementStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
+//        EsewaPaymentStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
 //
 //        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
 

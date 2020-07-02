@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EsewaPayementStatus implements Serializable{
+public class EsewaPaymentStatus implements Serializable{
 
     private String transaction_code;
 

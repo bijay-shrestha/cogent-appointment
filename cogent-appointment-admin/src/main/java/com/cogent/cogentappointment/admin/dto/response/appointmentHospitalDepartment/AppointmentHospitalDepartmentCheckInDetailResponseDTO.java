@@ -66,7 +66,7 @@ public class AppointmentHospitalDepartmentCheckInDetailResponseDTO implements Se
 
     private String vdcOrMunicipality;
 
-    private String ward;
+    private String wardNumber;
 
     private String transactionNumber;
 

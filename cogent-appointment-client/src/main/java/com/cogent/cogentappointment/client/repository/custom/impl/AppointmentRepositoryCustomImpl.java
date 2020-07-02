@@ -354,8 +354,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                           Pageable pageable,
                                                                           Long hospitalId) {
 
-        String appointmentServiceTypeCode = rescheduleDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+//        String appointmentServiceTypeCode = rescheduleDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
+        String appointmentServiceTypeCode = DOCTOR_CONSULTATION_CODE;
         switch (appointmentServiceTypeCode) {
 
             case DOCTOR_CONSULTATION_CODE:
@@ -911,8 +912,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public HospitalDeptCancelledAppointmentDetailResponseDTO fetchCancelledAppointmentDetail(Long appointmentId) {
-        Query query=createQuery.apply(entityManager,QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS_DETAIL_BY_APPOINTMENT_ID)
-                .setParameter(APPOINTMENT_ID,appointmentId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS_DETAIL_BY_APPOINTMENT_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
 
         try {
             return transformQueryToSingleResult(query, HospitalDeptCancelledAppointmentDetailResponseDTO.class);
@@ -950,7 +951,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     private Double calculateTotalHospitalDeptRefundAmount(CancelledHospitalDeptAppointmentSearchDTO searchDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_HOSPITAL_DEPARTMENT_REFUND_AMOUNT(searchDTO))
-                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         try {
             return (Double) query.getSingleResult();

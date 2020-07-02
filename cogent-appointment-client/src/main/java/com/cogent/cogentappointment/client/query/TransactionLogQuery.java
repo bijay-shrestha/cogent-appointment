@@ -85,11 +85,12 @@ public class TransactionLogQuery {
                 " AND h.id=:hospitalId" +
                 " AND has.appointmentServiceType.code =:appointmentServiceTypeCode";
 
+        String fromDate = utilDateToSqlDate(transactionLogSearchDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(transactionLogSearchDTO.getToDate()) + " 23:59:59";
+
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(transactionLogSearchDTO.getToDate()))
-            whereClause += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(transactionLogSearchDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(transactionLogSearchDTO.getToDate()) + "')";
+            whereClause += " AND atd.transactionDate BETWEEN '" + fromDate + "' AND '" + toDate + "'";
 
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getTransactionNumber()))
             whereClause += " AND atd.transactionNumber LIKE '%" + transactionLogSearchDTO.getTransactionNumber() + "%'";

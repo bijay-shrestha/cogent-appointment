@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Builder
 public class PatientResponseDTOForOthersWithStatus implements Serializable {
 
-    PatientResponseDTOForOthers minResponseDTOForOthers;
+    private PatientResponseDTOForOthers minResponseDTOForOthers;
 
     private int responseCode;
 

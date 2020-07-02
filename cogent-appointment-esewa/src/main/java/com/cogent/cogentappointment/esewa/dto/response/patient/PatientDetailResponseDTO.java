@@ -36,4 +36,14 @@ public class PatientDetailResponseDTO implements Serializable {
 
     private String registrationNumber;
 
+    private Character hasAddress = 'N';
+
+    private String province;
+
+    private String district;
+
+    private String vdcOrMunicipality;
+
+    private String wardNumber;
+
 }

@@ -143,6 +143,8 @@ public class ErrorMessageConstants {
 
         String HOSPITAL_DEPARTMENT_DOCTOR_NOT_ASSIGNED = "Sorry, Requested doctor of '%s' are not assigned to " +
                 "the selected hospital department";
+
+        String HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND = "Hospital Department Revenue(s) not found";
     }
 
     //I

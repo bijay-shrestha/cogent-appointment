@@ -15,7 +15,6 @@ public class AppointmentRefundDetailQuery {
 
     public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(RefundStatusSearchRequestDTO searchDTO) {
         return "SELECT" +
-                " ard.id as id," +
                 " a.id  as appointmentId," +
                 " a.appointmentDate as appointmentDate," +
                 " a.appointmentNumber as appointmentNumber," +
@@ -37,6 +36,7 @@ public class AppointmentRefundDetailQuery {
                 " adi.specialization.name as specializationName," +
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
+                "  a.appointmentModeId.id as appointmentModeId," +
                 " ard.status as refundStatus," +
                 " ard.remarks as remarks," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
@@ -128,6 +128,7 @@ public class AppointmentRefundDetailQuery {
 
     public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
             "SELECT" +
+                    " a.id as appointmentId,"+
                     " a.appointmentDate as appointmentDate," +
                     " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
                     " a.appointmentNumber as appointmentNumber," +
@@ -155,8 +156,15 @@ public class AppointmentRefundDetailQuery {
                     " atd.appointmentAmount as appointmentCharge," +
                     " a.appointmentModeId.name as appointmentMode," +
                     " hpi.isRegistered as isRegistered," +
+                    " ard.remarks as remarks," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " dv.fileUri as fileUri" +
+                    " CASE WHEN" +
+                    " (dv.status IS NULL" +
+                    " OR dv.status = 'N')" +
+                    " THEN NULL" +
+                    " ELSE" +
+                    " dv.fileUri" +
+                    " END as fileUri" +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -165,7 +173,9 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = adi.doctor.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
-                    " WHERE ard.appointmentId.id=:appointmentId" +
-                    " AND ard.status IN ('PA','A','R')";
+                    " LEFT JOIN AppointmentRefundDetail ard ON atd.appointment.id =a.id" +
+                    " WHERE a.id=:appointmentId" +
+                    " AND ard.status IN ('PA','A','R')" +
+                    " GROUP BY a.id";
 
 }

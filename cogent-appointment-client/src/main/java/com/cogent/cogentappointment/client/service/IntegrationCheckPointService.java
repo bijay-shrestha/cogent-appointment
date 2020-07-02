@@ -37,4 +37,6 @@ public interface IntegrationCheckPointService {
                                                  AppointmentRefundDetail appointmentRefundDetail,
                                                  AppointmentTransactionDetail appointmentTransactionDetail,
                                                  RefundStatusRequestDTO requestDTO);
+
+
 }

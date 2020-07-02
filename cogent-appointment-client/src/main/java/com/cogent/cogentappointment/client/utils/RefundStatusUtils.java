@@ -45,8 +45,8 @@ public class RefundStatusUtils {
         return refundDetail;
     };
 
-//    public static EsewaPayementStatus parseToEsewaPayementStatus(RefundStatusRequestDTO requestDTO){
-//        return  EsewaPayementStatus.builder()
+//    public static EsewaPaymentStatus parseToEsewaPayementStatus(RefundStatusRequestDTO requestDTO){
+//        return  EsewaPaymentStatus.builder()
 //                .esewa_id(requestDTO.getEsewaId())
 //                .product_code(requestDTO.getEsewaMerchantCode())
 //                .transaction_code(requestDTO.getTransactionNumber())

@@ -56,6 +56,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTim
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static java.lang.reflect.Array.get;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author smriti on 2019-08-05
@@ -487,42 +488,53 @@ public class AdminServiceImpl implements AdminService {
         List<AdminFeatureIntegrationResponse> integrationResponse = adminModeFeatureIntegrationRepository.
                 fetchAdminModeIntegrationResponseDTO(hospitalId);
 
+
+        Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = integrationResponse.stream()
+                .collect(groupingBy(AdminFeatureIntegrationResponse::getAppointmentModeId));
+
         List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOS = new ArrayList<>();
-        List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
-
-        integrationResponse.forEach(response -> {
-
-            Map<String, String> requestHeaderResponseDTO = integrationRepository.
-                    findAdminModeApiRequestHeaders(response.getApiIntegrationFormatId());
-
-            Map<String, String> queryParametersResponseDTO = integrationRepository.
-                    findAdminModeApiQueryParameters(response.getApiIntegrationFormatId());
-
-            Object[] requestBody = getRequestBodyByFeature(response.getFeatureId(),
-                    response.getRequestMethod());
 
 
-            FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
-            if (response.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
-                ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+        integrationResponseMap.entrySet().stream().forEach(responseMap -> {
 
-                apiInfoResponseDTO.setUrl(response.getUrl());
-                apiInfoResponseDTO.setRequestMethod(response.getRequestMethod());
-                apiInfoResponseDTO.setRequestBody(requestBody);
-                apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
-                apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
-
-                featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
-            }
-
-            featureIntegrationResponseDTO.setFeatureCode(response.getFeatureCode());
-            featureIntegrationResponseDTO.setIntegrationChannelCode(response.getIntegrationChannelCode());
+            List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
 
 
-            features.add(featureIntegrationResponseDTO);
+            responseMap.getValue().forEach(response -> {
+
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                        findAdminModeApiRequestHeaders(response.getApiIntegrationFormatId());
+
+                Map<String, String> queryParametersResponseDTO = integrationRepository.
+                        findAdminModeApiQueryParameters(response.getApiIntegrationFormatId());
+
+                Object[] requestBody = getRequestBodyByFeature(response.getFeatureId(),
+                        response.getRequestMethod());
+
+
+                FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
+                if (response.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+                    ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+
+                    apiInfoResponseDTO.setUrl(response.getUrl());
+                    apiInfoResponseDTO.setRequestMethod(response.getRequestMethod());
+                    apiInfoResponseDTO.setRequestBody(requestBody);
+                    apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+                    apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+                    featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+                }
+
+                featureIntegrationResponseDTO.setFeatureCode(response.getFeatureCode());
+                featureIntegrationResponseDTO.setIntegrationChannelCode(response.getIntegrationChannelCode());
+
+
+                features.add(featureIntegrationResponseDTO);
+
+            });
 
             AdminModeFeatureIntegrationResponseDTO adminModeFeatureIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
-            adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(response.getAppointmentModeId());
+            adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(responseMap.getKey());
             adminModeFeatureIntegrationResponseDTO.setFeatures(features);
 
             featureIntegrationResponseDTOS.add(adminModeFeatureIntegrationResponseDTO);

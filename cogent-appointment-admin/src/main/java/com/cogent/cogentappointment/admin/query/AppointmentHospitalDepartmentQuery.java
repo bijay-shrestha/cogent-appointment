@@ -234,7 +234,8 @@ public class AppointmentHospitalDepartmentQuery {
                     " a.isSelf as isSelf," +                                                    //[24]
                     " a.appointmentModeId.name as appointmentMode," +                           //[25]
                     " hb.billingMode.name as billingModeName," +                                //[26]
-                    " h.name as hospitalName" +                                                  //[27]
+                    " h.name as hospitalName," +                                                  //[27]
+                    " h.id as hospitalId" +                                                      //[28]
                     " FROM Appointment a" +
                     " INNER JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ad.hospitalDepartment.id" +

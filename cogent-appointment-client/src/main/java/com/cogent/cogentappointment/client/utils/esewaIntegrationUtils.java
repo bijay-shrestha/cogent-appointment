@@ -9,7 +9,7 @@ public class esewaIntegrationUtils {
 
 
     private String requestEsewaApi(RefundStatusRequestDTO requestDTO){
-//        EsewaPayementStatus esewaPayementStatus=parseToEsewaPayementStatus(requestDTO);
+//        EsewaPaymentStatus esewaPayementStatus=parseToEsewaPayementStatus(requestDTO);
 //
 //        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
 //

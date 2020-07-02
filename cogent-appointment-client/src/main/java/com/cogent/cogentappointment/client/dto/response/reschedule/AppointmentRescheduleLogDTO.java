@@ -64,4 +64,6 @@ public class AppointmentRescheduleLogDTO implements Serializable {
     private String roomNumber;
 
     private String billingModeName;
+
+    private Character isRegistered;
 }

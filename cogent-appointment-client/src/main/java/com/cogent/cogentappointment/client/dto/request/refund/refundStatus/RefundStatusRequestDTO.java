@@ -27,6 +27,11 @@ public class RefundStatusRequestDTO implements Serializable {
     @NotBlank
     private String esewaId;
 
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    private String transactionNumber;
+
     //FULL_REFUND, PARTIAL_REFUND, AMIBGIUOS
     private String status;
 

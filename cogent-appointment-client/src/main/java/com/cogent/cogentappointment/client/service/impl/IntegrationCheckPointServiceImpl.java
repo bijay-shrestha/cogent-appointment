@@ -310,6 +310,11 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         IntegrationRefundRequestDTO refundRequestDTO = requestDTO.getRefundRequestDTO();
 
+        if (refundRequestDTO.getIntegrationChannelCode() == null) {
+            throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
+        }
+
+
         if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
 
             //condition to check transaction number for follow up case.

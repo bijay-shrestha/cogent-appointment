@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.service;
 
-import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;

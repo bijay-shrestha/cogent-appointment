@@ -314,7 +314,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         IntegrationRefundRequestDTO integrationRefundRequestDTO = IntegrationRefundRequestDTO.builder()
                 .featureCode(refundRequestDTO.getFeatureCode())
-                .integrationChannelCode(refundRequestDTO.getFeatureCode())
+                .integrationChannelCode(refundRequestDTO.getIntegrationChannelCode())
                 .appointmentModeId(refundRequestDTO.getAppointmentModeId())
                 .appointmentId(refundRequestDTO.getAppointmentId())
                 .status(refundRequestDTO.getStatus())

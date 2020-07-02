@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDateInString;
 
 /**
  * @author Sauravi Thapa ON 4/19/20
@@ -285,9 +286,9 @@ public class TransactionLogQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
                 && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
+            query += " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN '" +
+                    utilDateToSqlDateInString(searchRequestDTO.getFromDate())
+                    + "' AND '" + utilDateToSqlDateInString(searchRequestDTO.getToDate()) + "')";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
             query += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";

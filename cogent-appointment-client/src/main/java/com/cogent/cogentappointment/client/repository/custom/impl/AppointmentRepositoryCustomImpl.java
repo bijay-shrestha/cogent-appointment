@@ -1031,6 +1031,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                  Long hospitalId,
                                                                  String appointmentServiceTypeCode) {
 
+
         BookedAppointmentResponseDTO bookedInfo = getBookedDoctorAppointmentDetails(
                 searchRequestDTO, hospitalId, appointmentServiceTypeCode);
 

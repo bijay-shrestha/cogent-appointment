@@ -306,13 +306,20 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     public void apiIntegrationCheckpointForRefundStatus(Appointment appointment,
                                                         AppointmentRefundDetail appointmentRefundDetail,
                                                         AppointmentTransactionDetail appointmentTransactionDetail,
-                                                        RefundStatusRequestDTO requestDTO) {
-
-        IntegrationRefundRequestDTO refundRequestDTO = requestDTO.getRefundRequestDTO();
+                                                        RefundStatusRequestDTO refundRequestDTO) {
 
         if (refundRequestDTO.getIntegrationChannelCode() == null) {
             throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
         }
+
+        IntegrationRefundRequestDTO integrationRefundRequestDTO = IntegrationRefundRequestDTO.builder()
+                .featureCode(refundRequestDTO.getFeatureCode())
+                .integrationChannelCode(refundRequestDTO.getFeatureCode())
+                .appointmentModeId(refundRequestDTO.getAppointmentModeId())
+                .appointmentId(refundRequestDTO.getAppointmentId())
+                .status(refundRequestDTO.getStatus())
+                .remarks(refundRequestDTO.getRemarks())
+                .build();
 
 
         if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
@@ -329,14 +336,14 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             } else {
 
-                ThirdPartyResponse thirdPartyResponse = processRefundStatusRequest(refundRequestDTO,
+                ThirdPartyResponse thirdPartyResponse = processRefundStatusRequest(integrationRefundRequestDTO,
                         appointment,
                         appointmentTransactionDetail);
 
                 updateRefundStatusDetails(appointment,
                         appointmentRefundDetail,
                         appointmentTransactionDetail,
-                        refundRequestDTO,
+                        integrationRefundRequestDTO,
                         thirdPartyResponse.getStatus());
 
             }
@@ -360,8 +367,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 updateRefundStatusDetails(appointment,
                         appointmentRefundDetail,
                         appointmentTransactionDetail,
-                        refundRequestDTO,
-                        requestDTO.getRefundRequestDTO().getStatus());
+                        integrationRefundRequestDTO,
+                        refundRequestDTO.getStatus());
 
             }
         }

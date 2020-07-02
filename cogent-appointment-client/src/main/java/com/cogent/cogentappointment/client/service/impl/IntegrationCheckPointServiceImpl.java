@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.integration.IntegrationRefundRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
@@ -14,6 +15,7 @@ import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
+import com.cogent.cogentthirdpartyconnector.request.EsewaPaymentStatus;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
@@ -50,6 +52,7 @@ import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
+import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaPayementStatusRequestBody;
 import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaRequestBody;
 import static java.lang.Integer.parseInt;
 
@@ -180,33 +183,6 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
     }
 
-
-    private ThirdPartyResponse processRefundRequest(IntegrationRefundRequestDTO integrationRefundRequestDTO,
-                                                    Appointment appointment,
-                                                    AppointmentTransactionDetail transactionDetail,
-                                                    AppointmentRefundDetail appointmentRefundDetail,
-                                                    Boolean isRefund) {
-
-        ThirdPartyResponse thirdPartyResponse = null;
-
-        switch (appointment.getAppointmentModeId().getCode()) {
-
-            case APPOINTMENT_MODE_ESEWA_CODE:
-                thirdPartyResponse = requestEsewaForRefund(integrationRefundRequestDTO,
-                        appointment,
-                        transactionDetail,
-                        appointmentRefundDetail,
-                        isRefund);
-                break;
-
-            default:
-                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
-        }
-
-
-        return thirdPartyResponse;
-    }
-
     @Override
     public void apiIntegrationCheckpointForRefundAppointment(Appointment appointment,
                                                              AppointmentTransactionDetail appointmentTransactionDetail,
@@ -322,8 +298,162 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         null);
             }
         }
+
+
     }
 
+    @Override
+    public void apiIntegrationCheckpointForRefundStatus(Appointment appointment,
+                                                        AppointmentRefundDetail appointmentRefundDetail,
+                                                        AppointmentTransactionDetail appointmentTransactionDetail,
+                                                        RefundStatusRequestDTO refundRequestDTO) {
+
+        if (refundRequestDTO.getIntegrationChannelCode() == null) {
+            throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
+        }
+
+        IntegrationRefundRequestDTO integrationRefundRequestDTO = IntegrationRefundRequestDTO.builder()
+                .featureCode(refundRequestDTO.getFeatureCode())
+                .integrationChannelCode(refundRequestDTO.getIntegrationChannelCode())
+                .appointmentModeId(refundRequestDTO.getAppointmentModeId())
+                .appointmentId(refundRequestDTO.getAppointmentId())
+                .status(refundRequestDTO.getStatus())
+                .remarks(refundRequestDTO.getRemarks())
+                .build();
+
+
+        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+
+            //condition to check transaction number for follow up case.
+            //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+            //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+            if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                    appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        refundRequestDTO.getRemarks(), null);
+
+            } else {
+
+                ThirdPartyResponse thirdPartyResponse = processRefundStatusRequest(integrationRefundRequestDTO,
+                        appointment,
+                        appointmentTransactionDetail);
+
+                updateRefundStatusDetails(appointment,
+                        appointmentRefundDetail,
+                        appointmentTransactionDetail,
+                        integrationRefundRequestDTO,
+                        thirdPartyResponse.getStatus());
+
+            }
+
+        }
+
+        if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+            //condition to check transaction number for follow up case.
+            //for free follow up case we don't have to hit third party API for refund and its status is changed to REFUNDED in database.
+            //Both FrontEnd Refund Remarks and Esewa Remarks are saved into Appointment & RefundAppointmentDetail Tables Respectively.
+            if (appointmentTransactionDetail.getTransactionNumber().equals(null) ||
+                    appointmentTransactionDetail.getTransactionNumber().equalsIgnoreCase("N/A")) {
+
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        refundRequestDTO.getRemarks(), null);
+
+            } else {
+
+                updateRefundStatusDetails(appointment,
+                        appointmentRefundDetail,
+                        appointmentTransactionDetail,
+                        integrationRefundRequestDTO,
+                        refundRequestDTO.getStatus());
+
+            }
+        }
+
+    }
+
+    private ThirdPartyResponse processRefundRequest(IntegrationRefundRequestDTO integrationRefundRequestDTO,
+                                                    Appointment appointment,
+                                                    AppointmentTransactionDetail transactionDetail,
+                                                    AppointmentRefundDetail appointmentRefundDetail,
+                                                    Boolean isRefund) {
+
+
+        ThirdPartyResponse thirdPartyResponse = null;
+
+        switch (appointment.getAppointmentModeId().getCode()) {
+
+            case APPOINTMENT_MODE_ESEWA_CODE:
+                thirdPartyResponse = requestEsewaForRefund(integrationRefundRequestDTO,
+                        appointment,
+                        transactionDetail,
+                        appointmentRefundDetail,
+                        isRefund);
+                break;
+
+            default:
+                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+        }
+
+
+        return thirdPartyResponse;
+    }
+
+    private ThirdPartyResponse processRefundStatusRequest(IntegrationRefundRequestDTO integrationRefundRequestDTO,
+                                                          Appointment appointment,
+                                                          AppointmentTransactionDetail transactionDetail) {
+
+
+        ThirdPartyResponse thirdPartyResponse = null;
+
+        switch (appointment.getAppointmentModeId().getCode()) {
+
+            case APPOINTMENT_MODE_ESEWA_CODE:
+                thirdPartyResponse = requestEsewaForRefundStatus(integrationRefundRequestDTO,
+                        appointment,
+                        transactionDetail);
+                break;
+
+            default:
+                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+        }
+
+
+        return thirdPartyResponse;
+    }
+
+    private void updateRefundStatusDetails(Appointment appointment,
+                                           AppointmentRefundDetail appointmentRefundDetail,
+                                           AppointmentTransactionDetail appointmentTransactionDetail,
+                                           IntegrationRefundRequestDTO refundRequestDTO,
+                                           String response) {
+
+        switch (response) {
+
+            case PARTIAL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        refundRequestDTO.getRemarks(),
+                        response);
+                break;
+
+            case FULL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment,
+                        appointmentRefundDetail,
+                        refundRequestDTO.getRemarks(),
+                        response);
+                break;
+
+//            case AMBIGIOUS:
+//                appointmentService.approveRefundAppointment(refundRequestDTO);
+//
+//            default:
+//                appointmentService.approveRefundAppointment(refundRequestDTO);
+        }
+    }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,
                                                               String frontEndRemarks,
@@ -422,6 +552,62 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
                     esewaRefundRequestDTO);
+
+            if (responseEntity.getBody() == null) {
+                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+            }
+
+
+            ThirdPartyResponse thirdPartyResponse = null;
+            try {
+                thirdPartyResponse = map(responseEntity.getBody().toString(),
+                        ThirdPartyResponse.class);
+            } catch (IOException e)
+
+            {
+                e.printStackTrace();
+                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+            }
+
+            if (thirdPartyResponse.getCode() != null) {
+                validateThirdPartyException(thirdPartyResponse);
+            }
+
+
+            return thirdPartyResponse;
+
+        } else {
+            return new ThirdPartyResponse("400", "Third party API information Not found",
+                    "Third party API information Not found");
+        }
+
+
+    }
+
+    private ThirdPartyResponse requestEsewaForRefundStatus(IntegrationRefundRequestDTO integrationRefundRequestDTO,
+                                                           Appointment appointment,
+                                                           AppointmentTransactionDetail transactionDetail) {
+
+        String esewaId = getEsewaId(appointment.getId());
+        String generatedEsewaHmac = getSigatureForEsewa.apply(esewaId,
+                appointment.getHospitalId().getEsewaMerchantCode());
+
+        BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationRefundRequestDTO,
+                appointment.getAppointmentModeId().getId(),
+                generatedEsewaHmac);
+
+        if (!Objects.isNull(integrationApiInfo)) {
+
+            EsewaPaymentStatus esewaPayementStatus = getEsewaPayementStatusRequestBody(esewaId,
+                    appointment.getHospitalId().getEsewaMerchantCode(),
+                    transactionDetail.getTransactionNumber());
+
+            integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(),
+                    transactionDetail.getTransactionNumber()));
+
+            ResponseEntity<?> responseEntity = thirdPartyConnectorService.
+                    callEsewaRefundStatusService(integrationApiInfo,
+                            esewaPayementStatus);
 
             if (responseEntity.getBody() == null) {
                 throw new OperationUnsuccessfulException("ThirdParty API response is null");

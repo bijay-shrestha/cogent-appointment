@@ -3,4 +3,4 @@ catalina:
 
 spring:
   profiles:
-    active: live
+    active: ir

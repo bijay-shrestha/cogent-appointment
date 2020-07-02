@@ -89,7 +89,7 @@ public class IntegrationClientResource {
 //
 //    @PostMapping("/esewa/paymentstatus")
 //    @ApiOperation(SAVE_OPERATION)
-//    public ResponseEntity<?> paymentStatus(@RequestBody EsewaPayementStatus esewaPayementStatus) throws IOException {
+//    public ResponseEntity<?> paymentStatus(@RequestBody EsewaPaymentStatus esewaPayementStatus) throws IOException {
 //
 //        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
 //

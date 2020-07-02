@@ -3,10 +3,9 @@ package com.cogent.cogentthirdpartyconnector.service;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.OperationUnsuccessfulException;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
-import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
+import com.cogent.cogentthirdpartyconnector.request.EsewaPaymentStatus;
 import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
-import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.commons.utils.DateUtils.getDifferenceBetweenTwoTime;
@@ -25,7 +23,6 @@ import static com.cogent.cogentthirdpartyconnector.log.constants.HmacLog.GENERAT
 import static com.cogent.cogentthirdpartyconnector.log.constants.HmacLog.GENERATING_HMAC_FOR_FRONTEND_PROCESS_STARTED;
 import static com.cogent.cogentthirdpartyconnector.utils.HMACUtils.getSigatureForEsewa;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpMethodUtils.getHttpRequestMethod;
-import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.QueryParameterUtils.createQueryParameter;
 
 /**
@@ -131,8 +128,8 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
     }
 
     @Override
-    public ThirdPartyResponse callEsewaRefundStatusService(BackendIntegrationApiInfo integrationApiInfo,
-                                                           EsewaPayementStatus esewaPayementStatus) {
+    public ResponseEntity<?> callEsewaRefundStatusService(BackendIntegrationApiInfo integrationApiInfo,
+                                                          EsewaPaymentStatus esewaPayementStatus) {
         HttpMethod httpMethod = getHttpRequestMethod(integrationApiInfo.getHttpMethod());
 
         String uri = "";
@@ -151,15 +148,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
         System.out.println(response);
 
-        ThirdPartyResponse thirdPartyResponse = null;
-        try {
-            thirdPartyResponse = map(response.getBody().toString(),
-                    ThirdPartyResponse.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return thirdPartyResponse;
+        return response;
     }
 
     @Override

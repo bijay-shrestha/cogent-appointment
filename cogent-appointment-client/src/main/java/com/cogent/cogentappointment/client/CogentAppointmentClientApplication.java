@@ -33,8 +33,7 @@ import org.springframework.web.client.RestTemplate;
                 })
 @EnableJpaRepositories(basePackages = {
         "com.cogent.cogentappointment.commons.repository",
-        "com.cogent.cogentappointment.client.repository",
-        "com.cogent.cogentthirdpartyconnector.repository"})
+        "com.cogent.cogentappointment.client.repository"})
 public class CogentAppointmentClientApplication extends SpringBootServletInitializer {
 
     @Override

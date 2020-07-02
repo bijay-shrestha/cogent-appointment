@@ -19,6 +19,8 @@ public class AppointmentHospitalDepartmentCheckInDetailResponseDTO implements Se
 
     private Long appointmentId;
 
+    private Long hospitalId;
+
     private String hospitalName;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")

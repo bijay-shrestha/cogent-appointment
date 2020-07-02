@@ -1,7 +1,3 @@
-
-catalina:
-  home: /home/rupak/Softwares/tomcat
-
 spring:
   profiles:
-    active: ir
+    active: live

@@ -545,7 +545,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
                                                                           Pageable pageable) {
 
-        String appointmentServiceTypeCode = rescheduleDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+
+        String appointmentServiceTypeCode = Objects.isNull(rescheduleDTO.getAppointmentServiceTypeCode()) ?
+                DOCTOR_CONSULTATION_CODE : rescheduleDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
         switch (appointmentServiceTypeCode) {
 
@@ -673,8 +675,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public HospitalDeptCancelledAppointmentDetailResponseDTO fetchCancelledAppointmentDetail(Long appointmentId) {
-        Query query=createQuery.apply(entityManager,QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS_DETAIL_BY_APPOINTMENT_ID)
-                .setParameter(APPOINTMENT_ID,appointmentId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS_DETAIL_BY_APPOINTMENT_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
 
         try {
             return transformQueryToSingleResult(query, HospitalDeptCancelledAppointmentDetailResponseDTO.class);

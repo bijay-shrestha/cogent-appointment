@@ -239,7 +239,8 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                            //[14]
                             " arl.remarks as remarks," +                                               //[15]
                             " a.isFollowUp as isFollowUp," +                                           //[16]
-                            " da.fileUri as fileUri" +                                                 //[17]
+                            " da.fileUri as fileUri," +                                                  //[17]
+                            " hpi.isRegistered as isRegistered" +                                        //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +

@@ -26,6 +26,10 @@ public class RefundStatusRequestDTO implements Serializable {
     private Long appointmentModeId;
 
     @NotNull
+    private Long esewaId;
+
+
+    @NotNull
     @NotEmpty
     @NotBlank
     private String transactionNumber;

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.dto.request.refund.refundStatus;
 
-import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,11 +20,10 @@ public class RefundStatusRequestDTO implements Serializable {
     private Long appointmentId;
 
     @NotNull
-    @NotEmpty
-    @NotBlank
-    private String esewaId;
+    private Long hospitalId;
 
-    private String esewaMerchantCode;
+    @NotNull
+    private Long appointmentModeId;
 
     @NotNull
     @NotEmpty
@@ -34,7 +32,14 @@ public class RefundStatusRequestDTO implements Serializable {
 
     private String appointmentMode;
 
-    private IntegrationRefundRequestDTO integrationRefundRequestDTO;
+    //FULL_REFUND, PARTIAL_REFUND, AMIBIGIUOS
+    private String status;
+
+    private String featureCode;
+
+    private String integrationChannelCode;
+
+    private String remarks;
 
 
 }

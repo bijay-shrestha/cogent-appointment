@@ -377,14 +377,20 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     public void apiIntegrationCheckpointForRefundStatus(Appointment appointment,
                                                         AppointmentRefundDetail appointmentRefundDetail,
                                                         AppointmentTransactionDetail appointmentTransactionDetail,
-                                                        RefundStatusRequestDTO requestDTO) {
-
-
-        IntegrationRefundRequestDTO refundRequestDTO = requestDTO.getIntegrationRefundRequestDTO();
+                                                        RefundStatusRequestDTO refundRequestDTO) {
 
         if (refundRequestDTO.getIntegrationChannelCode() == null) {
             throw new BadRequestException(INTEGRATION_CHANNEL_CODE_IS_NULL);
         }
+
+        IntegrationRefundRequestDTO integrationRefundRequestDTO = IntegrationRefundRequestDTO.builder()
+                .featureCode(refundRequestDTO.getFeatureCode())
+                .integrationChannelCode(refundRequestDTO.getIntegrationChannelCode())
+                .appointmentModeId(refundRequestDTO.getAppointmentModeId())
+                .appointmentId(refundRequestDTO.getAppointmentId())
+                .status(refundRequestDTO.getStatus())
+                .remarks(refundRequestDTO.getRemarks())
+                .build();
 
 
         if (refundRequestDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
@@ -401,7 +407,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             } else {
 
-                ThirdPartyResponse thirdPartyResponse = processRefundStatusRequest(refundRequestDTO,
+                ThirdPartyResponse thirdPartyResponse = processRefundStatusRequest(integrationRefundRequestDTO,
                         appointment,
                         appointmentTransactionDetail);
 
@@ -409,6 +415,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         appointmentRefundDetail,
                         appointmentTransactionDetail,
                         refundRequestDTO,
+                        integrationRefundRequestDTO,
                         thirdPartyResponse.getStatus());
 
             }
@@ -433,7 +440,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         appointmentRefundDetail,
                         appointmentTransactionDetail,
                         refundRequestDTO,
-                        requestDTO.getIntegrationRefundRequestDTO().getStatus());
+                        integrationRefundRequestDTO,
+                        refundRequestDTO.getStatus());
 
             }
         }
@@ -532,6 +540,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     private void updateRefundStatusDetails(Appointment appointment,
                                            AppointmentRefundDetail appointmentRefundDetail,
                                            AppointmentTransactionDetail appointmentTransactionDetail,
+                                           RefundStatusRequestDTO refundStatusRequestDTO,
                                            IntegrationRefundRequestDTO refundRequestDTO,
                                            String response) {
 
@@ -551,11 +560,19 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         response);
                 break;
 
-//            case AMBIGIOUS:
-//                appointmentService.approveRefundAppointment(refundRequestDTO);
-//
-//            default:
-//                appointmentService.approveRefundAppointment(refundRequestDTO);
+            case AMBIGIOUS:
+                throw new BadRequestException("Communicate with Esewa");
+
+            case COMPLETE:
+                apiIntegrationCheckpointForRefundStatus(appointment,
+                        appointmentRefundDetail,
+                        appointmentTransactionDetail,
+                        refundStatusRequestDTO);
+                break;
+
+            case PENDING:
+                throw new BadRequestException("Communicate with Esewa");
+
         }
     }
 

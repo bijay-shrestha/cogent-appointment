@@ -343,7 +343,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 updateRefundStatusDetails(appointment,
                         appointmentRefundDetail,
                         appointmentTransactionDetail,
-                        integrationRefundRequestDTO,
+                        refundRequestDTO,
                         thirdPartyResponse.getStatus());
 
             }
@@ -367,7 +367,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 updateRefundStatusDetails(appointment,
                         appointmentRefundDetail,
                         appointmentTransactionDetail,
-                        integrationRefundRequestDTO,
+                        refundRequestDTO,
                         refundRequestDTO.getStatus());
 
             }
@@ -428,7 +428,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     private void updateRefundStatusDetails(Appointment appointment,
                                            AppointmentRefundDetail appointmentRefundDetail,
                                            AppointmentTransactionDetail appointmentTransactionDetail,
-                                           IntegrationRefundRequestDTO refundRequestDTO,
+                                           RefundStatusRequestDTO statusRequestDTO,
                                            String response) {
 
         switch (response) {
@@ -436,22 +436,32 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             case PARTIAL_REFUND:
                 changeAppointmentAndAppointmentRefundDetailStatus(appointment,
                         appointmentRefundDetail,
-                        refundRequestDTO.getRemarks(),
+                        statusRequestDTO.getRemarks(),
                         response);
                 break;
 
             case FULL_REFUND:
                 changeAppointmentAndAppointmentRefundDetailStatus(appointment,
                         appointmentRefundDetail,
-                        refundRequestDTO.getRemarks(),
+                        statusRequestDTO.getRemarks(),
                         response);
                 break;
 
-//            case AMBIGIOUS:
-//                appointmentService.approveRefundAppointment(refundRequestDTO);
-//
-//            default:
-//                appointmentService.approveRefundAppointment(refundRequestDTO);
+            case COMPLETE:
+
+                apiIntegrationCheckpointForRefundStatus(appointment,
+                        appointmentRefundDetail,
+                        appointmentTransactionDetail,
+                        statusRequestDTO);
+
+
+                break;
+
+            case AMBIGIOUS:
+                throw new BadRequestException("Communicate with Esewa");
+
+            case PENDING:
+                throw new BadRequestException("Communicate with Esewa");
         }
     }
 
@@ -598,7 +608,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         if (!Objects.isNull(integrationApiInfo)) {
 
-            EsewaPaymentStatus esewaPayementStatus = getEsewaPayementStatusRequestBody(esewaId,
+            EsewaPaymentStatus esewaPaymentStatus = getEsewaPayementStatusRequestBody(esewaId,
                     appointment.getHospitalId().getEsewaMerchantCode(),
                     transactionDetail.getTransactionNumber());
 
@@ -607,7 +617,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.
                     callEsewaRefundStatusService(integrationApiInfo,
-                            esewaPayementStatus);
+                            esewaPaymentStatus);
 
             if (responseEntity.getBody() == null) {
                 throw new OperationUnsuccessfulException("ThirdParty API response is null");

@@ -17,7 +17,7 @@ public interface RefundStatusService {
 
     RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable);
 
-    void checkRefundStatus(RefundStatusRequestDTO requestDTO, IntegrationRefundRequestDTO integrationRefundRequestDTO) throws IOException;
+    void checkRefundStatus(RefundStatusRequestDTO requestDTO) throws IOException;
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long id);
 

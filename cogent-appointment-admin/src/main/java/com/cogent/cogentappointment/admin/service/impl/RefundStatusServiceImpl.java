@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
@@ -81,8 +80,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     }
 
     @Override
-    public void checkRefundStatus(RefundStatusRequestDTO requestDTO,
-                                  IntegrationRefundRequestDTO integrationRefundRequestDTO)
+    public void checkRefundStatus(RefundStatusRequestDTO requestDTO)
             throws IOException {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -103,11 +101,11 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void approveRefundAppointment(RefundStatusRequestDTO requestDTO) throws IOException {
-
-        requestDTO.getIntegrationRefundRequestDTO().setFeatureCode("REF_APPROVAL");
-        appointmentService.approveRefundAppointment(requestDTO.getIntegrationRefundRequestDTO());
-    }
+//    private void approveRefundAppointment(RefundStatusRequestDTO requestDTO) throws IOException {
+//
+//        requestDTO.setFeatureCode("REF_APPROVAL");
+//        appointmentService.approveRefundAppointment(requestDTO.getIntegrationRefundRequestDTO());
+//    }
 
     @Override
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {

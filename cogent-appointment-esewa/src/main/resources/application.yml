@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 
 catalina:
   home: /home/f1soft/Softwares/tomcat
+=======
+#catalina:
+#  home: /home/rupak/Softwares/tomcat
+>>>>>>> 9146285fa44f4000025d0cc5c96b268cac2e42ee
 
 spring:
   profiles:

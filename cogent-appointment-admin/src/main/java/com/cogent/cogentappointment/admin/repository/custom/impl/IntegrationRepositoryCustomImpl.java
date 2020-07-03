@@ -198,7 +198,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
             Long appointmentModeId) {
 
         Query query = createQuery.apply(entityManager, APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY)
-                .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
+                .setParameter(APPOINTMENT_MODE_ID, requestDTO.getAppointmentId())
                 .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
                 .setParameter(FEATURE_CODE, requestDTO.getFeatureCode())
                 .setParameter(HOSPITAL_ID,requestDTO.getHospitalId());

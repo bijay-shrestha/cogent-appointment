@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AppointmentServiceTypeService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

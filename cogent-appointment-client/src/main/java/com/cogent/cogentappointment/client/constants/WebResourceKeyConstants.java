@@ -36,6 +36,7 @@ public class WebResourceKeyConstants {
 
     public interface AdminFavouriteConstants {
         String BASE_ADMIN_FAVOURITE = "/adminFavourite";
+        String ICON = "/icon";
     }
 
     public interface AdminFeatureConstants {

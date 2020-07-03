@@ -12,7 +12,7 @@ public class AdminLog {
 
     public static final String ADMIN_FAVOURITE ="ADMIN FAVOURITE";
 
-    public static final String ADMIN_FAVOURITE_WITH_ICON = "ADMIN FAVOURITE WITH ICON FAVOURITE";
+    public static final String ADMIN_FAVOURITE_WITH_ICON ="ADMIN FAVOURITE WITH ICON" ;
 
     public static final String ADMIN_META_INFO = "ADMIN META INFO";
 

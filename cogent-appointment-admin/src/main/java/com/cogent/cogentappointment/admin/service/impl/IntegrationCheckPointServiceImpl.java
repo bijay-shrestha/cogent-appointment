@@ -491,6 +491,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 appointment.getHospitalId().getEsewaMerchantCode());
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationBackendRequestDTO,
+                appointment.getAppointmentModeId().getId(),
                 generatedEsewaHmac);
 
         if (!Objects.isNull(integrationApiInfo)) {

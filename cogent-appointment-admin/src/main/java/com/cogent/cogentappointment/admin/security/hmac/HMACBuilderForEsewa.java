@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.security.hmac;
 
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
+import com.cogent.cogentappointment.commons.configuration.ESewaHMAC;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
@@ -19,10 +20,16 @@ import static com.cogent.cogentappointment.admin.constants.HMACConstant.HMAC_API
 @Component
 public class HMACBuilderForEsewa {
 
+    private static ESewaHMAC eSewaHMAC;
+
+    public HMACBuilderForEsewa(ESewaHMAC eSewaHMAC) {
+        this.eSewaHMAC = eSewaHMAC;
+    }
+
     public static String hmacShaGenerator(String message) {
         try {
 
-            Key secretKeySpec = new SecretKeySpec(HMAC_API_SECRET_ESEWA.getBytes(), HMAC_ALGORITHM);
+            Key secretKeySpec = new SecretKeySpec(eSewaHMAC.getHMAC_API_SECRET_ESEWA().getBytes(), eSewaHMAC.getHMAC_API_SECRET_ESEWA());
             Mac msgAuthenticationCode = Mac.getInstance(secretKeySpec.getAlgorithm());
             msgAuthenticationCode.init(secretKeySpec);
 

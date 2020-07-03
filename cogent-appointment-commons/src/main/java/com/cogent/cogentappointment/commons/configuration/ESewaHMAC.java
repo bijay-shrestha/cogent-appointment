@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class ESewaHMAC {
 
-    @Value("${esewa-hmac-alogrithm}")
+    @Value("${esewa-hmac-algorithm}")
     public String HMAC_ALGORITHM;
 
     @Value("${esewa-hmac-api-secret}")

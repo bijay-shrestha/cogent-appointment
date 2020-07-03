@@ -29,7 +29,7 @@ public class HMACBuilderForEsewa {
     public static String hmacShaGenerator(String message) {
         try {
 
-            Key secretKeySpec = new SecretKeySpec(eSewaHMAC.getHMAC_API_SECRET_ESEWA().getBytes(), eSewaHMAC.getHMAC_API_SECRET_ESEWA());
+            Key secretKeySpec = new SecretKeySpec(eSewaHMAC.getHMAC_API_SECRET_ESEWA().getBytes(), eSewaHMAC.getHMAC_ALGORITHM());
             Mac msgAuthenticationCode = Mac.getInstance(secretKeySpec.getAlgorithm());
             msgAuthenticationCode.init(secretKeySpec);
 

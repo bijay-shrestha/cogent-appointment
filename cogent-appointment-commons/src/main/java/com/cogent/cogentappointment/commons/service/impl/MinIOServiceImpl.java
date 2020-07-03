@@ -37,12 +37,16 @@ public class MinIOServiceImpl implements MinIOService {
 
         try {
 
-            MinioClient minioClient = createMinioClient ();
+            MinioClient minioClient =
+                    MinioClient.builder ()
+                            .endpoint ( minIOProperties.getURL () )
+                            .credentials ( minIOProperties.getACCESS_KEY (),
+                                    minIOProperties.getSECRET_KEY () )
+                            .build ();
 
-            String url = minioClient.getPresignedObjectUrl ( PUT, minIOProperties.getBUCKET_NAME (),
+            String url = minioClient.presignedPutObject(minIOProperties.getBUCKET_NAME (),
                     fileRequestDTO.getFileName (),
-                    Integer.parseInt ( minIOProperties.getEXPIRY_TIME () ),
-                    null );
+                    Integer.parseInt ( minIOProperties.getEXPIRY_TIME ()));
 
             log.info ( "MinIO Error {}::", url );
 
@@ -65,12 +69,16 @@ public class MinIOServiceImpl implements MinIOService {
     public String getPresignedObjectURL(FileURLRequestDTO fileRequestDTO) {
         try {
 
-            MinioClient minioClient = createMinioClient ();
+            MinioClient minioClient =
+                    MinioClient.builder ()
+                            .endpoint ( minIOProperties.getURL () )
+                            .credentials ( minIOProperties.getACCESS_KEY (),
+                                    minIOProperties.getSECRET_KEY () )
+                            .build ();
 
-            String url = minioClient.getPresignedObjectUrl ( GET, minIOProperties.getBUCKET_NAME (),
+            String url = minioClient.presignedGetObject(minIOProperties.getBUCKET_NAME (),
                     fileRequestDTO.getFileName (),
-                    Integer.parseInt ( minIOProperties.getEXPIRY_TIME () ),
-                    null );
+                    Integer.parseInt ( minIOProperties.getEXPIRY_TIME ()));
 
             log.info ( "MinIO Error {}::", url );
 
@@ -93,7 +101,12 @@ public class MinIOServiceImpl implements MinIOService {
     public String getObjectUrl(String fileUri) {
         try {
 
-            MinioClient minioClient = createMinioClient ();
+            MinioClient minioClient =
+                    MinioClient.builder ()
+                            .endpoint ( minIOProperties.getURL () )
+                            .credentials ( minIOProperties.getACCESS_KEY (),
+                                    minIOProperties.getSECRET_KEY () )
+                            .build ();
 
             String objectUrl = minioClient.getObjectUrl ( minIOProperties.getBUCKET_NAME (),
                     fileUri );
@@ -115,26 +128,26 @@ public class MinIOServiceImpl implements MinIOService {
         return null;
     }
 
-    private MinioClient createMinioClient() throws IOException, InvalidKeyException, InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, InvalidBucketNameException, ErrorResponseException, RegionConflictException {
-
-        MinioClient minioClient =
-                MinioClient.builder ()
-                        .endpoint ( minIOProperties.getURL () )
-                        .credentials ( minIOProperties.getACCESS_KEY (),
-                                minIOProperties.getSECRET_KEY () )
-                        .build ();
-
-        // Check if the bucket already exists.
-        boolean isExist =
-                minioClient.bucketExists ( BucketExistsArgs.builder ().bucket ( minIOProperties.getBUCKET_NAME () ).build () );
-        if (isExist) {
-            System.out.println ( "Bucket already exists." );
-        } else {
-            // Make a new bucket called asiatrip to hold a zip file of photos.
-            minioClient.makeBucket ( MakeBucketArgs.builder ().bucket ( minIOProperties.getBUCKET_NAME () ).build () );
-        }
-        return minioClient;
-    }
+//    private MinioClient createMinioClient() throws IOException, InvalidKeyException, InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, InvalidBucketNameException, ErrorResponseException, RegionConflictException {
+//
+//        MinioClient minioClient =
+//                MinioClient.builder ()
+//                        .endpoint ( minIOProperties.getURL () )
+//                        .credentials ( minIOProperties.getACCESS_KEY (),
+//                                minIOProperties.getSECRET_KEY () )
+//                        .build ();
+//
+//        // Check if the bucket already exists.
+//        boolean isExist =
+//                minioClient.bucketExists ( BucketExistsArgs.builder ().bucket ( minIOProperties.getBUCKET_NAME () ).build () );
+//        if (isExist) {
+//            System.out.println ( "Bucket already exists." );
+//        } else {
+//            // Make a new bucket called asiatrip to hold a zip file of photos.
+//            minioClient.makeBucket ( MakeBucketArgs.builder ().bucket ( minIOProperties.getBUCKET_NAME () ).build () );
+//        }
+//        return minioClient;
+//    }
 
 
 }

@@ -95,32 +95,14 @@ public class MinIOServiceImpl implements MinIOService {
     @Override
     public String getObjectUrl(String fileUri) {
 
-        System.out.println("ACCESS KEY --" + minIOProperties.getACCESS_KEY());
         try {
-
-
-            System.out.println(" SECRET_KEY-----" + minIOProperties.getSECRET_KEY());
-            System.out.println(" BUCKET NAME====" + minIOProperties.getBUCKET_NAME());
-
-            System.out.println("URL ---" + minIOProperties.getURL());
-            System.out.println("EXPIRY------" + minIOProperties.getEXPIRY_TIME());
-
             MinioClient minioClient =
-                    new MinioClient(minIOProperties.getURL(),
-                            minIOProperties.getACCESS_KEY(),
-                            minIOProperties.getSECRET_KEY());
+                    MinioClient.builder()
+                            .endpoint(minIOProperties.getURL())
+                            .credentials(minIOProperties.getACCESS_KEY(),
+                                    minIOProperties.getSECRET_KEY())
+                            .build();
 
-//            MinioClient minioClient =
-//                    MinioClient.builder()
-//                            .endpoint(minIOProperties.getURL())
-//                            .credentials(minIOProperties.getACCESS_KEY(),
-//                                    minIOProperties.getSECRET_KEY())
-//                            .build();
-
-//            String objectUrl = minioClient.getObjectUrl(minIOProperties.getBUCKET_NAME(),
-//                    fileUri);
-
-//            String objectUrl = minioClient.presignedGetObject(minIOProperties.getBUCKET_NAME(),
             String objectUrl = minioClient.getObjectUrl(minIOProperties.getBUCKET_NAME(),
                     fileUri);
 

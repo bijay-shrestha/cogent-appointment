@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.Serializable;
+
 /**
  * @author rupak ON 2020/06/28-1:08 PM
  */
@@ -13,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
         ignoreUnknownFields = true,
         ignoreInvalidFields = true)
 @Getter
-public class MinIOProperties {
+public class MinIOProperties implements Serializable {
 
     @Value("${spring.minio.url}")
     private String URL;

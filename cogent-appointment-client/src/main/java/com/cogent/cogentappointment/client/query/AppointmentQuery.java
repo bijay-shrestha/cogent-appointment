@@ -995,6 +995,7 @@ public class AppointmentQuery {
                     " LEFT JOIN DoctorSalutation ds ON ds.doctorId.id = adi.doctor.id" +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
+                    " AND a.status!='RE'" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
     public static final String QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(
@@ -1065,7 +1066,7 @@ public class AppointmentQuery {
         String whereClause = " WHERE" +
                 " h.id =:hospitalId" +
                 " AND ard.status = 'PA'" +
-                " AND a.status='C'"+
+                " AND a.status='C'" +
                 " AND hd.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchDTO.getFromDate()) && !ObjectUtils.isEmpty(searchDTO.getToDate()))

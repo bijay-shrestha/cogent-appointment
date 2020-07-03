@@ -929,6 +929,7 @@ public class AppointmentQuery {
                     " LEFT JOIN Room r on hdri.room.id=r.id" +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
+                    " AND a.status!='RE'" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
 
@@ -959,6 +960,7 @@ public class AppointmentQuery {
                     " LEFT JOIN DoctorSalutation ds ON ds.doctorId.id = adi.doctor.id" +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
+                    " AND a.status!='RE'" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
 

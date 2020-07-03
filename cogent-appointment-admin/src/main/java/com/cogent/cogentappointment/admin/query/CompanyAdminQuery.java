@@ -147,14 +147,14 @@ public class CompanyAdminQuery {
                     " LEFT JOIN Hospital h on h.id=p.company.id" +
                     " WHERE a.email =:email" +
                     " AND a.status !='D'" +
-                    " AND h.isCompany='Y'"+
+                    " AND h.isCompany='Y'" +
                     " AND h.status='Y'";
 
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
-                    " a.email as email," +                                                //[1]
-                    " a.fullName as fullName," +
+                    " a.email as email," +                                                  //[1]
+                    " a.fullName as fullName," +                                            //[2]
                     " CASE " +
                     " WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
                     " ELSE av.fileUri END as fileUri," +                                //[2]
@@ -168,12 +168,13 @@ public class CompanyAdminQuery {
                     " CASE " +
                     "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
                     "    ELSE hl.fileUri" +
-                    " END as hospitalLogo" +                                              //[10]
+                    " END as hospitalLogo," +                                              //[10]
+                    " h.code as companyCode" +                                              //[11]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
-                    " LEFT JOIN HospitalLogo hl ON hl.hospital.id=h.id" +
+                    " LEFT JOIN HospitalLogo hl ON h.id=hl.hospital.id" +
                     " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
@@ -208,7 +209,7 @@ public class CompanyAdminQuery {
                     " WHERE" +
                     " (a.mobileNumber=:email OR a.email=:email)" +
                     " AND a.status = 'Y'" +
-                    " AND h.isCompany='Y'"+
+                    " AND h.isCompany='Y'" +
                     " AND h.status='Y'";
 
     public static String COMPANY_ADMIN_AUDITABLE_QUERY() {

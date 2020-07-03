@@ -8,9 +8,7 @@ import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.Hospit
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -22,7 +20,7 @@ public class HospitalDepartmentUtils {
                                                                Hospital hospital) {
 
         HospitalDepartment hospitalDepartment = new HospitalDepartment();
-        hospitalDepartment.setName(toNormalCase(requestDTO.getName()));
+        hospitalDepartment.setName(requestDTO.getName());
         hospitalDepartment.setCode(toUpperCase(requestDTO.getCode()));
         hospitalDepartment.setDescription(requestDTO.getDescription());
         hospitalDepartment.setStatus(requestDTO.getStatus());
@@ -74,7 +72,7 @@ public class HospitalDepartmentUtils {
 
     public static HospitalDepartment parseToUpdateHospitalDepartment(HospitalDepartment hospitalDepartment,
                                                                      HospitalDepartmentUpdateRequestDTO requestDTO) {
-        hospitalDepartment.setName(toNormalCase(requestDTO.getName()));
+        hospitalDepartment.setName(requestDTO.getName());
         hospitalDepartment.setCode(toUpperCase(requestDTO.getCode()));
         hospitalDepartment.setDescription(requestDTO.getDescription());
         hospitalDepartment.setStatus(requestDTO.getStatus());

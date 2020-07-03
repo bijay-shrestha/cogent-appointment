@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.DoctorTimeSlotResponseDTO;
@@ -15,13 +16,11 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -187,6 +186,15 @@ public class AppointmentStatusUtils {
         return availableDateTime.before(currentDate);
     }
 
+    private static boolean hasTimePassed(Date date, String time) {
+
+        Date availableDateTime = parseAppointmentTime(date, time);
+
+        Date currentDate = new Date();
+
+        return availableDateTime.before(currentDate);
+    }
+
     public static AppointmentStatusDTO parseToAppointmentStatusDTO(
             List<DoctorDutyRosterStatusResponseDTO> doctorDutyRostersInfo,
             List<DoctorDropdownDTO> doctorInfo) {
@@ -194,6 +202,7 @@ public class AppointmentStatusUtils {
         return AppointmentStatusDTO.builder()
                 .doctorDutyRosterInfo(doctorDutyRostersInfo)
                 .doctorInfo(doctorInfo)
+                .appointmentStatusCount(parseAppointmentStatusCount(doctorDutyRostersInfo))
                 .build();
     }
 
@@ -341,4 +350,191 @@ public class AppointmentStatusUtils {
         return appointmentTimeSlots;
     }
 
+    public static List<AppointmentTimeSlotResponseDTO> parseToAppointmentTimeSlotResponseDTOS(
+            HospitalDeptAppointmentDetailsForStatus hospitalDeptAppointmentDetailsForStatus) {
+
+        List<AppointmentTimeSlotResponseDTO> responseDTOS = new ArrayList<>();
+
+        AppointmentTimeSlotResponseDTO response = AppointmentTimeSlotResponseDTO.builder()
+                .appointmentTime(
+                        convert24HourTo12HourFormat(hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
+                .status(hospitalDeptAppointmentDetailsForStatus.getStatus())
+                .appointmentNumber(hospitalDeptAppointmentDetailsForStatus.getAppointmentNumber())
+                .mobileNumber(hospitalDeptAppointmentDetailsForStatus.getMobileNumber())
+                .age(hospitalDeptAppointmentDetailsForStatus.getAge())
+                .gender(String.valueOf(hospitalDeptAppointmentDetailsForStatus.getGender()))
+                .patientName(hospitalDeptAppointmentDetailsForStatus.getPatientName())
+                .appointmentId(hospitalDeptAppointmentDetailsForStatus.getAppointmentId())
+                .hasTransferred(hospitalDeptAppointmentDetailsForStatus.getHasTransferred())
+                .isFollowUp(hospitalDeptAppointmentDetailsForStatus.getIsFollowUp())
+                .hasTimePassed(hasTimePassed(hospitalDeptAppointmentDetailsForStatus.getAppointmentDate(),
+                        hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
+                .build();
+        responseDTOS.add(response);
+
+        return responseDTOS;
+    }
+
+    public static List<HospitalDeptDutyRosterStatusResponseDTO> parseHospitalDeptDutyRosterStatusResponseDTOS
+            (List<AppointmentTimeSlotResponseDTO> appointmentTimeSlotResponseDTOS,
+             RosterDetailsForStatus rosterDetailsForStatus,
+             HospitalDeptAppointmentDetailsForStatus hospitalDeptAppointmentDetailsForStatus) {
+
+        List<HospitalDeptDutyRosterStatusResponseDTO> responseDTOS = new ArrayList<>();
+
+        HospitalDeptDutyRosterStatusResponseDTO responseDTO = new HospitalDeptDutyRosterStatusResponseDTO();
+
+        responseDTO.setAppointmentTimeSlots(appointmentTimeSlotResponseDTOS);
+        responseDTO.setHospitalDepartmentDutyRosterId(rosterDetailsForStatus.getRosterId());
+        responseDTO.setUniqueIdentifier(hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentId()
+                + "-" + hospitalDeptAppointmentDetailsForStatus.getAppointmentDate());
+        responseDTO.setDate(convertDateToLocalDate(hospitalDeptAppointmentDetailsForStatus.getAppointmentDate()));
+        responseDTO.setStartTime(rosterDetailsForStatus.getStartTime());
+        responseDTO.setEndTime(rosterDetailsForStatus.getEndTime());
+        responseDTO.setDayOffStatus(rosterDetailsForStatus.getDayOffStatus());
+        responseDTO.setRosterGapDuration(rosterDetailsForStatus.getRosterGapDuration());
+        responseDTO.setHospitalDepartmentId(hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentId());
+        responseDTO.setHospitalDepartmentName(hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentName());
+        responseDTO.setHospitalDepartmentRoomInfoId(hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentRoomInfoId());
+        responseDTO.setRoomNumber(hospitalDeptAppointmentDetailsForStatus.getRoomNumber());
+        responseDTO.setWeekDayName(convertDateToLocalDate(
+                hospitalDeptAppointmentDetailsForStatus.getAppointmentDate()).getDayOfWeek().toString());
+        responseDTO.setRoomList(new ArrayList<>());
+
+        responseDTOS.add(responseDTO);
+
+        return responseDTOS;
+    }
+
+    public static List<DoctorTimeSlotResponseDTO> parseToDoctorTimeSlotResponseDTOS(
+            AppointmentDetailsForStatus hospitalDeptAppointmentDetailsForStatus) {
+
+        List<DoctorTimeSlotResponseDTO> responseDTOS = new ArrayList<>();
+
+        DoctorTimeSlotResponseDTO response = DoctorTimeSlotResponseDTO.builder()
+                .appointmentTime(
+                        convert24HourTo12HourFormat(hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
+                .status(hospitalDeptAppointmentDetailsForStatus.getStatus())
+                .appointmentNumber(hospitalDeptAppointmentDetailsForStatus.getAppointmentNumber())
+                .mobileNumber(hospitalDeptAppointmentDetailsForStatus.getMobileNumber())
+                .age(hospitalDeptAppointmentDetailsForStatus.getAge())
+                .gender(String.valueOf(hospitalDeptAppointmentDetailsForStatus.getGender()))
+                .patientName(hospitalDeptAppointmentDetailsForStatus.getPatientName())
+                .appointmentId(hospitalDeptAppointmentDetailsForStatus.getAppointmentId())
+                .hasTransferred(hospitalDeptAppointmentDetailsForStatus.getHasTransferred())
+                .isFollowUp(hospitalDeptAppointmentDetailsForStatus.getIsFollowUp())
+                .hasTimePassed(hasTimePassed(hospitalDeptAppointmentDetailsForStatus.getAppointmentDate(),
+                        hospitalDeptAppointmentDetailsForStatus.getAppointmentTime()))
+                .build();
+        responseDTOS.add(response);
+
+        return responseDTOS;
+    }
+
+    public static List<DoctorDutyRosterStatusResponseDTO> parseDoctorDutyRosterStatusResponseDTOS
+            (List<DoctorTimeSlotResponseDTO> doctorTimeSlotResponseDTOS,
+             RosterDetailsForStatus rosterDetailsForStatus,
+             AppointmentDetailsForStatus appointmentDetailsForStatus) {
+
+        List<DoctorDutyRosterStatusResponseDTO> responseDTOS = new ArrayList<>();
+
+        DoctorDutyRosterStatusResponseDTO responseDTO = new DoctorDutyRosterStatusResponseDTO();
+
+        responseDTO.setDoctorTimeSlots(doctorTimeSlotResponseDTOS);
+        responseDTO.setDate(convertDateToLocalDate(appointmentDetailsForStatus.getAppointmentDate()));
+        responseDTO.setStartTime(rosterDetailsForStatus.getStartTime());
+        responseDTO.setEndTime(rosterDetailsForStatus.getEndTime());
+        responseDTO.setDayOffStatus(rosterDetailsForStatus.getDayOffStatus());
+        responseDTO.setRosterGapDuration(rosterDetailsForStatus.getRosterGapDuration());
+        responseDTO.setDoctorId(appointmentDetailsForStatus.getDoctorId());
+        responseDTO.setDoctorName(appointmentDetailsForStatus.getDoctorName());
+        responseDTO.setSpecializationId(appointmentDetailsForStatus.getSpecializationId());
+        responseDTO.setSpecializationName(appointmentDetailsForStatus.getSpecializationName());
+        responseDTO.setWeekDayName(convertDateToLocalDate(
+                appointmentDetailsForStatus.getAppointmentDate()).getDayOfWeek().toString());
+
+        responseDTOS.add(responseDTO);
+
+        return responseDTOS;
+    }
+
+    private static Map<String, Integer> parseAppointmentStatusCount(
+            List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterInfo) {
+
+        Integer vacantCount = 0;
+        Integer bookedCount = 0;
+        Integer checkedInCount = 0;
+        Integer cancelledCount = 0;
+        Integer followUpCount = 0;
+
+        for (DoctorDutyRosterStatusResponseDTO doctorDutyRoster : doctorDutyRosterInfo) {
+            for (DoctorTimeSlotResponseDTO timeSlots : doctorDutyRoster.getDoctorTimeSlots()) {
+                switch (timeSlots.getStatus().trim().toUpperCase()) {
+                    case VACANT:
+                        vacantCount += 1;
+                        break;
+                    case PENDING_APPROVAL:
+                        bookedCount += 1;
+                        break;
+                    case APPROVED:
+                        checkedInCount += 1;
+                        break;
+                    case CANCELLED:
+                        cancelledCount += 1;
+                        break;
+                }
+
+                if (!Objects.isNull(timeSlots.getIsFollowUp())) {
+                    if (timeSlots.getIsFollowUp().equals(YES))
+                        followUpCount += 1;
+                }
+            }
+        }
+
+        return parseAppointmentStatusCountValues(vacantCount, bookedCount, checkedInCount,
+                cancelledCount, followUpCount);
+    }
+
+    private static Map<String, Integer> parseAppointmentStatusCountValues(Integer vacantStatusCount,
+                                                                          Integer bookedStatusCount,
+                                                                          Integer checkedInStatusCount,
+                                                                          Integer cancelledStatusCount,
+                                                                          Integer followUpStatusCount) {
+
+        HashMap<String, Integer> appointmentStatusCount = new HashMap<>();
+        Integer allStatusCount = vacantStatusCount + bookedStatusCount
+                + checkedInStatusCount + cancelledStatusCount + followUpStatusCount;
+
+        appointmentStatusCount.put(VACANT, vacantStatusCount);
+        appointmentStatusCount.put(PENDING_APPROVAL, bookedStatusCount);
+        appointmentStatusCount.put(APPROVED, checkedInStatusCount);
+        appointmentStatusCount.put(CANCELLED, cancelledStatusCount);
+        appointmentStatusCount.put(FOLLOW_UP, followUpStatusCount);
+        appointmentStatusCount.put(ALL, allStatusCount);
+
+
+        return appointmentStatusCount;
+    }
+
+    public static Long getAppointmentSlotCounts(
+            String startTime,
+            String endTime,
+            int durationInMinutes) {
+
+        final Duration duration = Minutes.minutes(durationInMinutes).toStandardDuration();
+
+        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+
+        Long count=0L;
+
+        do {
+
+            dateTime = dateTime.plus(duration);
+
+            count+=1;
+
+        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return count;
+    }
 }

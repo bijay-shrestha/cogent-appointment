@@ -97,9 +97,16 @@ public class PatientQuery {
                 " hpi.address as address," +                            //[6]
                 " hpi.registrationNumber as registrationNumber," +      //[7]
                 " hpi.hospital.name as hospitalName," +                  //[8]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[9]
+                QUERY_TO_CALCULATE_PATIENT_AGE + "," +                   //[9]
+                " COALESCE(pr.value, '') as province," +                  //[10]
+                " COALESCE(d.value, '') as district," +                  //[11]
+                " COALESCE(vm.value, '') as vdcOrMunicipality," +        //[12]
+                " COALESCE(hpi.wardNumber, '') as wardNumber" +          //[13]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
+                " LEFT JOIN Address pr ON pr.id = hpi.province.id" +
+                " LEFT JOIN Address d ON d.id = hpi.district.id" +
+                " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
                 " WHERE p.id IN (" + childPatientIds + ")";
     }
 
@@ -133,9 +140,17 @@ public class PatientQuery {
         String query = " SELECT " +
                 " hpi.address as address," +                             //[0]
                 " hpi.email as email," +                                 //[1]
-                " hpi.registrationNumber as registrationNumber" +        //[2]
+                " hpi.registrationNumber as registrationNumber," +       //[2]
+                " hpi.hasAddress as hasAddress," +                        //[3]
+                " COALESCE(pr.value, '') as province," +                  //[4]
+                " COALESCE(d.value, '') as district," +                  //[5]
+                " COALESCE(vm.value, '') as vdcOrMunicipality," +        //[6]
+                " COALESCE(hpi.wardNumber, '') as wardNumber" +          //[7]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
+                " LEFT JOIN Address pr ON pr.id = hpi.province.id" +
+                " LEFT JOIN Address d ON d.id = hpi.district.id" +
+                " LEFT JOIN Address vm ON vm.id = hpi.vdcOrMunicipality.id" +
                 " WHERE p.id =:patientId";
 
         if (!Objects.isNull(hospitalId) && hospitalId != 0)

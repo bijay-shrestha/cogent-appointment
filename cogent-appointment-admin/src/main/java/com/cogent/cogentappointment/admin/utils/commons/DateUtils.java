@@ -42,6 +42,16 @@ public class DateUtils {
         }
     }
 
+    public static String utilDateToSqlDateInString(Date uDate) {
+        try {
+            DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+            return java.sql.Date.valueOf(sqlDateFormatter.format(uDate)).toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static Date removeTime(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -227,6 +237,30 @@ public class DateUtils {
             }
         }
         return datesInRange;
+    }
+
+    public static List<String> getDayNames(
+            Date startDate, Date endDate) {
+        List<String> daysName = new ArrayList<>();
+        Date today = utilDateToSqlDate(new Date());
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (!calendar.after(endCalendar)) {
+            Date result = calendar.getTime();
+            if (utilDateToSqlDate(calendar.getTime()).before(today)) {
+                calendar.add(Calendar.DATE, 1);
+
+            } else {
+                String day=convertDateToLocalDate(result).getDayOfWeek().toString();
+                daysName.add(day);
+                calendar.add(Calendar.DATE, 1);
+            }
+        }
+        return daysName;
     }
 
     public static List<Date> utilDateListToSqlDateList(List<Date> uDates) {

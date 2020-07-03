@@ -53,7 +53,7 @@ public class WebResourceKeyConstants {
 
     //C
     public interface CommonConstants {
-        String BASE_COMMON = "/common";
+        String BASE_COMMON = "/commons";
         String DOCTOR_SPECIALIZATION = "/doctor-specialization";
     }
 
@@ -111,9 +111,10 @@ public class WebResourceKeyConstants {
     //M
     public static final String MIN = "/min";
 
-    public interface MinioFileConstants {
+    public interface MinioResourceConstant {
         String BASE_FILE = "/file";
-        String FETCH_FILE = "/{subDirectory}/{object}";
+        String PUT_PERSIGNED_URL = "putPresignedURL";
+        String GET_PERSIGNED_URL = "getPresignedURL";
     }
 
     //N

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
-import com.cogent.cogentappointment.client.dto.response.favourite.FavoriteDropDownWithIconResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.favourite.FavouriteDropDownResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -13,5 +12,5 @@ public interface AdminFavouriteRepositoryCustom {
 
     List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDown();
 
-    List<FavoriteDropDownWithIconResponseDTO> fetchAdminFavouriteForDropDownWithIcon();
+    List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon();
 }

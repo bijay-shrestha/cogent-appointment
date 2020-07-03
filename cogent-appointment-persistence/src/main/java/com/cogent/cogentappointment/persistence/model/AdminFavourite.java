@@ -30,9 +30,8 @@ public class AdminFavourite extends Auditable<String> implements Serializable {
     @JoinColumn(name = "admin_id")
     private Admin adminId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "favourite_id")
-    private Favourite favouriteId;
+    @Column(name = "user_menu_id")
+    private Long userMenuId;
 
     @Column(name = "status")
     private Character status;
@@ -41,9 +40,11 @@ public class AdminFavourite extends Auditable<String> implements Serializable {
     public String toString() {
         return "AdminFavourite{" +
                 "id=" + id +
-                ", adminId=" + adminId +
-                ", favouriteId=" + favouriteId +
-                ", status=" + status +
+                ", adminId=" + adminId.getId() +
+                ", userMenuId=" + userMenuId +
+                ", status='" + status + '\'' +
                 '}';
     }
+
+
 }

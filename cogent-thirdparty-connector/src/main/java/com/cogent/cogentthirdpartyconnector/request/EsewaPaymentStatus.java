@@ -1,0 +1,22 @@
+package com.cogent.cogentthirdpartyconnector.request;
+
+import lombok.*;
+
+import java.io.Serializable;
+
+/**
+ * @author rupak on 2020-05-22
+ */
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class EsewaPaymentStatus implements Serializable{
+
+    private String transaction_code;
+
+    private String product_code;
+
+    private String esewa_id;
+}

@@ -43,6 +43,16 @@ public class DateUtils {
         }
     }
 
+    public static String utilDateToSqlDateInString(Date uDate) {
+        try {
+            DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+            return java.sql.Date.valueOf(sqlDateFormatter.format(uDate)).toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static Date removeTime(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -287,6 +297,4 @@ public class DateUtils {
             throw new BadRequestException(INVALID_DATE_TIME_MESSAGE, INVALID_DATE_TIME_DEBUG_MESSAGE);
         }
     }
-
-
 }

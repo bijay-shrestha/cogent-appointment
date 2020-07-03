@@ -20,6 +20,6 @@ public class TestResource {
     @GetMapping
     @ApiOperation(TEST_OPERATION)
     public String testClient(){
-        return "e-Appointment esewa module is running successfully! ....";
+        return "Congratulations! e-Appointment esewa module is running successfully in Kubeshpere! ....";
     }
 }

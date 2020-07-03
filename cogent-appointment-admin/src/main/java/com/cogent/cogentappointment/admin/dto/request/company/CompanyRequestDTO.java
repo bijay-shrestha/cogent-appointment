@@ -54,5 +54,7 @@ public class CompanyRequestDTO implements Serializable {
     @NotEmpty
     @NotBlank
     private String alias;
+
+    private String companyLogo;
 }
 

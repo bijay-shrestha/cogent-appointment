@@ -8,6 +8,8 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_REFUND = "REFUND REQUEST APPOINTMENT";
 
+    public final static String CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT = "CANCELLED HOSPITAL DEPARTMENT APPOINTMENT";
+
     public final static String APPOINTMENT_REFUND_DETAIL = "APPOINTMENT REFUND DETAIL";
 
     public final static String APPOINTMENT_LOG = "APPOINTMENT LOG";
@@ -25,9 +27,13 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
 
-    public final static String DEPARTMENT_APPOINTMENT_STATUS = "DEPARTMENT APPOINTMENT STATUS";
+    public final static String HOSPITAL_DEPARTMENT_APPOINTMENT_STATUS = "HOSPITAL DEPARTMENT APPOINTMENT STATUS";
 
-    public final static String DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "DEPARTMENT APPOINTMENT STATUS ROOM-WISE";
+    public final static String HOSPITAL_DEPARTMENT_APPOINTMENT_STATUS_COUNT = "HOSPITAL DEPARTMENT APPOINTMENT STATUS" +
+            " COUNT";
+
+    public final static String HOSPITAL_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "HOSPITAL DEPARTMENT APPOINTMENT " +
+            "STATUS ROOM-WISE";
 
     public final static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
 
@@ -36,6 +42,7 @@ public class AppointmentLog {
     public static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
 
     public final static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";
+
     public final static String APPROVE_PROCESS_COMPLETED = ":::: APPROVING {} COMPLETED IN {} ms ::::";
 
     public final static String REJECT_PROCESS_STARTED = ":::: REJECTING {} STARTED ::::";
@@ -46,5 +53,9 @@ public class AppointmentLog {
             " IN :::: {} ms";
 
     public final static String APPOINTMENT_DOCTOR_INFO = "APPOINTMENT DOCTOR INFO";
+
+    public final static String APPOINTMENT_HOSPITAL_DEPARTMENT_INFO = "APPOINTMENT HOSPITAL DEPARTMENT INFO";
+
+
 
 }

@@ -171,13 +171,6 @@
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
 
-        <!--MINIO-->
-        <dependency>
-            <groupId>com.jlefebure</groupId>
-            <artifactId>spring-boot-starter-minio</artifactId>
-            <version>1.1</version>
-        </dependency>
-
         <!--DEPENDED MODULES-->
         <dependency>
             <groupId>com.cogent</groupId>
@@ -232,7 +225,6 @@
             <artifactId>cogent-appointment-commons</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
 
     </dependencies>
 

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AvailableDoctorRequestDTO;
@@ -39,10 +40,14 @@ public class EsewaServiceImpl implements EsewaService {
 
     private final DoctorDutyRosterOverrideRepository dutyRosterOverrideRepository;
 
+    private final NepaliDateUtility nepaliDateUtility;
+
     public EsewaServiceImpl(DoctorDutyRosterRepository dutyRosterRepository,
-                            DoctorDutyRosterOverrideRepository dutyRosterOverrideRepository) {
+                            DoctorDutyRosterOverrideRepository dutyRosterOverrideRepository,
+                            NepaliDateUtility nepaliDateUtility) {
         this.dutyRosterRepository = dutyRosterRepository;
         this.dutyRosterOverrideRepository = dutyRosterOverrideRepository;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     /*RETURN MESSAGE IF DOCTOR IS AVAILABLE ON DATE*/
@@ -185,6 +190,7 @@ public class EsewaServiceImpl implements EsewaService {
             appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
         }
+
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES_AND_TIME, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
@@ -364,7 +370,7 @@ public class EsewaServiceImpl implements EsewaService {
 
         final List<Date> dates = new ArrayList<>();
 
-        List<AvailableDatesResponseDTO> avaliableDates = new ArrayList<>();
+        List<AvailableDatesResponseDTO> availableDates = new ArrayList<>();
 
         List<DoctorDutyRosterOverrideAppointmentDate> appointmentDatesAndTime =
                 getDateAndTimeFromOverrideByRosterId(doctorDutyRosterAppointmentDate.getId());
@@ -379,10 +385,10 @@ public class EsewaServiceImpl implements EsewaService {
 
                 datesResponseDTO.setDate(utilDateToSqlDate(date));
 
-                checkIfDayOff(appointmentDate, datesResponseDTO, avaliableDates);
+                checkIfDayOff(appointmentDate, datesResponseDTO, availableDates);
             }
         });
-        return avaliableDates;
+        return availableDates;
     }
 
     private List<AvailableDatesResponseDTO> getDutyRosterDatesAndTime(List<Date> dates,
@@ -397,7 +403,7 @@ public class EsewaServiceImpl implements EsewaService {
 
             weekDaysDutyRosterAppointmentDate.forEach(weekdays -> {
 
-                getAllDutyRosterDatesAndTime(date, weekdays, datesResponseDTO, availableDates);
+                getAllDutyRosterDatesAndTime(date, weekdays, datesResponseDTO, availableDates, nepaliDateUtility);
 
             });
         }
@@ -418,7 +424,7 @@ public class EsewaServiceImpl implements EsewaService {
 
     private void checkIfOverrideExists(DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate,
                                        List<AvailableDatesResponseDTO> appointmentDatesResponseDTO,
-                                       List<AvailableDatesResponseDTO> apoointmentDateAndTime) {
+                                       List<AvailableDatesResponseDTO> appointmentDateAndTime) {
 
         if (doctorDutyRosterAppointmentDate.getHasOverride().equals('Y')) {
 
@@ -429,11 +435,10 @@ public class EsewaServiceImpl implements EsewaService {
                     appointmentDatesResponseDTO,
                     availableDatesResponseDTOS);
 
-            getAllDateAndTime(apoointmentDateAndTime, datesResponseDTO);
+            getAllDateAndTime(appointmentDateAndTime, datesResponseDTO);
 
         } else {
-
-            getAllDateAndTime(apoointmentDateAndTime, appointmentDatesResponseDTO);
+            getAllDateAndTime(appointmentDateAndTime, appointmentDatesResponseDTO);
 
         }
     }

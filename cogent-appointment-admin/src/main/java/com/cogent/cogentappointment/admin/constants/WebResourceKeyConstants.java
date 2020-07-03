@@ -57,6 +57,7 @@ public class WebResourceKeyConstants {
         String TRANSACTION_LOG = "/transaction-log";
         String TRANSACTION = "/transaction";
         String RESCHEDULE = "/reschedule";
+        String COUNT="/count";
     }
 
     public interface AppointmentModeConstants {
@@ -85,6 +86,7 @@ public class WebResourceKeyConstants {
     public static final String BASE_PASSWORD = "/password";
 
     //C
+    public static final String CODE = "/code";
 
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
@@ -125,6 +127,7 @@ public class WebResourceKeyConstants {
         String REVENUE_TREND = "/revenueTrend";
         String DOCTOR_REVENUE = "/doctorRevenue";
         String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
+        String HOSPITAL_DEPARTMENT_REVENUE = "/hospitalDepartmentRevenue";
     }
 
     public static final String DETAIL = "/detail";
@@ -159,6 +162,8 @@ public class WebResourceKeyConstants {
     //G
 
     //H
+    public static final String HMAC="/hmac";
+
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_WISE = "/hospital-wise";
@@ -182,6 +187,7 @@ public class WebResourceKeyConstants {
     }
 
     //I
+    public static final String ICON = "/icon";
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 
     public interface IntegrationConstants {
@@ -230,13 +236,14 @@ public class WebResourceKeyConstants {
     public static final String META_INFO = "/metaInfo";
     public static final String MIN = "/min";
 
-    public interface MinioFileConstants {
+    public interface MinioResourceConstant {
         String BASE_FILE = "/file";
-        String FETCH_FILE = "/{subDirectory}/{object}";
-
+        String PUT_PERSIGNED_URL = "putPresignedURL";
+        String GET_PERSIGNED_URL = "getPresignedURL";
     }
 
     //N
+    public static final String NAME = "/name";
 
 
     //O

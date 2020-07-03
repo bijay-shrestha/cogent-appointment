@@ -34,9 +34,13 @@ import java.util.Date;
  * 6. AppointmentFollowUpLog/AppointmentHospitalDepartmentFollowUpLog
  * 7. AppointmentReservationLog/AppointmentHospitalDepartmentReservationLog
  * 8. AppointmentStatistics
+ * 9. AppointmentEsewaRequest
+ *
  * <p>
  * RESCHEDULE -> AppointmentRescheduleLog
  * REFUND -> AppointmentRefundDetail
+ *
+ *
  */
 @Entity
 @Table(name = "appointment")
@@ -54,17 +58,6 @@ public class Appointment extends Auditable<String> implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_appointment_service_type_id")
     private HospitalAppointmentServiceType hospitalAppointmentServiceType;
-
-    //todo : remove doctor and specialization from here
-    /*eg.Specialization name like Surgeon, Physician,etc*/
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "specialization_id")
-    private Specialization specializationId;
-
-    /*eg.Doctor name like Dr.Sanjeev Uprety*/
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctorId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
@@ -85,6 +78,9 @@ public class Appointment extends Auditable<String> implements Serializable {
 
     @Column(name = "appointment_number", updatable = false)
     private String appointmentNumber;
+
+    @Column(name = "hyphenated_appointment_number", updatable = false)
+    private String hyphenatedAppointmentNumber;
 
     /*maintained to avoid duplicate row persist*/
     @Column(name = "serial_number")
@@ -138,6 +134,7 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
                 ", appointmentNumber='" + appointmentNumber + '\'' +
+                ", hyphenatedAppointmentNumber='" + hyphenatedAppointmentNumber + '\'' +
                 ", serialNumber='" + serialNumber + '\'' +
                 ", createdDateNepali='" + createdDateNepali + '\'' +
                 ", status='" + status + '\'' +

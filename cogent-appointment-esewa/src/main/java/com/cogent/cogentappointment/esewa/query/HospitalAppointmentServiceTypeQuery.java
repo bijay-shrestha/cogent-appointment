@@ -14,4 +14,13 @@ public class HospitalAppointmentServiceTypeQuery {
                     " AND h.appointmentServiceType.code =:appointmentServiceTypeCode" +
                     " AND h.status = 'Y'" +
                     " AND h.appointmentServiceType.status = 'Y'";
+
+    public static final String QUERY_TO_FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE =
+            "SELECT" +
+                    " h" +
+                    " FROM HospitalAppointmentServiceType h " +
+                    " WHERE" +
+                    " h.id =:id" +
+                    " AND h.status = 'Y'" +
+                    " AND h.appointmentServiceType.status = 'Y'";
 }

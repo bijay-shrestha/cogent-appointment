@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.commons.utils.DateUtils;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import com.cogent.cogentappointment.thirdparty.configuration.YamlPropertySourceFactory;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Date;
 

@@ -101,10 +101,11 @@ public class AppointmentUtils {
         return false;
     }
 
-    public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
+    public static Appointment parseToAppointment(String hyphenatedAppointmentNumber,
+                                                 String appointmentNumber,
+                                                 AppointmentRequestDTO requestDTO,
                                                  Date appointmentDate,
                                                  Date appointmentTime,
-                                                 String appointmentNumber,
                                                  Character isSelf,
                                                  Patient patient,
                                                  Hospital hospital,
@@ -115,6 +116,7 @@ public class AppointmentUtils {
         appointment.setAppointmentDate(appointmentDate);
         appointment.setAppointmentTime(appointmentTime);
         appointment.setAppointmentNumber(appointmentNumber);
+        appointment.setHyphenatedAppointmentNumber(hyphenatedAppointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
         appointment.setIsSelf(isSelf);
@@ -203,9 +205,10 @@ public class AppointmentUtils {
      * results[0] = start fiscal year
      * results[1] = end fiscal year
      * results[2] = appointment number*/
-    public static String generateAppointmentNumber(List results,
+    public static String generateAppointmentNumber(List<String> results,
                                                    String startingFiscalYear,
-                                                   String endingFiscalYear) {
+                                                   String endingFiscalYear,
+                                                   String hospitalCode) {
 
         String startingYear = startingFiscalYear.split(HYPHEN)[0];
         String splitStartingYear = startingYear.substring(startingYear.length() - 2);
@@ -213,18 +216,24 @@ public class AppointmentUtils {
         String endingYear = endingFiscalYear.split(HYPHEN)[0];
         String splitEndingYear = endingYear.substring(endingYear.length() - 2);
 
-        String appointmentNumber;
+        String appointmentNumber = "";
 
         if (results.isEmpty())
-            appointmentNumber = "0001";
+            appointmentNumber = "1";
         else
-            appointmentNumber = results.get(0).toString().contains(HYPHEN) ?
-                    String.format("%04d", Integer.parseInt(results.get(0).toString().split(HYPHEN)[2]) + 1)
-                    : String.format("%04d", Integer.parseInt(results.get(0).toString()) + 1);
+            //results = CHEERS-76-77-1; CHEERS-76-77-2
+            appointmentNumber = extractAppointmentNumber(results);
 
-        appointmentNumber = splitStartingYear + HYPHEN + splitEndingYear + HYPHEN + appointmentNumber;
-
+        appointmentNumber = hospitalCode.concat(HYPHEN)
+                .concat(splitStartingYear).concat(HYPHEN)
+                .concat(splitEndingYear).concat(HYPHEN)
+                .concat(appointmentNumber);
         return appointmentNumber;
+    }
+
+    private static String extractAppointmentNumber(List<String> results) {
+        String incrementNumber = results.get(0).split(HYPHEN)[3];
+        return String.format("%01d", Integer.parseInt(incrementNumber) + 1);
     }
 
     public static List<String> calculateAvailableTimeSlots(String startTime,
@@ -390,6 +399,16 @@ public class AppointmentUtils {
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();
+    }
+
+    public static AppointmentEsewaRequest parseToAppointmentEsewaRequest(Appointment appointment,
+                                                                         String esewaId) {
+
+        AppointmentEsewaRequest appointmentEsewaRequest = new AppointmentEsewaRequest();
+        appointmentEsewaRequest.setAppointment(appointment);
+        appointmentEsewaRequest.setEsewaId(esewaId);
+
+        return appointmentEsewaRequest;
     }
 
 }

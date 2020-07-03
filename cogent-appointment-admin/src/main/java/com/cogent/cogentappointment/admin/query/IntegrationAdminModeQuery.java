@@ -14,9 +14,9 @@ public class IntegrationAdminModeQuery {
     public static final String ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
-                    " aif.id as apiIntegrationFormatId,"+
-                    " h.id as hospitalId,"+
-                    " h.name as hospitalName,"+
+                    " aif.id as apiIntegrationFormatId," +
+                    " h.id as hospitalId," +
+                    " h.name as hospitalName," +
                     " am.id as appointmentModeId," +
                     " am.name as appointmentModeName," +
                     " f.name as featureName," +
@@ -27,7 +27,7 @@ public class IntegrationAdminModeQuery {
                     " ic.name as integrationChannel," +
                     " ait.id as integrationTypeId," +
                     " ait.name as integrationType," +
-                    " amfi.status as status,"+
+                    " amfi.status as status," +
                     ADMIN_MODE_API_INTEGRATION_AUDITABLE_QUERY() +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
@@ -37,11 +37,11 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
                     " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
                     " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
-                    " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id"+
+                    " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id" +
                     " WHERE amfi.id= :adminModeFeatureIntegrationId" +
                     " AND aif.status='Y'" +
                     " AND hrm.status='Y'" +
-                    " AND amfi.status='Y'" +
+                    " AND amfi.status!='D'" +
                     " AND amafi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND f.status='Y'" +
@@ -133,12 +133,14 @@ public class IntegrationAdminModeQuery {
                     " AND aif.status='Y'" +
                     " AND f.id=:featureId" +
                     " AND hrm.id=:requestMethodId" +
-                    " AND amfi.appointmentModeId.id=:appointmentModeId";
+                    " AND amfi.appointmentModeId.id=:appointmentModeId"+
+                    " AND amfi.hospitalId.id=:hospitalId";
 
     public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY =
             " SELECT" +
                     " aif.id as apiIntegrationFormatId," +
-                    " amfi.id as appointmentModeId," +
+                    " amfi.appointmentModeId.id as appointmentModeId," +
+                    " amfi.hospitalId.id as hospitalId," +
                     " ic.code as integrationChannelCode," +
                     " f.id as featureId," +
                     " f.code as featureCode," +
@@ -159,6 +161,7 @@ public class IntegrationAdminModeQuery {
 
     public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY =
             APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY +
+                    " AND amfi.hospitalId.id=:hospitalId" +
                     " AND f.code=:featureCode" +
                     " AND ic.code=:integrationChannelCode" +
                     " AND amfi.appointmentModeId.id=:appointmentModeId";
@@ -168,7 +171,7 @@ public class IntegrationAdminModeQuery {
                     " SELECT" +
                             " amfi.id as id," +
                             " amfi.status as status," +
-                            " h.name as hospitalName,"+
+                            " h.name as hospitalName," +
                             " am.name as appointmentMode," +
                             " ic.name as integrationChannel," +
                             " f.name as featureName," +
@@ -182,7 +185,7 @@ public class IntegrationAdminModeQuery {
                             " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                             " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id"+
+                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
                             " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(searchRequestDTO);
 
@@ -194,7 +197,7 @@ public class IntegrationAdminModeQuery {
                 " AND hrm.status='Y'" +
                 " AND amafi.status='Y'" +
                 " AND f.status='Y'" +
-                " AND amfi.status='Y'";
+                " AND amfi.status!='D'";
 
         if (!Objects.isNull(requestSearchDTO.getAppointmentModeId()))
             whereClause += " AND amfi.appointmentModeId.id=" + requestSearchDTO.getAppointmentModeId();
@@ -210,6 +213,9 @@ public class IntegrationAdminModeQuery {
 
         if (!ObjectUtils.isEmpty(requestSearchDTO.getUrl()))
             whereClause += " AND aif.url LIKE '%" + requestSearchDTO.getUrl() + "%'";
+
+        if (!ObjectUtils.isEmpty(requestSearchDTO.getStatus()))
+            whereClause += " AND amfi.status='" + requestSearchDTO.getStatus() + "'";
 
         return whereClause;
     }

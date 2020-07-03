@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.admin.dto.request.company;
 
 import com.cogent.cogentappointment.admin.constraintvalidator.SpecialCharacters;
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -66,4 +65,6 @@ public class CompanyUpdateRequestDTO implements Serializable {
     @NotEmpty
     @NotBlank
     private String alias;
+
+    private String companyLogo;
 }

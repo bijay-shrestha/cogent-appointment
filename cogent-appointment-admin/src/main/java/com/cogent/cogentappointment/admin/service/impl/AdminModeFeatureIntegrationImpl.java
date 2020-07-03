@@ -107,7 +107,8 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         checkAdminModeFeatureIntegrationDuplicity(requestDTO.getAppointmentModeId(),
                 requestDTO.getFeatureTypeId(),
-                requestDTO.getRequestMethodId());
+                requestDTO.getRequestMethodId(),
+                requestDTO.getHospitalId());
 
         AppointmentMode appointmentMode = findAppointmentMode(requestDTO.getAppointmentModeId());
 
@@ -152,11 +153,12 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     }
 
-    private void checkAdminModeFeatureIntegrationDuplicity(Long appointmentModeId, Long featureTypeId, Long requestMethodId) {
+    private void checkAdminModeFeatureIntegrationDuplicity(Long appointmentModeId, Long featureTypeId, Long requestMethodId,
+                                                           Long hospitalId) {
 
 
         Long count = adminModeFeatureIntegrationRepository.findAppointmentModeWiseFeatureAndRequestMethod(appointmentModeId,
-                featureTypeId, requestMethodId);
+                featureTypeId, requestMethodId,hospitalId);
 
         if (count > 0) {
 
@@ -355,7 +357,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         responseDTO.setAppointmentModeId(featureIntegrationResponse.getAppointmentModeId());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
-        responseDTO.setStatus(responseDTO.getStatus());
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         return responseDTO;
 

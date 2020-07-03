@@ -4,12 +4,12 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -19,9 +19,9 @@ import java.util.List;
  */
 public interface HospitalService {
 
-    void save(HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner) throws NoSuchAlgorithmException;
+    void save(HospitalRequestDTO requestDTO) throws NoSuchAlgorithmException;
 
-    void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) throws NoSuchAlgorithmException;
+    void update(HospitalUpdateRequestDTO updateRequestDTO) throws NoSuchAlgorithmException;
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
@@ -37,4 +37,6 @@ public interface HospitalService {
     HospitalResponseDTO fetchDetailsById(Long hospitalId);
 
     String fetchAliasById(Long hospitalId);
+
+    List<AppointmentServiceTypeDropDownResponseDTO> fetchAssignedAppointmentServiceType(Long hospitalId);
 }

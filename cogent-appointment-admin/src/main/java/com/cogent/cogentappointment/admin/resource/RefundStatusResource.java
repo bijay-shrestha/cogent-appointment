@@ -49,7 +49,7 @@ public class RefundStatusResource {
     @PutMapping(CHECK)
     @ApiOperation(FETCH_REFUND_DETAILS_TO_APPROVE)
     public ResponseEntity<?> checkRefundStatus(@Valid @RequestBody RefundStatusRequestDTO requestDTO) throws IOException {
-        refundStatusService.checkRefundStatus(requestDTO, requestDTO.getIntegrationBackendRequestDTO());
+        refundStatusService.checkRefundStatus(requestDTO);
         return ok().build();
     }
 

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyRequestDTO;
@@ -9,14 +8,12 @@ import com.cogent.cogentappointment.admin.dto.request.company.CompanyUpdateReque
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalContactNumberRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalLogoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalRepository;
 import com.cogent.cogentappointment.admin.service.CompanyService;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
@@ -25,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -36,6 +32,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -44,6 +41,7 @@ import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPI
 import static com.cogent.cogentappointment.admin.utils.CompanyUtils.*;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.updateHmacApiInfoAsHospital;
+import static com.cogent.cogentappointment.admin.utils.HospitalUtils.convertFileToHospitalLogo;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
@@ -61,27 +59,23 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
-    private final MinioFileService minioFileService;
-
     private final Validator validator;
 
     public CompanyServiceImpl(HospitalRepository hospitalRepository,
                               HospitalContactNumberRepository hospitalContactNumberRepository,
                               HospitalLogoRepository hospitalLogoRepository,
                               HmacApiInfoRepository hmacApiInfoRepository,
-                              MinioFileService minioFileService,
                               Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
-        this.minioFileService = minioFileService;
         this.validator = validator;
     }
 
 
     @Override
-    public void save(@Valid CompanyRequestDTO requestDTO, MultipartFile logo) throws NoSuchAlgorithmException {
+    public void save(@Valid CompanyRequestDTO requestDTO) throws NoSuchAlgorithmException {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, COMPANY);
@@ -94,11 +88,11 @@ public class CompanyServiceImpl implements CompanyService {
         validateDuplicity(companies, requestDTO.getName(), requestDTO.getCompanyCode(),
                 "COMPANY");
 
-        Hospital company = save(convertComapanyDTOToHospital(requestDTO));
+        Hospital company = save(convertCompanyDTOToHospital(requestDTO));
 
         saveCompanyContactNumber(company.getId(), requestDTO.getContactNumber());
 
-        saveCompanyLogo(company, logo);
+        saveCompanyLogo(company, requestDTO.getCompanyLogo());
 
         saveHmacApiInfo(parseToHmacApiInfo(company));
 
@@ -107,8 +101,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void update(@Valid CompanyUpdateRequestDTO updateRequestDTO,
-                       MultipartFile logo) throws NoSuchAlgorithmException {
+    public void update(@Valid CompanyUpdateRequestDTO updateRequestDTO) throws NoSuchAlgorithmException {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -131,7 +124,7 @@ public class CompanyServiceImpl implements CompanyService {
         updateCompanyContactNumber(company.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
         if (updateRequestDTO.getIsLogoUpdate().equals(YES))
-            updateCompanyLogo(company, logo);
+            updateCompanyLogo(company, updateRequestDTO.getCompanyLogo());
 
         updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
 
@@ -234,16 +227,9 @@ public class CompanyServiceImpl implements CompanyService {
         hospitalContactNumberRepository.saveAll(companyContactNumbers);
     }
 
-    private void saveCompanyLogo(Hospital company, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(company, new MultipartFile[]{files});
-            saveCompanyLogo(convertFileToCompanyLogo(responseList.get(0), company));
-        }
-    }
-
-    private List<FileUploadResponseDTO> uploadFiles(Hospital company, MultipartFile[] files) {
-        String subDirectory = company.getName();
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+    private void saveCompanyLogo(Hospital hospital, String companyLogo) {
+        if (!Objects.isNull(companyLogo))
+            saveCompanyLogo(convertFileToHospitalLogo(new HospitalLogo(), companyLogo, hospital));
     }
 
     private void saveCompanyLogo(HospitalLogo companyLogo) {
@@ -272,22 +258,21 @@ public class CompanyServiceImpl implements CompanyService {
         saveHmacApiInfo(hmacApiInfoToUpdate);
     }
 
-    private void updateCompanyLogo(Hospital hospital, MultipartFile files) {
+    private void updateCompanyLogo(Hospital hospital, String companyLogoImage) {
         HospitalLogo hospitalLogo = hospitalLogoRepository.findHospitalLogoByHospitalId(hospital.getId());
 
-        if (Objects.isNull(hospitalLogo)) saveCompanyLogo(hospital, files);
-        else updateHospitalLogo(hospital, hospitalLogo, files);
+        if (Objects.isNull(hospitalLogo)) saveCompanyLogo(hospital, companyLogoImage);
+        else updateHospitalLogo(hospital, hospitalLogo, companyLogoImage);
     }
 
-    private void updateHospitalLogo(Hospital company, HospitalLogo companyLogo, MultipartFile files) {
+    private void updateHospitalLogo(Hospital company, HospitalLogo companyLogo, String companyLogoImage) {
 
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(company, new MultipartFile[]{files});
-            setLogoFileProperties(responseList.get(0), companyLogo);
-        } else
-            companyLogo.setStatus(StatusConstants.INACTIVE);
+        if (!Objects.isNull(companyLogoImage)) {
+            convertFileToHospitalLogo(companyLogo, companyLogoImage, company);
+        } else companyLogo.setStatus(INACTIVE);
+
+        saveCompanyLogo(companyLogo);
     }
-
 
     private Function<Long, NoContentFoundException> COMPANY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, COMPANY, id);

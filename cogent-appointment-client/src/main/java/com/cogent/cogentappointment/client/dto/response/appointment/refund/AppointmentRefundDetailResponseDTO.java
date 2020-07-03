@@ -22,6 +22,10 @@ public class AppointmentRefundDetailResponseDTO implements Serializable {
 
     private String appointmentNumber;
 
+    private Long appointmentId;
+
+    private Long appointmentModeId;
+
     private String hospitalName;
 
     private String patientName;
@@ -53,4 +57,6 @@ public class AppointmentRefundDetailResponseDTO implements Serializable {
     private String appointmentMode;
 
     private Character isRegistered;
+
+    private String remarks;
 }

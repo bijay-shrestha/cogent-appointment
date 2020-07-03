@@ -63,6 +63,7 @@ public class WebResourceKeyConstants {
         String RESCHEDULE_LOG = "/reschedule-log";
         String TRANSACTION_STATUS = "/transaction-status";
         String TRANSACTION_LOG = "/transaction-log";
+        String COUNT="/count";
     }
 
     public interface AppointmentTransferConstants {
@@ -72,6 +73,12 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_DATE = "/date";
         String APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE = "/{appointmentTransferId}";
     }
+
+    public interface AppointmentServiceTypeConstants {
+        String BASE_APPOINTMENT_SERVICE_TYPE = "/appointmentServiceType";
+    }
+
+
 
 
     //B
@@ -83,12 +90,14 @@ public class WebResourceKeyConstants {
     }
 
     //C
+    public static final String CODE = "/code";
+
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
     }
 
     public interface CommonConstants {
-        String BASE_COMMON = "/common";
+        String BASE_COMMON = "/commons";
         String DOCTOR_SPECIALIZATION = "/doctor-specialization";
     }
 
@@ -108,6 +117,7 @@ public class WebResourceKeyConstants {
         String REVENUE_TREND = "/revenueTrend";
         String DOCTOR_REVENUE = "/doctorRevenue";
         String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
+        String HOSPITAL_DEPARTMENT_REVENUE = "/hospitalDepartmentRevenue";
     }
 
     public static final String DETAIL = "/detail";
@@ -157,6 +167,8 @@ public class WebResourceKeyConstants {
     //G
 
     //H
+    public static final String HMAC="/hmac";
+
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_WISE = "/hospital-wise";
@@ -180,6 +192,8 @@ public class WebResourceKeyConstants {
     }
 
     //I
+    public static final String ICON = "/icon";
+
     public interface IntegrationConstants {
         String BASE_INTEGRATION = "/integration";
         String CLIENT_API_INTEGRATION = "/client-api-integration";
@@ -205,12 +219,15 @@ public class WebResourceKeyConstants {
     public static final String MIN = "/min";
     public static final String META_INFO = "/metaInfo";
 
-    public interface MinioFileConstants {
+    public interface MinioResourceConstant {
         String BASE_FILE = "/file";
-        String FETCH_FILE = "/{subDirectory}/{object}";
+        String PUT_PERSIGNED_URL = "putPresignedURL";
+        String GET_PERSIGNED_URL = "getPresignedURL";
     }
 
     //N
+    public static final String NAME = "/name";
+
 
 
     //O

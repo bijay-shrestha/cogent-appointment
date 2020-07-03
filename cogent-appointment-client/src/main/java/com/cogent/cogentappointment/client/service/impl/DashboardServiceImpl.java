@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.*;
 import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -19,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DashboardMessages.DOCTOR_REVENUE_NOT_FOUND;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.client.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.dateDifference;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculatePercentage;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
@@ -73,19 +70,21 @@ public class DashboardServiceImpl implements DashboardService {
         Double currentTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getCurrentToDate(),
                 requestDTO.getCurrentFromDate(),
-                hospitalId);
+                hospitalId,
+                requestDTO.getAppointmentServiceTypeCode());
 
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getPreviousToDate(),
                 requestDTO.getPreviousFromDate(),
-                hospitalId);
+                hospitalId,
+                requestDTO.getAppointmentServiceTypeCode());
 
         AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
-                        requestDTO.getCurrentToDate(),
-                        requestDTO.getCurrentFromDate(),
-                        hospitalId
-                );
+                        utilDateToSqlDateInString(requestDTO.getCurrentToDate()),
+                        utilDateToSqlDateInString(requestDTO.getCurrentFromDate()),
+                        hospitalId,
+                        requestDTO.getAppointmentServiceTypeCode());
 
         RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(
                 currentTransaction,
@@ -121,7 +120,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient,followUpPatient, pillType);
+        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient, followUpPatient, pillType);
     }
 
     @Override
@@ -246,11 +245,46 @@ public class DashboardServiceImpl implements DashboardService {
         return responseDTOS;
     }
 
+    @Override
+    public HospitalDepartmentRevenueResponseDTO calculateOverallHospitalDeptRevenue(
+            HospitalDepartmentRevenueRequestDTO revenueRequestDTO, Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REVENUE);
+
+        List<HospitalDepartmentRevenueDTO> hospitalDeptRevenue =
+                appointmentTransactionDetailRepository.calculateHospitalDepartmentRevenue(revenueRequestDTO, pageable);
+
+        List<HospitalDepartmentRevenueDTO> cancelledRevenue =
+                appointmentTransactionDetailRepository.calculateCancelledHospitalDepartmentRevenue(revenueRequestDTO, pageable);
+
+        validateHospitalDepartmentRevenue(hospitalDeptRevenue, cancelledRevenue);
+
+        List<HospitalDepartmentRevenueDTO> mergedList = mergeHospitalDepartmentAndCancelledRevenue
+                (hospitalDeptRevenue, cancelledRevenue);
+
+        HospitalDepartmentRevenueResponseDTO responseDTO = parseToHospitalDeptRevenueResponseDTO(mergedList);
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REVENUE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
     private void validateDoctorRevenue(List<DoctorRevenueDTO> doctorRevenue,
                                        List<DoctorRevenueDTO> cancelledRevenue) {
         if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
             log.error(CONTENT_NOT_FOUND, DOCTOR_REVENUE);
             throw new NoContentFoundException(DOCTOR_REVENUE_NOT_FOUND);
+        }
+    }
+
+    private void validateHospitalDepartmentRevenue(List<HospitalDepartmentRevenueDTO> doctorRevenue,
+                                                   List<HospitalDepartmentRevenueDTO> cancelledRevenue) {
+
+        if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
+            log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_REVENUE);
+            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND);
         }
     }
 

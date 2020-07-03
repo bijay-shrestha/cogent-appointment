@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
 import io.swagger.annotations.Api;
@@ -14,11 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_STATUS;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_DEPARTMENT_APPOINTMENT_STATUS;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.COUNT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.STATUS;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.ROOM;
@@ -46,13 +46,25 @@ public class AppointmentStatusResource {
 
     @PutMapping(BASE_HOSPITAL_DEPARTMENT + STATUS)
     @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS)
-    public ResponseEntity<?> fetchHospitalDeptAppointmentStatus(@Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchHospitalDeptAppointmentStatus(
+            @Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
         return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatus(requestDTO));
     }
 
-    @PutMapping(BASE_HOSPITAL_DEPARTMENT +ROOM+ STATUS)
+    @PutMapping(BASE_HOSPITAL_DEPARTMENT + ROOM + STATUS)
     @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE)
-    public ResponseEntity<?> fetchHospitalDeptAppointmentStatusRoomwise(@Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchHospitalDeptAppointmentStatusRoomwise(
+            @Valid @RequestBody HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
         return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusRoomwise(requestDTO));
+    }
+
+    @PutMapping(BASE_HOSPITAL_DEPARTMENT + STATUS +COUNT)
+    @ApiOperation(FETCH_DEPARTMENT_APPOINTMENT_STATUS_COUNT)
+    public ResponseEntity<?> fetchHospitalDeptAppointmentStatusCount(
+            @Valid @RequestBody HospitalDeptAppointmentStatusCountRequestDTO requestDTO) {
+
+        return ok(appointmentStatusService.fetchHospitalDeptAppointmentStatusCount(requestDTO));
     }
 }

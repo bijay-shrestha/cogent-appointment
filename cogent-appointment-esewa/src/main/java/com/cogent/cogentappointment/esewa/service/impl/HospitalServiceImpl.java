@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.commons.service.MinIOService;
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalAppointmentServiceTypeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalMinResponseDTO;
@@ -30,9 +31,12 @@ import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTime
 @Slf4j
 public class HospitalServiceImpl implements HospitalService {
 
+    private final MinIOService minIOService;
+
     private final HospitalRepository hospitalRepository;
 
-    public HospitalServiceImpl(HospitalRepository hospitalRepository) {
+    public HospitalServiceImpl(MinIOService minIOService, HospitalRepository hospitalRepository) {
+        this.minIOService = minIOService;
         this.hospitalRepository = hospitalRepository;
     }
 
@@ -58,6 +62,18 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
+
+        responseDTO.forEach(hospital -> {
+
+            if (hospital.getHospitalLogo() != null) {
+                hospital.setHospitalLogo(minIOService.getObjectUrl(hospital.getHospitalLogo()));
+            }
+
+            if (hospital.getHospitalBanner() != null) {
+                hospital.setHospitalBanner(minIOService.getObjectUrl(hospital.getHospitalBanner()));
+            }
+
+        });
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

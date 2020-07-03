@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.company.CompanySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
@@ -23,7 +24,7 @@ public interface HospitalRepositoryCustom {
 
     List<Object[]> validateHospitalDuplicity(String name, String esewaMerchantCode, String alias);
 
-    List<Object[]> validateCompanyDuplicity(String name, String esewaMerchantCode);
+    List<Object[]> validateCompanyDuplicity(String name, String code);
 
     List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code, String alias);
 
@@ -46,4 +47,6 @@ public interface HospitalRepositoryCustom {
     Integer fetchHospitalFollowUpCount(Long hospitalId);
 
     Integer fetchHospitalFollowUpIntervalDays(Long hospitalId);
+
+    List<AppointmentServiceTypeDropDownResponseDTO> fetchAssignedAppointmentServiceType(Long hospitalId);
 }

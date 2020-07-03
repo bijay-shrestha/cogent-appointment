@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.request.dashboard;
 
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,4 +30,7 @@ public class GenerateRevenueRequestDTO implements Serializable {
     private Date previousFromDate;
 
     private Character filterType;
+
+//    @NotNull(message = "Appointment Service Type Cannot be Null")
+    private String appointmentServiceTypeCode;
 }

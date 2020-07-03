@@ -1,11 +1,12 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.response.favourite.FavoriteDropDownWithIconResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.favourite.FavouriteDropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.log.constants.AdminLog;
+import com.cogent.cogentappointment.client.query.AdminFavouriteQuery;
 import com.cogent.cogentappointment.client.repository.custom.AdminFavouriteRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminFavourite;
+import com.cogent.cogentappointment.persistence.model.AdminFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,6 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.query.AdminFavouriteQuery.QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN;
-import static com.cogent.cogentappointment.client.query.AdminFavouriteQuery.QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN_WITH_ICON;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -46,15 +46,15 @@ public class AdminFavouriteRepositoryCustomImpl implements AdminFavouriteReposit
         } else return list;
     }
 
-
     @Override
-    public List<FavoriteDropDownWithIconResponseDTO> fetchAdminFavouriteForDropDownWithIcon() {
+    public List<FavouriteDropDownResponseDTO> fetchAdminFavouriteForDropDownWithIcon() {
 
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN_WITH_ICON);
+                AdminFavouriteQuery.QUERY_TO_FETCH_ACTIVE_FAVOURITE_FOR_DROPDOWN_WITH_ICON);
 
-        List<FavoriteDropDownWithIconResponseDTO> list =
-                transformQueryToResultList(query, FavoriteDropDownWithIconResponseDTO.class);
+        List<FavouriteDropDownResponseDTO> list =
+                transformQueryToResultList(query,
+                        FavouriteDropDownResponseDTO.class);
 
         if (list.isEmpty()) {
             error();

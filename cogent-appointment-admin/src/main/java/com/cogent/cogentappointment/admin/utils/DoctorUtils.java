@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorQualificationUpdateDTO;
@@ -10,7 +9,6 @@ import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorQualificationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 
@@ -19,6 +17,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.formatDoubleTo2DecimalPlaces;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
@@ -47,7 +46,7 @@ public class DoctorUtils {
                                                                    Long specializationId) {
         DoctorSpecialization doctorSpecialization =
                 convertToDoctorSpecialization(doctorId, specializationId);
-        doctorSpecialization.setStatus(StatusConstants.ACTIVE);
+        doctorSpecialization.setStatus(ACTIVE);
         return doctorSpecialization;
     }
 
@@ -63,7 +62,7 @@ public class DoctorUtils {
                                                                  Long qualificationId) {
         DoctorQualification doctorQualification =
                 convertToDoctorQualification(doctorId, qualificationId);
-        doctorQualification.setStatus(StatusConstants.ACTIVE);
+        doctorQualification.setStatus(ACTIVE);
         return doctorQualification;
     }
 
@@ -84,21 +83,14 @@ public class DoctorUtils {
         return doctorAppointmentCharge;
     }
 
-    public static DoctorAvatar convertFileToDoctorAvatar(FileUploadResponseDTO uploadResponseDTO,
+    public static DoctorAvatar convertFileToDoctorAvatar(DoctorAvatar doctorAvatar,
+                                                         String avatar,
                                                          Doctor doctor) {
 
-        DoctorAvatar doctorAvatar = new DoctorAvatar();
-        setAvatarFileProperties(uploadResponseDTO, doctorAvatar);
         doctorAvatar.setDoctorId(doctor);
+        doctorAvatar.setFileUri(avatar);
+        doctorAvatar.setStatus(ACTIVE);
         return doctorAvatar;
-    }
-
-    public static void setAvatarFileProperties(FileUploadResponseDTO uploadResponseDTO,
-                                               DoctorAvatar doctorAvatar) {
-        doctorAvatar.setFileSize(uploadResponseDTO.getFileSize());
-        doctorAvatar.setFileUri(uploadResponseDTO.getFileUri());
-        doctorAvatar.setFileType(uploadResponseDTO.getFileType());
-        doctorAvatar.setStatus(StatusConstants.ACTIVE);
     }
 
     public static void parseDoctorAppointmentChargeDetails(DoctorAppointmentCharge doctorAppointmentCharge,

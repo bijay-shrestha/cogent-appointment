@@ -1,14 +1,14 @@
 package com.cogent.cogentappointment.esewa.resource;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AvailableDoctorRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForOthers;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.esewa.service.AppointmentService;
@@ -20,16 +20,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.EsewaConstant.*;
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.EsewaConstant.FETCH_AVAILABLE_DATES;
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.EsewaConstant.SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.*;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -92,7 +88,7 @@ public class AppointmentResource {
     @PutMapping(RESCHEDULE)
     @ApiOperation(RESCHEDULE_OPERATION)
     public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
-        return ok( appointmentService.rescheduleAppointment(requestDTO));
+        return ok(appointmentService.rescheduleAppointment(requestDTO));
     }
 
     @GetMapping(DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)

@@ -14,23 +14,32 @@ import java.io.Serializable;
 
 @Setter
 @Getter
-public class RefundStatusRequestDTO implements Serializable{
+public class RefundStatusRequestDTO implements Serializable {
 
     @NotNull
     private Long appointmentId;
+
+    @NotNull
+    private Long appointmentModeId;
 
     @NotNull
     @NotEmpty
     @NotBlank
     private String esewaId;
 
-    private String esewaMerchantCode;
-
     @NotNull
     @NotEmpty
     @NotBlank
     private String transactionNumber;
 
-    private String appointmentMode;
+    //FULL_REFUND, PARTIAL_REFUND, AMIBGIUOS
+    private String status;
+
+    private String featureCode;
+
+    private String integrationChannelCode;
+
+    private String remarks;
+
 
 }

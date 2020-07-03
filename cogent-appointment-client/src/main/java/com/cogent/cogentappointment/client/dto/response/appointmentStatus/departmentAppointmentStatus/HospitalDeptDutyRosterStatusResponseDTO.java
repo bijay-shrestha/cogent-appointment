@@ -17,6 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 public class HospitalDeptDutyRosterStatusResponseDTO implements Serializable {
 
+    private Long hospitalDepartmentDutyRosterId;
+
+    private String uniqueIdentifier;
+
     private LocalDate date;
 
     private String startTime;

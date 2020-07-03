@@ -20,12 +20,12 @@ public class SwaggerConstants {
 
     public interface AddressConstant {
         String BASE_API_VALUE = "This resource is used to fetch address details ";
-        String FETCH_ZONE_LIST="Fetch Zones for dropdown";
-        String FETCH_PROVINCE_LIST="Fetch Province for dropdown";
-        String FETCH_DISTRICT_LIST_BY_ZONE_ID="Fetch District for dropdown by zone id ";
-        String FETCH_DISTRICT_LIST_BY_PROVINCE_ID="Fetch District for dropdown by province id ";
-        String FETCH_STREET_LIST_BY_DISTRICT_ID="Fetch Street for dropdown by district id ";
-        String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID="Fetch Municipality for dropdown by district id ";
+        String FETCH_ZONE_LIST = "Fetch Zones for dropdown";
+        String FETCH_PROVINCE_LIST = "Fetch Province for dropdown";
+        String FETCH_DISTRICT_LIST_BY_ZONE_ID = "Fetch District for dropdown by zone id ";
+        String FETCH_DISTRICT_LIST_BY_PROVINCE_ID = "Fetch District for dropdown by province id ";
+        String FETCH_STREET_LIST_BY_DISTRICT_ID = "Fetch Street for dropdown by district id ";
+        String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID = "Fetch Municipality for dropdown by district id ";
     }
 
     public interface AdminConstant {
@@ -48,19 +48,24 @@ public class SwaggerConstants {
 
     public interface AdminFavouriteConstant {
         String BASE_API_VALUE = "This is Admin Favourite Resource";
-
+        String SAVE_ADMIN_FAVOURITE_OPERATION = "Save new Admin Favourite";
+        String UPDATE_OPERATION = "Update Admin Favourite flag of corresponding admin";
     }
 
     public interface AdminFeatureConstant {
         String BASE_API_VALUE = "This is Admin Feature Resource";
+        String FAVOURITE_DETAILS_BY_ADMIN_ID = "Fetch Favourite Details by admin Id";
         String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";
 
     }
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
-        String FETCH_APPOINTMENTS_CANCEL_APPROVALS = "Fetch  Appointment cancel approval List";
+        String FETCH_DOCTOR_APPOINTMENTS_CANCEL_APPROVALS = "Fetch Doctor Appointment cancel approval List";
+        String FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS = "Fetch cancelled Hospital Department Appointment" +
+                " List";
         String FETCH_REFUND_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
+        String FETCH_CANCELLED_APPOINTMENTS_DETAIL = "Fetch Cancelled Appointment Detail By appointmentId";
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
         String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
@@ -89,6 +94,7 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
         String FETCH_DEPARTMENT_APPOINTMENT_STATUS = "Fetch department appointment status.";
         String FETCH_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "Fetch department appointment status by specific roomId.";
+        String FETCH_DEPARTMENT_APPOINTMENT_STATUS_COUNT = "Fetch department appointment status count.";
     }
 
     public interface AppointmentTransferConstant {
@@ -126,6 +132,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Appointment Service Type according to given request parameters";
         String DETAILS_OPERATION = "Fetch Appointment Service Type details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Service Type details for dropdown";
+        String FETCH_NAME_AND_CODE_FOR_DROPDOWN = "Fetch Appointment Service Type name and code for dropdown";
     }
 
     //B
@@ -202,6 +209,7 @@ public class SwaggerConstants {
         String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
         String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
         String DOCTOR_REVENUE_OPERATION = "Doctor Revenue list.";
+        String HOSPITAL_DEPARTMENT_REVENUE_OPERATION = "Hospital Department Revenue list.";
         String REFUND_AMOUNT_OPERATION = "Calculate Total Refunded Amount.";
     }
 
@@ -271,6 +279,12 @@ public class SwaggerConstants {
     //G
 
     //H
+
+    public interface Hmaconstant {
+        String BASE_API_VALUE = "This resource is used to generate hmac hash for frontend use";
+
+    }
+
     public interface HospitalConstant {
         String BASE_API_VALUE = "This is Hospital setup Resource";
         String SAVE_OPERATION = "Save new hospital";
@@ -280,6 +294,7 @@ public class SwaggerConstants {
         String DETAILS_OPERATION = "Fetch hospital details by id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal hospital details (id and name) for dropdown";
         String FETCH_ALIAS_BY_ID = "Fetch alias by hospital id";
+        String FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE = "Fetch assigned hospital appointment service type";
     }
 
     public interface HospitalDeptDutyRosterConstant {

@@ -25,6 +25,10 @@ public class ErrorMessageConstants {
         String ESEWA_ID_CANNOT_BE_NULL = "eSewa Id cannot be null";
 
         String INVALID_APPOINTMENT_SERVICE_TYPE_CODE = "Invalid Appointment Service Type Code : '%s'";
+
+        String INVALID_HOSPITAL_APPOINTMENT_SERVICE_TYPE = "Requested appointment service type is not assigned to hospital '%s'";
+
+        String INVALID_ADDRESS_INFO = "Sorry, address information cannot be null or empty";
     }
 
     public interface AppointmentHospitalDepartmentMessage {

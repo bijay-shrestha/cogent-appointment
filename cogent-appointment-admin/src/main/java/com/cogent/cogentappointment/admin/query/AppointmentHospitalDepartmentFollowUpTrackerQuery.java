@@ -1,0 +1,14 @@
+package com.cogent.cogentappointment.admin.query;
+
+/**
+ * @author smriti on 18/11/2019
+ */
+public class AppointmentHospitalDepartmentFollowUpTrackerQuery {
+
+    public static final String QUERY_TO_FETCH_LATEST_APPOINTMENT_HOSPITAL_DEPT_FOLLOW_UP_TRACKER =
+            " SELECT * FROM appointment_hospital_department_follow_up_tracker f" +
+                    " WHERE f.status ='Y'" +
+                    " AND f.parent_appointment_id=:parentAppointmentId" +
+                    " ORDER BY f.id DESC LIMIT 1";
+
+}

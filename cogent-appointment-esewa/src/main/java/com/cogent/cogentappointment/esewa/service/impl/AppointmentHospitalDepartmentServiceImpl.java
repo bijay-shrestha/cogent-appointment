@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.StatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.availableDate.AppointmentAvailableDateDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.availableDate.AppointmentAvailableDateResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO;
@@ -65,6 +67,8 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     private final HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository weekDaysDutyRosterDoctorInfoRepository;
 
+    private final NepaliDateUtility nepaliDateUtility;
+
     public AppointmentHospitalDepartmentServiceImpl(
             HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
             HospitalDeptDutyRosterOverrideRepository hospitalDeptDutyRosterOverrideRepository,
@@ -72,7 +76,8 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
             AppointmentRepository appointmentRepository,
             HospitalDeptDutyRosterRoomInfoRepository hospitalDeptDutyRosterRoomInfoRepository,
             AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository,
-            HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository weekDaysDutyRosterDoctorInfoRepository) {
+            HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository weekDaysDutyRosterDoctorInfoRepository,
+            NepaliDateUtility nepaliDateUtility) {
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.hospitalDeptDutyRosterOverrideRepository = hospitalDeptDutyRosterOverrideRepository;
         this.hospitalDeptWeekDaysDutyRosterRepository = hospitalDeptWeekDaysDutyRosterRepository;
@@ -80,6 +85,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         this.hospitalDeptDutyRosterRoomInfoRepository = hospitalDeptDutyRosterRoomInfoRepository;
         this.appointmentHospitalDepartmentReservationLogRepository = appointmentHospitalDepartmentReservationLogRepository;
         this.weekDaysDutyRosterDoctorInfoRepository = weekDaysDutyRosterDoctorInfoRepository;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     @Override
@@ -150,7 +156,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         List<HospitalDepartmentDutyRoster> hospitalDepartmentDutyRosters =
                 hospitalDeptDutyRosterRepository.fetchHospitalDeptDutyRoster(hospitalDepartmentId);
 
-        List<LocalDate> availableDates = new ArrayList<>();
+        List<AppointmentAvailableDateDTO> availableDates = new ArrayList<>();
 
         hospitalDepartmentDutyRosters.forEach(dutyRoster -> {
 
@@ -163,7 +169,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         if (ObjectUtils.isEmpty(availableDates))
             NO_AVAILABLE_APPOINTMENT_DATES_FOUND.get();
 
-        Collections.sort(availableDates);
+        availableDates.sort(Comparator.comparing(AppointmentAvailableDateDTO::getAvailableDate));
 
         AppointmentAvailableDateResponseDTO availableAppointmentDates =
                 parseAvailableAppointmentDates(availableDates);
@@ -413,7 +419,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     }
 
     private void fetchAvailableDatesFromWeekDaysRoster(HospitalDepartmentDutyRoster dutyRoster,
-                                                       List<LocalDate> availableDates) {
+                                                       List<AppointmentAvailableDateDTO> availableDates) {
 
         List<String> availableWeekDays =
                 hospitalDeptWeekDaysDutyRosterRepository.fetchWeekDaysCode(dutyRoster.getId());
@@ -429,14 +435,15 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                     if (!isPastDate) {
                         String weekDayCode = localDate.getDayOfWeek().toString().substring(0, 3);
 
-                        if (availableWeekDays.contains(weekDayCode) && !availableDates.contains(localDate))
-                            availableDates.add(localDate);
+                        if (availableWeekDays.contains(weekDayCode) &&
+                                !isAppointmentDateAdded(availableDates, localDate))
+                            availableDates.add(parseAvailableAppointmentDates(localDate, nepaliDateUtility));
                     }
                 });
     }
 
     private void fetchAvailableDatesFromOverrideRoster(Long hddRosterId,
-                                                       List<LocalDate> availableDates) {
+                                                       List<AppointmentAvailableDateDTO> availableDates) {
 
         List<HospitalDeptDutyRosterAvailableDateResponseDTO> overrideRosterDates =
                 hospitalDeptDutyRosterOverrideRepository.fetchOverrideRosterDates(hddRosterId);
@@ -449,8 +456,10 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
             Stream.iterate(startDate, date -> date.plusDays(1))
                     .limit(ChronoUnit.DAYS.between(startDate, endDate) + 1)
                     .forEach(localDate -> {
-                        if (overrideRoster.getDayOffStatus().equals(NO) && !availableDates.contains(localDate))
-                            availableDates.add(localDate);
+
+                        if (overrideRoster.getDayOffStatus().equals(NO) &&
+                                !isAppointmentDateAdded(availableDates, localDate))
+                            availableDates.add(parseAvailableAppointmentDates(localDate, nepaliDateUtility));
                     });
         });
     }
@@ -459,4 +468,15 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         log.error(APPOINTMENT_AVAILABLE_DATE_NOT_FOUND);
         throw new NoContentFoundException(APPOINTMENT_AVAILABLE_DATE_NOT_FOUND);
     };
+
+    private boolean isAppointmentDateAdded(List<AppointmentAvailableDateDTO> availableDates,
+                                           LocalDate localDate) {
+
+        boolean isAppointmentDateAdded = availableDates.stream()
+                .anyMatch(availableDate -> availableDate.getAvailableDate().equals(localDate));
+
+        System.out.println(isAppointmentDateAdded);
+
+        return isAppointmentDateAdded;
+    }
 }

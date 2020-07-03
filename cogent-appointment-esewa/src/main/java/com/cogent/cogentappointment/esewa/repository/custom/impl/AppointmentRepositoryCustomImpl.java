@@ -92,7 +92,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     /*eg. 2076-10-10 lies in between 2076-04-01 to 2077-03-31 Fiscal Year ie. 2076/2077*/
     @Override
     public String generateAppointmentNumber(String nepaliCreatedDate,
-                                            Long hospitalId) {
+                                            Long hospitalId,
+                                            String hospitalCode) {
 
         int year = getYearFromNepaliDate(nepaliCreatedDate);
         int month = getMonthFromNepaliDate(nepaliCreatedDate);
@@ -105,7 +106,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(TO_DATE, endingFiscalYear)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return AppointmentUtils.generateAppointmentNumber(query.getResultList(), startingFiscalYear, endingFiscalYear);
+        return AppointmentUtils.generateAppointmentNumber(query.getResultList(),
+                startingFiscalYear, endingFiscalYear, hospitalCode);
     }
 
     @Override

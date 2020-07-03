@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin;
 
 import com.cogent.cogentappointment.admin.configuration.YamlPropertySourceFactory;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
@@ -63,6 +65,14 @@ public class CogentAppointmentAdminApplication extends SpringBootServletInitiali
     }
 
     @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer placeholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        placeholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
+
+        return placeholderConfigurer;
+    }
+
+    @Bean
     public BeanUtil beanUtil() {
         return new BeanUtil();
     }
@@ -70,6 +80,11 @@ public class CogentAppointmentAdminApplication extends SpringBootServletInitiali
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public MinIOProperties minIOProperties() {
+        return new MinIOProperties();
     }
 
 }

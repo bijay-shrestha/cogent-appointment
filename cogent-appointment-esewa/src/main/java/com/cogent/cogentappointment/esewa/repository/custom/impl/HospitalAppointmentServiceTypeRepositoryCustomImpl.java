@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.APPOINTMENT_SERVICE_TYPE_CODE;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
-import static com.cogent.cogentappointment.esewa.log.constants.AppointmentServiceTypeLog.APPOINTMENT_SERVICE_TYPE;
+import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL_APPOINTMENT_SERVICE_TYPE;
+import static com.cogent.cogentappointment.esewa.query.HospitalAppointmentServiceTypeQuery.QUERY_TO_FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.esewa.query.HospitalAppointmentServiceTypeQuery.QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE;
 
 /**
@@ -39,14 +39,25 @@ public class HospitalAppointmentServiceTypeRepositoryCustomImpl implements Hospi
                     .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode)
                     .getSingleResult();
         } catch (NoResultException e) {
-            throw HOSPITAL_APPOINTMENT_SERVICE_TYPE_WITH_CODE_NOT_FOUND.apply(appointmentServiceTypeCode);
+            throw HOSPITAL_APPOINTMENT_SERVICE_TYPE_NOT_FOUND.get();
         }
     }
 
-    private Function<String, NoContentFoundException> HOSPITAL_APPOINTMENT_SERVICE_TYPE_WITH_CODE_NOT_FOUND =
-            (appointmentServiceTypeCode) -> {
-                log.error(CONTENT_NOT_FOUND, APPOINTMENT_SERVICE_TYPE);
-                throw new NoContentFoundException(HospitalAppointmentServiceType.class, "appointmentServiceTypeCode",
-                        appointmentServiceTypeCode);
-            };
+    @Override
+    public HospitalAppointmentServiceType fetchAssignedAppointmentServiceType(Long hospitalAppointmentServiceTypeId) {
+
+        try {
+            return entityManager.createQuery(QUERY_TO_FETCH_ASSIGNED_APPOINTMENT_SERVICE_TYPE,
+                    HospitalAppointmentServiceType.class)
+                    .setParameter(ID, hospitalAppointmentServiceTypeId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw HOSPITAL_APPOINTMENT_SERVICE_TYPE_NOT_FOUND.get();
+        }
+    }
+
+    private Supplier<NoContentFoundException> HOSPITAL_APPOINTMENT_SERVICE_TYPE_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, HOSPITAL_APPOINTMENT_SERVICE_TYPE);
+        throw new NoContentFoundException(HospitalAppointmentServiceType.class);
+    };
 }

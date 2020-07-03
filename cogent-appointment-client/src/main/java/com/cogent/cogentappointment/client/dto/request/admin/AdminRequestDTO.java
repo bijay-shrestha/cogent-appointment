@@ -52,4 +52,6 @@ public class AdminRequestDTO implements Serializable {
     private String password;
 
     private String baseUrl;
+
+    private String avatar;
 }

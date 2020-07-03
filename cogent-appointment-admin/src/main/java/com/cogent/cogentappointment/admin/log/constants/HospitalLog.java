@@ -9,5 +9,7 @@ public class HospitalLog {
 
     public final static String HOSPITAL_ALIAS = "HOSPITAL ALIAS";
 
+    public final static String HOSPITAL_APPOINTMENT_SERVICE_TYPE = "HOSPITAL APPOINTMENT SERVICE TYPE";
+
     public final static String CLIENT = "Client";
 }

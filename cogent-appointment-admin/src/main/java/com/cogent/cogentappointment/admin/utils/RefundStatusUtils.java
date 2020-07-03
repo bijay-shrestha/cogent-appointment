@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentthirdpartyconnector.request.EsewaPayementStatus;
+import com.cogent.cogentthirdpartyconnector.request.EsewaPaymentStatus;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
@@ -44,8 +44,8 @@ public class RefundStatusUtils {
         return refundDetail;
     };
 
-    public static EsewaPayementStatus parseToEsewaPaymentStatus(RefundStatusRequestDTO requestDTO) {
-        return EsewaPayementStatus.builder()
+    public static EsewaPaymentStatus parseToEsewaPaymentStatus(RefundStatusRequestDTO requestDTO) {
+        return EsewaPaymentStatus.builder()
                 .esewa_id("9841409090")
                 .product_code("testBir")
                 .transaction_code("5VP")

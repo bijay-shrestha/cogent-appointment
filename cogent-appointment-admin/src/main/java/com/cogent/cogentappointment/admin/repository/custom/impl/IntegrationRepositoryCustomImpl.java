@@ -176,27 +176,32 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public ClientFeatureIntegrationResponse fetchClientIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO) {
-        Query query = createQuery.apply(entityManager, CLIENT_FEAUTRES_INTEGRATION_BACKEND_API_QUERY)
+    public ClientFeatureIntegrationResponse fetchClientIntegrationResponseDTOForBackendIntegration(
+            IntegrationBackendRequestDTO requestDTO) {
+
+        Query query = createQuery.apply(entityManager, CLIENT_FEATURES_INTEGRATION_BACKEND_API_QUERY)
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId())
                 .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
                 .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());
 
-        ClientFeatureIntegrationResponse responseDTOList =
-                transformQueryToSingleResult(query, ClientFeatureIntegrationResponse.class);
-
-//        if (responseDTOList.isEmpty()) throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
-
-        return responseDTOList;
+        try {
+            return transformQueryToSingleResult(query, ClientFeatureIntegrationResponse.class);
+        } catch (NoResultException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(IntegrationBackendRequestDTO requestDTO,
-                                                                                                           Long appointmentModeId) {
+    public AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(
+            IntegrationBackendRequestDTO requestDTO,
+            Long appointmentModeId) {
+
         Query query = createQuery.apply(entityManager, APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY)
                 .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
                 .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
-                .setParameter(FEATURE_CODE, requestDTO.getFeatureCode());
+                .setParameter(FEATURE_CODE, requestDTO.getFeatureCode())
+                .setParameter(HOSPITAL_ID,requestDTO.getHospitalId());
 
         AdminFeatureIntegrationResponse responseDTOList =
                 transformQueryToSingleResult(query, AdminFeatureIntegrationResponse.class);

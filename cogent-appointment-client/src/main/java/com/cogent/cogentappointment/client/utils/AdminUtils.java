@@ -137,11 +137,13 @@ public class AdminUtils {
                 .build();
     }
 
-    public static AdminAvatar convertFileToAdminAvatar(FileUploadResponseDTO fileUploadResponseDTO,
+    public static AdminAvatar convertFileToAdminAvatar(AdminAvatar adminAvatar,
+                                                       String avatar,
                                                        Admin admin) {
-        AdminAvatar adminAvatar = new AdminAvatar();
-        setFileProperties(fileUploadResponseDTO, adminAvatar);
+
         adminAvatar.setAdmin(admin);
+        adminAvatar.setFileUri(avatar);
+        adminAvatar.setStatus(ACTIVE);
         return adminAvatar;
     }
 
@@ -267,5 +269,15 @@ public class AdminUtils {
                 .paramValue(fullName + COMMA_SEPARATED
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
+    }
+
+    public static AdminFavourite parseToSaveFavourtie(Long userMenuId, Admin admin) {
+
+        AdminFavourite adminFavourite = new AdminFavourite();
+        adminFavourite.setUserMenuId(userMenuId);
+        adminFavourite.setAdminId(admin);
+        adminFavourite.setStatus(ACTIVE);
+
+        return adminFavourite;
     }
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.thirdparty.resource;
 
+
 import com.cogent.cogentappointment.persistence.model.ThirdPartyInfo;
 import com.cogent.cogentappointment.thirdparty.dto.request.CheckInRequestDTO;
 import com.cogent.cogentappointment.thirdparty.dto.response.CheckInResponseDTO;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ThreadLocalRandom;
+
 
 @RestController
 @RequestMapping(value = "/api/v1/test")

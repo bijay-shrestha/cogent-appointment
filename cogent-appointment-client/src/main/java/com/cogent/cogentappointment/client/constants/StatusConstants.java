@@ -12,8 +12,6 @@ public class StatusConstants {
     public static final Character YES = 'Y';
     public static final Character NO = 'N';
 
-
-
     public interface AppointmentStatusConstants {
         String PENDING_APPROVAL = "PA";
         String APPROVED = "A";
@@ -23,5 +21,7 @@ public class StatusConstants {
         String REFUNDED = "RE";
         String VACANT = "V";
         String ALL = "";
+        String FOLLOW_UP = "F";
+        String BOOKED = "PA";
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
@@ -22,6 +23,7 @@ import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPI
 import static com.cogent.cogentappointment.esewa.utils.HospitalUtils.parseToHospitalMinResponseDTOWithStatus;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * @author smriti ON 12/01/2020
@@ -63,16 +65,13 @@ public class HospitalServiceImpl implements HospitalService {
 
         List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
 
-        responseDTO.forEach(hospital -> {
+        responseDTO.forEach((HospitalMinResponseDTO hospital) -> {
 
-            if (hospital.getHospitalLogo() != null) {
+            if (!isEmpty(hospital.getHospitalLogo()) && !Objects.isNull(hospital.getHospitalLogo()))
                 hospital.setHospitalLogo(minIOService.getObjectUrl(hospital.getHospitalLogo()));
-            }
 
-            if (hospital.getHospitalBanner() != null) {
+            if (!isEmpty(hospital.getHospitalBanner()) && !Objects.isNull(hospital.getHospitalBanner()))
                 hospital.setHospitalBanner(minIOService.getObjectUrl(hospital.getHospitalBanner()));
-            }
-
         });
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));

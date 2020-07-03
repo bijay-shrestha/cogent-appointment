@@ -3,10 +3,8 @@ package com.cogent.cogentappointment.commons.service.impl;
 import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
 import com.cogent.cogentappointment.commons.service.MinIOService;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
-import io.minio.errors.*;
+import io.minio.errors.MinioException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
-import static io.minio.http.Method.GET;
-import static io.minio.http.Method.PUT;
 
 /**
  * @author rupak ON 2020/06/28-12:47 PM
@@ -38,28 +33,28 @@ public class MinIOServiceImpl implements MinIOService {
         try {
 
             MinioClient minioClient =
-                    MinioClient.builder ()
-                            .endpoint ( minIOProperties.getURL () )
-                            .credentials ( minIOProperties.getACCESS_KEY (),
-                                    minIOProperties.getSECRET_KEY () )
-                            .build ();
+                    MinioClient.builder()
+                            .endpoint(minIOProperties.getURL())
+                            .credentials(minIOProperties.getACCESS_KEY(),
+                                    minIOProperties.getSECRET_KEY())
+                            .build();
 
-            String url = minioClient.presignedPutObject(minIOProperties.getBUCKET_NAME (),
-                    fileRequestDTO.getFileName (),
-                    Integer.parseInt ( minIOProperties.getEXPIRY_TIME ()));
+            String url = minioClient.presignedPutObject(minIOProperties.getBUCKET_NAME(),
+                    fileRequestDTO.getFileName(),
+                    Integer.parseInt(minIOProperties.getEXPIRY_TIME()));
 
-            log.info ( "MinIO Error {}::", url );
+            log.info("MinIO Error {}::", url);
 
             return url;
 
         } catch (MinioException e) {
-            System.out.println ( "Error occurred: " + e );
+            System.out.println("Error occurred: " + e);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         } catch (InvalidKeyException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
 
         return null;
@@ -70,28 +65,28 @@ public class MinIOServiceImpl implements MinIOService {
         try {
 
             MinioClient minioClient =
-                    MinioClient.builder ()
-                            .endpoint ( minIOProperties.getURL () )
-                            .credentials ( minIOProperties.getACCESS_KEY (),
-                                    minIOProperties.getSECRET_KEY () )
-                            .build ();
+                    MinioClient.builder()
+                            .endpoint(minIOProperties.getURL())
+                            .credentials(minIOProperties.getACCESS_KEY(),
+                                    minIOProperties.getSECRET_KEY())
+                            .build();
 
-            String url = minioClient.presignedGetObject(minIOProperties.getBUCKET_NAME (),
-                    fileRequestDTO.getFileName (),
-                    Integer.parseInt ( minIOProperties.getEXPIRY_TIME ()));
+            String url = minioClient.presignedGetObject(minIOProperties.getBUCKET_NAME(),
+                    fileRequestDTO.getFileName(),
+                    Integer.parseInt(minIOProperties.getEXPIRY_TIME()));
 
-            log.info ( "MinIO Error {}::", url );
+            log.info("MinIO Error {}::", url);
 
             return url;
 
         } catch (MinioException e) {
-            System.out.println ( "Error occurred: " + e );
+            System.out.println("Error occurred: " + e);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         } catch (InvalidKeyException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
 
         return null;
@@ -99,30 +94,48 @@ public class MinIOServiceImpl implements MinIOService {
 
     @Override
     public String getObjectUrl(String fileUri) {
+
+        System.out.println("ACCESS KEY --" + minIOProperties.getACCESS_KEY());
         try {
 
+
+            System.out.println(" SECRET_KEY-----" + minIOProperties.getSECRET_KEY());
+            System.out.println(" BUCKET NAME====" + minIOProperties.getBUCKET_NAME());
+
+            System.out.println("URL ---" + minIOProperties.getURL());
+            System.out.println("EXPIRY------" + minIOProperties.getEXPIRY_TIME());
+
             MinioClient minioClient =
-                    MinioClient.builder ()
-                            .endpoint ( minIOProperties.getURL () )
-                            .credentials ( minIOProperties.getACCESS_KEY (),
-                                    minIOProperties.getSECRET_KEY () )
-                            .build ();
+                    new MinioClient(minIOProperties.getURL(),
+                            minIOProperties.getACCESS_KEY(),
+                            minIOProperties.getSECRET_KEY());
 
-            String objectUrl = minioClient.getObjectUrl ( minIOProperties.getBUCKET_NAME (),
-                    fileUri );
+//            MinioClient minioClient =
+//                    MinioClient.builder()
+//                            .endpoint(minIOProperties.getURL())
+//                            .credentials(minIOProperties.getACCESS_KEY(),
+//                                    minIOProperties.getSECRET_KEY())
+//                            .build();
 
-            log.info ( "MinIO Error {}::", objectUrl );
+//            String objectUrl = minioClient.getObjectUrl(minIOProperties.getBUCKET_NAME(),
+//                    fileUri);
+
+//            String objectUrl = minioClient.presignedGetObject(minIOProperties.getBUCKET_NAME(),
+            String objectUrl = minioClient.getObjectUrl(minIOProperties.getBUCKET_NAME(),
+                    fileUri);
+
+            log.info("MinIO Error {}::", objectUrl);
 
             return objectUrl;
 
         } catch (MinioException e) {
-            System.out.println ( "Error occurred: " + e );
+            System.out.println("Error occurred: " + e);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         } catch (InvalidKeyException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
 
         return null;

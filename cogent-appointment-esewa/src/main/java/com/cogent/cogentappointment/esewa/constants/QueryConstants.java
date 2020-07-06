@@ -17,6 +17,7 @@ public class QueryConstants {
 
     public static final String API_KEY = "apiKey";
 
+
     //B
     public static final String BILLING_MODE_ID = "billingModeId";
 
@@ -25,6 +26,7 @@ public class QueryConstants {
     public static final String CODE = "code";
     public static final String COMPANY_CODE = "companyCode";
 
+    public static final String CLIENT_ID = "clientId";
 
     //D
 

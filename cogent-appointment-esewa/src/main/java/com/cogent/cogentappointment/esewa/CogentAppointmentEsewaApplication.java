@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa;
 
 import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
+import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
 import com.cogent.cogentappointment.esewa.configuration.YamlPropertySourceFactory;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +16,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootApplication
 @EntityScan(basePackages =
@@ -57,6 +61,11 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
         System.out.println("Value of `spring.minio.access-key` = " + env.getProperty("spring.minio.access-key"));
         System.out.println("Value of `mail.host` = " + env.getProperty("mail.host"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
+
+        Map<String, String> map = new HashMap<>();
+        map.put("name", "Hospital For Children Eye ENT And Rehabilitation Services");
+        String token = JwtUtils.generateToken(map);
+        System.out.println(token);
     }
 
     @Bean
@@ -76,4 +85,18 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
     public MinIOProperties minIOProperties() {
         return new MinIOProperties();
     }
+
+    @Bean
+    public JwtUtils jwtUtils() {
+        return new JwtUtils();
+    }
+
+//    public static void main(String[] args) {
+//
+//        Map<String, String> map = new HashMap<>();
+//        map.put("name", "CHEERS");
+//        String token = JwtUtils.generateToken(map);
+//        System.out.println(token);
+//
+//    }
 }

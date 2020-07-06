@@ -69,6 +69,8 @@ public class WebResourceKeyConstants {
 
 
     //E
+
+    public static final String requestKey="data";
     public interface EsewaConstants {
         String BASE_ESEWA = "/esewa";
         String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";

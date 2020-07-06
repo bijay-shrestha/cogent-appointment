@@ -7,11 +7,16 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.Map;
+
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.HospitalConstant.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentServiceType.APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.decrypt;
+import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils.convertValue;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -30,7 +35,12 @@ public class HospitalResource {
 
     @PutMapping(SEARCH + MIN)
     @ApiOperation(FETCH_MIN_DETAILS)
-    public ResponseEntity<?> fetchMinDetails(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO) {
+    public ResponseEntity<?> fetchMinDetails(@RequestBody Map<String, String> data) throws IOException {
+
+        Object toDecrypt = decrypt(data).get("data");
+        HospitalMinSearchRequestDTO searchRequestDTO = convertValue(toDecrypt,
+                HospitalMinSearchRequestDTO.class);
+
         return ok(hospitalService.fetchMinDetails(searchRequestDTO));
     }
 

@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulExcept
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
+import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
@@ -21,6 +22,9 @@ import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendI
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -50,7 +55,6 @@ import static com.cogent.cogentappointment.client.utils.commons.SecurityContextU
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.commons.security.jwt.JwtUtils.generateToken;
-import static com.cogent.cogentappointment.commons.security.jwt.JwtUtils.getAllClaimsFromToken;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
@@ -560,11 +564,20 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     isRefund, integrationRefundRequestDTO.getRemarks());
             esewaRefundRequestDTO.setEsewa_id(esewaId);
 
-            String token = generateToken(esewaRefundRequestDTO.toString());
+
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json="";
+            try {
+                json=ow.withDefaultPrettyPrinter().writeValueAsString(esewaRefundRequestDTO);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+            Map<String,Object> map=new HashMap<>();
+            map.put("data",esewaRefundRequestDTO);
+            String token = generateToken(map);
 
             System.out.println(token);
-
-            System.out.println(getAllClaimsFromToken(token));
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
@@ -626,6 +639,12 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.
                     callEsewaRefundStatusService(integrationApiInfo,
                             esewaPaymentStatus);
+
+            Map<String,Object> map=new HashMap<>();
+            map.put("data",esewaPaymentStatus);
+
+            String token= JwtUtils.generateToken(map);
+            System.out.println(token);
 
             if (responseEntity.getBody() == null) {
                 throw new OperationUnsuccessfulException("ThirdParty API response is null");

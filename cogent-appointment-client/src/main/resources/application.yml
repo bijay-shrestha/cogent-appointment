@@ -1,6 +1,6 @@
-#catalina:
-#  home: /home/rupak/Softwares/tomcat
+catalina:
+  home: /home/rupak/Softwares/tomcat
 
 spring:
   profiles:
-    active: live
+    active: uat

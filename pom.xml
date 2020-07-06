@@ -24,7 +24,6 @@
         <module>cogent-appointment-admin</module>
         <module>cogent-appointment-client</module>
         <module>e-appointment-thirdparty</module>
-        <module>cogent-appointment-scheduler</module>
         <module>cogent-appointment-logging</module>
         <module>cogent-appointment-esewa</module>
 

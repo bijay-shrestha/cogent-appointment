@@ -9,7 +9,7 @@ import javax.crypto.SecretKey;
 import java.util.Base64;
 
 @Slf4j
-public class SecurityUtil {
+public class SecurityUtil  {
 
     protected static PKIData encryptPayloadAndGenerateSignature(String payload, String publicKey, String privateKey) {
         try {
@@ -19,7 +19,7 @@ public class SecurityUtil {
             String finalSecretKey = AESEncryptionUtil.base64Encode(encryptedSecretKey);
 
             String encryptedData = AESEncryptionUtil.encrypt(payload, secretKey);
-            String signature = generateSignature(encryptedData, new String(Base64.getDecoder().decode(privateKey)));
+            String signature = generateSignature(encryptedData, privateKey);
             PKIData pkiData = new PKIData();
             pkiData.setData(encryptedData);
             pkiData.setSecretKey(finalSecretKey);

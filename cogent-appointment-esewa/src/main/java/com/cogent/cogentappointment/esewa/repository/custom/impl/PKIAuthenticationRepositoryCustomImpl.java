@@ -20,7 +20,8 @@ import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.create
  * @author smriti on 06/07/20
  */
 @Repository
-@Transactional(readOnly = true)
+@Transactional
+//        (readOnly = true)
 @Slf4j
 public class PKIAuthenticationRepositoryCustomImpl implements PKIAuthenticationInfoRepositoryCustom {
 
@@ -30,13 +31,15 @@ public class PKIAuthenticationRepositoryCustomImpl implements PKIAuthenticationI
     @Override
     public String findServerPrivateKeyByClientId(String clientId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PKI_SERVER_PRIVATE_KEY)
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_PKI_SERVER_PRIVATE_KEY)
                 .setParameter(CLIENT_ID, clientId);
+
+        System.out.println("QUERY::::::::::" + query);
 
         try {
             return (String) query.getSingleResult();
         } catch (NoResultException ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
             throw new NoContentFoundException("Access key not found");
         }
     }

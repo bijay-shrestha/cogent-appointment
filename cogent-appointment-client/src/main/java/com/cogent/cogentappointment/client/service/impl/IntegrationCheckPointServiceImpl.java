@@ -562,10 +562,9 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             String token = generateToken(esewaRefundRequestDTO.toString());
 
-            System.out.println(getAllClaimsFromToken(token));
-
             System.out.println(token);
 
+            System.out.println(getAllClaimsFromToken(token));
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 

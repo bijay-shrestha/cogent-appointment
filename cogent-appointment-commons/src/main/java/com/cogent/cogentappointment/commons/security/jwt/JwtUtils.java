@@ -28,8 +28,8 @@ public class JwtUtils implements Serializable {
 
     private static String secret = HMAC_API_SECRET_ESEWA;
 
-    //retrieve username from jwt token
-    public static String getUsernameFromToken(String token) {
+    //retrieve subject from jwt token
+    public static String getSubjectFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
@@ -82,7 +82,7 @@ public class JwtUtils implements Serializable {
 
     //validate token
     public static Boolean validateToken(String token, Class request) {
-        final String username = getUsernameFromToken(token);
+        final String username = getSubjectFromToken(token);
         return (username.equals(request) && !isTokenExpired(token));
     }
 }

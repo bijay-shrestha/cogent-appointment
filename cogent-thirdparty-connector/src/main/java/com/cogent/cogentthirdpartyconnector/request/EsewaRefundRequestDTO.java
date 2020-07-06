@@ -27,4 +27,17 @@ public class EsewaRefundRequestDTO implements Serializable {
     private String remarks;
 
     private Properties properties;
+
+    @Override
+    public String toString() {
+        return "EsewaRefundRequestDTO{" +
+                "txn_amount=" + txn_amount +
+                ", refund_amount=" + refund_amount +
+                ", product_code='" + product_code + '\'' +
+                ", esewa_id='" + esewa_id + '\'' +
+                ", is_refund=" + is_refund +
+                ", remarks='" + remarks + '\'' +
+                ", properties=" + properties.getHospitalName() + properties.getAppointmentId()+
+                '}';
+    }
 }

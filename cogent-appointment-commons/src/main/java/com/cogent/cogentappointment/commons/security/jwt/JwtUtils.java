@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.security.jwt;
+package com.cogent.cogentappointment.commons.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-;import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_API_SECRET_ESEWA;
+import static com.cogent.cogentappointment.commons.constants.HMACConstant.HMAC_API_SECRET_ESEWA;
+
+;
 
 /**
  * @author Sauravi Thapa ON 7/5/20
@@ -24,7 +26,7 @@ public class JwtUtils implements Serializable {
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
 
-    private String secret= HMAC_API_SECRET_ESEWA;
+    private static String secret= HMAC_API_SECRET_ESEWA;
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
@@ -35,6 +37,8 @@ public class JwtUtils implements Serializable {
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
+
+
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
@@ -52,7 +56,12 @@ public class JwtUtils implements Serializable {
     }
 
     //generate token for user
-    public String generateToken(Class request) {
+//    public static <T> T generateToken(Class<T> request) {
+//        Map<String, Object> claims = new HashMap<>();
+//        return doGenerateToken(claims, request);
+//    }
+
+    public static String generateToken(String request) {
         Map<String, Object> claims = new HashMap<>();
         return doGenerateToken(claims, request);
     }
@@ -62,7 +71,7 @@ public class JwtUtils implements Serializable {
    //2. Sign the JWT using the HS512 algorithm and secret key.
   //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
   //   compaction of the JWT to a URL-safe string
-    private String doGenerateToken(Map<String, Object> claims, Class subject) {
+    private static String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(String.valueOf(subject))

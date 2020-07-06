@@ -8,4 +8,3 @@ public class SchedulerConstants {
     public static final String APPOINTMENT_RESERVATION_SCHEDULER = "${reservation.schedulerTimeInMilliSeconds}";
 
 }
-t -am

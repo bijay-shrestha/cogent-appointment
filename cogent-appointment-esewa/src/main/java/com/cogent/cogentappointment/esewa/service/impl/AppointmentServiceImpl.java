@@ -448,11 +448,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public StatusResponseDTO rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
+    public StatusResponseDTO rescheduleAppointment(@Valid AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(RESCHEDULE_PROCESS_STARTED);
+
+        validateConstraintViolation(validator.validate(rescheduleRequestDTO));
 
         Appointment appointment = findPendingAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
@@ -499,10 +501,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO) {
+    public AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(@Valid AppointmentHistorySearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
+
+        validateConstraintViolation(validator.validate(searchDTO));
 
         List<AppointmentMinResponseDTO> appointmentHistory =
                 appointmentRepository.fetchAppointmentHistory(searchDTO);
@@ -514,10 +518,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     //    todo: serviceType Code must be dynamic
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO) {
+    public AppointmentResponseWithStatusDTO searchAppointments (@Valid AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
+
+        validateConstraintViolation(validator.validate(searchDTO));
 
 //        AppointmentServiceType appointmentServiceType =
 //                fetchAppointmentServiceType(searchDTO.getAppointmentServiceTypeId());
@@ -553,7 +559,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentTransactionStatusResponseDTO fetchAppointmentTransactionStatus
-            (AppointmentTransactionStatusRequestDTO requestDTO) {
+            (@Valid AppointmentTransactionStatusRequestDTO requestDTO) {
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         Character appointmentTransactionRequestLogStatus =
                 appointmentTransactionRequestLogService.fetchAppointmentTransactionStatus

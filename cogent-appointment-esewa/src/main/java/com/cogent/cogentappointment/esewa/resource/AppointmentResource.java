@@ -122,7 +122,11 @@ public class AppointmentResource {
 
     @PutMapping(RESCHEDULE)
     @ApiOperation(RESCHEDULE_OPERATION)
-    public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
+    public ResponseEntity<?> rescheduleAppointment(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentRescheduleRequestDTO requestDTO= convertValue(toDecrypt(data),
+                AppointmentRescheduleRequestDTO.class);
+
         return ok(appointmentService.rescheduleAppointment(requestDTO));
     }
 
@@ -133,13 +137,21 @@ public class AppointmentResource {
 
     @PutMapping(HISTORY)
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
-    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentHistorySearchDTO searchDTO) {
+    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentHistorySearchDTO searchDTO= convertValue(toDecrypt(data),
+                AppointmentHistorySearchDTO.class);
+
         return ok(appointmentService.fetchAppointmentHistory(searchDTO));
     }
 
     @PutMapping(SEARCH)
     @ApiOperation(SEARCH_APPOINTMENT)
-    public ResponseEntity<?> searchAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
+    public ResponseEntity<?> searchAppointments(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentSearchDTO searchDTO= convertValue(toDecrypt(data),
+                AppointmentSearchDTO.class);
+
         return ok(appointmentService.searchAppointments(searchDTO));
     }
 
@@ -151,20 +163,31 @@ public class AppointmentResource {
 
     @PutMapping(TRANSACTION_STATUS)
     @ApiOperation(FETCH_APPOINTMENT_TRANSACTION_STATUS)
-    public ResponseEntity<?> fetchAppointmentTransactionStatus(
-            @Valid @RequestBody AppointmentTransactionStatusRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchAppointmentTransactionStatus(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentTransactionStatusRequestDTO requestDTO= convertValue(toDecrypt(data),
+                AppointmentTransactionStatusRequestDTO.class);
+
         return ok(appointmentService.fetchAppointmentTransactionStatus(requestDTO));
     }
 
     @PutMapping(AVAILABLE_APPOINTMENT_DATES_AND_TIME)
     @ApiOperation(FETCH_AVAILABLE_APPOINTMENT_DATES)
-    public ResponseEntity<?> fetchAvailableDatesAndTime(@RequestBody AppointmentDatesRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchAvailableDatesAndTime(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentDatesRequestDTO requestDTO= convertValue(toDecrypt(data),
+                AppointmentDatesRequestDTO.class);
+
         return ok(esewaService.fetchAvailableDatesAndTime(requestDTO));
     }
 
     @PutMapping(FETCH_DOCTOR_AVAILABLE_STATUS)
     @ApiOperation(FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION)
-    public ResponseEntity<?> fetchDoctorAvailableStatus(@RequestBody AppointmentDetailRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchDoctorAvailableStatus(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentDetailRequestDTO requestDTO= convertValue(toDecrypt(data),
+                AppointmentDetailRequestDTO.class);
+
         return ok(esewaService.fetchDoctorAvailableStatus(requestDTO));
     }
 
@@ -182,7 +205,11 @@ public class AppointmentResource {
 
     @PutMapping(DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES)
     @ApiOperation(FETCH_AVAILABLE_DATES)
-    public ResponseEntity<?> fetchAvailableDates(@RequestBody AppointmentDatesRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchAvailableDates(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentDatesRequestDTO requestDTO= convertValue(toDecrypt(data),
+                AppointmentDatesRequestDTO.class);
+
         return ok(esewaService.fetchAvailableDates(requestDTO));
     }
 
@@ -195,7 +222,11 @@ public class AppointmentResource {
 
     @PutMapping(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION)
     @ApiOperation(SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
-    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody AvailableDoctorRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody Map<String, String> data) throws IOException {
+
+        AvailableDoctorRequestDTO requestDTO= convertValue(toDecrypt(data),
+                AvailableDoctorRequestDTO.class);
+
         return ok(esewaService.fetchAvailableDoctorWithSpecialization(requestDTO));
     }
 

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.esewa.resource;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.io.IOException;
+import java.util.Map;
 
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.CANCEL_REGISTRATION_OPERATION;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentHospitalDepartmentConstant.*;
@@ -18,6 +22,8 @@ import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentHospitalDepartmentConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
+import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils.convertValue;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -36,15 +42,21 @@ public class AppointmentHospitalDepartmentResource {
 
     @PutMapping(FETCH_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> fetchAvailableTimeSlots(@Valid @RequestBody
-                                                             AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchAvailableTimeSlots(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO = convertValue(toDecrypt(data),
+                AppointmentHospitalDeptCheckAvailabilityRequestDTO.class);
+
         return ok(appointmentHospitalDepartmentService.fetchAvailableTimeSlots(requestDTO));
     }
 
     @PutMapping(FETCH_AVAILABLE_TIMESLOTS + ROOM_WISE)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY_ROOM_WISE)
-    public ResponseEntity<?> fetchAvailableTimeSlotsRoomWise(@Valid @RequestBody
-                                                                     AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchAvailableTimeSlotsRoomWise(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO requestDTO = convertValue(toDecrypt(data),
+                AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO.class);
+
         return ok(appointmentHospitalDepartmentService.fetchAvailableTimeSlotsRoomWise(requestDTO));
     }
 

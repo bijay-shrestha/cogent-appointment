@@ -12,12 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import java.io.IOException;
+import java.util.Map;
+
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.FollowUpTrackerConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.FollowUpTrackerConstant.FETCH_FOLLOW_UP_DETAILS;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.FOLLOW_UP;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
+import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils.convertValue;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -37,8 +42,11 @@ public class AppointmentHospitalDepartmentFollowUpTrackerResource {
 
     @PutMapping(FOLLOW_UP)
     @ApiOperation(FETCH_FOLLOW_UP_DETAILS)
-    public ResponseEntity<?> fetchFollowUpTrackerDetails(@Valid @RequestBody
-                                                                 AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchFollowUpTrackerDetails(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentHospitalDeptFollowUpRequestDTO requestDTO = convertValue(toDecrypt(data),
+                AppointmentHospitalDeptFollowUpRequestDTO.class);
+
         return ok().body(appointmentHospitalDeptFollowUpTrackerService.fetchAppointmentHospitalDeptFollowUpDetails(requestDTO));
     }
 

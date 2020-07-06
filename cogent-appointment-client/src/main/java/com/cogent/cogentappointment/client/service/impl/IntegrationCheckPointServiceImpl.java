@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulExcept
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
-import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
@@ -22,9 +21,6 @@ import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendI
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.ThirdPartyHospitalResponse;
 import com.cogent.cogentthirdpartyconnector.response.integrationThirdParty.ThirdPartyResponse;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -564,25 +560,15 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     isRefund, integrationRefundRequestDTO.getRemarks());
             esewaRefundRequestDTO.setEsewa_id(esewaId);
 
+            String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaRefundRequestDTO);
+            log.info(encryptedRequestBody);
 
-            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            String json="";
-            try {
-                json=ow.withDefaultPrettyPrinter().writeValueAsString(esewaRefundRequestDTO);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(),
+                    transactionDetail.getTransactionNumber()));
 
-            Map<String,Object> map=new HashMap<>();
-            map.put("data",esewaRefundRequestDTO);
-            String token = generateToken(map);
-
-            System.out.println(token);
-
-            integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
-
-            ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                    esewaRefundRequestDTO);
+            ResponseEntity<?> responseEntity = thirdPartyConnectorService.
+                    callEsewaRefundService(integrationApiInfo,
+                            encryptedRequestBody);
 
             if (responseEntity.getBody() == null) {
                 throw new OperationUnsuccessfulException("ThirdParty API response is null");
@@ -636,15 +622,12 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(),
                     transactionDetail.getTransactionNumber()));
 
+            String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaPaymentStatus);
+            log.info(encryptedRequestBody);
+
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.
                     callEsewaRefundStatusService(integrationApiInfo,
-                            esewaPaymentStatus);
-
-            Map<String,Object> map=new HashMap<>();
-            map.put("data",esewaPaymentStatus);
-
-            String token= JwtUtils.generateToken(map);
-            System.out.println(token);
+                            encryptedRequestBody);
 
             if (responseEntity.getBody() == null) {
                 throw new OperationUnsuccessfulException("ThirdParty API response is null");
@@ -805,6 +788,13 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         return null;
     }
+
+    private String convertObjectToEncryptedEsewaRequestBody(Object obj) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("data", obj);
+        return generateToken(map);
+    }
+
 
     private ThirdPartyHospitalResponse fetchThirdPartyHospitalResponse(ResponseEntity<?> responseEntity) {
 

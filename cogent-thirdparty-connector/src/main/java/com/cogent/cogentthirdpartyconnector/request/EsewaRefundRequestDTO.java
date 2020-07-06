@@ -14,13 +14,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class EsewaRefundRequestDTO implements Serializable {
 
-    private Double txn_amount;
-
-    private Double refund_amount;
+    private String esewa_id;
 
     private String product_code;
 
-    private String esewa_id;
+    private String txn_code;
+
+    private Double txn_amount;
+
+    private Double refund_amount;
 
     private Boolean is_refund;
 
@@ -28,16 +30,4 @@ public class EsewaRefundRequestDTO implements Serializable {
 
     private Properties properties;
 
-    @Override
-    public String toString() {
-        return "EsewaRefundRequestDTO{" +
-                "txn_amount=" + txn_amount +
-                ", refund_amount=" + refund_amount +
-                ", product_code='" + product_code + '\'' +
-                ", esewa_id='" + esewa_id + '\'' +
-                ", is_refund=" + is_refund +
-                ", remarks='" + remarks + '\'' +
-                ", properties=" + properties.getHospitalName() + "," + properties.getAppointmentId() +
-                '}';
-    }
 }

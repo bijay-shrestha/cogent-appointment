@@ -62,6 +62,8 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
         System.out.println("Value of `mail.host` = " + env.getProperty("mail.host"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
 
+
+        //testing data
         Map<String, Object> map = new HashMap<>();
         map.put("transaction_code", "047Y07V");
         map.put("product_code", "CHEERS");

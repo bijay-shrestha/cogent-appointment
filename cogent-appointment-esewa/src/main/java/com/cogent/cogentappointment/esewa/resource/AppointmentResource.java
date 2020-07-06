@@ -30,6 +30,8 @@ import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.*;
 import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.decrypt;
+import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
+import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils.convertValue;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -54,23 +56,31 @@ public class AppointmentResource {
 
     @PutMapping(FETCH_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> fetchAvailableTimeSlots(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchAvailableTimeSlots(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentCheckAvailabilityRequestDTO requestDTO = convertValue(toDecrypt(data),
+                AppointmentCheckAvailabilityRequestDTO.class);
+
         return ok(appointmentService.fetchAvailableTimeSlots(requestDTO));
     }
 
     @PutMapping(FETCH_CURRENT_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_CURRENT_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> fetchCurrentAvailableTimeSlots(
-            @Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchCurrentAvailableTimeSlots(@RequestBody Map<String, String> data) throws IOException{
+
+        AppointmentCheckAvailabilityRequestDTO requestDTO = convertValue(toDecrypt(data),
+                AppointmentCheckAvailabilityRequestDTO.class);
+
         return ok(appointmentService.fetchCurrentAvailableTimeSlots(requestDTO));
     }
 
     @PostMapping(SELF)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> saveAppointmentForSelf(@RequestBody Map<String, String> data) throws IOException {
 
-        AppointmentRequestDTOForSelf requestDTO=ObjectMapperUtils.convertValue(decrypt(data).get("data"),
+        AppointmentRequestDTOForSelf requestDTO= convertValue(toDecrypt(data),
                 AppointmentRequestDTOForSelf.class);
+
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
     }
 
@@ -82,19 +92,31 @@ public class AppointmentResource {
 
     @PostMapping(OTHERS)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> saveAppointmentForOthers(@Valid @RequestBody AppointmentRequestDTOForOthers requestDTO) {
+    public ResponseEntity<?> saveAppointmentForOthers(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentRequestDTOForOthers requestDTO= convertValue(toDecrypt(data),
+                AppointmentRequestDTOForOthers.class);
+
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForOthers(requestDTO));
     }
 
     @PutMapping(PENDING_APPOINTMENT)
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
-    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentHistorySearchDTO searchDTO) {
+    public ResponseEntity<?> fetchPendingAppointments(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentHistorySearchDTO searchDTO= convertValue(toDecrypt(data),
+                AppointmentHistorySearchDTO.class);
+
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
     @PutMapping(CANCEL)
     @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
-    public ResponseEntity<?> cancelAppointment(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
+    public ResponseEntity<?> cancelAppointment(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentCancelRequestDTO cancelRequestDTO= convertValue(toDecrypt(data),
+                AppointmentCancelRequestDTO.class);
+
         return ok(appointmentService.cancelAppointment(cancelRequestDTO));
     }
 

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.resource;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.AppointmentFollowUpRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,11 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import java.io.IOException;
+import java.util.Map;
+
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.FollowUpTrackerConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.FollowUpTrackerConstant.FETCH_FOLLOW_UP_DETAILS;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.FOLLOW_UP;
+import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
+import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils.convertValue;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -35,7 +41,11 @@ public class AppointmentFollowUpTrackerResource {
 
     @PutMapping(FOLLOW_UP)
     @ApiOperation(FETCH_FOLLOW_UP_DETAILS)
-    public ResponseEntity<?> fetchFollowUpTrackerDetails(@Valid @RequestBody AppointmentFollowUpRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchFollowUpTrackerDetails(@RequestBody Map<String, String> data) throws IOException {
+
+        AppointmentFollowUpRequestDTO requestDTO = convertValue(toDecrypt(data),
+                AppointmentFollowUpRequestDTO.class);
+
         return ok().body(followUpTrackerService.fetchAppointmentFollowUpDetails(requestDTO));
     }
 

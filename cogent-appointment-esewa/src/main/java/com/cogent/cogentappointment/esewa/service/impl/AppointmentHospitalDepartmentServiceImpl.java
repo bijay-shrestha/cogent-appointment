@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import javax.validation.Valid;
+import javax.validation.Validator;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -36,6 +38,7 @@ import java.util.stream.Stream;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentHospitalDepartmentMessage.APPOINTMENT_AVAILABLE_DATE_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.esewa.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentLog.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentReservationLog.APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOGS;
@@ -69,6 +72,8 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     private final NepaliDateUtility nepaliDateUtility;
 
+    private final Validator validator;
+
     public AppointmentHospitalDepartmentServiceImpl(
             HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
             HospitalDeptDutyRosterOverrideRepository hospitalDeptDutyRosterOverrideRepository,
@@ -77,7 +82,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
             HospitalDeptDutyRosterRoomInfoRepository hospitalDeptDutyRosterRoomInfoRepository,
             AppointmentHospitalDepartmentReservationLogRepository appointmentHospitalDepartmentReservationLogRepository,
             HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository weekDaysDutyRosterDoctorInfoRepository,
-            NepaliDateUtility nepaliDateUtility) {
+            NepaliDateUtility nepaliDateUtility, Validator validator) {
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.hospitalDeptDutyRosterOverrideRepository = hospitalDeptDutyRosterOverrideRepository;
         this.hospitalDeptWeekDaysDutyRosterRepository = hospitalDeptWeekDaysDutyRosterRepository;
@@ -86,15 +91,18 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         this.appointmentHospitalDepartmentReservationLogRepository = appointmentHospitalDepartmentReservationLogRepository;
         this.weekDaysDutyRosterDoctorInfoRepository = weekDaysDutyRosterDoctorInfoRepository;
         this.nepaliDateUtility = nepaliDateUtility;
+        this.validator = validator;
     }
 
     @Override
     public AppointmentHospitalDeptCheckAvailabilityResponseDTO fetchAvailableTimeSlots
-            (AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO) {
+            (@Valid AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
 
@@ -108,11 +116,13 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
     @Override
     public AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO fetchAvailableTimeSlotsRoomWise(
-            AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO requestDTO) {
+            @Valid  AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
 

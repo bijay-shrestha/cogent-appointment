@@ -50,6 +50,7 @@ import static com.cogent.cogentappointment.client.utils.commons.SecurityContextU
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.commons.security.jwt.JwtUtils.generateToken;
+import static com.cogent.cogentappointment.commons.security.jwt.JwtUtils.getAllClaimsFromToken;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
@@ -560,6 +561,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             esewaRefundRequestDTO.setEsewa_id(esewaId);
 
             String token = generateToken(esewaRefundRequestDTO.toString());
+
+            System.out.println(getAllClaimsFromToken(token));
 
             System.out.println(token);
 

@@ -37,7 +37,8 @@ public class EsewaRefundRequestDTO implements Serializable {
                 ", esewa_id='" + esewa_id + '\'' +
                 ", is_refund=" + is_refund +
                 ", remarks='" + remarks + '\'' +
-                ", properties=" + properties.getHospitalName() + properties.getAppointmentId()+
+                ", properties=" + "hospitalName= " +properties.getHospitalName() + ","
+                + "appointmentId= " + properties.getAppointmentId() +
                 '}';
     }
 }

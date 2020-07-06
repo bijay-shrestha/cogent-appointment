@@ -62,10 +62,18 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
         System.out.println("Value of `mail.host` = " + env.getProperty("mail.host"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
 
-        Map<String, String> map = new HashMap<>();
-        map.put("name", "Hospital For Children Eye ENT And Rehabilitation Services");
+        Map<String, Object> map = new HashMap<>();
+        map.put("transaction_code", "047Y07V");
+        map.put("product_code", "CHEERS");
+        map.put("esewa_id", "9860008245");
         String token = JwtUtils.generateToken(map);
         System.out.println(token);
+
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("name", "Hospital For Children Eye ENT And Rehabilitation Services");
+//        String token = JwtUtils.generateToken(map);
+//        System.out.println(token);
+
     }
 
     @Bean

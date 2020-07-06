@@ -29,7 +29,7 @@ public class JwtUtils implements Serializable {
     private static String secret = HMAC_API_SECRET_ESEWA;
 
     //retrieve subject from jwt token
-    public static String getSjectFromToken(String token) {
+    public static String getSubjectFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 

@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.esewa.resource;
 
-
 import com.cogent.cogentappointment.esewa.dto.PKITestDTO;
 import com.cogent.cogentappointment.esewa.pki.utils.JacksonUtil;
 import com.cogent.cogentappointment.esewa.pki.wrapper.DataWrapper;
+import com.cogent.cogentappointment.esewa.repository.PKIAuthenticationInfoRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +25,11 @@ public class TestResource {
 
     private final DataWrapper dataWrapper;
 
-    public TestResource(DataWrapper dataWrapper) {
+    private final PKIAuthenticationInfoRepository pkiAuthenticationInfoRepository;
+
+    public TestResource(DataWrapper dataWrapper, PKIAuthenticationInfoRepository pkiAuthenticationInfoRepository) {
         this.dataWrapper = dataWrapper;
+        this.pkiAuthenticationInfoRepository = pkiAuthenticationInfoRepository;
     }
 
     @GetMapping

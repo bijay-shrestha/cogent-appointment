@@ -7,7 +7,7 @@ public class PKIAuthenticationInfoQuery {
 
     public static final String QUERY_TO_FETCH_PKI_SERVER_PRIVATE_KEY =
             " SELECT" +
-                    " p.serverPrivateKey" +
+                    " p.serverPrivateKey as name" +
                     " FROM PKIAuthenticationInfo p" +
                     " WHERE p.clientId =:clientId" +
                     " AND p.status = 'Y'";

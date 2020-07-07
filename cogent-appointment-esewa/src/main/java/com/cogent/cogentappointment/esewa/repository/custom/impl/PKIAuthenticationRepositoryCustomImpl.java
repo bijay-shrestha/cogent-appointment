@@ -12,8 +12,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.CLIENT_ID;
-import static com.cogent.cogentappointment.esewa.query.PKIAuthenticationInfoQuery.QUERY_TO_FETCH_PKI_SERVER_PRIVATE_KEY;
 import static com.cogent.cogentappointment.esewa.query.PKIAuthenticationInfoQuery.QUERY_TO_FETCH_PKI_CLIENT_PUBLIC_KEY;
+import static com.cogent.cogentappointment.esewa.query.PKIAuthenticationInfoQuery.QUERY_TO_FETCH_PKI_SERVER_PRIVATE_KEY;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
 
 /**
@@ -33,14 +33,11 @@ public class PKIAuthenticationRepositoryCustomImpl implements PKIAuthenticationI
 
         Query query = entityManager.createQuery(QUERY_TO_FETCH_PKI_SERVER_PRIVATE_KEY)
                 .setParameter(CLIENT_ID, clientId);
-
-        System.out.println("QUERY::::::::::" + query);
-
         try {
             return (String) query.getSingleResult();
         } catch (NoResultException ex) {
-//            ex.printStackTrace();
-            throw new NoContentFoundException("Access key not found");
+            ex.printStackTrace();
+            throw new NoContentFoundException("Client key not found");
         }
     }
 

@@ -19,7 +19,8 @@ public class JacksonUtil {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public static <T> T get(String content, Class clazz) throws JsonParseException, JsonMappingException, IOException, ClassNotFoundException {
+    public static <T> T get(String content, Class clazz) throws JsonParseException,
+            JsonMappingException, IOException, ClassNotFoundException {
         return (T) objectMapper.readValue(content, clazz);
     }
 

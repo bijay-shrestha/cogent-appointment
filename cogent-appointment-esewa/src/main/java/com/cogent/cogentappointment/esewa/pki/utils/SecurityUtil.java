@@ -9,24 +9,27 @@ import javax.crypto.SecretKey;
 import java.util.Base64;
 
 @Slf4j
-public class SecurityUtil  {
+public class SecurityUtil {
 
-    protected static PKIData encryptPayloadAndGenerateSignature(String payload, String publicKey, String privateKey) {
+    protected static PKIData encryptPayloadAndGenerateSignature(String payload,
+                                                                String clientPublicKey,
+                                                                String serverPrivateKey) {
         try {
             SecretKey secretKey = AESEncryptionUtil.generateSecretKey();
             String base64EncodedSecretKey = AESEncryptionUtil.keyToString(secretKey);
-            byte[] encryptedSecretKey = RSAEncryptionUtil.encrypt(base64EncodedSecretKey, publicKey);
-            String finalSecretKey = AESEncryptionUtil.base64Encode(encryptedSecretKey);
 
+            byte[] encryptedSecretKey = RSAEncryptionUtil.encrypt(base64EncodedSecretKey, clientPublicKey);
+            String finalSecretKey = AESEncryptionUtil.base64Encode(encryptedSecretKey);
             String encryptedData = AESEncryptionUtil.encrypt(payload, secretKey);
-            String signature = generateSignature(encryptedData, privateKey);
+
+            String signature = generateSignature(encryptedData, serverPrivateKey);
             PKIData pkiData = new PKIData();
             pkiData.setData(encryptedData);
             pkiData.setSecretKey(finalSecretKey);
             pkiData.setSignature(signature);
             return pkiData;
         } catch (Exception exe) {
-            log.error("Error occured while encryting data error:{} stack:{}", exe.getMessage(), exe);
+            log.error("Error occurred while encrypting data error:{} stack:{}", exe.getMessage(), exe);
 
             //todo: exception
             return null;
@@ -35,13 +38,13 @@ public class SecurityUtil  {
         }
     }
 
-    protected static String responseValidator(String payload, String publicKey, String privateKey) {
+    protected static String responseValidator(String payload, String clientPublicKey, String serverPrivateKey) {
         try {
             RequestWrapper requestWrapper = JacksonUtil.get(payload, RequestWrapper.class);
-            boolean verified = validateSignature(requestWrapper.getSignature(), requestWrapper.getData(), publicKey);
+            boolean verified = validateSignature(requestWrapper.getSignature(), requestWrapper.getData(), clientPublicKey);
 
             byte[] decodedSecretKey = AESEncryptionUtil.base64Decode(requestWrapper.getSecret_key());
-            String plainSecretKey = RSAEncryptionUtil.decrypt(decodedSecretKey, privateKey);
+            String plainSecretKey = RSAEncryptionUtil.decrypt(decodedSecretKey, serverPrivateKey);
 
             String data = AESEncryptionUtil.decrypt(requestWrapper.getData(),
                     AESEncryptionUtil.getSecretKey(plainSecretKey));
@@ -67,9 +70,9 @@ public class SecurityUtil  {
         }
     }
 
-    private static boolean validateSignature(String receivedSignature, String payload, String publicKey) {
+    private static boolean validateSignature(String receivedSignature, String payload, String clientPublicKey) {
         try {
-            return RSAEncryptionUtil.verifySignature(payload, publicKey, Base64.getDecoder().decode(receivedSignature));
+            return RSAEncryptionUtil.verifySignature(payload, clientPublicKey, Base64.getDecoder().decode(receivedSignature));
         } catch (Exception e) {
             log.error("Error occurred while validating signature. :: {}", e.getMessage());
 

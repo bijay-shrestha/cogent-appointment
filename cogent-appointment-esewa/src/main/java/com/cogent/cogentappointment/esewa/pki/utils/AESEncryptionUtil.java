@@ -55,7 +55,7 @@ public class AESEncryptionUtil {
      */
     public static SecretKey getSecretKey(String secretKey) throws Exception {
         byte[] decodeSecretKey = base64Decode(secretKey);
-        log.info("length"+decodeSecretKey.length);
+        log.info("length" + decodeSecretKey.length);
         return new SecretKeySpec(decodeSecretKey, 0, decodeSecretKey.length, "AES");
     }
 

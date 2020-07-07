@@ -5,5 +5,7 @@ package com.cogent.cogentappointment.esewa.service;
  */
 public interface PKIAuthenticationInfoService {
 
-    String findValueByAccessKey(String accessKey);
+    String findServerPrivateKeyByClientId(String clientId);
+
+    String findClientPublicKeyByClientId(String clientId);
 }

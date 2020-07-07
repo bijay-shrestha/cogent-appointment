@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
  * @author smriti on 06/07/20
  */
 @Repository
-@Qualifier("pkiAuthenticationInfoRepositoryCustom")
+@Qualifier("PKIAuthenticationInfoRepositoryCustom")
 public interface PKIAuthenticationInfoRepositoryCustom {
 
     String findServerPrivateKeyByClientId(String clientId);

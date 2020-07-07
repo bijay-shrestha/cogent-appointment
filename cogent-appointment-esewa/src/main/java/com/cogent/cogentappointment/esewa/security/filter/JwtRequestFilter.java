@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.esewa.security.filter;
 import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.EsewaRequestDTO;
 import com.cogent.cogentappointment.esewa.exception.BadRequestException;
-import com.cogent.cogentappointment.esewa.exception.InternalServerErrorException;
 import com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -52,32 +51,38 @@ public class JwtRequestFilter implements Filter {
 
         EsewaRequestDTO esewaRequestDTO = null;
 
-        if (uri.contains("/esewa/")) {
-            try (BufferedReader reader = request.getReader()) {
+        String SKIP_URL = "/test";
 
-                String encryptedPayloadData = this.getPayloadData(reader);
+        if (!uri.contains(SKIP_URL)) {
+            if (uri.contains("/esewa/")) {
+                try (BufferedReader reader = request.getReader()) {
 
-                System.out.println(encryptedPayloadData);
+                    String encryptedPayloadData = this.getPayloadData(reader);
 
-                esewaRequestDTO = ObjectMapperUtils.map(encryptedPayloadData, EsewaRequestDTO.class);
+                    System.out.println(encryptedPayloadData);
 
-                Map<String, String> map = new HashMap<>();
-                map.put("data", esewaRequestDTO.getData());
+                    esewaRequestDTO = ObjectMapperUtils.map(encryptedPayloadData, EsewaRequestDTO.class);
 
-                Object decryptedData = toDecrypt(map);
-                System.out.println(decryptedData);
+                    Map<String, String> map = new HashMap<>();
+                    map.put("data", esewaRequestDTO.getData().toString());
 
-                dataWrapperRequest.setData(decryptedData);
+                    Object decryptedData = toDecrypt(map);
+                    System.out.println(decryptedData);
 
-            } catch (Exception e) {
-                log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
+                    esewaRequestDTO.setData(decryptedData);
+
+                } catch (Exception e) {
+                    log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
 //                throw new InternalServerErrorException(EsewaRequestDTO.class,
 //                        "Error occurred while validating encrypted request");
+                }
+
             }
 
         }
 
         chain.doFilter(request, response);
+
 
     }
 

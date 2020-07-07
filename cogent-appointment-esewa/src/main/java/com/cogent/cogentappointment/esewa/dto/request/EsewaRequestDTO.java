@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.esewa.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.io.Serializable;
 
@@ -10,7 +12,9 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@RequestScope
+@Component
 public class EsewaRequestDTO implements Serializable {
 
-    private String data;
+    private Object data;
 }

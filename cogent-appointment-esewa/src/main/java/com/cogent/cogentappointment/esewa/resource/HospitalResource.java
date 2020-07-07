@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.resource;
 
 import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
+import com.cogent.cogentappointment.esewa.dto.request.EsewaRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.service.HospitalService;
 import io.swagger.annotations.Api;
@@ -29,18 +30,21 @@ public class HospitalResource {
     private final HospitalService hospitalService;
 
     private final DataWrapperRequest dataWrapperRequest;
+    private final EsewaRequestDTO esewaRequestDTO;
 
     public HospitalResource(HospitalService hospitalService,
-                            DataWrapperRequest dataWrapperRequest) {
+                            DataWrapperRequest dataWrapperRequest,
+                            EsewaRequestDTO esewaRequestDTO) {
         this.hospitalService = hospitalService;
         this.dataWrapperRequest = dataWrapperRequest;
+        this.esewaRequestDTO = esewaRequestDTO;
     }
 
     @PutMapping(SEARCH + MIN)
     @ApiOperation(FETCH_MIN_DETAILS)
     public ResponseEntity<?> fetchMinDetails() throws IOException {
 
-        HospitalMinSearchRequestDTO searchRequestDTO = convertValue(dataWrapperRequest.getData(),
+        HospitalMinSearchRequestDTO searchRequestDTO = convertValue(esewaRequestDTO.getData(),
                 HospitalMinSearchRequestDTO.class);
 
         return ok(hospitalService.fetchMinDetails(searchRequestDTO));

@@ -3,6 +3,9 @@ package com.cogent.cogentappointment.esewa;
 import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
 import com.cogent.cogentappointment.esewa.configuration.YamlPropertySourceFactory;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentTransactionRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,9 +19,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @SpringBootApplication
 @EntityScan(basePackages =
@@ -62,14 +62,70 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
         System.out.println("Value of `mail.host` = " + env.getProperty("mail.host"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
 
+        PatientRequestByDTO patientRequestByDTO = new PatientRequestByDTO();
+        patientRequestByDTO.setAddress("Baluwatar");
+//        patientRequestByDTO.setDateOfBirth(new Date("2020-07-07"));
+        patientRequestByDTO.setDistrictId(4067l);
+        patientRequestByDTO.setEmail("Thapa_sauravi@hotmail.com");
+        patientRequestByDTO.setESewaId("9834567678");
+        patientRequestByDTO.setGender('F');
+        patientRequestByDTO.setIsAgent('N');
+        patientRequestByDTO.setMobileNumber("9834567678");
+        patientRequestByDTO.setName("Sauravi Thapa");
+        patientRequestByDTO.setProvinceId(4072l);
+        patientRequestByDTO.setVdcOrMunicipalityId(4678l);
+        patientRequestByDTO.setWardNumber("5");
+
+        AppointmentTransactionRequestDTO transactionRequestDTO = new AppointmentTransactionRequestDTO();
+        transactionRequestDTO.setAppointmentAmount(500D);
+        transactionRequestDTO.setAppointmentModeCode("esewa");
+        transactionRequestDTO.setDiscountAmount(0D);
+        transactionRequestDTO.setServiceChargeAmount(0D);
+        transactionRequestDTO.setTaxAmount(0D);
+//        transactionRequestDTO.setTransactionDate(new Date("2070-7-12"));
+        transactionRequestDTO.setTransactionNumber("test");
+
+        AppointmentRequestDTO appointmentRequestDTO = new AppointmentRequestDTO();
+        appointmentRequestDTO.setAppointmentReservationId(45l);
+        appointmentRequestDTO.setCreatedDateNepali("2077-06-17");
+        appointmentRequestDTO.setHospitalAppointmentServiceTypeId(2l);
+        appointmentRequestDTO.setIsFollowUp('N');
+        appointmentRequestDTO.setParentAppointmentId(0l);
+        appointmentRequestDTO.setIsNewRegistration(true);
+        appointmentRequestDTO.setPatientId(0l);
+
+        com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForSelf appointmentRequestDTOForSelf =
+                new com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForSelf();
+
+        appointmentRequestDTOForSelf.setPatientInfo(patientRequestByDTO);
+        appointmentRequestDTOForSelf.setAppointmentInfo(appointmentRequestDTO);
+        appointmentRequestDTOForSelf.setTransactionInfo(transactionRequestDTO);
 
         //testing data
-        Map<String, Object> map = new HashMap<>();
-        map.put("transaction_code", "047Y07V");
-        map.put("product_code", "CHEERS");
-        map.put("esewa_id", "9860008245");
-        String token = JwtUtils.generateToken(map);
+//        Map<String, Object> map = new HashMap<>();
+//        map.p
+//        map.put( appointmentRequestDTOForSelf);
+
+        String token = JwtUtils.generateToken(appointmentRequestDTOForSelf);
         System.out.println(token);
+
+
+//        map.put("appointmentDate", "2020-07-07");
+//        map.put("appointmentTime", "10:00");
+//        map.put("doctorId", 1);
+//        map.put("hospitalId", 2);
+//        map.put("patientId", 0);
+//        map.put("specializationId", 1);
+//        map.put("userId", "9843698393");
+//        String token = JwtUtils.generateToken(map);
+//        System.out.println(token);
+
+
+//        map.put("transaction_code", "047Y07V");
+//        map.put("product_code", "CHEERS");
+//        map.put("esewa_id", "9860008245");
+//        String token = JwtUtils.generateToken(map);
+//        System.out.println(token);
 
 //        Map<String, Object> map = new HashMap<>();
 //        map.put("name", "Hospital For Children Eye ENT And Rehabilitation Services");

@@ -24,6 +24,7 @@ public class JwtUtils implements Serializable {
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
     private static String SECRET_KEY = "ZXNld2FfbWVyY2hhbnRfY2xpZW50";
+
     public static String generateToken(Object request) {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;

@@ -1,38 +1,41 @@
 package com.cogent.cogentappointment.esewa.security.filter;
 
+import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
+import com.cogent.cogentappointment.esewa.dto.request.EsewaRequestDTO;
 import com.cogent.cogentappointment.esewa.exception.BadRequestException;
+import com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.security.SecurityUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.ws.RequestWrapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.cogent.cogentappointment.esewa.constants.HMACConstant.HMAC_API_SECRET_ESEWA;
+import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
 
 /**
  * @author Sauravi Thapa ON 7/7/20
  */
 @Slf4j
 @Component
-public class JwtRequestFilter  implements Filter{
+public class JwtRequestFilter implements Filter {
 
-        public static final String DATA = "data";
+    public static final String DATA = "data";
+
+    private final DataWrapperRequest dataWrapperRequest;
+
+    public JwtRequestFilter(DataWrapperRequest dataWrapperRequest) {
+        this.dataWrapperRequest = dataWrapperRequest;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -40,7 +43,43 @@ public class JwtRequestFilter  implements Filter{
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain) throws IOException,
+            ServletException {
+
+
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        String uri = httpServletRequest.getRequestURI();
+
+        EsewaRequestDTO esewaRequestDTO = null;
+
+        if (uri.contains("/esewa/")) {
+            try (BufferedReader reader = request.getReader()) {
+
+                String encryptedPayloadData = this.getPayloadData(reader);
+
+                System.out.println(encryptedPayloadData);
+
+                esewaRequestDTO = ObjectMapperUtils.map(encryptedPayloadData, EsewaRequestDTO.class);
+
+                Map<String, String> map = new HashMap<>();
+                map.put("data", esewaRequestDTO.getData());
+
+                Object decryptedData = toDecrypt(map);
+                System.out.println(decryptedData);
+
+                dataWrapperRequest.setData(decryptedData);
+
+            } catch (Exception e) {
+                log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
+                handleFilterException(httpServletResponse);
+            }
+
+        }
+
+        chain.doFilter(request, response);
 
     }
 
@@ -48,4 +87,35 @@ public class JwtRequestFilter  implements Filter{
     public void destroy() {
 
     }
+
+    private void handleFilterException(HttpServletResponse httpServletResponse) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        httpServletResponse.setContentType("application/json");
+        PrintWriter out = httpServletResponse.getWriter();
+//        out.print(mapper.writeValueAsString(ClientPaymentExceptionResource.builder()
+//                .code(ClientResponse.INVALID_PAYLOAD_SIGNATURE.getCode())
+//                .message(ClientResponse.INVALID_PAYLOAD_SIGNATURE.getValue())
+//                .build()));
+        out.flush();
+    }
+
+    private String getPayloadData(BufferedReader reader) throws IOException {
+        final StringBuilder builder = new StringBuilder();
+        if (reader == null) {
+            log.error("Request body is null");
+            throw new BadRequestException("Request body is null");
+        }
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        return builder.toString();
+    }
+
+    public static Claims decodeJWT(String request, String secreteKey) {
+        return Jwts.parser()
+                .setSigningKey(DatatypeConverter.parseBase64Binary(secreteKey))
+                .parseClaimsJws(request).getBody();
+    }
+
 }

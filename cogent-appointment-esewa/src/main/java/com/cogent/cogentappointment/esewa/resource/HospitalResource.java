@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.resource;
 
+import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.service.HospitalService;
 import io.swagger.annotations.Api;
@@ -10,14 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.esewa.constants.StringConstant.DATA;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.HospitalConstant.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentServiceType.APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
-import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.decrypt;
-import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
 import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils.convertValue;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -31,15 +29,19 @@ public class HospitalResource {
 
     private final HospitalService hospitalService;
 
-    public HospitalResource(HospitalService hospitalService) {
+    private final DataWrapperRequest dataWrapperRequest;
+
+    public HospitalResource(HospitalService hospitalService,
+                            DataWrapperRequest dataWrapperRequest) {
         this.hospitalService = hospitalService;
+        this.dataWrapperRequest = dataWrapperRequest;
     }
 
     @PutMapping(SEARCH + MIN)
     @ApiOperation(FETCH_MIN_DETAILS)
-    public ResponseEntity<?> fetchMinDetails(@RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> fetchMinDetails() throws IOException {
 
-        HospitalMinSearchRequestDTO searchRequestDTO = convertValue(toDecrypt(data),
+        HospitalMinSearchRequestDTO searchRequestDTO = convertValue(dataWrapperRequest.getData(),
                 HospitalMinSearchRequestDTO.class);
 
         return ok(hospitalService.fetchMinDetails(searchRequestDTO));

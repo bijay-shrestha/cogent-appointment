@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.resource;
 
+import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
@@ -13,13 +14,11 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.save.Appointme
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.esewa.service.AppointmentService;
 import com.cogent.cogentappointment.esewa.service.EsewaService;
-import com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.Esew
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.*;
-import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.decrypt;
 import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
 import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils.convertValue;
 import static java.net.URI.create;
@@ -48,10 +46,14 @@ public class AppointmentResource {
 
     private final EsewaService esewaService;
 
+    private final DataWrapperRequest dataWrapperRequest;
+
     public AppointmentResource(AppointmentService appointmentService,
-                               EsewaService esewaService) {
+                               EsewaService esewaService,
+                               DataWrapperRequest dataWrapperRequest) {
         this.appointmentService = appointmentService;
         this.esewaService = esewaService;
+        this.dataWrapperRequest = dataWrapperRequest;
     }
 
     @PutMapping(FETCH_AVAILABLE_TIMESLOTS)
@@ -76,9 +78,9 @@ public class AppointmentResource {
 
     @PostMapping(SELF)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> saveAppointmentForSelf(@RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> saveAppointmentForSelf() throws IOException {
 
-        AppointmentRequestDTOForSelf requestDTO= convertValue(toDecrypt(data),
+        AppointmentRequestDTOForSelf requestDTO= convertValue(dataWrapperRequest.getData(),
                 AppointmentRequestDTOForSelf.class);
 
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));

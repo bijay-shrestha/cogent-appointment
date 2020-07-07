@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.resource;
 
+import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientDeleteRequestDTOForOthers;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientUpdateDTOForOthers;
@@ -8,8 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 import java.io.IOException;
 import java.util.Map;
@@ -33,8 +32,11 @@ public class PatientResource {
 
     private final PatientService patientService;
 
-    public PatientResource(PatientService patientService) {
+    private final DataWrapperRequest dataWrapperRequest;
+
+    public PatientResource(PatientService patientService, DataWrapperRequest dataWrapperRequest) {
         this.patientService = patientService;
+        this.dataWrapperRequest = dataWrapperRequest;
     }
 
     //    /*WITHOUT HOSPITAL WISE*/
@@ -47,9 +49,9 @@ public class PatientResource {
     /*HOSPITAL WISE*/
     @PutMapping(SEARCH + SELF)
     @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
-    public ResponseEntity<?> searchForSelf(@RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> searchForSelf() throws IOException {
 
-        PatientMinSearchRequestDTO searchRequestDTO = convertValue(toDecrypt(data),
+        PatientMinSearchRequestDTO searchRequestDTO = convertValue(dataWrapperRequest.getData(),
                 PatientMinSearchRequestDTO.class);
 
         return ok(patientService.searchForSelfHospitalWise(searchRequestDTO));
@@ -66,11 +68,10 @@ public class PatientResource {
     /*HOSPITAL WISE*/
     @PutMapping(SEARCH + OTHERS)
     @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
-    public ResponseEntity<?> search(@RequestBody Map<String, String> data,
-                                    @RequestParam("page") int page,
+    public ResponseEntity<?> search(@RequestParam("page") int page,
                                     @RequestParam("size") int size) throws IOException {
 
-        PatientMinSearchRequestDTO searchRequestDTO = convertValue(toDecrypt(data),
+        PatientMinSearchRequestDTO searchRequestDTO = convertValue(dataWrapperRequest.getData(),
                 PatientMinSearchRequestDTO.class);
 
         return ok(patientService.searchForOthersHospitalWise(searchRequestDTO, getPageable(page, size)));
@@ -85,10 +86,10 @@ public class PatientResource {
 
     @PutMapping(UPDATE + OTHERS)
     @ApiOperation(UPDATE_PATIENT_INFO_OPERATION)
-    public ResponseEntity<?> updateOtherPatientDetails(@RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> updateOtherPatientDetails() throws IOException {
 
 
-        PatientUpdateDTOForOthers updateRequestDTO = convertValue(toDecrypt(data),
+        PatientUpdateDTOForOthers updateRequestDTO = convertValue(dataWrapperRequest.getData(),
                 PatientUpdateDTOForOthers.class);
 
         patientService.updateOtherPatientDetails(updateRequestDTO);
@@ -97,9 +98,9 @@ public class PatientResource {
 
     @PutMapping(DELETE + OTHERS)
     @ApiOperation(DELETE_PATIENT_INFO_OPERATION)
-    public ResponseEntity<?> deleteOtherPatientDetails(@RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> deleteOtherPatientDetails() throws IOException {
 
-        PatientDeleteRequestDTOForOthers requestDTOForOthers = convertValue(toDecrypt(data),
+        PatientDeleteRequestDTOForOthers requestDTOForOthers = convertValue(dataWrapperRequest.getData(),
                 PatientDeleteRequestDTOForOthers.class);
 
         patientService.deleteOtherPatient(requestDTOForOthers);

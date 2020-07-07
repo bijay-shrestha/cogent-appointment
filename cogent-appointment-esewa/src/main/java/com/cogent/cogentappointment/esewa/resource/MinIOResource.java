@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.esewa.resource;
 
 import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
 import com.cogent.cogentappointment.commons.service.MinIOService;
+import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,14 +24,17 @@ public class MinIOResource {
 
     private final MinIOService minIOService;
 
-    public MinIOResource(MinIOService minIOService) {
+    private final DataWrapperRequest dataWrapperRequest;
+
+    public MinIOResource(MinIOService minIOService, DataWrapperRequest dataWrapperRequest) {
         this.minIOService = minIOService;
+        this.dataWrapperRequest = dataWrapperRequest;
     }
 
     @PutMapping(PUT_PERSIGNED_URL)
-    public ResponseEntity<?> putPresignedObjectURL(@RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> putPresignedObjectURL() throws IOException {
 
-        FileURLRequestDTO fileURLRequestDTO = convertValue(toDecrypt(data),
+        FileURLRequestDTO fileURLRequestDTO = convertValue(dataWrapperRequest.getData(),
                 FileURLRequestDTO.class);
 
         String url = minIOService.putPresignedObjectURL(fileURLRequestDTO);
@@ -39,9 +43,9 @@ public class MinIOResource {
     }
 
     @PutMapping(GET_PERSIGNED_URL)
-    public ResponseEntity<?> getPresignedObjectURL(@RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> getPresignedObjectURL() throws IOException {
 
-        FileURLRequestDTO fileURLRequestDTO = convertValue(toDecrypt(data),
+        FileURLRequestDTO fileURLRequestDTO = convertValue(dataWrapperRequest.getData(),
                 FileURLRequestDTO.class);
 
         String url = minIOService.getPresignedObjectURL(fileURLRequestDTO);

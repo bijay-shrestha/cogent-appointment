@@ -1,19 +1,16 @@
 package com.cogent.cogentappointment.esewa.resource;
 
+import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentFollowUpTrackerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
 import java.io.IOException;
-import java.util.Map;
 
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.FollowUpTrackerConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.FollowUpTrackerConstant.FETCH_FOLLOW_UP_DETAILS;
@@ -35,16 +32,20 @@ public class AppointmentHospitalDepartmentFollowUpTrackerResource {
 
     private final AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDeptFollowUpTrackerService;
 
+    private final DataWrapperRequest dataWrapperRequest;
+
     public AppointmentHospitalDepartmentFollowUpTrackerResource(
-            AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDeptFollowUpTrackerService) {
+            AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDeptFollowUpTrackerService,
+            DataWrapperRequest dataWrapperRequest) {
         this.appointmentHospitalDeptFollowUpTrackerService = appointmentHospitalDeptFollowUpTrackerService;
+        this.dataWrapperRequest = dataWrapperRequest;
     }
 
     @PutMapping(FOLLOW_UP)
     @ApiOperation(FETCH_FOLLOW_UP_DETAILS)
-    public ResponseEntity<?> fetchFollowUpTrackerDetails(@RequestBody Map<String, String> data) throws IOException {
+    public ResponseEntity<?> fetchFollowUpTrackerDetails() throws IOException {
 
-        AppointmentHospitalDeptFollowUpRequestDTO requestDTO = convertValue(toDecrypt(data),
+        AppointmentHospitalDeptFollowUpRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentHospitalDeptFollowUpRequestDTO.class);
 
         return ok().body(appointmentHospitalDeptFollowUpTrackerService.fetchAppointmentHospitalDeptFollowUpDetails(requestDTO));

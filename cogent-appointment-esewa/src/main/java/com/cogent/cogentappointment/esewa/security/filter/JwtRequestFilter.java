@@ -69,7 +69,7 @@ public class JwtRequestFilter implements Filter {
                     Object decryptedData = toDecrypt(map);
                     System.out.println(decryptedData);
 
-                    esewaRequestDTO.setData(decryptedData);
+                    dataWrapperRequest.setData(decryptedData);
 
                 } catch (Exception e) {
                     log.error("Error occurred while validating encrypted request :: {}", e.getMessage());

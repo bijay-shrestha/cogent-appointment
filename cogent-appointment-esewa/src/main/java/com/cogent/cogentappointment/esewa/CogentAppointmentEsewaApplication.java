@@ -156,13 +156,5 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
     public JwtUtils jwtUtils() {
         return new JwtUtils();
     }
-
-//    public static void main(String[] args) {
-//
-//        Map<String, String> map = new HashMap<>();
-//        map.put("name", "CHEERS");
-//        String token = JwtUtils.generateToken(map);
-//        System.out.println(token);
-//
-//    }
+    
 }

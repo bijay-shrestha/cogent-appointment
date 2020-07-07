@@ -23,13 +23,13 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.Admin.*;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.ForgotPassword.RESET_CODE;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
@@ -53,12 +53,15 @@ public class EmailServiceImpl implements EmailService {
 
     private final Configuration configuration;
 
+    private final EmailProperties emailProperties;
+
     public EmailServiceImpl(EmailToSendRepository emailToSendRepository,
                             @Qualifier("getMailSender") JavaMailSender javaMailSender,
-                            Configuration configuration) {
+                            Configuration configuration, EmailProperties emailProperties) {
         this.emailToSendRepository = emailToSendRepository;
         this.javaMailSender = javaMailSender;
         this.configuration = configuration;
+        this.emailProperties = emailProperties;
     }
 
     @Override
@@ -144,6 +147,8 @@ public class EmailServiceImpl implements EmailService {
 
             helper.setText(html, true);
 
+            helper.setFrom(emailProperties.getUsername());
+
             helper.addInline(LOGO_FILE_NAME, new FileSystemResource
                     (new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
 
@@ -157,7 +162,10 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             MimeMessage message = getMimeMessage(emailToSend);
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            MimeMessageHelper helper = new MimeMessageHelper(message,
+                    MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
 
             Map<String, Object> model = new HashMap<>();
             String html = "";
@@ -187,9 +195,12 @@ public class EmailServiceImpl implements EmailService {
 
             helper.setText(html, true);
 
+            helper.setFrom(emailProperties.getUsername());
+
             helper.addInline(LOGO_FILE_NAME, new FileSystemResource
                     (new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
 
+            System.out.println("EMAIL SENT TO : -------------" + emailToSend.getReceiverEmailAddress());
             javaMailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();

@@ -1,11 +1,13 @@
 package com.cogent.cogentappointment.esewa.resource;
 
 
+import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.TestConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.TestConstant.TEST_OPERATION;
@@ -21,5 +23,14 @@ public class TestResource {
     @ApiOperation(TEST_OPERATION)
     public String testClient(){
         return "Congratulations! e-Appointment esewa module is running successfully in Kubeshpere! ....";
+    }
+
+    @PostMapping
+    @ApiOperation(TEST_OPERATION)
+    public String tokenGenerator(@RequestBody Map<String, String> data){
+        String token = JwtUtils.generateToken(data);
+        System.out.println(token);
+
+        return token;
     }
 }

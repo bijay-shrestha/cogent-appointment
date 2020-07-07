@@ -70,7 +70,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getCompanyCode()));
         }
         try {
-
             filterChain.doFilter(request, response);
         } finally {
             SecurityContextHolder.clearContext();

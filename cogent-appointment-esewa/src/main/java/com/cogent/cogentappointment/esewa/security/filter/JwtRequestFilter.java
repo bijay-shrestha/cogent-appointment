@@ -91,17 +91,6 @@ public class JwtRequestFilter implements Filter {
 
     }
 
-//    private void handleFilterException(HttpServletResponse httpServletResponse) throws IOException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        httpServletResponse.setContentType("application/json");
-//        PrintWriter out = httpServletResponse.getWriter();
-////        out.print(mapper.writeValueAsString(ClientPaymentExceptionResource.builder()
-////                .code(ClientResponse.INVALID_PAYLOAD_SIGNATURE.getCode())
-////                .message(ClientResponse.INVALID_PAYLOAD_SIGNATURE.getValue())
-////                .build()));
-//        out.flush();
-//    }
-
     private String getPayloadData(BufferedReader reader) throws IOException {
         final StringBuilder builder = new StringBuilder();
         if (reader == null) {
@@ -113,12 +102,6 @@ public class JwtRequestFilter implements Filter {
             builder.append(line);
         }
         return builder.toString();
-    }
-
-    public static Claims decodeJWT(String request, String secreteKey) {
-        return Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary(secreteKey))
-                .parseClaimsJws(request).getBody();
     }
 
 }

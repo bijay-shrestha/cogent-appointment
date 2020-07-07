@@ -790,9 +790,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     private String convertObjectToEncryptedEsewaRequestBody(Object obj) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("data", obj);
-        return generateToken(map);
+        return generateToken(obj);
     }
 
 

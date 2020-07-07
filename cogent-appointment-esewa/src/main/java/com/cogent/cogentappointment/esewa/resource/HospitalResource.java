@@ -30,21 +30,18 @@ public class HospitalResource {
     private final HospitalService hospitalService;
 
     private final DataWrapperRequest dataWrapperRequest;
-    private final EsewaRequestDTO esewaRequestDTO;
 
     public HospitalResource(HospitalService hospitalService,
-                            DataWrapperRequest dataWrapperRequest,
-                            EsewaRequestDTO esewaRequestDTO) {
+                            DataWrapperRequest dataWrapperRequest) {
         this.hospitalService = hospitalService;
         this.dataWrapperRequest = dataWrapperRequest;
-        this.esewaRequestDTO = esewaRequestDTO;
     }
 
     @PutMapping(SEARCH + MIN)
     @ApiOperation(FETCH_MIN_DETAILS)
     public ResponseEntity<?> fetchMinDetails() throws IOException {
 
-        HospitalMinSearchRequestDTO searchRequestDTO = convertValue(esewaRequestDTO.getData(),
+        HospitalMinSearchRequestDTO searchRequestDTO = convertValue(dataWrapperRequest.getData(),
                 HospitalMinSearchRequestDTO.class);
 
         return ok(hospitalService.fetchMinDetails(searchRequestDTO));

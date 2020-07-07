@@ -14,11 +14,6 @@ import org.springframework.web.context.annotation.RequestScope;
 @Component
 public class DataWrapperRequest {
 
-    DataWrapperRequest(){
-        System.out.println("-----------data wrapper request is called..................");
-    }
-
     private Object data;
-
 
 }

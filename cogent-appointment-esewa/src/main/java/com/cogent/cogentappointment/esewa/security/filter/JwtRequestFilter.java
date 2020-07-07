@@ -3,8 +3,8 @@ package com.cogent.cogentappointment.esewa.security.filter;
 import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.EsewaRequestDTO;
 import com.cogent.cogentappointment.esewa.exception.BadRequestException;
+import com.cogent.cogentappointment.esewa.exception.InternalServerErrorException;
 import com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +12,9 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +48,6 @@ public class JwtRequestFilter implements Filter {
 
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String uri = httpServletRequest.getRequestURI();
 
         EsewaRequestDTO esewaRequestDTO = null;
@@ -74,6 +71,8 @@ public class JwtRequestFilter implements Filter {
 
             } catch (Exception e) {
                 log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
+//                throw new InternalServerErrorException(EsewaRequestDTO.class,
+//                        "Error occurred while validating encrypted request");
             }
 
         }

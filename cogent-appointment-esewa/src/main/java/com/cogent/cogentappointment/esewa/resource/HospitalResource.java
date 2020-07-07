@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.HospitalConstant.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;

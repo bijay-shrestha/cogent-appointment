@@ -64,14 +64,14 @@ public class JwtUtils implements Serializable {
 
     private static Claims getClaims(Object request) {
         Claims claims = Jwts.claims();
-        claims.put(DATA, request);
+        claims.put("data", request);
         return claims;
     }
 
     public static Claims decodeToken(Map<String, String> map) {
         return Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_DECODE_API_SECRET_ESEWA()))
-                .parseClaimsJws(map.get(DATA)).getBody();
+                .parseClaimsJws(map.get("data")).getBody();
     }
 
 }

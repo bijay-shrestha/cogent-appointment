@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource.v2;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
 import com.cogent.cogentappointment.esewa.service.CommonService;
 import io.swagger.annotations.Api;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.CommonConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.CommonConstant.FETCH_DOCTOR_SPECIALIZATION_INFO;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V2;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.CommonConstants.BASE_COMMON;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.CommonConstants.DOCTOR_SPECIALIZATION;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
@@ -21,7 +21,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti ON 05/02/2020
  */
-@RequestMapping(API_V2 + BASE_COMMON)
+@RequestMapping(API_V1 + BASE_COMMON)
 @RestController
 @Api(BASE_API_VALUE)
 public class CommonResource {

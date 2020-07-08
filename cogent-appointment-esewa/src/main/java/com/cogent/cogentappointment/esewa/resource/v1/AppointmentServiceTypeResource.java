@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource.v2;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
 import com.cogent.cogentappointment.esewa.service.AppointmentServiceTypeService;
 import io.swagger.annotations.Api;
@@ -17,7 +17,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 26/05/20
  */
-@RequestMapping(API_V2 + APPOINTMENT_SERVICE_TYPE)
+@RequestMapping(API_V1 + APPOINTMENT_SERVICE_TYPE)
 @RestController
 @Api(BASE_API_VALUE)
 public class AppointmentServiceTypeResource {

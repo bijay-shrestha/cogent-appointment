@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource.v2;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
 
 import com.cogent.cogentappointment.commons.service.AddressService;
@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AddressConstant.*;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V2;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AddressConstants.*;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -20,7 +21,7 @@ import static org.springframework.http.ResponseEntity.ok;
  */
 
 @RestController
-@RequestMapping(value = API_V2 + BASE_ADDRESS)
+@RequestMapping(value = API_V1 + BASE_ADDRESS)
 @Api(BASE_API_VALUE)
 public class AddressResource {
 

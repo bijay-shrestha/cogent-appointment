@@ -1,6 +1,5 @@
-package com.cogent.cogentappointment.esewa.resource.v2;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
-import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
@@ -19,7 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AppointmentConstant.*;
@@ -27,7 +26,6 @@ import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.Esew
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.EsewaConstants.*;
-import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils.convertValue;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -35,7 +33,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 2019-10-22
  */
-@RequestMapping(API_V2 + BASE_APPOINTMENT)
+@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @RestController
 @Api(BASE_API_VALUE)
 public class AppointmentResource {
@@ -44,89 +42,52 @@ public class AppointmentResource {
 
     private final EsewaService esewaService;
 
-    private final DataWrapperRequest dataWrapperRequest;
-
     public AppointmentResource(AppointmentService appointmentService,
-                               EsewaService esewaService,
-                               DataWrapperRequest dataWrapperRequest) {
+                               EsewaService esewaService) {
         this.appointmentService = appointmentService;
         this.esewaService = esewaService;
-        this.dataWrapperRequest = dataWrapperRequest;
     }
 
     @PutMapping(FETCH_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> fetchAvailableTimeSlots() throws IOException {
-
-        AppointmentCheckAvailabilityRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
-                AppointmentCheckAvailabilityRequestDTO.class);
-
+    public ResponseEntity<?> fetchAvailableTimeSlots(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
         return ok(appointmentService.fetchAvailableTimeSlots(requestDTO));
     }
 
     @PutMapping(FETCH_CURRENT_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_CURRENT_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> fetchCurrentAvailableTimeSlots() throws IOException{
-
-        AppointmentCheckAvailabilityRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
-                AppointmentCheckAvailabilityRequestDTO.class);
-
+    public ResponseEntity<?> fetchCurrentAvailableTimeSlots(
+            @Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
         return ok(appointmentService.fetchCurrentAvailableTimeSlots(requestDTO));
     }
 
     @PostMapping(SELF)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> saveAppointmentForSelf() throws IOException {
-
-        AppointmentRequestDTOForSelf requestDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentRequestDTOForSelf.class);
-
+    public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTOForSelf requestDTO) {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
     }
 
-//    @PostMapping(SELF)
-//    @ApiOperation(SAVE_OPERATION)
-//    public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTOForSelf requestDTO) {
-//        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
-//    }
-
     @PostMapping(OTHERS)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> saveAppointmentForOthers() throws IOException {
-
-        AppointmentRequestDTOForOthers requestDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentRequestDTOForOthers.class);
-
+    public ResponseEntity<?> saveAppointmentForOthers(@Valid @RequestBody AppointmentRequestDTOForOthers requestDTO) {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForOthers(requestDTO));
     }
 
     @PutMapping(PENDING_APPOINTMENT)
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
-    public ResponseEntity<?> fetchPendingAppointments() throws IOException {
-
-        AppointmentHistorySearchDTO searchDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentHistorySearchDTO.class);
-
+    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentHistorySearchDTO searchDTO) {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
     @PutMapping(CANCEL)
     @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
-    public ResponseEntity<?> cancelAppointment() throws IOException {
-
-        AppointmentCancelRequestDTO cancelRequestDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentCancelRequestDTO.class);
-
+    public ResponseEntity<?> cancelAppointment(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
         return ok(appointmentService.cancelAppointment(cancelRequestDTO));
     }
 
     @PutMapping(RESCHEDULE)
     @ApiOperation(RESCHEDULE_OPERATION)
-    public ResponseEntity<?> rescheduleAppointment() throws IOException {
-
-        AppointmentRescheduleRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentRescheduleRequestDTO.class);
-
+    public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
         return ok(appointmentService.rescheduleAppointment(requestDTO));
     }
 
@@ -137,21 +98,13 @@ public class AppointmentResource {
 
     @PutMapping(HISTORY)
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
-    public ResponseEntity<?> fetchAppointmentHistory() throws IOException {
-
-        AppointmentHistorySearchDTO searchDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentHistorySearchDTO.class);
-
+    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentHistorySearchDTO searchDTO) {
         return ok(appointmentService.fetchAppointmentHistory(searchDTO));
     }
 
     @PutMapping(SEARCH)
     @ApiOperation(SEARCH_APPOINTMENT)
-    public ResponseEntity<?> searchAppointments() throws IOException {
-
-        AppointmentSearchDTO searchDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentSearchDTO.class);
-
+    public ResponseEntity<?> searchAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
         return ok(appointmentService.searchAppointments(searchDTO));
     }
 
@@ -163,31 +116,20 @@ public class AppointmentResource {
 
     @PutMapping(TRANSACTION_STATUS)
     @ApiOperation(FETCH_APPOINTMENT_TRANSACTION_STATUS)
-    public ResponseEntity<?> fetchAppointmentTransactionStatus() throws IOException {
-
-        AppointmentTransactionStatusRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentTransactionStatusRequestDTO.class);
-
+    public ResponseEntity<?> fetchAppointmentTransactionStatus(
+            @Valid @RequestBody AppointmentTransactionStatusRequestDTO requestDTO) {
         return ok(appointmentService.fetchAppointmentTransactionStatus(requestDTO));
     }
 
     @PutMapping(AVAILABLE_APPOINTMENT_DATES_AND_TIME)
     @ApiOperation(FETCH_AVAILABLE_APPOINTMENT_DATES)
-    public ResponseEntity<?> fetchAvailableDatesAndTime() throws IOException {
-
-        AppointmentDatesRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentDatesRequestDTO.class);
-
+    public ResponseEntity<?> fetchAvailableDatesAndTime(@RequestBody AppointmentDatesRequestDTO requestDTO) {
         return ok(esewaService.fetchAvailableDatesAndTime(requestDTO));
     }
 
     @PutMapping(FETCH_DOCTOR_AVAILABLE_STATUS)
     @ApiOperation(FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION)
-    public ResponseEntity<?> fetchDoctorAvailableStatus() throws IOException {
-
-        AppointmentDetailRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentDetailRequestDTO.class);
-
+    public ResponseEntity<?> fetchDoctorAvailableStatus(@RequestBody AppointmentDetailRequestDTO requestDTO) {
         return ok(esewaService.fetchDoctorAvailableStatus(requestDTO));
     }
 
@@ -205,11 +147,7 @@ public class AppointmentResource {
 
     @PutMapping(DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES)
     @ApiOperation(FETCH_AVAILABLE_DATES)
-    public ResponseEntity<?> fetchAvailableDates() throws IOException {
-
-        AppointmentDatesRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
-                AppointmentDatesRequestDTO.class);
-
+    public ResponseEntity<?> fetchAvailableDates(@RequestBody AppointmentDatesRequestDTO requestDTO) {
         return ok(esewaService.fetchAvailableDates(requestDTO));
     }
 
@@ -222,11 +160,7 @@ public class AppointmentResource {
 
     @PutMapping(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION)
     @ApiOperation(SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
-    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization() throws IOException {
-
-        AvailableDoctorRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
-                AvailableDoctorRequestDTO.class);
-
+    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody AvailableDoctorRequestDTO requestDTO) {
         return ok(esewaService.fetchAvailableDoctorWithSpecialization(requestDTO));
     }
 

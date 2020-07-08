@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource.v1;
+package com.cogent.cogentappointment.esewa.resource;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;

@@ -25,6 +25,8 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private String appointmentNumber;
 
+    private String transactionNumber;
+
     private String appointmentTime;
 
     private String registrationNumber;

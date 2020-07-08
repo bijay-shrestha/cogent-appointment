@@ -185,7 +185,7 @@ public class AppointmentQuery {
     public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPROVALS =
             (searchRequestDTO) ->
                     "SELECT" +
-                            " a.id as appointmentId," +                                                    //[0]
+                            " a.id as appointmentId," +                                                  //[0]
                             " a.appointmentDate as appointmentDate," +                                   //[1]
                             " a.appointmentNumber as appointmentNumber," +                               //[2]
                             " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
@@ -198,16 +198,27 @@ public class AppointmentQuery {
                             " p.name as patientName," +                                                  //[5]
                             " p.mobileNumber as mobileNumber," +                                        //[6]
                             " sp.name as specializationName," +                                         //[7]
-                            " d.name as doctorName," +                                                  //[8]
-                            " a.appointmentModeId.name as appointmentMode," +
-                            " atd.appointmentAmount as appointmentAmount," +
-                            " da.fileUri as fileUri," +
-                            " hpi.hospitalNumber as hospitalNumber," +
-                            " p.id as patientId," +
-                            " p.gender as gender," +
-                            " hpi.address as address," +
-                            " hpi.isRegistered as isRegistered," +
-                            QUERY_TO_CALCULATE_PATIENT_AGE +
+                            " CASE WHEN" +
+                            " (d.salutation is null)" +
+                            " THEN d.name" +
+                            " ELSE" +
+                            " CONCAT_WS(' ',d.salutation, d.name)" +
+                            " END as doctorName," +                                                     //[8]
+                            " a.appointmentModeId.name as appointmentMode," +                           //[9]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[10]
+                            " atd.transactionNumber as transactionNumber," +                            //[11]
+                            " CASE WHEN" +
+                            " (da.status is null OR da.status = 'N')" +
+                            " THEN null" +
+                            " ELSE" +
+                            " da.fileUri" +
+                            " END as fileUri," +                                                        //[12]
+                            " hpi.hospitalNumber as hospitalNumber," +                                  //[13]
+                            " p.id as patientId," +                                                     //[14]
+                            " p.gender as gender," +                                                    //[15]
+                            " hpi.address as address," +                                                //[16]
+                            " hpi.isRegistered as isRegistered," +                                      //[17]
+                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[18]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +

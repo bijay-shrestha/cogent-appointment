@@ -235,8 +235,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_REGISTERED_APPOINTMENT)
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
@@ -245,8 +245,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public Long countFollowUpPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_FOLLOW_UP_APPOINTMENT)
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
@@ -256,8 +256,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT)
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
@@ -266,8 +266,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_OVER_ALL_APPOINTMENTS)
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();

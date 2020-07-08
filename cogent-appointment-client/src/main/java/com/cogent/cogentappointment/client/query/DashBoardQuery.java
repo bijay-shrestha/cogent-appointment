@@ -87,7 +87,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " WHERE " +
-                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
@@ -98,7 +98,7 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " ast.isRegistered='Y' " +
-                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND a.isFollowUp='N'";
 
@@ -110,7 +110,7 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " ast.isRegistered='Y' " +
-                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND a.isFollowUp='Y'";
 
@@ -122,7 +122,7 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " ast.isNew='Y' " +
-                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =

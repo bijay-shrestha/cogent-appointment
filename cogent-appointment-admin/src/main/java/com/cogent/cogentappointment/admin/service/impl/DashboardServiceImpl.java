@@ -71,20 +71,20 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getCurrentToDate(),
                 requestDTO.getCurrentFromDate(),
                 requestDTO.getHospitalId(),
-                "DOC");
+                requestDTO.getAppointmentServiceTypeCode());
 
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getPreviousToDate(),
                 requestDTO.getPreviousFromDate(),
                 requestDTO.getHospitalId(),
-                "DOC");
+                requestDTO.getAppointmentServiceTypeCode());
 
         AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
                         utilDateToSqlDateInString(requestDTO.getCurrentToDate()),
                         utilDateToSqlDateInString(requestDTO.getCurrentFromDate()),
                         requestDTO.getHospitalId(),
-                        "DOC"
+                        requestDTO.getAppointmentServiceTypeCode()
                 );
 
         RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(
@@ -149,8 +149,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         Map<String, String> map = revenueTrendResponseDTO.getData();
 
-        if (!isMapContainsEveryField
-                (map, dashBoardRequestDTO.getToDate(), filter)) {
+        if (!isMapContainsEveryField(map, dashBoardRequestDTO.getToDate(), filter)) {
             map = addRemainingFields
                     (revenueTrendResponseDTO.getData(),
                             dashBoardRequestDTO.getFromDate(),
@@ -182,9 +181,9 @@ public class DashboardServiceImpl implements DashboardService {
      * 2. CALCULATE CANCELLED/COMPANY REVENUE i.e. APPOINTMENT WITH TRANSACTION STATUS 'A' AND
      * APPOINTMENT WITH STATUS 'RE'
      * 3. UNION (1) & (2).
-      * ADD TO FINAL LIST CONSIDERING DISTINCT ELEMENTS NEEDS TO BE ADDED AND
-      * BASED ON CONDITION-> SAME DOCTOR ID & SPECIALIZATION ID
-      * */
+     * ADD TO FINAL LIST CONSIDERING DISTINCT ELEMENTS NEEDS TO BE ADDED AND
+     * BASED ON CONDITION-> SAME DOCTOR ID & SPECIALIZATION ID
+     * */
     @Override
     public DoctorRevenueResponseDTO calculateOverallDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
                                                                   Pageable pageable) {
@@ -274,7 +273,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     private void validateHospitalDepartmentRevenue(List<HospitalDepartmentRevenueDTO> doctorRevenue,
-                                       List<HospitalDepartmentRevenueDTO> cancelledRevenue) {
+                                                   List<HospitalDepartmentRevenueDTO> cancelledRevenue) {
 
         if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
             log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_REVENUE);

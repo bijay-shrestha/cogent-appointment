@@ -509,9 +509,16 @@ public class AppointmentQuery {
                             " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
                             " a.patientId.name as patientName," +
                             " a.patientId.mobileNumber as patientMobileNumber," +
-                            " ad.hospitalDepartment.name as hospitalDepartmentName" +
+                            " hd.name as hospitalDepartmentName," +
+                            " CASE " +
+                            " WHEN ahd.hospitalDepartmentRoomInfo.id IS NULL " +
+                            " THEN 'N/A'" +
+                            " ELSE r.roomNumber END as roomNumber" +
                             " FROM Appointment a" +
-                            " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                            " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                            " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                            " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                            " LEFT JOIN Room r ON r.id = hdri.room.id" +
                             " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(appointmentQueueSearchDTO);
@@ -527,7 +534,7 @@ public class AppointmentQuery {
             whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getHospitalDepartmentId()))
-            whereClause += " AND ad.hospitalDepartment.id = " + appointmentQueueRequestDTO.getHospitalDepartmentId();
+            whereClause += " AND hd.id = " + appointmentQueueRequestDTO.getHospitalDepartmentId();
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getHospitalId()))
             whereClause += " AND h.id = " + appointmentQueueRequestDTO.getHospitalId();

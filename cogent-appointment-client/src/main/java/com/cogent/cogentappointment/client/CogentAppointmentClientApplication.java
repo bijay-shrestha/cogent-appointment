@@ -82,7 +82,9 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
 
 
     @Bean
-    public MinIOProperties minIOProperties() { return new MinIOProperties();}
+    public MinIOProperties minIOProperties() {
+        return new MinIOProperties();
+    }
 
 
 }

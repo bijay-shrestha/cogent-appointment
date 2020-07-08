@@ -21,6 +21,7 @@ public interface IntegrationCheckPointService {
                                                           IntegrationBackendRequestDTO integrationRequestDTO);
 
     BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationBackendRequestDTO backendRequestDTO,
+                                                               Long appointmentModeId,
                                                                String generatedHmacKey);
 
     ThirdPartyResponse processEsewaRefundRequest(Appointment appointment,

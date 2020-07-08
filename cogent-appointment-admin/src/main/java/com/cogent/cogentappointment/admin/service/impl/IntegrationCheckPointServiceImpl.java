@@ -161,11 +161,12 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
     @Override
     public BackendIntegrationApiInfo getAppointmentModeApiIntegration(IntegrationBackendRequestDTO backendRequestDTO,
+                                                                      Long appointmentModeId,
                                                                       String generatedHmacKey) {
 
         AdminFeatureIntegrationResponse featureIntegrationResponse = integrationRepository.
                 fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(backendRequestDTO,
-                        backendRequestDTO.getAppointmentId());
+                        appointmentModeId);
 
         Map<String, String> requestHeaderResponse = integrationRepository.
                 findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
@@ -209,6 +210,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 .build();
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationBackendRequestDTO,
+                appointment.getAppointmentModeId().getId(),
                 generatedEsewaHmac);
 
         EsewaRefundRequestDTO esewaRefundRequestDTO = getEsewaRequestBody(appointment,
@@ -490,6 +492,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 appointment.getHospitalId().getEsewaMerchantCode());
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationBackendRequestDTO,
+                appointment.getAppointmentModeId().getId(),
                 generatedEsewaHmac);
 
         if (!Objects.isNull(integrationApiInfo)) {

@@ -14,7 +14,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
-;
+;import static com.cogent.cogentappointment.commons.constants.StringConstant.DATA;
 
 /**
  * @author Sauravi Thapa ON 7/5/20
@@ -63,14 +63,14 @@ public class JwtUtils implements Serializable {
 
     private static Claims getClaims(Object request) {
         Claims claims = Jwts.claims();
-        claims.put("data", request);
+        claims.put(DATA, request);
         return claims;
     }
 
     public static Claims decodeToken(Map<String, String> map) {
         return Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_DECODE_API_SECRET_ESEWA()))
-                .parseClaimsJws(map.get("data")).getBody();
+                .parseClaimsJws(map.get(DATA)).getBody();
     }
 
 }

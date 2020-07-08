@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
+import static com.cogent.cogentappointment.esewa.constants.JwtConstant.*;
 import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
 
 /**
@@ -22,8 +23,6 @@ import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt
 @Slf4j
 @Component
 public class JwtRequestFilter implements Filter {
-
-    public static final String DATA = "data";
 
     private final DataWrapperRequest dataWrapperRequest;
 
@@ -47,16 +46,12 @@ public class JwtRequestFilter implements Filter {
 
         EsewaRequestDTO esewaRequestDTO = null;
 
-
-//        String SKIP_URL = "/test";
-
-
-        List<String> WHITE_LIST = Arrays.asList("/esewa/api/v2/test", "/esewa/api/v1");
+        List<String> WHITE_LIST = Arrays.asList(ESEWA_API_V2_TEST, ESEWA_API_V1);
 
         boolean found = WHITE_LIST.stream().anyMatch(test -> test.contains(uri));
 
         if (!found) {
-            if (uri.contains("/esewa/api/v2")) {
+            if (uri.contains(ESEWA_API_V2)) {
                 try (BufferedReader reader = request.getReader()) {
 
                     String encryptedPayloadData = this.getPayloadData(reader);
@@ -66,7 +61,7 @@ public class JwtRequestFilter implements Filter {
                     esewaRequestDTO = ObjectMapperUtils.map(encryptedPayloadData, EsewaRequestDTO.class);
 
                     Map<String, String> map = new HashMap<>();
-                    map.put("data", esewaRequestDTO.getData().toString());
+                    map.put(DATA, esewaRequestDTO.getData().toString());
 
                     Object decryptedData = toDecrypt(map);
                     System.out.println(decryptedData);

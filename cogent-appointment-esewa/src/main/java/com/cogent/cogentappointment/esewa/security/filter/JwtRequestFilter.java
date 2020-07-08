@@ -101,10 +101,4 @@ public class JwtRequestFilter implements Filter {
         return builder.toString();
     }
 
-    public static Claims decodeJWT(String request, String secreteKey) {
-        return Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary(secreteKey))
-                .parseClaimsJws(request).getBody();
-    }
-
 }

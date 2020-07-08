@@ -838,9 +838,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
     }
 
     private String convertObjectToEncryptedEsewaRequestBody(Object obj) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("data", obj);
-        return generateToken(map);
+        return generateToken(obj);
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.TestConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.TestConstant.JWT_TOKEN_OPERATION;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.TestConstant.TEST_OPERATION;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.TestResourceConstant.BASE_TEST_RESOURCE;
@@ -26,9 +27,9 @@ public class TestResource {
     }
 
     @PostMapping
-    @ApiOperation(TEST_OPERATION)
+    @ApiOperation(JWT_TOKEN_OPERATION)
     public String tokenGenerator(@RequestBody Map<String, String> data){
-        String token = JwtUtils.generateToken(data);
+        String token = JwtUtils.generateTokenToTest(data);
         System.out.println(token);
 
         return token;

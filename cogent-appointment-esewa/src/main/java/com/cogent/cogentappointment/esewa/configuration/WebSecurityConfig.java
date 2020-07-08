@@ -47,8 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .addFilterBefore(hmacAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new PKIFilter(pkiAuthenticationInfoService, dataWrapper),
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(pkiFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

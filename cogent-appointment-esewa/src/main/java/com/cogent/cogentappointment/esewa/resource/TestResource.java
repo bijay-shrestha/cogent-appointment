@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.esewa.resource;
 
 import com.cogent.cogentappointment.esewa.dto.PKITestDTO;
-import com.cogent.cogentappointment.esewa.pki.utils.JacksonUtil;
 import com.cogent.cogentappointment.esewa.pki.wrapper.DataWrapper;
 import com.cogent.cogentappointment.esewa.repository.PKIAuthenticationInfoRepository;
+import com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,8 +40,9 @@ public class TestResource {
 
     @PostMapping("/pki")
     @ApiOperation("test")
-    public String testPKI() throws IOException, ClassNotFoundException {
-        PKITestDTO test = JacksonUtil.get(dataWrapper.getData(), PKITestDTO.class);
+    public String testPKI() throws IOException {
+//        PKITestDTO test = JacksonUtil.get(dataWrapper.getData(), PKITestDTO.class);
+        PKITestDTO test = ObjectMapperUtils.convertValue(dataWrapper.getData(), PKITestDTO.class);
         return "tested";
     }
 

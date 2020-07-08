@@ -13,4 +13,10 @@ public class ObjectMapperUtils {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(source, destination);
     }
+
+    public static <T> T convertValue(Object source, Class<T> destination) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.convertValue(source, destination);
+    }
+
 }

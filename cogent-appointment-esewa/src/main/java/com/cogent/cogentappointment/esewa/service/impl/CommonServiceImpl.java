@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
@@ -19,6 +20,7 @@ import static com.cogent.cogentappointment.esewa.log.constants.CommonLog.DOCTOR_
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * @author smriti ON 05/02/2020
@@ -52,11 +54,8 @@ public class CommonServiceImpl implements CommonService {
         List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(hospitalId);
 
         doctorInfo.forEach(doctor -> {
-
-            if (doctor.getFileUri() != null) {
+            if (!isEmpty(doctor.getFileUri()) && !Objects.isNull(doctor.getFileUri()))
                 doctor.setFileUri(minIOService.getObjectUrl(doctor.getFileUri()));
-            }
-
         });
 
         List<DropDownResponseDTO> specializationInfo =

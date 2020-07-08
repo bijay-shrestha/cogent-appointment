@@ -36,7 +36,6 @@ public class JwtRequestFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
     }
 
     @Override
@@ -73,8 +72,6 @@ public class JwtRequestFilter implements Filter {
 
                 } catch (Exception e) {
                     log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
-//                throw new InternalServerErrorException(EsewaRequestDTO.class,
-//                        "Error occurred while validating encrypted request");
                 }
 
             }
@@ -90,17 +87,6 @@ public class JwtRequestFilter implements Filter {
     public void destroy() {
 
     }
-
-//    private void handleFilterException(HttpServletResponse httpServletResponse) throws IOException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        httpServletResponse.setContentType("application/json");
-//        PrintWriter out = httpServletResponse.getWriter();
-////        out.print(mapper.writeValueAsString(ClientPaymentExceptionResource.builder()
-////                .code(ClientResponse.INVALID_PAYLOAD_SIGNATURE.getCode())
-////                .message(ClientResponse.INVALID_PAYLOAD_SIGNATURE.getValue())
-////                .build()));
-//        out.flush();
-//    }
 
     private String getPayloadData(BufferedReader reader) throws IOException {
         final StringBuilder builder = new StringBuilder();

@@ -201,7 +201,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
                 .setParameter(APPOINTMENT_MODE_ID, appointmentModeId)
                 .setParameter(INTEGRATION_CHANNEL_CODE, requestDTO.getIntegrationChannelCode())
                 .setParameter(FEATURE_CODE, requestDTO.getFeatureCode())
-                .setParameter(HOSPITAL_ID,requestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         AdminFeatureIntegrationResponse responseDTOList =
                 transformQueryToSingleResult(query, AdminFeatureIntegrationResponse.class);

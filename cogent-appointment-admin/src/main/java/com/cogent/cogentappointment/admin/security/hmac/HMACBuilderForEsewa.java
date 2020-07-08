@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 
 import static com.cogent.cogentappointment.admin.constants.HMACConstant.HMAC_ALGORITHM;
+import static com.cogent.cogentappointment.admin.constants.HMACConstant.HMAC_API_KEY;
 import static com.cogent.cogentappointment.admin.constants.HMACConstant.HMAC_API_SECRET_ESEWA;
 
 /**

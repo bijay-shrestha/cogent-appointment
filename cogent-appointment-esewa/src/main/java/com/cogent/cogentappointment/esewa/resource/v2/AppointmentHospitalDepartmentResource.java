@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource;
+package com.cogent.cogentappointment.esewa.resource.v2;
 
 import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRequestDTO;

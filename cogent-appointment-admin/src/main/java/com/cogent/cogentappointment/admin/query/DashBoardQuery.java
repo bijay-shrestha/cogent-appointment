@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.HospitalDepartmentRevenueRequestDTO;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
@@ -27,7 +28,7 @@ public class DashBoardQuery {
     }
 
     /*REVENUE STATISTICS*/
-    public static String QUERY_TO_GET_REVENUE_BY_DATE(Long hospitalId) {
+    public static String QUERY_TO_GET_REVENUE_BY_DATE(Long hospitalId, String appointmentServiceTypeCode) {
         return "SELECT" +
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
                 " FROM AppointmentTransactionDetail atd" +
@@ -37,8 +38,7 @@ public class DashBoardQuery {
                 " WHERE " +
                 " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
                 " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
-                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
+                WHERE_CLAUSE_TO_FETCH_REVENUE(hospitalId, appointmentServiceTypeCode);
     }
 
     private static String SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
@@ -49,52 +49,63 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id ";
 
-    private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(Long hospitalId) {
+    private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(Long hospitalId,
+                                                                           String appointmentServiceTypeCode) {
+
         return " WHERE " +
                 " (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
-                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode"+
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
+                WHERE_CLAUSE_TO_FETCH_REVENUE(hospitalId, appointmentServiceTypeCode);
     }
 
-    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE(Long hospitalId) {
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE(Long hospitalId,
+                                                                   String appointmentServiceTypeCode) {
+
         return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
-                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId, appointmentServiceTypeCode) +
                 " AND a.status='PA'";
     }
 
-    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_REVENUE(Long hospitalId) {
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_REVENUE(Long hospitalId,
+                                                                       String appointmentServiceTypeCode) {
+
         return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
-                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId, appointmentServiceTypeCode) +
                 " AND a.status='A'";
     }
 
-    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_REVENUE(Long hospitalId) {
+    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_REVENUE(Long hospitalId,
+                                                                      String appointmentServiceTypeCode) {
+
         return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
-                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId, appointmentServiceTypeCode) +
                 " AND a.status='C'";
     }
 
-    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(Long hospitalId) {
+    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(Long hospitalId,
+                                                                    String appointmentServiceTypeCode) {
+
         return "SELECT" +
                 " COUNT(a.id) as refundedAppointmentsCount," +
                 " COALESCE (SUM(ard.refundAmount ),0) as refundedAmount" +
                 " FROM AppointmentTransactionDetail atd" +
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id "+
-                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId, appointmentServiceTypeCode) +
                 " AND a.status='RE' AND ard.status = 'A'";
     }
 
-    public static String QUERY_TO_FETCH_REVENUE_FROM_REFUNDED_APPOINTMENT(Long hospitalId) {
+    public static String QUERY_TO_FETCH_REVENUE_FROM_REFUNDED_APPOINTMENT(Long hospitalId,
+                                                                          String appointmentServiceTypeCode) {
+
         return "SELECT" +
                 " COUNT(a.id) as revenueFromRefundedAppointmentsCount," +
                 " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as revenueFromRefundedAmount" +
                 " FROM AppointmentTransactionDetail atd" +
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id "+
-                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId, appointmentServiceTypeCode) +
                 " AND a.status='RE' AND ard.status = 'A'";
     }
 
@@ -157,7 +168,7 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(hospitalId);
     }
 
-    public static String QUERY_TO_FETCH_REVENUE_WEEKLY(Long hospitalId) {
+    public static String QUERY_TO_FETCH_REVENUE_WEEKLY(Long hospitalId, String appointmentServiceTypeCode) {
         return "SELECT" +
                 "  CASE" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 1" +
@@ -183,13 +194,12 @@ public class DashBoardQuery {
                 " WHERE " +
                 " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
                 " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
-                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
+                WHERE_CLAUSE_TO_FETCH_REVENUE(hospitalId, appointmentServiceTypeCode) +
                 " GROUP BY DATE_FORMAT(atd.transactionDate, '%b %e')" +
                 " ORDER BY DATE_FORMAT(atd.transactionDate, '%b %e')";
     }
 
-    public static String QUERY_TO_FETCH_REVENUE_YEARLY(Long hospitalId) {
+    public static String QUERY_TO_FETCH_REVENUE_YEARLY(Long hospitalId, String appointmentServiceTypeCode) {
         return " SELECT" +
                 " DATE_FORMAT(atd.transactionDate, '%b,%Y')," +
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as revenue" +
@@ -200,13 +210,12 @@ public class DashBoardQuery {
                 " WHERE" +
                 " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
                 " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
-                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
+                WHERE_CLAUSE_TO_FETCH_REVENUE(hospitalId, appointmentServiceTypeCode) +
                 " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                 " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
     }
 
-    public static String QUERY_TO_FETCH_REVENUE_MONTHLY(Long hospitalId) {
+    public static String QUERY_TO_FETCH_REVENUE_MONTHLY(Long hospitalId, String appointmentServiceTypeCode) {
         return "SELECT" +
                 " DATE_FORMAT(atd.transactionDate , '%e %b') As transactionDate," +
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as revenue" +
@@ -217,13 +226,13 @@ public class DashBoardQuery {
                 " WHERE" +
                 " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
                 " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
-                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
+                WHERE_CLAUSE_TO_FETCH_REVENUE(hospitalId, appointmentServiceTypeCode) +
                 " GROUP BY DATE_FORMAT(atd.transactionDate , '%e %b')" +
                 " ORDER BY DATE_FORMAT(atd.transactionDate , '%e %b')";
     }
 
-    public static String QUERY_TO_FETCH_REVENUE_DAILY(Long hospitalId) {
+    public static String QUERY_TO_FETCH_REVENUE_DAILY(Long hospitalId,
+                                                      String appointmentServiceTypeCode) {
         return "SELECT" +
                 " DATE_FORMAT(atd.transactionDate , '%e %b,%Y') As transactionDate," +
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as revenue" +
@@ -236,12 +245,23 @@ public class DashBoardQuery {
                 " WHERE" +
                 " DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') >= :fromDate" +
                 " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') <= :toDate" +
-                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
+                WHERE_CLAUSE_TO_FETCH_REVENUE(hospitalId, appointmentServiceTypeCode) +
                 " GROUP BY" +
                 " DATE_FORMAT(atd.transactionDate , '%e %b,%Y')" +
                 " ORDER BY" +
                 " atd.transactionDate";
+    }
+
+    public static String WHERE_CLAUSE_TO_FETCH_REVENUE(Long hospitalId, String appointmentServiceTypCode) {
+
+        String whereClause = "";
+        if (!Objects.isNull(hospitalId))
+            whereClause += " AND a.hospitalId=" + hospitalId;
+
+        if (!Objects.isNull(appointmentServiceTypCode) && !ObjectUtils.isEmpty(appointmentServiceTypCode))
+            whereClause += " AND hast.appointmentServiceType.code='" + appointmentServiceTypCode +"'";
+
+        return whereClause;
     }
 
     public static String QUERY_TO_FETCH_REFUND_AMOUNT(Long doctorId, Long specializationId, Long hospitalId) {
@@ -250,7 +270,7 @@ public class DashBoardQuery {
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
-                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                 " WHERE" +
                 " ard.status = 'A'" +
                 " AND ard.refundedDate BETWEEN :fromDate AND :toDate";

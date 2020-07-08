@@ -32,15 +32,15 @@ import static org.springframework.http.ResponseEntity.ok;
 @Api(BASE_API_VALUE)
 public class DashboardResource {
 
-    private DashboardService dashboardService;
-    private AppointmentService appointmentService;
+    private final DashboardService dashboardService;
+
+    private final AppointmentService appointmentService;
 
     public DashboardResource(DashboardService dashboardService, AppointmentService appointmentService) {
         this.dashboardService = dashboardService;
         this.appointmentService = appointmentService;
     }
 
-    //todo:make service type code dynamic
     @PutMapping(GENERATE_REVENUE)
     @ApiOperation(GENERATE_REVENUE_OPERATION)
     public ResponseEntity<?> getRevenueStatistics(@Valid @RequestBody GenerateRevenueRequestDTO requestDTO) {
@@ -59,7 +59,6 @@ public class DashboardResource {
         return ok(dashboardService.getPatientStatistics(hospitalId));
     }
 
-    //todo:make service type code dynamic
     @PutMapping(REVENUE_STATISTICS)
     @ApiOperation(REVENUE_STATISTICS_OPERATION)
     public ResponseEntity<?> getRevenueTrend(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {

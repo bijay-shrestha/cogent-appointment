@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.security.filter;
 import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.EsewaRequestDTO;
 import com.cogent.cogentappointment.esewa.exception.BadRequestException;
+import com.cogent.cogentappointment.esewa.resource.v1.AppointmentResource;
 import com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,8 +12,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
 
@@ -48,10 +48,14 @@ public class JwtRequestFilter implements Filter {
         EsewaRequestDTO esewaRequestDTO = null;
 
 
-        String SKIP_URL = "/test," +
-                "/esewa/api/v1";
+//        String SKIP_URL = "/test";
 
-        if (!uri.contains(SKIP_URL)) {
+
+        List<String> WHITE_LIST = Arrays.asList("/esewa/api/v2/test", "/esewa/api/v1");
+
+        boolean found = WHITE_LIST.stream().anyMatch(test -> test.contains(uri));
+
+        if (!found) {
             if (uri.contains("/esewa/api/v2")) {
                 try (BufferedReader reader = request.getReader()) {
 

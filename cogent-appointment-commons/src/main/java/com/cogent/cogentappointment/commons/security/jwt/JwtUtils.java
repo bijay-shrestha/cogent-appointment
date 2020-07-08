@@ -24,6 +24,11 @@ public class JwtUtils implements Serializable {
 
     private static ESewaHMAC eSewaHMAC;
 
+    public JwtUtils(ESewaHMAC eSewaHMAC) {
+        this.eSewaHMAC = eSewaHMAC;
+    }
+
+
     public static String generateToken(Object request) {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.valueOf(eSewaHMAC.getHMAC_ALGORITHM());

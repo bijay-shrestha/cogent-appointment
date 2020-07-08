@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa;
 
+import com.cogent.cogentappointment.commons.configuration.ESewaHMAC;
 import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
 import com.cogent.cogentappointment.esewa.configuration.YamlPropertySourceFactory;
@@ -7,6 +8,7 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.save.Appointme
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentTransactionRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -153,8 +155,13 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
     }
 
     @Bean
-    public JwtUtils jwtUtils() {
-        return new JwtUtils();
+    public ESewaHMAC eSewaHMAC() {
+        return new ESewaHMAC();
     }
-    
+
+    @Bean
+    public JwtUtils jwtUtils() {
+        return new JwtUtils(eSewaHMAC());
+    }
+
 }

@@ -76,9 +76,4 @@ public class CogentAppointmentEsewaApplication extends SpringBootServletInitiali
     public MinIOProperties minIOProperties() {
         return new MinIOProperties();
     }
-
-//    @Bean
-//    public PKIFilter pkiFilter(){
-//        return new PKIFilter();
-//    }
 }

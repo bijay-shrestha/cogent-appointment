@@ -2,9 +2,7 @@ package com.cogent.cogentappointment.esewa.configuration;
 
 import com.cogent.cogentappointment.esewa.exception.authentication.AuthEntryPointHmac;
 import com.cogent.cogentappointment.esewa.pki.filter.PKIFilter;
-import com.cogent.cogentappointment.esewa.pki.wrapper.DataWrapper;
 import com.cogent.cogentappointment.esewa.security.filter.HmacAuthenticationFilter;
-import com.cogent.cogentappointment.esewa.service.PKIAuthenticationInfoService;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,19 +26,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PKIFilter pkiFilter;
 
-    private final DataWrapper dataWrapper;
-
-    private final PKIAuthenticationInfoService pkiAuthenticationInfoService;
-
     public WebSecurityConfig(AuthEntryPointHmac unauthorizedHandler,
                              HmacAuthenticationFilter hmacAuthenticationFilter,
-                             PKIFilter pkiFilter, DataWrapper dataWrapper,
-                             PKIAuthenticationInfoService pkiAuthenticationInfoService) {
+                             PKIFilter pkiFilter) {
         this.unauthorizedHandler = unauthorizedHandler;
         this.hmacAuthenticationFilter = hmacAuthenticationFilter;
         this.pkiFilter = pkiFilter;
-        this.dataWrapper = dataWrapper;
-        this.pkiAuthenticationInfoService = pkiAuthenticationInfoService;
     }
 
     @Override

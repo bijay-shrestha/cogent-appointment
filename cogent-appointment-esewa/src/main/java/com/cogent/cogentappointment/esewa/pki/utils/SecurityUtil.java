@@ -11,9 +11,9 @@ import java.util.Base64;
 @Slf4j
 public class SecurityUtil {
 
-    protected static PKIData encryptPayloadAndGenerateSignature(String payload,
-                                                                String clientPublicKey,
-                                                                String serverPrivateKey) {
+    public static PKIData encryptPayloadAndGenerateSignature(String payload,
+                                                             String clientPublicKey,
+                                                             String serverPrivateKey) {
         try {
             SecretKey secretKey = AESEncryptionUtil.generateSecretKey();
             String base64EncodedSecretKey = AESEncryptionUtil.keyToString(secretKey);

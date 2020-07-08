@@ -64,9 +64,7 @@ public class PKIFilter extends SecurityUtil implements javax.servlet.Filter {
 
             String decryptedData = responseValidator(encryptedPayloadData, clientPublicKey, serverPrivateKey);
 
-            dataWrapper.setData("test");
-
-//            dataWrapper.setData(decryptedData);
+            dataWrapper.setData(decryptedData);
         } catch (Exception e) {
             log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
             handleFilterException(httpServletResponse);

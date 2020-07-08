@@ -40,10 +40,12 @@ public class TestResource {
 
     @PostMapping("/pki")
     @ApiOperation("test")
-    public String testPKI() throws IOException {
-//        PKITestDTO test = JacksonUtil.get(dataWrapper.getData(), PKITestDTO.class);
+    public Object testPKI() throws IOException {
+        System.out.println("INSIDE CONTROLLER-------------->");
+        Object data = dataWrapper.getData();
+        System.out.println(dataWrapper.getData());
         PKITestDTO test = ObjectMapperUtils.convertValue(dataWrapper.getData(), PKITestDTO.class);
-        return "tested";
+        return data;
     }
 
 }

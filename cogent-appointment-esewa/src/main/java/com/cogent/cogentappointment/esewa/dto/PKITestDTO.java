@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.esewa.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -10,7 +12,9 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PKITestDTO implements Serializable {
 
-    private String name;
+    private String url;
 }

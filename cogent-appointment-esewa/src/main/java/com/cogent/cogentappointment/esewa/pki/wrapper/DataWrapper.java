@@ -6,14 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.io.Serializable;
-
-@Component
 @Getter
 @Setter
 @RequestScope
+@Component
 @Slf4j
-public class DataWrapper implements Serializable {
+public class DataWrapper {
 
     private Object data;
 

@@ -50,7 +50,7 @@ public class JwtRequestFilter implements Filter {
         String SKIP_URL = "/test";
 
         if (!uri.contains(SKIP_URL)) {
-            if (uri.contains("/esewa/")) {
+            if (uri.contains("/esewa/api/v2")) {
                 try (BufferedReader reader = request.getReader()) {
 
                     String encryptedPayloadData = this.getPayloadData(reader);

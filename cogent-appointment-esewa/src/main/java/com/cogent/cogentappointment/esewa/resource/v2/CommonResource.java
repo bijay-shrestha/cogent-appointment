@@ -21,8 +21,8 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti ON 05/02/2020
  */
+@RestController(API_V2 + BASE_COMMON)
 @RequestMapping(API_V2 + BASE_COMMON)
-@RestController
 @Api(BASE_API_VALUE)
 public class CommonResource {
 

@@ -12,8 +12,8 @@ import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.Test
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V2;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.TestResourceConstant.BASE_TEST_RESOURCE;
 
-@RestController
-@RequestMapping(value = API_V2 + BASE_TEST_RESOURCE)
+@RestController(API_V2 + BASE_TEST_RESOURCE)
+@RequestMapping(API_V2 + BASE_TEST_RESOURCE)
 @Api(BASE_API_VALUE)
 public class TestResource {
 

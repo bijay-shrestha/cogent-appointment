@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.esewa.security.hmac.HMACUtils.getAuthToken;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * @author Sauravi Thapa ON 4/3/20
  */
-@RestController
-@RequestMapping("/login")
+@RestController(API_V2+LOGIN)
+@RequestMapping(API_V2+LOGIN)
 public class LoginResource {
 
     private final HmacApiInfoRepository hmacApiInfoRepository;

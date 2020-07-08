@@ -17,8 +17,8 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 26/05/20
  */
-@RequestMapping(API_V1 + APPOINTMENT_SERVICE_TYPE)
 @RestController
+@RequestMapping(API_V1 + APPOINTMENT_SERVICE_TYPE)
 @Api(BASE_API_VALUE)
 public class AppointmentServiceTypeResource {
 

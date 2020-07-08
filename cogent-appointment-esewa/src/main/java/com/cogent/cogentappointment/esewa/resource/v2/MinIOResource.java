@@ -16,7 +16,7 @@ import static com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils
 /**
  * @author rupak ON 2020/06/28-11:42 AM
  */
-@RestController
+@RestController(API_V2 + BASE_FILE)
 @RequestMapping(API_V2 + BASE_FILE)
 public class MinIOResource {
 

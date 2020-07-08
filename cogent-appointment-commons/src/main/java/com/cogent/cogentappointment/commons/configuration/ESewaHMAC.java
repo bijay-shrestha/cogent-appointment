@@ -21,4 +21,7 @@ public class ESewaHMAC {
     @Value("${esewa-hmac-api-secret}")
     public String HMAC_API_SECRET_ESEWA;
 
+//    @Value("${esewa-decode-hmac-api-secret}")
+//    private String HMAC_DECODE_API_SECRET_ESEWA;
+
 }

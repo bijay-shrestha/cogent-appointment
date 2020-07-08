@@ -22,8 +22,8 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 16/02/20
  */
+@RestController(API_V1 + BASE_APPOINTMENT)
 @RequestMapping(API_V1 + BASE_APPOINTMENT)
-@RestController
 @Api(BASE_API_VALUE)
 public class AppointmentFollowUpTrackerResource {
 

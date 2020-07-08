@@ -20,7 +20,7 @@ import static org.springframework.http.ResponseEntity.ok;
  * @author Sauravi Thapa ON 6/15/20
  */
 
-@RestController
+@RestController(API_V1+ BASE_ADDRESS)
 @RequestMapping(value = API_V1 + BASE_ADDRESS)
 @Api(BASE_API_VALUE)
 public class AddressResource {

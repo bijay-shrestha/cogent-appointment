@@ -107,7 +107,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE " +
-                " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                " (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
@@ -119,7 +119,7 @@ public class DashBoardQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " ast.isRegistered='Y' " +
-                " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                 " AND a.isFollowUp='N'" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
@@ -132,7 +132,7 @@ public class DashBoardQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " ast.isRegistered='Y' " +
-                " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                 " AND a.isFollowUp='Y'" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
@@ -145,7 +145,7 @@ public class DashBoardQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " ast.isNew='Y' " +
-                " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 

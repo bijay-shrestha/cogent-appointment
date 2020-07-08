@@ -96,6 +96,7 @@ import static com.cogent.cogentappointment.admin.query.TransactionLogQuery.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentLogUtils.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDateInString;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -202,8 +203,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_REGISTERED_APPOINTMENT(
                 dashBoardRequestDTO.getHospitalId()))
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()));
 
         return (Long) query.getSingleResult();
     }
@@ -212,8 +213,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public Long countFollowUpPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_FOLLOW_UP_APPOINTMENT(
                 dashBoardRequestDTO.getHospitalId()))
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()));
 
         return (Long) query.getSingleResult();
     }
@@ -222,8 +223,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT(
                 dashBoardRequestDTO.getHospitalId()))
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()));
 
         return (Long) query.getSingleResult();
     }
@@ -232,8 +233,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO) {
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_OVER_ALL_APPOINTMENTS(dashBoardRequestDTO.getHospitalId()))
-                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()));
 
         return (Long) query.getSingleResult();
     }

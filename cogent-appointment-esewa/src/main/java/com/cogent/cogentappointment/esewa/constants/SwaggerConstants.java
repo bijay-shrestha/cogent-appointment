@@ -161,6 +161,7 @@ public class SwaggerConstants {
     public interface TestConstant {
         String BASE_API_VALUE = "This is Test Resource";
         String TEST_OPERATION = "This is Test Operation";
+        String JWT_TOKEN_OPERATION = "This is used to generate token that is suppose to be sent by eSewa";
     }
 
 

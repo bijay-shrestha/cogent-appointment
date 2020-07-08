@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
 import com.cogent.cogentappointment.esewa.service.CommonService;
 import io.swagger.annotations.Api;

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
 import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
 import com.cogent.cogentappointment.commons.service.MinIOService;

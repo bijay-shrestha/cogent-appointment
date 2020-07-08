@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;

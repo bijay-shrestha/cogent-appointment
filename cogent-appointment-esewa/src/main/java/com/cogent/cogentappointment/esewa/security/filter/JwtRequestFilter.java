@@ -14,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.ERROR_VALIDATING_ENCRYPTED_REQUEST;
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.REQUEST_BODY_IS_NULL;
 import static com.cogent.cogentappointment.esewa.constants.JwtConstant.*;
 import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
 
@@ -69,7 +71,7 @@ public class JwtRequestFilter implements Filter {
                     dataWrapperRequest.setData(decryptedData);
 
                 } catch (Exception e) {
-                    log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
+                    log.error(ERROR_VALIDATING_ENCRYPTED_REQUEST, e.getMessage());
                 }
 
             }
@@ -89,8 +91,8 @@ public class JwtRequestFilter implements Filter {
     private String getPayloadData(BufferedReader reader) throws IOException {
         final StringBuilder builder = new StringBuilder();
         if (reader == null) {
-            log.error("Request body is null");
-            throw new BadRequestException("Request body is null");
+            log.error(REQUEST_BODY_IS_NULL);
+            throw new BadRequestException(REQUEST_BODY_IS_NULL);
         }
         String line;
         while ((line = reader.readLine()) != null) {

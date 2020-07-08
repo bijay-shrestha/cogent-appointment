@@ -33,14 +33,14 @@ public class JwtUtils implements Serializable {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.valueOf(eSewaHMAC.getHMAC_ALGORITHM());
 
-//We will sign our JWT with our ApiKey secret
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_API_SECRET_ESEWA());
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
-//Let's set the JWT Claims
+
         JwtBuilder builder = Jwts.builder()
                 .setClaims(getClaims(request))
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY()) * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(
+                        eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY()) * 1000))
                 .signWith(signatureAlgorithm, signingKey);
         return builder.compact();
     }
@@ -49,14 +49,15 @@ public class JwtUtils implements Serializable {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
 
-//We will sign our JWT with our ApiKey secret
+
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_DECODE_API_SECRET_ESEWA());
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
-//Let's set the JWT Claims
+
         JwtBuilder builder = Jwts.builder()
                 .setClaims(getClaims(request))
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY()) * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(
+                        eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY()) * 1000))
                 .signWith(signatureAlgorithm, signingKey);
         return builder.compact();
     }

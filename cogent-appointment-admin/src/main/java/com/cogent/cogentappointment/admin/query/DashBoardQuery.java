@@ -2,12 +2,10 @@ package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.HospitalDepartmentRevenueRequestDTO;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Objects;
 
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
-import static org.springframework.util.ObjectUtils.*;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -381,13 +379,19 @@ public class DashBoardQuery {
     public static String QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
 
         return "SELECT" +
-                " ad.hospitalDepartment.id as hospitalDepartmentId," +
-                " ad.hospitalDepartment.name as hospitalDepartmentName," +
+                " hd.id as hospitalDepartmentId," +
+                " hd.name as hospitalDepartmentName," +
                 " COUNT(a.id) as successfulAppointments," +
-                " COALESCE(SUM(atd.appointmentAmount),0) as departmentRevenue" +
+                " COALESCE(SUM(atd.appointmentAmount),0) as departmentRevenue," +
+                " CASE " +
+                " WHEN ad.hospitalDepartmentRoomInfo.id IS NULL " +
+                " THEN 'N/A'" +
+                " ELSE r.roomNumber END as roomNumber" +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
-                " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartment hd ON hd.id=ad.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                " LEFT JOIN Room r ON r.id = hdri.room.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
@@ -401,15 +405,13 @@ public class DashBoardQuery {
         String whereClause = " AND h.id=:hospitalId ";
 
         if (requestDTO.getHospitalDepartmentId() != 0 && !Objects.isNull(requestDTO.getHospitalDepartmentId()))
-            whereClause += " AND ad.hospitalDepartment.id=" + requestDTO.getHospitalDepartmentId();
-
+            whereClause += " AND hd.id=" + requestDTO.getHospitalDepartmentId();
 
         whereClause += " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " GROUP BY ad.hospitalDepartment.id ";
+                " GROUP BY hd.id ";
 
         return whereClause;
     }
-
 
     public static String QUERY_TO_GET_HOSPITAL_DEPARTMENT_FOLLOW_UP =
             "SELECT" +
@@ -427,22 +429,26 @@ public class DashBoardQuery {
                     " AND ad.hospitalDepartment.id=:hospitalDepartmentId" +
                     " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
 
-
-
     public static String QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
 
         return "SELECT" +
-                " ad.hospitalDepartment.id as hospitalDepartmentId," +
-                " ad.hospitalDepartment.name as hospitalDepartmentName," +
+                " hd.id as hospitalDepartmentId," +
+                " hd.name as hospitalDepartmentName," +
                 " COUNT(a.id) as cancelledAppointments," +
                 " CASE" +
                 " WHEN ard.status='PA'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
                 " WHEN ard.status='R'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
                 " WHEN ard.status='A'THEN (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 )) " +
-                " END  as cancelledRevenue" +
+                " END as cancelledRevenue," +
+                " CASE " +
+                " WHEN ad.hospitalDepartmentRoomInfo.id IS NULL " +
+                " THEN 'N/A'" +
+                " ELSE r.roomNumber END as roomNumber" +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                " LEFT JOIN Room r ON r.id = hdri.room.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +

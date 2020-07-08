@@ -491,6 +491,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 .build();
 
         String esewaId = getEsewaId(appointment.getId());
+
         String generatedEsewaHmac = getSigatureForEsewa.apply(esewaId,
                 appointment.getHospitalId().getEsewaMerchantCode());
 
@@ -504,6 +505,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     transactionDetail.getTransactionNumber());
 
             String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaPaymentStatus);
+
             log.info(encryptedRequestBody);
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(),

@@ -11,4 +11,6 @@ public class HMACConstant {
     public static final byte DELIMITER = '\n';
     public static final String SPACE = " ";
     public static final String COLON = ":";
+    public static final String HMAC_HASH="HmacSHA512 eSewa:057d470f-c6dc-4509-8a2c-670e9bbb1731:954145191157303:" +
+            "ky98M6rSqZ5KXaVZ5NEdcvh2CSwRVgCXcx18RmaVJ0huggvbVQ3+lJmKZKiZVvkEbElXUVGpOYX8nPnoH6ErQA==";
 }

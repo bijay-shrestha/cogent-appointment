@@ -543,9 +543,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
                                                                           Pageable pageable) {
 
-
-        String appointmentServiceTypeCode = Objects.isNull(rescheduleDTO.getAppointmentServiceTypeCode()) ?
-                DOCTOR_CONSULTATION_CODE : rescheduleDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+        String appointmentServiceTypeCode = rescheduleDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
         switch (appointmentServiceTypeCode) {
 

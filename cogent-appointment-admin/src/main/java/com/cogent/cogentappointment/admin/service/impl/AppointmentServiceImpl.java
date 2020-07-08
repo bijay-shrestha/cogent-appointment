@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
@@ -40,8 +39,8 @@ import static com.cogent.cogentappointment.admin.constants.CogentAppointmentCons
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseAppointmentRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
@@ -282,9 +281,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_LOG);
 
-//        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
-
-        String appointmentServiceTypeCode = DOCTOR_CONSULTATION_CODE;
+        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
         AppointmentLogResponseDTO appointmentLogs;
 
@@ -316,8 +313,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(SEARCHING_PROCESS_STARTED, TRANSACTION_LOG);
 
-        String appointmentServiceTypeCode = Objects.isNull(searchRequestDTO.getAppointmentServiceTypeCode()) ?
-                DOCTOR_CONSULTATION_CODE : searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
         TransactionLogResponseDTO transactionLogs;
 

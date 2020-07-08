@@ -56,7 +56,7 @@ public class DashboardUtils {
         final int WEEK_MONTH_YEAR_INDEX = 0;
         final int TOTAL_REVENUE = 1;
         Map<String, String> map = new LinkedHashMap<>();
-        resultList.stream().forEach(objects -> {
+        resultList.forEach(objects -> {
             map.put(objects[WEEK_MONTH_YEAR_INDEX].toString(), objects[TOTAL_REVENUE].toString());
         });
 
@@ -226,7 +226,7 @@ public class DashboardUtils {
     }
 
     public static List<HospitalDepartmentRevenueDTO> mergeHospitalDepartmentAndCancelledRevenue(List<HospitalDepartmentRevenueDTO> revenueResponse,
-                                                                        List<HospitalDepartmentRevenueDTO> cancelledRevenueResponse) {
+                                                                                                List<HospitalDepartmentRevenueDTO> cancelledRevenueResponse) {
 
         List<HospitalDepartmentRevenueDTO> combinedRevenueResponse =
                 combineHospitalDepartmentAndCancelledRevenue(revenueResponse, cancelledRevenueResponse);
@@ -235,7 +235,7 @@ public class DashboardUtils {
 
         combinedRevenueResponse.forEach(combinedInfo -> {
 
-            HospitalDepartmentRevenueDTO hospitalDepartmentRevenueDTO = finalRevenueResponse.stream()
+                    HospitalDepartmentRevenueDTO hospitalDepartmentRevenueDTO = finalRevenueResponse.stream()
                             .filter(finalRevenue ->
                                     isHospitalDepartmentRevenueConditionMatched(combinedInfo, finalRevenue)
                             ).findAny().orElse(null);
@@ -278,7 +278,7 @@ public class DashboardUtils {
     }
 
     private static List<HospitalDepartmentRevenueDTO> combineHospitalDepartmentAndCancelledRevenue(List<HospitalDepartmentRevenueDTO> revenueResponse,
-                                                                           List<HospitalDepartmentRevenueDTO> cancelledRevenueResponse) {
+                                                                                                   List<HospitalDepartmentRevenueDTO> cancelledRevenueResponse) {
 
         List<HospitalDepartmentRevenueDTO> combinedRevenueResponse = new ArrayList<>();
         combinedRevenueResponse.addAll(revenueResponse);

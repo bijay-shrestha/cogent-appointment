@@ -44,10 +44,11 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     @Override
     public Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId, String appointmentServiceTypeCode) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GET_REVENUE_BY_DATE(hospitalId))
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_GET_REVENUE_BY_DATE(hospitalId, appointmentServiceTypeCode))
                 .setParameter(TO_DATE, utilDateToSqlDateInString(toDate))
-                .setParameter(FROM_DATE, utilDateToSqlDateInString(fromDate))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(fromDate));
 
         Double amount = (Double) query.getSingleResult();
         return (amount == null) ? 0D : amount;
@@ -85,10 +86,10 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                                                       AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                       String appointmentServiceTypeCode) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE(hospitalId))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE(hospitalId, appointmentServiceTypeCode))
                 .setParameter(FROM_DATE, fromDate)
-                .setParameter(TO_DATE, toDate)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(TO_DATE, toDate);
 
         List<Object[]> results = query.getResultList();
 
@@ -102,10 +103,10 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                                                          AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                          String appointmentServiceTypeCode) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_REVENUE(hospitalId))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_REVENUE(hospitalId, appointmentServiceTypeCode))
                 .setParameter(FROM_DATE, fromDate)
-                .setParameter(TO_DATE, toDate)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(TO_DATE, toDate);
 
         List<Object[]> results = query.getResultList();
 
@@ -119,10 +120,10 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                                                          AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                          String appointmentServiceTypeCode) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_REVENUE(hospitalId))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_CANCELLED_APPOINTMENT_REVENUE(hospitalId, appointmentServiceTypeCode))
                 .setParameter(FROM_DATE, fromDate)
-                .setParameter(TO_DATE, toDate)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(TO_DATE, toDate);
 
         List<Object[]> results = query.getResultList();
 
@@ -136,10 +137,10 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                                                         AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                         String appointmentServiceTypeCode) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(hospitalId))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(hospitalId, appointmentServiceTypeCode))
                 .setParameter(FROM_DATE, fromDate)
-                .setParameter(TO_DATE, toDate)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(TO_DATE, toDate);
 
         List<Object[]> results = query.getResultList();
 
@@ -153,10 +154,10 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                                                                    AppointmentRevenueStatisticsResponseDTO responseDTO,
                                                                    String appointmentServiceTypeCode) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_FROM_REFUNDED_APPOINTMENT(hospitalId))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_REVENUE_FROM_REFUNDED_APPOINTMENT(hospitalId, appointmentServiceTypeCode))
                 .setParameter(FROM_DATE, fromDate)
-                .setParameter(TO_DATE, toDate)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(TO_DATE, toDate);
 
         List<Object[]> results = query.getResultList();
 
@@ -184,12 +185,14 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     @Override
     public RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO, Character filter) {
 
-        final String queryByFilter = getQueryByFilter(dashBoardRequestDTO.getHospitalId(), filter);
+        final String queryByFilter = getQueryByFilter(
+                dashBoardRequestDTO.getHospitalId(),
+                filter, dashBoardRequestDTO.getAppointmentServiceTypeCode()
+        );
 
         Query query = createQuery.apply(entityManager, queryByFilter)
                 .setParameter(TO_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getToDate()))
-                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, "DOC");
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(dashBoardRequestDTO.getFromDate()));
 
         List<Object[]> objects = query.getResultList();
 
@@ -283,19 +286,19 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     }
 
-    private String getQueryByFilter(Long hospitalId, Character filter) {
+    private String getQueryByFilter(Long hospitalId, Character filter, String appointmentServiceTypeCode) {
         Map<Character, String> queriesWithFilterAsKey = new HashMap<>();
-        queriesWithFilterAsKey.put('D', QUERY_TO_FETCH_REVENUE_DAILY(hospitalId));
-        queriesWithFilterAsKey.put('W', QUERY_TO_FETCH_REVENUE_WEEKLY(hospitalId));
-        queriesWithFilterAsKey.put('M', QUERY_TO_FETCH_REVENUE_MONTHLY(hospitalId));
-        queriesWithFilterAsKey.put('Y', QUERY_TO_FETCH_REVENUE_YEARLY(hospitalId));
+        queriesWithFilterAsKey.put('D', QUERY_TO_FETCH_REVENUE_DAILY(hospitalId, appointmentServiceTypeCode));
+        queriesWithFilterAsKey.put('W', QUERY_TO_FETCH_REVENUE_WEEKLY(hospitalId, appointmentServiceTypeCode));
+        queriesWithFilterAsKey.put('M', QUERY_TO_FETCH_REVENUE_MONTHLY(hospitalId, appointmentServiceTypeCode));
+        queriesWithFilterAsKey.put('Y', QUERY_TO_FETCH_REVENUE_YEARLY(hospitalId, appointmentServiceTypeCode));
 
         return queriesWithFilterAsKey.get(filter);
     }
 
     public static String QUERY_TO_CALCULATE_DOCTOR_COMPANY_REVENUE(DoctorRevenueRequestDTO requestDTO) {
 
-        return"SELECT" +
+        return "SELECT" +
                 " d.id as doctorId," +                                          //[0]
                 " CASE WHEN" +
                 " (d.salutation is null)" +

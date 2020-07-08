@@ -463,25 +463,27 @@ public class AppointmentStatusUtils {
         Integer followUpCount = 0;
 
         for (DoctorDutyRosterStatusResponseDTO doctorDutyRoster : doctorDutyRosterInfo) {
-            for (DoctorTimeSlotResponseDTO timeSlots : doctorDutyRoster.getDoctorTimeSlots()) {
-                switch (timeSlots.getStatus().trim().toUpperCase()) {
-                    case VACANT:
-                        vacantCount += 1;
-                        break;
-                    case BOOKED:
-                        bookedCount += 1;
-                        break;
-                    case APPROVED:
-                        checkedInCount += 1;
-                        break;
-                    case CANCELLED:
-                        cancelledCount += 1;
-                        break;
-                }
+            if (!Objects.isNull(doctorDutyRoster.getDoctorTimeSlots())) {
+                for (DoctorTimeSlotResponseDTO timeSlots : doctorDutyRoster.getDoctorTimeSlots()) {
+                    switch (timeSlots.getStatus().trim().toUpperCase()) {
+                        case VACANT:
+                            vacantCount += 1;
+                            break;
+                        case BOOKED:
+                            bookedCount += 1;
+                            break;
+                        case APPROVED:
+                            checkedInCount += 1;
+                            break;
+                        case CANCELLED:
+                            cancelledCount += 1;
+                            break;
+                    }
 
-                if (!Objects.isNull(timeSlots.getIsFollowUp())) {
-                    if (timeSlots.getIsFollowUp().equals(YES))
-                        followUpCount += 1;
+                    if (!Objects.isNull(timeSlots.getIsFollowUp())) {
+                        if (timeSlots.getIsFollowUp().equals(YES))
+                            followUpCount += 1;
+                    }
                 }
             }
         }
@@ -519,13 +521,13 @@ public class AppointmentStatusUtils {
 
         DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
 
-        Long count=0L;
+        Long count = 0L;
 
         do {
 
             dateTime = dateTime.plus(duration);
 
-            count+=1;
+            count += 1;
 
         } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
 

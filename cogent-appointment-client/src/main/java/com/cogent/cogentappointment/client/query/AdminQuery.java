@@ -12,15 +12,13 @@ import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderB
 public class AdminQuery {
 
     public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
-            " SELECT " +
-                    " COUNT(a.id)," +                   //[0]
-                    " h.numberOfAdmins" +               //[1]
-                    " FROM Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
-                    " WHERE h.id = :hospitalId" +
-                    " AND a.status !='D'";
+            " SELECT COUNT(a.id)," +
+                    " h.numberOfAdmins" +
+                    " FROM Hospital h" +
+                    " LEFT JOIN Department d ON h.id=d.hospital.id" +
+                    " LEFT JOIN Profile p ON d.id=p.department.id" +
+                    " LEFT JOIN Admin a ON a.profileId.id=p.id AND a.status!='D'" +
+                    " WHERE h.id=:hospitalId";
 
     public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
             "SELECT " +

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client;
 
 import com.cogent.cogentappointment.client.configuration.YamlPropertySourceFactory;
+import com.cogent.cogentappointment.commons.configuration.ESewaHMAC;
 import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
@@ -85,6 +86,11 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
     public MinIOProperties minIOProperties() {
         return new MinIOProperties();
     }
+
+    @Bean
+    public ESewaHMAC eSewaHMAC() { return new ESewaHMAC();}
+
+
 
 
 }

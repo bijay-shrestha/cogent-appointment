@@ -62,7 +62,6 @@ public class EsewaResource {
 //        return ok(esewaService.fetchAvailableDoctorWithSpecialization(requestDTO));
 //    }
 
-    //todo :update in esewa-module
     @PutMapping(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION)
     @ApiOperation(SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
     public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody AvailableDoctorRequestDTO requestDTO) {

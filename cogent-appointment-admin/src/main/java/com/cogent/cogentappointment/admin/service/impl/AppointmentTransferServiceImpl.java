@@ -65,6 +65,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
     private final SpecializationRepository specializationRepository;
 
+    private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
+
     public AppointmentTransferServiceImpl(AppointmentTransferRepository appointmentTransferRepository,
                                           AppointmentTransferTransactionDetailRepository transferTransactionRepository,
                                           AppointmentTransferTransactionRequestLogRepository transferTransactionRequestLogRepository,
@@ -72,7 +74,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                                           AppointmentTransactionDetailRepository transactionDetailRepository,
                                           AppointmentTransactionRequestLogRepository transactionRequestLogRepository,
                                           DoctorRepository doctorRepository,
-                                          SpecializationRepository specializationRepository) {
+                                          SpecializationRepository specializationRepository,
+                                          AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.appointmentTransferRepository = appointmentTransferRepository;
         this.transferTransactionRepository = transferTransactionRepository;
         this.transferTransactionRequestLogRepository = transferTransactionRequestLogRepository;
@@ -81,6 +84,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         this.transactionRequestLogRepository = transactionRequestLogRepository;
         this.doctorRepository = doctorRepository;
         this.specializationRepository = specializationRepository;
+        this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
     }
 
     /* FETCH APPOINTMENT DATES BASED ON DOCTOR ID AND SPECIALIZATION ID */
@@ -233,7 +237,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
                 requestDTO);
 
-        parseAppointmentDoctorInfo(transferredToDoctor,transferredToSpecialization,appointmentDoctorInfo);
+        SaveAppointmentDoctorInfo(parseAppointmentDoctorInfo
+                (transferredToDoctor,transferredToSpecialization,appointmentDoctorInfo));
 
         AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
                 transactionDetail,
@@ -270,7 +275,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
                 requestDTO);
 
-        parseAppointmentDoctorInfo(transferredToDoctor,transferredToSpecialization,appointmentDoctorInfo);
+        SaveAppointmentDoctorInfo(parseAppointmentDoctorInfo
+                (transferredToDoctor,transferredToSpecialization,appointmentDoctorInfo));
 
         AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
                 transactionDetail,
@@ -471,6 +477,10 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         transferTransactionRequestLogRepository.save(transferTransactionRequestLog);
         transactionDetailRepository.save(transactionDetail);
         transactionRequestLogRepository.save(transactionRequestLog);
+    }
+
+    public void SaveAppointmentDoctorInfo(AppointmentDoctorInfo appointmentDoctorInfo){
+        appointmentDoctorInfoRepository.save(appointmentDoctorInfo);
     }
 
     private Function<String, NoContentFoundException> APPOINTMENT_TRANSACTION_REQUEST_LOG_WITH_GIVEN_TXN_NUMBER_NOT_FOUND = (transactionNumber) -> {

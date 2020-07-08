@@ -15,6 +15,8 @@ public class HospitalDepartmentRevenueDTO implements Serializable {
 
     private String hospitalDepartmentName;
 
+    private String roomNumber;
+
     private Long successfulAppointments = 0L;
 
     private Long cancelledAppointments = 0L;

@@ -80,7 +80,7 @@ public class AppointmentQuery {
 
 
     /*%H - hour (e.g., 00,01,02,…12) IN 24 HOUR FORMAT
-    * %h - hour (e.g., 00,01,02,…12) IN 12 HOUR FORMAT
+     * %h - hour (e.g., 00,01,02,…12) IN 12 HOUR FORMAT
      * %i - minutes (e.g., 00,01,02,…12)
      * %p - AM/PM
      * */
@@ -408,7 +408,7 @@ public class AppointmentQuery {
     public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPROVALS =
             (searchRequestDTO) ->
                     "SELECT" +
-                            " a.id as appointmentId," +                                                    //[0]
+                            " a.id as appointmentId," +                                                   //[0]
                             " a.appointmentDate as appointmentDate," +                                   //[1]
                             " a.appointmentNumber as appointmentNumber," +                               //[2]
                             " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
@@ -421,18 +421,28 @@ public class AppointmentQuery {
                             " p.name as patientName," +                                                  //[5]
                             " p.mobileNumber as mobileNumber," +                                        //[6]
                             " sp.name as specializationName," +                                         //[7]
-                            " d.name as doctorName," +
-                            " a.appointmentModeId.name as appointmentMode," +
-                            " atd.appointmentAmount as appointmentAmount," +
-                            " da.fileUri as fileUri," +
-                            " da.fileUri as fileUri," +
-                            " a.isFollowUp as followUp," +
-                            " hpi.hospitalNumber as hospitalNumber," +
-                            " p.id as patientId," +
-                            " p.gender as gender," +
-                            " hpi.address as address," +
-                            " hpi.isRegistered as isRegistered," +
-                            QUERY_TO_CALCULATE_PATIENT_AGE +
+                            " CASE WHEN" +
+                            " (d.salutation is null)" +
+                            " THEN d.name" +
+                            " ELSE" +
+                            " CONCAT_WS(' ',d.salutation, d.name)" +
+                            " END as doctorName," +                                                    //[8]
+                            " a.appointmentModeId.name as appointmentMode," +                          //[9]
+                            " atd.appointmentAmount as appointmentAmount," +                           //[10]
+                            " atd.transactionNumber as transactionNumber," +                          //[11]
+                            " CASE WHEN" +
+                            " (da.status is null OR da.status = 'N')" +
+                            " THEN null" +
+                            " ELSE" +
+                            " da.fileUri" +
+                            " END as fileUri," +                                                        //[12]
+                            " a.isFollowUp as followUp," +                                              //[13]
+                            " hpi.hospitalNumber as hospitalNumber," +                                  //[14]
+                            " p.id as patientId," +                                                     //[15]
+                            " p.gender as gender," +                                                    //[16]
+                            " hpi.address as address," +                                                //[17]
+                            " hpi.isRegistered as isRegistered," +                                      //[18]
+                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[19]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
@@ -661,12 +671,16 @@ public class AppointmentQuery {
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +                                                //[16]
                     " a.appointmentModeId.name as appointmentMode," +                          //[17]
-                    " da.fileUri as fileUri," +                                                //[18]
+                    " CASE WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " da.fileUri" +
+                    " END as fileUri," +                                                        //[18]
                     " d.salutation as doctorSalutation," +                                      //[19]
-                    " da.fileUri as fileUri," +                                                 //[20]
-                    " d.id as doctorId," +                                                      //[21]
-                    " sp.id as specializationId," +                                             //[22]
-                    " a.isFollowUp as followUp," +                                               //[23]
+                    " d.id as doctorId," +                                                      //[20]
+                    " sp.id as specializationId," +                                             //[21]
+                    " a.isFollowUp as followUp," +                                               //[22]
                     " hpi.hospitalNumber as hospitalNumber" +
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
@@ -984,7 +998,6 @@ public class AppointmentQuery {
                     " adi.doctor.name as doctorName, " +
                     " adi.specialization.id as specializationId, " +
                     " adi.specialization.name as specializationName," +
-//                    " ds.salutationId.name as doctorSalutation," +
                     " a.hospitalId.id as hospitalId," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
@@ -998,7 +1011,7 @@ public class AppointmentQuery {
                     " AND a.status!='RE'" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
-    public static final String QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(
+    public static String QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(
             CancelledHospitalDeptAppointmentSearchDTO searchDTO) {
 
         return " SELECT" +

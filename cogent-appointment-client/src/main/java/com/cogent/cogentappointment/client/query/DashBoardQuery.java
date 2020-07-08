@@ -87,7 +87,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " WHERE " +
-                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
@@ -98,7 +98,7 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " ast.isRegistered='Y' " +
-                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND a.isFollowUp='N'";
 
@@ -110,7 +110,7 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " ast.isRegistered='Y' " +
-                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND a.isFollowUp='Y'";
 
@@ -122,7 +122,7 @@ public class DashBoardQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " ast.isNew='Y' " +
-                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =
@@ -253,9 +253,16 @@ public class DashBoardQuery {
                             " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
                             " a.patientId.name as patientName," +
                             " a.patientId.mobileNumber as patientMobileNumber," +
-                            " ad.hospitalDepartment.name as hospitalDepartmentName" +
+                            " hd.name as hospitalDepartmentName," +
+                            " CASE " +
+                            " WHEN ahd.hospitalDepartmentRoomInfo.id IS NULL " +
+                            " THEN 'N/A'" +
+                            " ELSE r.roomNumber END as roomNumber" +
                             " FROM Appointment a" +
-                            " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                            " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
+                            " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                            " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                            " LEFT JOIN Room r ON r.id = hdri.room.id" +
                             " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(appointmentQueueSearchDTO);
@@ -269,7 +276,7 @@ public class DashBoardQuery {
                 " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getHospitalDepartmentId()))
-            whereClause += " AND ad.hospitalDepartment.id = " + appointmentQueueRequestDTO.getHospitalDepartmentId();
+            whereClause += " AND hd.id = " + appointmentQueueRequestDTO.getHospitalDepartmentId();
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
@@ -413,13 +420,19 @@ public class DashBoardQuery {
     public static String QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
 
         return "SELECT" +
-                " ad.hospitalDepartment.id as hospitalDepartmentId," +
-                " ad.hospitalDepartment.name as hospitalDepartmentName," +
+                " hd.id as hospitalDepartmentId," +
+                " hd.name as hospitalDepartmentName," +
                 " COUNT(a.id) as successfulAppointments," +
-                " COALESCE(SUM(atd.appointmentAmount),0) as departmentRevenue" +
+                " COALESCE(SUM(atd.appointmentAmount),0) as departmentRevenue," +
+                " CASE " +
+                " WHEN ad.hospitalDepartmentRoomInfo.id IS NULL " +
+                " THEN 'N/A'" +
+                " ELSE r.roomNumber END as roomNumber" +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
-                " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartment hd ON hd.id=ad.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                " LEFT JOIN Room r ON r.id = hdri.room.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
@@ -435,10 +448,10 @@ public class DashBoardQuery {
         String whereClause = " AND h.id=:hospitalId ";
 
         if (requestDTO.getHospitalDepartmentId() != 0 && !Objects.isNull(requestDTO.getHospitalDepartmentId()))
-            whereClause += " AND ad.hospitalDepartment.id=" + requestDTO.getHospitalDepartmentId();
+            whereClause += " AND hd.id=" + requestDTO.getHospitalDepartmentId();
 
         whereClause += " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate" +
-                " GROUP BY ad.hospitalDepartment.id ";
+                " GROUP BY hd.id ";
 
         return whereClause;
     }
@@ -462,17 +475,23 @@ public class DashBoardQuery {
     public static String QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
 
         return "SELECT" +
-                " ad.hospitalDepartment.id as hospitalDepartmentId," +
-                " ad.hospitalDepartment.name as hospitalDepartmentName," +
+                " hd.id as hospitalDepartmentId," +
+                " hd.name as hospitalDepartmentName," +
                 " COUNT(a.id) as cancelledAppointments," +
                 " CASE" +
                 " WHEN ard.status='PA'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
                 " WHEN ard.status='R'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
                 " WHEN ard.status='A'THEN (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 )) " +
-                " END  as cancelledRevenue" +
+                " END as cancelledRevenue," +
+                " CASE " +
+                " WHEN ad.hospitalDepartmentRoomInfo.id IS NULL " +
+                " THEN 'N/A'" +
+                " ELSE r.roomNumber END as roomNumber" +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                " LEFT JOIN Room r ON r.id = hdri.room.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +

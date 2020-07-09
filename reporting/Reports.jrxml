@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reports" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d74831b0-8ea2-4b9e-b193-5c575ea5f53b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<variable name="serialNo" class="java.lang.String"/>
+	<variable name="appointmentNumber" class="java.lang.String"/>
+	<variable name="appointmentDateTime" class="java.lang.String"/>
+	<variable name="appointmentTransactionDate" class="java.lang.String"/>
+	<variable name="transactionDetails" class="java.lang.String"/>
+	<variable name="patientDetails" class="java.lang.String"/>
+	<variable name="registrationNumber" class="java.lang.String"/>
+	<variable name="address" class="java.lang.String"/>
+	<variable name="doctorDetails" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="261" y="35" width="100" height="30" uuid="ac355701-05a3-4ffc-9b6c-02f00909e69e"/>
+				<text><![CDATA[Transaction Log]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="70" splitType="Stretch">
+			<staticText>
+				<reportElement x="-10" y="35" width="24" height="30" uuid="654909ca-d2fd-4415-a6ef-c3114b16c978"/>
+				<text><![CDATA[S.N.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="35" width="66" height="30" uuid="77338d2e-cdac-4d30-859d-5b1993968511"/>
+				<text><![CDATA[Appointment No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="35" width="70" height="30" uuid="416e847e-126a-4120-8e3f-abc05a2962b6"/>
+				<text><![CDATA[Appointment Date/Time]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="35" width="90" height="30" uuid="df5b60e3-83ef-40a2-8af8-7a84f9579c57"/>
+				<text><![CDATA[Appointment Transaction Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="35" width="70" height="30" uuid="9ca6e17d-b32d-4ede-9b57-94ea3f1db0ca"/>
+				<text><![CDATA[Transaction Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="35" width="90" height="30" uuid="dbb52b32-68a7-4c31-8221-9303e43ac57a"/>
+				<text><![CDATA[Patient Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="35" width="40" height="30" uuid="0f60f9cf-c0cd-4372-8c88-36808887c1e7"/>
+				<text><![CDATA[Reg No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="35" width="50" height="30" uuid="9e1745c0-ff12-4e8b-ba8e-d5e87266c0d4"/>
+				<text><![CDATA[Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="35" width="70" height="30" uuid="a5249cd1-619d-4e65-b47d-56410d509214"/>
+				<text><![CDATA[Doctor Details]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="-10" y="0" width="24" height="30" uuid="57a166b3-8210-4e4f-a7d0-3d20ca29b609"/>
+				<textFieldExpression><![CDATA[$V{serialNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="14" y="0" width="66" height="30" uuid="683fc9d8-e063-47f3-b6bf-5e105f56e2fc"/>
+				<textFieldExpression><![CDATA[$V{appointmentNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="70" height="30" uuid="006a6625-6c31-4717-8712-d302a1631120"/>
+				<textFieldExpression><![CDATA[$V{appointmentDateTime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="0" width="90" height="30" uuid="b5b16681-2e93-4ad2-90d9-fc12da07300d"/>
+				<textFieldExpression><![CDATA[$V{appointmentTransactionDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="240" y="0" width="68" height="30" uuid="230d3dd3-6f6f-4a13-805c-88e6fa5788cc"/>
+				<textFieldExpression><![CDATA[$V{transactionDetails}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="0" width="90" height="30" uuid="58f3a14b-88e6-4e60-a46e-e196533068f3"/>
+				<textFieldExpression><![CDATA[$V{patientDetails}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="400" y="0" width="40" height="30" uuid="3b39ccb7-3212-4279-b6e3-82fa7809eb55"/>
+				<textFieldExpression><![CDATA[$V{registrationNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="0" width="50" height="30" uuid="508fd18a-9dda-4bc5-862d-727a14448923"/>
+				<textFieldExpression><![CDATA[$V{registrationNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="490" y="0" width="70" height="30" uuid="f4b5c04a-2430-4075-8aeb-b81368851052"/>
+				<textFieldExpression><![CDATA[$V{doctorDetails}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

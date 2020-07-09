@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.esewa.resource.v2;
 
 
 import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,18 @@ public class TestResource {
     }
 
     @PostMapping
-    @ApiOperation(JWT_TOKEN_OPERATION)
+    @ApiOperation(JWT_TOKEN_ENCODE_OPERATION)
     public String tokenGenerator(@RequestBody Map<String, String> data) {
         String token = JwtUtils.generateTokenToTest(data);
+        System.out.println(token);
+
+        return token;
+    }
+
+    @PutMapping
+    @ApiOperation(JWT_TOKEN_DECODE_OPERATION)
+    public Claims decode(@RequestBody Map<String, String> data) {
+        Claims token = JwtUtils.decodeToken(data);
         System.out.println(token);
 
         return token;

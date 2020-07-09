@@ -41,7 +41,7 @@ public class JwtUtils implements Serializable {
         JwtBuilder builder = Jwts.builder()
                 .setClaims(getClaims(request))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(
-                        eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY()) * 1000))
+                        eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY())))
                 .signWith(signatureAlgorithm, signingKey);
         return builder.compact();
     }
@@ -58,7 +58,7 @@ public class JwtUtils implements Serializable {
         JwtBuilder builder = Jwts.builder()
                 .setClaims(getClaims(request))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(
-                        eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY()) * 1000))
+                        eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY())))
                 .signWith(signatureAlgorithm, signingKey);
         return builder.compact();
     }

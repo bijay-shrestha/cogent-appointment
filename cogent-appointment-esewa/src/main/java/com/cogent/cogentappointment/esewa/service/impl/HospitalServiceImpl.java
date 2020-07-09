@@ -63,6 +63,8 @@ public class HospitalServiceImpl implements HospitalService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
+        System.out.println("search request DTO----->searchRequestDTO");
+
         List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
 
         responseDTO.forEach((HospitalMinResponseDTO hospital) -> {

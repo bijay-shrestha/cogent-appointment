@@ -40,8 +40,12 @@ public class HospitalResource {
     @ApiOperation(FETCH_MIN_DETAILS)
     public ResponseEntity<?> fetchMinDetails() throws IOException {
 
+        System.out.println("ENTERING fetchMinDetails *******************************");
+
         HospitalMinSearchRequestDTO searchRequestDTO = convertValue(dataWrapperRequest.getData(),
                 HospitalMinSearchRequestDTO.class);
+
+        System.out.println("searchRequestDTO--------->>>>"+searchRequestDTO.getName());
 
         return ok(hospitalService.fetchMinDetails(searchRequestDTO));
     }

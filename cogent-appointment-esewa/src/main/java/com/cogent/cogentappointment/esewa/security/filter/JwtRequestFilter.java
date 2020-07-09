@@ -58,15 +58,15 @@ public class JwtRequestFilter implements Filter {
 
                     String encryptedPayloadData = this.getPayloadData(reader);
 
-                    System.out.println(encryptedPayloadData);
-
                     esewaRequestDTO = ObjectMapperUtils.map(encryptedPayloadData, EsewaRequestDTO.class);
 
                     Map<String, String> map = new HashMap<>();
+
                     map.put(DATA, esewaRequestDTO.getData().toString());
 
                     Object decryptedData = toDecrypt(map);
-                    System.out.println(decryptedData);
+
+                    System.out.println("decryted data/claims----->"+decryptedData);
 
                     dataWrapperRequest.setData(decryptedData);
 

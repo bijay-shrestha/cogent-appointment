@@ -14,5 +14,5 @@ import static com.cogent.cogentappointment.client.constants.WebResourceKeyConsta
 @RestController
 @RequestMapping(value = API_V1 + BASE_EXCEL_REPORT)
 @Api(BASE_API_VALUE)
-public class ExcelResource {
+public class ExcelReportResource {
 }

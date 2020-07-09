@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,5 +15,11 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
 @RestController
 @RequestMapping(value = API_V1 + BASE_EXCEL_REPORT)
 @Api(BASE_API_VALUE)
-public class ExcelResource {
+public class ExcelReportResource {
+
+    private final ExcelReportService excelReportService;
+
+    public ExcelReportResource(ExcelReportService excelReportService) {
+        this.excelReportService = excelReportService;
+    }
 }

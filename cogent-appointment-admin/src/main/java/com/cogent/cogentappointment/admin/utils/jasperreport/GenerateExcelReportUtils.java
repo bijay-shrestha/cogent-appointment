@@ -57,12 +57,12 @@ public class GenerateExcelReportUtils {
             Xlsxexporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
             Xlsxexporter.setParameter(JRExporterParameter.OUTPUT_FILE, xlsFile);
 
-            SimpleXlsReportConfiguration xlsReportConfiguration = new SimpleXlsReportConfiguration();
-            xlsReportConfiguration.setOnePagePerSheet(false);
-            xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
-            xlsReportConfiguration.setDetectCellType(false);
-            xlsReportConfiguration.setWhitePageBackground(false);
-            Xlsxexporter.setConfiguration((XlsxExporterConfiguration) xlsReportConfiguration);
+//            SimpleXlsReportConfiguration xlsReportConfiguration = new SimpleXlsReportConfiguration();
+//            xlsReportConfiguration.setOnePagePerSheet(false);
+//            xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
+//            xlsReportConfiguration.setDetectCellType(false);
+//            xlsReportConfiguration.setWhitePageBackground(false);
+//            Xlsxexporter.setConfiguration(xlsReportConfiguration);
 
             Xlsxexporter.exportReport();//File is generated Correctly
 

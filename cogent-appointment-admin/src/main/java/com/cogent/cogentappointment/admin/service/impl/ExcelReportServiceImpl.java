@@ -74,7 +74,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
             TransactionLogJasperData transactionLogJasperData = new TransactionLogJasperData();
 
-            transactionLogJasperData.setSerialNo("1");
+            transactionLogJasperData.setSerialNumber("1");
             transactionLogJasperData.setAppointmentNumber(transactionLogDTO.getAppointmentNumber());
             transactionLogJasperData.setAppointmentDateTime(transactionLogDTO.getAppointmentDate() + " " + transactionLogDTO.getAppointmentTime());
             transactionLogJasperData.setAppointmentTransactionDate(transactionLogDTO.getTransactionDate() + " " + transactionLogDTO.getTransactionTime());

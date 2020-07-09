@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Setter
 public class TransactionLogJasperData implements Serializable {
 
-    private String serialNo;
+    private String serialNumber;
     private String appointmentNumber;
     private String appointmentDateTime;
     private String appointmentTransactionDate;

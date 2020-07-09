@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.esewa.resource;
 
-import com.cogent.cogentappointment.esewa.dto.PKITestDTO;
+import com.cogent.cogentappointment.esewa.dto.response.pki.PKITestDTO;
 import com.cogent.cogentappointment.esewa.pki.wrapper.DataWrapper;
 import com.cogent.cogentappointment.esewa.repository.PKIAuthenticationInfoRepository;
 import com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils;

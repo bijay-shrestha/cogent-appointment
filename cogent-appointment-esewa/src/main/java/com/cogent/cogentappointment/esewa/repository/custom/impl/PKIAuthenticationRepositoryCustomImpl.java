@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
-import com.cogent.cogentappointment.esewa.dto.PKIResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.PKIAuthenticationInfoRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +29,13 @@ public class PKIAuthenticationRepositoryCustomImpl implements PKIAuthenticationI
     private EntityManager entityManager;
 
     @Override
-    public PKIResponseDTO findServerPrivateKeyByClientId(String clientId) {
+    public String findServerPrivateKeyByClientId(String clientId) {
 
         Query query = entityManager.createQuery(QUERY_TO_FETCH_PKI_SERVER_PRIVATE_KEY)
                 .setParameter(CLIENT_ID, clientId);
         try {
 
-            return transformQueryToSingleResult(query, PKIResponseDTO.class);
+            return (String) query.getSingleResult();
         } catch (NoResultException ex) {
             ex.printStackTrace();
             throw new NoContentFoundException("Client key not found");

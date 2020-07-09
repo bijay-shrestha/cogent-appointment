@@ -1,12 +1,15 @@
 package com.cogent.cogentappointment.esewa.pki.utils;
 
 
+import com.cogent.cogentappointment.esewa.exception.BadRequestException;
 import com.cogent.cogentappointment.esewa.pki.PKIData;
 import com.cogent.cogentappointment.esewa.pki.wrapper.RequestWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
+
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.PKIMessages.INVALID_TOKEN_SIGNATURE;
 
 @Slf4j
 public class SecurityUtil {
@@ -28,17 +31,13 @@ public class SecurityUtil {
             pkiData.setSecretKey(finalSecretKey);
             pkiData.setSignature(signature);
             return pkiData;
-        } catch (Exception exe) {
-            log.error("Error occurred while encrypting data error:{} stack:{}", exe.getMessage(), exe);
-
-            //todo: exception
-            return null;
-//            throw new CoreClientException(ClientResponse.INVALID_TOKEN_SIGNATURE.getCode(),
-//                    ClientResponse.INVALID_TOKEN_SIGNATURE.getValue());
+        } catch (Exception e) {
+            log.error("Error occurred while encrypting data error:{} stack:{}", e.getMessage(), e);
+            throw new BadRequestException(INVALID_TOKEN_SIGNATURE, e.getMessage());
         }
     }
 
-    protected static String responseValidator(String payload, String clientPublicKey, String serverPrivateKey) {
+    public static String responseValidator(String payload, String clientPublicKey, String serverPrivateKey) {
         try {
             RequestWrapper requestWrapper = JacksonUtil.get(payload, RequestWrapper.class);
             boolean verified = validateSignature(requestWrapper.getSignature(), requestWrapper.getData(), clientPublicKey);
@@ -53,20 +52,11 @@ public class SecurityUtil {
                 return data;
             } else {
                 log.error("Error occurred while validating signature.");
-
-                return null;
-
-                //todo: exception
-//                throw new CoreClientException(ClientResponse.INVALID_TOKEN_SIGNATURE.getCode(), ClientResponse.INVALID_TOKEN_SIGNATURE.getValue());
+                throw new BadRequestException(INVALID_TOKEN_SIGNATURE);
             }
         } catch (Exception e) {
             log.error("Error occurred while validating signature. :: {}", e.getMessage());
-
-            return null;
-
-            //todo: exception
-//
-//            throw new CoreClientException(ClientResponse.INVALID_TOKEN_SIGNATURE.getCode(), ClientResponse.INVALID_TOKEN_SIGNATURE.getValue());
+            throw new BadRequestException(INVALID_TOKEN_SIGNATURE, e.getMessage());
         }
     }
 
@@ -75,11 +65,7 @@ public class SecurityUtil {
             return RSAEncryptionUtil.verifySignature(payload, clientPublicKey, Base64.getDecoder().decode(receivedSignature));
         } catch (Exception e) {
             log.error("Error occurred while validating signature. :: {}", e.getMessage());
-
-            return true;
-
-            //todo: exception
-//            throw new CoreClientException(ClientResponse.INVALID_TOKEN_SIGNATURE.getCode(), ClientResponse.INVALID_TOKEN_SIGNATURE.getValue());
+            throw new BadRequestException(INVALID_TOKEN_SIGNATURE, e.getMessage());
         }
     }
 

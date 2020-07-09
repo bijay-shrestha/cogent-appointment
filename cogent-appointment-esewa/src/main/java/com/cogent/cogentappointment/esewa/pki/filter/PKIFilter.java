@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.esewa.pki.filter;
 
+import com.cogent.cogentappointment.esewa.dto.response.pki.PKIErrorResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.BadRequestException;
-import com.cogent.cogentappointment.esewa.pki.wrapper.BufferedServletResponseWrapper;
 import com.cogent.cogentappointment.esewa.pki.PKIData;
 import com.cogent.cogentappointment.esewa.pki.utils.JacksonUtil;
-import com.cogent.cogentappointment.esewa.pki.utils.SecurityUtil;
+import com.cogent.cogentappointment.esewa.pki.wrapper.BufferedServletResponseWrapper;
 import com.cogent.cogentappointment.esewa.pki.wrapper.DataWrapper;
 import com.cogent.cogentappointment.esewa.pki.wrapper.RequestWrapper;
 import com.cogent.cogentappointment.esewa.service.PKIAuthenticationInfoService;
@@ -12,20 +12,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.rmi.server.ExportException;
+
+import static com.cogent.cogentappointment.esewa.pki.utils.SecurityUtil.encryptPayloadAndGenerateSignature;
+import static com.cogent.cogentappointment.esewa.pki.utils.SecurityUtil.responseValidator;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * @author smriti on 06/07/20
  */
 @Slf4j
 @Component
-public class PKIFilter extends SecurityUtil implements javax.servlet.Filter {
+public class PKIFilter extends OncePerRequestFilter implements javax.servlet.Filter {
 
     private final PKIAuthenticationInfoService pkiAuthenticationInfoService;
 
@@ -38,20 +46,17 @@ public class PKIFilter extends SecurityUtil implements javax.servlet.Filter {
     }
 
     @Override
-    public void init(FilterConfig filterConfig) {
-    }
-
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         BufferedServletResponseWrapper customResponse = new BufferedServletResponseWrapper(httpServletResponse);
 
         RequestWrapper requestWrapper = new RequestWrapper();
-//        String uri = httpServletRequest.getRequestURI();
 
-//        if (uri.startsWith(WebRoutes.CLIENT_REQUEST + "/")) {
         String serverPrivateKey = pkiAuthenticationInfoService.findServerPrivateKeyByClientId("eSewa");
 
         try (BufferedReader reader = request.getReader()) {
@@ -67,16 +72,10 @@ public class PKIFilter extends SecurityUtil implements javax.servlet.Filter {
             dataWrapper.setData(decryptedData);
         } catch (Exception e) {
             log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
-            handleFilterException(httpServletResponse);
+            handleFilterException(httpServletResponse, e);
         }
 
-//        if (uri.startsWith(WebRoutes.CLIENT_REQUEST + "/")) {
-//            chain.doFilter(request, customResponse);
-//        } else {
-//            chain.doFilter(request, response);
-//        }
-
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
 
         if (!ObjectUtils.isEmpty(customResponse.getResponseData())) {
 //                uri.startsWith(WebRoutes.CLIENT_REQUEST + "/")) {
@@ -84,18 +83,25 @@ public class PKIFilter extends SecurityUtil implements javax.servlet.Filter {
         }
     }
 
-    private void handleFilterException(HttpServletResponse httpServletResponse) throws IOException {
+    private void handleFilterException(HttpServletResponse httpServletResponse,
+                                       Exception exception) throws IOException {
+
         ObjectMapper mapper = new ObjectMapper();
         httpServletResponse.setContentType("application/json");
-//        PrintWriter out = httpServletResponse.getWriter();
+        httpServletResponse.setStatus(BAD_REQUEST.value());
+        PrintWriter out = httpServletResponse.getWriter();
 
+        System.out.println(exception.getMessage());
+        System.out.println(exception.toString());
 
-        //todo: exception
-//        out.print(mapper.writeValueAsString(ClientPaymentExceptionResource.builder()
-//                .code(ClientResponse.INVALID_PAYLOAD_SIGNATURE.getCode())
-//                .message(ClientResponse.INVALID_PAYLOAD_SIGNATURE.getValue())
-//                .build()));
-//        out.flush();
+        System.out.println(exception.getCause().getLocalizedMessage());
+
+        out.print(mapper.writeValueAsString(PKIErrorResponseDTO.builder()
+                .status(BAD_REQUEST.value())
+                .errorMessage(exception.getMessage())
+                .build()));
+
+        out.flush();
     }
 
     private void encryptResponse(HttpServletResponse httpServletResponse,
@@ -114,9 +120,9 @@ public class PKIFilter extends SecurityUtil implements javax.servlet.Filter {
             outputStream.write(objectMapper.writeValueAsString(pkiData).getBytes());
             outputStream.flush();
             outputStream.close();
-        } catch (BadRequestException e) {
+        } catch (ExportException e) {
             log.error("throw new error occurred while preparing encrypted response payload {}", e.getMessage());
-//         CoreClientException(ClientResponse.SYSTEM_ERROR.getCode(), ClientResponse.SYSTEM_ERROR.getValue());
+            throw new BadRequestException(e.getMessage());
         }
     }
 

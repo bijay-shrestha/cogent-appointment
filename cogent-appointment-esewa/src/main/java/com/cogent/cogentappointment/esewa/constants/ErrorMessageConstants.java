@@ -112,6 +112,10 @@ public class ErrorMessageConstants {
                 "'%s'";
     }
 
+    public interface PKIMessages {
+        String INVALID_TOKEN_SIGNATURE = "Invalid Token Signature.";
+    }
+
 
     //Q
 

@@ -14,7 +14,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
 
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.BASE_PACKAGE;
+import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.SwaggerVersionConstant.*;
 
 /**
  * @author smriti ON 11/01/2020
@@ -25,7 +26,7 @@ public class SwaggerConfiguration {
     @Bean
     public Docket productApiV1() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("v1")
+                .groupName(VERSION_1)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
                 .paths(PathSelectors.regex(PATH_REGEX_V1))
@@ -44,7 +45,7 @@ public class SwaggerConfiguration {
     @Bean
     public Docket productApiV2() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("v2")
+                .groupName(VERSION_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
                 .paths(PathSelectors.regex(PATH_REGEX_V2))

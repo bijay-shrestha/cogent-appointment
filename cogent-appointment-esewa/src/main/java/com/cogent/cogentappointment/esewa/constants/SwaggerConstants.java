@@ -3,11 +3,13 @@ package com.cogent.cogentappointment.esewa.constants;
 public class SwaggerConstants {
     public static String BASE_PACKAGE = "com.cogent.cogentappointment.esewa.resource";
 
-    public static String PATH_REGEX = "/api.*";
+    public interface SwaggerVersionConstant {
+        String VERSION_1 = "v1";
+        String VERSION_2 = "v2";
 
-    public static String PATH_REGEX_V1 = "/api/v1.*";
-
-    public static String PATH_REGEX_V2 = "/api/v2.*";
+        String PATH_REGEX_V1 = "/api/v1.*";
+        String PATH_REGEX_V2 = "/api/v2.*";
+    }
 
     //A
     public interface AddressConstant {

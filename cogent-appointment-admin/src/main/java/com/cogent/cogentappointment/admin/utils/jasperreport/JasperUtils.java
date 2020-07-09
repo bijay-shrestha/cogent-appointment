@@ -18,7 +18,6 @@ public class JasperUtils {
     public static void generateJasperReport(List<?> listData, Map hParam) throws JRException,
             IOException {
 
-
         generatePDFReport(listData, hParam);
 
 

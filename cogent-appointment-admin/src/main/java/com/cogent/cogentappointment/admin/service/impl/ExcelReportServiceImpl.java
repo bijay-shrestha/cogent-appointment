@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.jasper.TransactionLogJasperData;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
@@ -15,14 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
-import static com.cogent.cogentappointment.admin.utils.jasperreport.JasperUtils.generateJasperReport;
+import static com.cogent.cogentappointment.admin.utils.jasperreport.GenerateExcelReportUtils.generateExcelReport;
 
 /**
  * @author rupak ON 2020/07/09-12:54 PM
@@ -66,20 +66,29 @@ public class ExcelReportServiceImpl implements ExcelReportService {
                         appointmentServiceTypeCode));
         }
 
-        List<TransactionLogDTO> transactionLogDTOList=transactionLogs.getTransactionLogs();
+        List<TransactionLogDTO> transactionLogDTOList = transactionLogs.getTransactionLogs();
 
-        Map hParam = new HashMap();
+        List<TransactionLogJasperData> jasperData = new ArrayList<>();
 
-        String patientName = "";
-        for (TransactionLogDTO logDTO : transactionLogDTOList) {
+        transactionLogDTOList.forEach(transactionLogDTO -> {
 
+            TransactionLogJasperData transactionLogJasperData = new TransactionLogJasperData();
 
-            hParam.put("hospitalName", logDTO.getHospitalName());
+            transactionLogJasperData.setSerialNo("1");
+            transactionLogJasperData.setAppointmentNumber(transactionLogDTO.getAppointmentNumber());
+            transactionLogJasperData.setAppointmentDateTime(transactionLogDTO.getAppointmentDate() + " " + transactionLogDTO.getAppointmentTime());
+            transactionLogJasperData.setAppointmentTransactionDate(transactionLogDTO.getTransactionDate() + " " + transactionLogDTO.getTransactionTime());
+            transactionLogJasperData.setTransactionDetails(transactionLogDTO.getTransactionNumber());
+            transactionLogJasperData.setPatientDetails(transactionLogDTO.getPatientName() + " " + transactionLogDTO.getPatientGender());
+            transactionLogJasperData.setRegistrationNumber(transactionLogDTO.getRegistrationNumber());
+            transactionLogJasperData.setAddress(transactionLogDTO.getPatientAddress());
+            transactionLogJasperData.setDoctorDetails(transactionLogDTO.getDoctorName() + " " + transactionLogDTO.getSpecializationName());
 
+            jasperData.add(transactionLogJasperData);
 
-        }
+        });
 
-        generateJasperReport(transactionLogDTOList,hParam);
+        generateExcelReport(jasperData, null);
 
     }
 
@@ -89,3 +98,21 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
     }
 }
+
+//        Map hParam = new HashMap();
+
+//        String patientName = "";
+//        for (TransactionLogDTO logDTO : transactionLogDTOList) {
+//
+//            hParam.put("serialNo", "1");
+//            hParam.put("appointmentNumber", logDTO.getAppointmentNumber());
+//            hParam.put("appointmentDateTime", logDTO.getAppointmentDate() + " " + logDTO.getAppointmentTime());
+//            hParam.put("appointmentTransactionDate", logDTO.getTransactionDate() + " " + logDTO.getTransactionTime());
+//            hParam.put("transactionDetails", logDTO.getTransactionNumber());
+//            hParam.put("patientDetails", logDTO.getPatientName() + " " + logDTO.getPatientGender());
+//            hParam.put("registrationNumber", logDTO.getRegistrationNumber());
+//            hParam.put("address", logDTO.getPatientAddress());
+//            hParam.put("doctorDetails", logDTO.getDoctorName() + " " + logDTO.getSpecializationName());
+//
+//        }
+

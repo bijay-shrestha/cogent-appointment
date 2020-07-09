@@ -52,7 +52,7 @@ public class JwtRequestFilter implements Filter {
 
         boolean found = WHITE_LIST.stream().anyMatch(test -> test.contains(uri));
 
-        if (!found) {
+        if (!uri.contains("/test")) {
             if (uri.contains(ESEWA_API_V2)) {
                 try (BufferedReader reader = request.getReader()) {
 

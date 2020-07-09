@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -32,8 +34,12 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
     private final AppointmentRepository appointmentRepository;
 
-    public ExcelReportServiceImpl(AppointmentRepository appointmentRepository) {
+    private final PatientRepository patientRepository;
+
+    public ExcelReportServiceImpl(AppointmentRepository appointmentRepository,
+                                  PatientRepository patientRepository) {
         this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
     }
 
     @Override
@@ -74,6 +80,12 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         }
 
         generateJasperReport(transactionLogDTOList,hParam);
+
+    }
+
+    @Override
+    public void generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO, Pageable pageable)
+            throws IOException, JRException {
 
     }
 }

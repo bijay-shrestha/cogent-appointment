@@ -1,17 +1,22 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
+import com.cogent.cogentappointment.admin.service.PatientService;
 import io.swagger.annotations.Api;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ExcelReportConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.TRANSACTION_LOG;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ExcelReportConstants.BASE_EXCEL_REPORT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.PatientConstant.PATIENT_DETAILS;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -36,6 +41,19 @@ public class ExcelReportResource {
 
         Pageable pageable = PageRequest.of(page, size);
         excelReportService.generateTransactionLogReport(searchRequestDTO,pageable);
+
+        return ok().build();
+
+
+    }
+
+    @PutMapping(PATIENT_DETAILS)
+    public ResponseEntity<?> generatePatientDetailsExcelReport(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
+                                                               @RequestParam("page") int page,
+                                                               @RequestParam("size") int size) throws Exception {
+
+        Pageable pageable = PageRequest.of(page, size);
+        excelReportService.generatePatientDetailsExcelReport(searchRequestDTO,pageable);
 
         return ok().build();
 

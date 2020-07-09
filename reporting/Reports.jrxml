@@ -72,7 +72,7 @@
 		<band height="125" splitType="Stretch">
 			<textField>
 				<reportElement x="-10" y="0" width="24" height="30" uuid="57a166b3-8210-4e4f-a7d0-3d20ca29b609"/>
-				<textFieldExpression><![CDATA[$F{serialNumber}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="14" y="0" width="66" height="30" uuid="683fc9d8-e063-47f3-b6bf-5e105f56e2fc"/>

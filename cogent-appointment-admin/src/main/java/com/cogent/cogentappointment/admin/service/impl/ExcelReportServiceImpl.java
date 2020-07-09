@@ -66,15 +66,18 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         transactionLogDTOList.forEach(transactionLogDTO -> {
 
+            int i = 0;
             TransactionLogJasperData transactionLogJasperData = new TransactionLogJasperData();
 
-            transactionLogJasperData.setSerialNumber("1");
+            transactionLogJasperData.setSerialNumber(String.valueOf(i++));
             transactionLogJasperData.setAppointmentNumber(transactionLogDTO.getAppointmentNumber());
             transactionLogJasperData.setAppointmentDateTime(transactionLogDTO.getAppointmentDate() + " " + transactionLogDTO.getAppointmentTime());
             transactionLogJasperData.setAppointmentTransactionDate(transactionLogDTO.getTransactionDate() + " " + transactionLogDTO.getTransactionTime());
             transactionLogJasperData.setTransactionDetails(transactionLogDTO.getTransactionNumber());
             transactionLogJasperData.setPatientDetails(transactionLogDTO.getPatientName() + " " + transactionLogDTO.getPatientGender());
-            transactionLogJasperData.setRegistrationNumber(transactionLogDTO.getRegistrationNumber());
+            transactionLogJasperData.setRegistrationNumber(
+                    (transactionLogDTO.getRegistrationNumber() == null) ?
+                            "" : transactionLogDTO.getRegistrationNumber());
             transactionLogJasperData.setAddress(transactionLogDTO.getPatientAddress());
             transactionLogJasperData.setDoctorDetails(transactionLogDTO.getDoctorName() + " " + transactionLogDTO.getSpecializationName());
 

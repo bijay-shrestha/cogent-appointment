@@ -3,13 +3,13 @@ package com.cogent.cogentappointment.admin.utils.jasperreport;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
-import net.sf.jasperreports.export.XlsReportConfiguration;
-import net.sf.jasperreports.export.XlsxExporterConfiguration;
+import net.sf.jasperreports.export.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,22 +49,19 @@ public class GenerateExcelReportUtils {
 
         try {
 
-
             File xlsFile = new File(reportDestination);
 
-            JRXlsxExporter Xlsxexporter = new JRXlsxExporter();
+            JRXlsxExporter xlsExporter = new JRXlsxExporter();
 
-            Xlsxexporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-            Xlsxexporter.setParameter(JRExporterParameter.OUTPUT_FILE, xlsFile);
+            xlsExporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+            xlsExporter.setParameter(JRExporterParameter.OUTPUT_FILE, xlsFile);
 
-//            SimpleXlsReportConfiguration xlsReportConfiguration = new SimpleXlsReportConfiguration();
-//            xlsReportConfiguration.setOnePagePerSheet(false);
-//            xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
-//            xlsReportConfiguration.setDetectCellType(false);
-//            xlsReportConfiguration.setWhitePageBackground(false);
-//            Xlsxexporter.setConfiguration(xlsReportConfiguration);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
 
-            Xlsxexporter.exportReport();//File is generated Correctly
+            xlsExporter.exportReport();
 
 
             FileInputStream fis = new FileInputStream(new File(reportDestination));

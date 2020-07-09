@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.security.filter;
 import com.cogent.cogentappointment.esewa.dto.request.DataWrapperRequest;
 import com.cogent.cogentappointment.esewa.dto.request.EsewaRequestDTO;
 import com.cogent.cogentappointment.esewa.exception.BadRequestException;
+import com.cogent.cogentappointment.esewa.resource.v1.AppointmentResource;
 import com.cogent.cogentappointment.esewa.utils.commons.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,11 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.ERROR_VALIDATING_ENCRYPTED_REQUEST;
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.REQUEST_BODY_IS_NULL;
+import static com.cogent.cogentappointment.esewa.constants.JwtConstant.*;
 import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt;
 
 /**
@@ -22,8 +25,6 @@ import static com.cogent.cogentappointment.esewa.utils.JWTDecryptUtils.toDecrypt
 @Slf4j
 @Component
 public class JwtRequestFilter implements Filter {
-
-    public static final String DATA = "data";
 
     private final DataWrapperRequest dataWrapperRequest;
 
@@ -47,12 +48,12 @@ public class JwtRequestFilter implements Filter {
 
         EsewaRequestDTO esewaRequestDTO = null;
 
+        List<String> WHITE_LIST = Arrays.asList(ESEWA_API_V2_TEST, ESEWA_API_V1);
 
-        String SKIP_URL = "/test," +
-                "/esewa/api/v1";
+        boolean found = WHITE_LIST.stream().anyMatch(test -> test.contains(uri));
 
-        if (!uri.contains(SKIP_URL)) {
-            if (uri.contains("/esewa/api/v2")) {
+        if (!found) {
+            if (uri.contains(ESEWA_API_V2)) {
                 try (BufferedReader reader = request.getReader()) {
 
                     String encryptedPayloadData = this.getPayloadData(reader);
@@ -62,7 +63,7 @@ public class JwtRequestFilter implements Filter {
                     esewaRequestDTO = ObjectMapperUtils.map(encryptedPayloadData, EsewaRequestDTO.class);
 
                     Map<String, String> map = new HashMap<>();
-                    map.put("data", esewaRequestDTO.getData().toString());
+                    map.put(DATA, esewaRequestDTO.getData().toString());
 
                     Object decryptedData = toDecrypt(map);
                     System.out.println(decryptedData);
@@ -70,7 +71,7 @@ public class JwtRequestFilter implements Filter {
                     dataWrapperRequest.setData(decryptedData);
 
                 } catch (Exception e) {
-                    log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
+                    log.error(ERROR_VALIDATING_ENCRYPTED_REQUEST, e.getMessage());
                 }
 
             }
@@ -90,8 +91,8 @@ public class JwtRequestFilter implements Filter {
     private String getPayloadData(BufferedReader reader) throws IOException {
         final StringBuilder builder = new StringBuilder();
         if (reader == null) {
-            log.error("Request body is null");
-            throw new BadRequestException("Request body is null");
+            log.error(REQUEST_BODY_IS_NULL);
+            throw new BadRequestException(REQUEST_BODY_IS_NULL);
         }
         String line;
         while ((line = reader.readLine()) != null) {

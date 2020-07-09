@@ -18,6 +18,8 @@ public class StringConstant {
 
     public static final Character D = 'D';
 
+    public static final String DATA = "data";
+
     //E
 
     //F

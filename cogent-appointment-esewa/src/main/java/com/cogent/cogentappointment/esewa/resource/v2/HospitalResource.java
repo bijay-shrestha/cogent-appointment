@@ -21,7 +21,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti ON 12/01/2020
  */
-@RestController
+@RestController(API_V2 + BASE_HOSPITAL)
 @RequestMapping(API_V2 + BASE_HOSPITAL)
 @Api(BASE_API_VALUE)
 public class HospitalResource {

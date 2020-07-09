@@ -60,6 +60,7 @@ public class ErrorMessageConstants {
     }
 
     //E
+    public static final String ERROR_VALIDATING_ENCRYPTED_REQUEST="Error occurred while validating encrypted request :: {}";
 
     //F
 
@@ -116,6 +117,7 @@ public class ErrorMessageConstants {
     //Q
 
     //R
+    public static final String REQUEST_BODY_IS_NULL="Request body is null";
 
 
     //S

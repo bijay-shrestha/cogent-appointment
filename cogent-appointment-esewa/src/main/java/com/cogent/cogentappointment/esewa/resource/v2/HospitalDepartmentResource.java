@@ -19,7 +19,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 28/05/20
  */
-@RestController
+@RestController(API_V2 + BASE_HOSPITAL_DEPARTMENT)
 @RequestMapping(API_V2 + BASE_HOSPITAL_DEPARTMENT)
 @Api(BASE_HOSPITAL_DEPARTMENT_API_VALUE)
 public class HospitalDepartmentResource {

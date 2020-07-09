@@ -24,8 +24,8 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 16/02/20
  */
-@RequestMapping(API_V2 + BASE_APPOINTMENT + BASE_HOSPITAL_DEPARTMENT)
-@RestController
+@RestController(API_V2 + BASE_APPOINTMENT + BASE_HOSPITAL_DEPARTMENT + FOLLOW_UP)
+@RequestMapping(API_V2 + BASE_APPOINTMENT + BASE_HOSPITAL_DEPARTMENT + FOLLOW_UP)
 @Api(BASE_API_VALUE)
 public class AppointmentHospitalDepartmentFollowUpTrackerResource {
 
@@ -40,7 +40,7 @@ public class AppointmentHospitalDepartmentFollowUpTrackerResource {
         this.dataWrapperRequest = dataWrapperRequest;
     }
 
-    @PutMapping(FOLLOW_UP)
+    @PutMapping
     @ApiOperation(FETCH_FOLLOW_UP_DETAILS)
     public ResponseEntity<?> fetchFollowUpTrackerDetails() throws IOException {
 

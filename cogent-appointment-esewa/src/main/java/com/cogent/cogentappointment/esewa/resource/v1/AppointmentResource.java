@@ -33,8 +33,8 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 2019-10-22
  */
-@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @RestController
+@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @Api(BASE_API_VALUE)
 public class AppointmentResource {
 

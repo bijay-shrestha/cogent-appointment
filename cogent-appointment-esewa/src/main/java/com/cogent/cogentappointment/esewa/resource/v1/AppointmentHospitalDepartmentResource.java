@@ -23,8 +23,8 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 28/05/20
  */
-@RequestMapping(API_V1 + BASE_APPOINTMENT + BASE_HOSPITAL_DEPARTMENT)
 @RestController
+@RequestMapping(API_V1 + BASE_APPOINTMENT + BASE_HOSPITAL_DEPARTMENT)
 @Api(BASE_API_VALUE)
 public class AppointmentHospitalDepartmentResource {
 

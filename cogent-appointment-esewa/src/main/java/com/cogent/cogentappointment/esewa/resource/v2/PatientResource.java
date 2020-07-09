@@ -23,7 +23,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 2019-10-22
  */
-@RestController
+@RestController(API_V2 + BASE_PATIENT)
 @RequestMapping(API_V2 + BASE_PATIENT)
 @Api(value = BASE_PATIENT_API_VALUE)
 public class PatientResource {

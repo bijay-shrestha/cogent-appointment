@@ -23,8 +23,9 @@ import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.*;
 @EnableSwagger2
 public class SwaggerConfiguration {
     @Bean
-    public Docket productApi() {
+    public Docket productApiV1() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("v1")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
                 .paths(PathSelectors.regex(PATH_REGEX_V1))
@@ -43,6 +44,7 @@ public class SwaggerConfiguration {
     @Bean
     public Docket productApiV2() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("v2")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
                 .paths(PathSelectors.regex(PATH_REGEX_V2))

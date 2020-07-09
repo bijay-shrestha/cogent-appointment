@@ -42,8 +42,8 @@ public class JwtRequestFilter implements Filter {
                          FilterChain chain) throws IOException,
             ServletException {
 
-
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+
         String uri = httpServletRequest.getRequestURI();
 
         EsewaRequestDTO esewaRequestDTO = null;
@@ -52,34 +52,21 @@ public class JwtRequestFilter implements Filter {
 
         boolean found = WHITE_LIST.stream().anyMatch(test -> test.contains(uri));
 
-        System.out.println("uri---------------->"+uri);
-
         if (!found) {
-            System.out.println("ENTERING FILTER CONTAINS *******************************");
             if (uri.contains(ESEWA_API_V2)) {
                 try (BufferedReader reader = request.getReader()) {
-
-                    System.out.println("ENTERING FILTER *******************************");
 
                     String encryptedPayloadData = this.getPayloadData(reader);
 
                     esewaRequestDTO = ObjectMapperUtils.map(encryptedPayloadData, EsewaRequestDTO.class);
 
-                    System.out.println("esewa request dto"+esewaRequestDTO.getData());
-
                     Map<String, String> map = new HashMap<>();
 
                     map.put(DATA, esewaRequestDTO.getData().toString());
 
-                    System.out.println("map-------->"+map.get("data"));
-
                     Object decryptedData = toDecrypt(map);
 
-                    System.out.println("decryted data/claims----->"+decryptedData);
-
                     dataWrapperRequest.setData(decryptedData);
-
-                    System.out.println("EXITING FILTER *******************************");
 
                 } catch (Exception e) {
                     log.error(ERROR_VALIDATING_ENCRYPTED_REQUEST, e.getMessage());

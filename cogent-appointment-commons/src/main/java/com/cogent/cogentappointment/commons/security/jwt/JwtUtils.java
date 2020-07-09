@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-;
+;import static com.cogent.cogentappointment.commons.constants.StringConstant.DATA;
 
 /**
  * @author Sauravi Thapa ON 7/5/20
@@ -24,8 +24,6 @@ import java.util.Objects;
 public class JwtUtils implements Serializable {
 
     private static ESewaHMAC eSewaHMAC;
-
-    private static String DECODE_CODE = "HmacSHA512 eSewa:057d470f-c6dc-4509-8a2c-670e9bbb1731:954145191157303:ky98M6rSqZ5KXaVZ5NEdcvh2CSwRVgCXcx18RmaVJ0huggvbVQ3+lJmKZKiZVvkEbElXUVGpOYX8nPnoH6ErQA==";
 
     public JwtUtils(ESewaHMAC eSewaHMAC) {
         this.eSewaHMAC = eSewaHMAC;
@@ -67,23 +65,17 @@ public class JwtUtils implements Serializable {
 
     private static Claims getClaims(Object request) {
         Claims claims = Jwts.claims();
-        claims.put("data", request);
+        claims.put(DATA, request);
         return claims;
     }
 
     public static Claims decodeToken(Map<String, String> map) {
 
-        System.out.println("ENETRING DECODE TOEKN *******************************");
 
         Claims claims = Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_DECODE_API_SECRET_ESEWA()))
-                .parseClaimsJws(map.get("data")).getBody();
+                .parseClaimsJws(map.get(DATA)).getBody();
 
-        System.out.println("*******************************");
-
-        System.out.println("claims-------------->"+claims);
-
-        System.out.println("EXITING DECODE TOEKN *******************************");
 
         return claims;
     }

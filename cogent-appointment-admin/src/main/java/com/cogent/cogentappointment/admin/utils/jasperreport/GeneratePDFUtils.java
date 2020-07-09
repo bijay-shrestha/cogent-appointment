@@ -25,7 +25,7 @@ public class GeneratePDFUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // LOCATION OF JASPER REPOTR TEMPLATE FILE.
-        String string = "./reporting/report.jrxml";
+        String string = "././reporting/Reports.jrxml";
 
         // READ TEMPLATE AS INPUT STREAM
         InputStream fileRead = new FileInputStream(string);

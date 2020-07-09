@@ -74,10 +74,12 @@ public class JwtUtils implements Serializable {
     public static Claims decodeToken(Map<String, String> map) {
 
         Claims claims = Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary(DECODE_CODE))
+                .setSigningKey(DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_DECODE_API_SECRET_ESEWA()))
                 .parseClaimsJws(map.get("data")).getBody();
 
-        return (!Objects.isNull(claims) ? claims : null);
+        System.out.println("claims-------------->"+claims);
+
+        return claims;
     }
 
 }

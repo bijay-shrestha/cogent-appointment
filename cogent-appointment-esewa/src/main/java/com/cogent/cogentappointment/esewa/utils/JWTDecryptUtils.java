@@ -16,8 +16,6 @@ public class JWTDecryptUtils {
 
         Claims claims = JwtUtils.decodeToken(token);
 
-        System.out.println(claims.getSubject());
-
         return claims;
 
     }

@@ -265,6 +265,9 @@ public class SwaggerConstants {
 
 
     //E
+    public interface ExcelReportConstant {
+        String BASE_API_VALUE = "This is Excel Report Resource";
+    }
 
 
     //F

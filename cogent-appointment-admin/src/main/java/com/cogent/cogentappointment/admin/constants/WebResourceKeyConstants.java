@@ -151,6 +151,10 @@ public class WebResourceKeyConstants {
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }
 
+    public interface ExcelReportConstants {
+        String BASE_EXCEL_REPORT = "/excel-report";
+    }
+
     //F
 
     public interface ForgotPasswordConstants {

@@ -145,6 +145,11 @@ public class WebResourceKeyConstants {
 
 
     //E
+
+    public interface ExcelReportConstants {
+        String BASE_EXCEL_REPORT = "/excel-report";
+    }
+
     public interface EsewaConstants {
         String BASE_ESEWA = "/esewa";
         String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";

@@ -225,6 +225,11 @@ public class SwaggerConstants {
 
 
     //E
+
+    public interface ExcelReportConstant {
+        String BASE_API_VALUE = "This is Excel Report Resource";
+    }
+
     public interface EsewaConstant {
         String BASE_API_VALUE = "This is esewa Resource";
         String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates and time by doctorId and" +

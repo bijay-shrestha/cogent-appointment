@@ -55,6 +55,7 @@ public class JwtRequestFilter implements Filter {
         System.out.println("uri---------------->"+uri);
 
         if (!uri.contains("/test")) {
+            System.out.println("ENTERING FILTER CONTAINS *******************************");
             if (uri.contains(ESEWA_API_V2)) {
                 try (BufferedReader reader = request.getReader()) {
 

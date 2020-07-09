@@ -14,8 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
 
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.BASE_PACKAGE;
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.PATH_REGEX;
+import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.*;
 
 /**
  * @author smriti ON 11/01/2020
@@ -28,7 +27,25 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
-                .paths(PathSelectors.regex(PATH_REGEX))
+                .paths(PathSelectors.regex(PATH_REGEX_V1))
+                .build()
+                .apiInfo(metaData())
+                .globalOperationParameters(
+                        Collections.singletonList(new ParameterBuilder()
+                                .name("Authorization")
+                                .description("HMAC Authentication Code")
+                                .modelRef(new ModelRef("string"))
+                                .parameterType("header")
+                                .required(true)
+                                .build()));
+    }
+
+    @Bean
+    public Docket productApiV2() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
+                .paths(PathSelectors.regex(PATH_REGEX_V2))
                 .build()
                 .apiInfo(metaData())
                 .globalOperationParameters(

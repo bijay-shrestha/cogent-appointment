@@ -5,15 +5,19 @@ public class SwaggerConstants {
 
     public static String PATH_REGEX = "/api.*";
 
+    public static String PATH_REGEX_V1 = "/api/v1.*";
+
+    public static String PATH_REGEX_V2 = "/api/v2.*";
+
     //A
     public interface AddressConstant {
         String BASE_API_VALUE = "This resource is used to fetch address details ";
-        String FETCH_ZONE_LIST="Fetch Zones for dropdown";
-        String FETCH_PROVINCE_LIST="Fetch Province for dropdown";
-        String FETCH_DISTRICT_LIST_BY_ZONE_ID="Fetch District for dropdown by zone id ";
-        String FETCH_DISTRICT_LIST_BY_PROVINCE_ID="Fetch District for dropdown by province id ";
-        String FETCH_STREET_LIST_BY_DISTRICT_ID="Fetch Street for dropdown by district id ";
-        String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID="Fetch Municipality for dropdown by district id ";
+        String FETCH_ZONE_LIST = "Fetch Zones for dropdown";
+        String FETCH_PROVINCE_LIST = "Fetch Province for dropdown";
+        String FETCH_DISTRICT_LIST_BY_ZONE_ID = "Fetch District for dropdown by zone id ";
+        String FETCH_DISTRICT_LIST_BY_PROVINCE_ID = "Fetch District for dropdown by province id ";
+        String FETCH_STREET_LIST_BY_DISTRICT_ID = "Fetch Street for dropdown by district id ";
+        String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID = "Fetch Municipality for dropdown by district id ";
     }
 
 
@@ -151,7 +155,7 @@ public class SwaggerConstants {
     //R
     public interface RefundStatusConstant {
         String BASE_API_VALUE = "This is Refund Status Resource";
-        String FETCH_REFUND_DETAILS_TO_APPROVE="Fetch Appointment Refund Details To Approve(change status to A) ";
+        String FETCH_REFUND_DETAILS_TO_APPROVE = "Fetch Appointment Refund Details To Approve(change status to A) ";
     }
 
     //S

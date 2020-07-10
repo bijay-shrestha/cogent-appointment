@@ -46,16 +46,12 @@ public class PatientServiceImpl implements PatientService {
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
-    private final HospitalService hospitalService;
-
     public PatientServiceImpl(PatientRepository patientRepository,
                               PatientMetaInfoRepository patientMetaInfoRepository,
-                              HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                              HospitalService hospitalService) {
+                              HospitalPatientInfoRepository hospitalPatientInfoRepository) {
         this.patientRepository = patientRepository;
         this.patientMetaInfoRepository = patientMetaInfoRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
-        this.hospitalService = hospitalService;
     }
 
     @Override
@@ -105,7 +101,7 @@ public class PatientServiceImpl implements PatientService {
 
         saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
-        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(patientToBeUpdated.getId());
+        PatientMetaInfo patientMetaInfoToBeUpdated = fetchPatientMetaInfo(patientToBeUpdated.getId());
 
         savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
                 patientMetaInfoToBeUpdated,
@@ -158,7 +154,8 @@ public class PatientServiceImpl implements PatientService {
 
             registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
 
-            PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(patientId);
+            PatientMetaInfo patientMetaInfo = fetchPatientMetaInfo(patientId);
+
             updatePatientMetaInfo(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
         }
 
@@ -216,5 +213,10 @@ public class PatientServiceImpl implements PatientService {
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());
     };
 
+    private PatientMetaInfo fetchPatientMetaInfo(Long patientId) {
+        return patientMetaInfoRepository.fetchByPatientId(patientId)
+                .orElseThrow(() -> new NoContentFoundException(PatientMetaInfo.class, "patientId",
+                        patientId.toString()));
+    }
 }
 

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.utils.jasperreport;
+package com.cogent.cogentappointment.commons.utils.jasperreport;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.utils.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author rupak ON 2020/07/09-1:14 PM

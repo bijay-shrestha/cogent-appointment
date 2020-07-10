@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.utils.jasperreport;
+package com.cogent.cogentappointment.commons.utils.jasperreport;
 
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.admin.utils.jasperreport.GeneratePDFUtils.generatePDFReport;
+import static com.cogent.cogentappointment.commons.utils.jasperreport.GeneratePDFUtils.generatePDFReport;
 
 /**
  * @author rupak ON 2020/07/09-1:07 PM

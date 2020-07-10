@@ -10,11 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.AppointmentFollowUpTrackerConstants.PARENT_APPOINTMENT_ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.PatientQueryConstants.PATIENT_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentFollowUpTrackerQuery.QUERY_TO_FETCH_LATEST_APPOINTMENT_HOSPITAL_DEPT_FOLLOW_UP_TRACKER;
+import static com.cogent.cogentappointment.admin.query.AppointmentHospitalDepartmentFollowUpTrackerQuery.QUERY_TO_UPDATE_HOSPITAL_DEPT_APPOINTMENT_FOLLOW_UP_TRACKER;
 
 /**
  * @author smriti on 18/11/2019
@@ -41,5 +46,19 @@ public class AppointmentHospitalDepartmentFollowUpTrackerRepositoryCustomImpl
             log.error(CONTENT_NOT_FOUND, APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER);
             throw new NoContentFoundException(AppointmentHospitalDepartmentFollowUpTracker.class);
         }
+    }
+
+    @Override
+    public void updateAppointmentFollowUpTrackerStatus(Long hospitalId,
+                                                       Long hospitalDepartmentId,
+                                                       Long patientId) {
+
+        Query query = entityManager.createQuery(QUERY_TO_UPDATE_HOSPITAL_DEPT_APPOINTMENT_FOLLOW_UP_TRACKER)
+                .setParameter(PATIENT_ID, patientId)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        query.executeUpdate();
+
     }
 }

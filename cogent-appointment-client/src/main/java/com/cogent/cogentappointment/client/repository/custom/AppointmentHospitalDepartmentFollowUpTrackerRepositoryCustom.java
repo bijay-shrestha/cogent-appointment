@@ -12,4 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface AppointmentHospitalDepartmentFollowUpTrackerRepositoryCustom {
 
     AppointmentHospitalDepartmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId);
+
+    void updateAppointmentFollowUpTrackerStatus(Long hospitalId,
+                                                Long hospitalDepartmentId,
+                                                Long patientId);
 }

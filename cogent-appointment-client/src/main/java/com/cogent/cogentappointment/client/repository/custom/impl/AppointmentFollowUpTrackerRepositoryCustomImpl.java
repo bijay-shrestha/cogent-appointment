@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentFollowUpTrackerConstants.PARENT_APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
@@ -61,6 +62,21 @@ public class AppointmentFollowUpTrackerRepositoryCustomImpl implements Appointme
             log.error(CONTENT_NOT_FOUND, APPOINTMENT_FOLLOW_UP_TRACKER);
             throw new NoContentFoundException(AppointmentFollowUpTracker.class);
         }
+    }
+
+    @Override
+    public void updateAppointmentFollowUpTrackerStatus(Long patientId,
+                                                       Long doctorId,
+                                                       Long specializationId,
+                                                       Long hospitalId) {
+
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER)
+                .setParameter(PATIENT_ID, patientId)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        query.executeUpdate();
     }
 
 }

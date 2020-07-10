@@ -148,6 +148,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
 
+    private final AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService;
+
     public AppointmentServiceImpl(
             PatientService patientService,
             DoctorService doctorService,
@@ -181,7 +183,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
             AppointmentServiceTypeRepository appointmentServiceTypeRepository,
             HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
-            NepaliDateUtility nepaliDateUtility, AppointmentEsewaRequestRepository appointmentEsewaRequestRepository) {
+            NepaliDateUtility nepaliDateUtility,
+            AppointmentEsewaRequestRepository appointmentEsewaRequestRepository,
+            AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -216,6 +220,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.nepaliDateUtility = nepaliDateUtility;
         this.appointmentEsewaRequestRepository = appointmentEsewaRequestRepository;
+        this.appointmentHospitalDepartmentFollowUpTrackerService = appointmentHospitalDepartmentFollowUpTrackerService;
     }
 
     @Override
@@ -874,7 +879,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void updateAppointmentHospitalDepartmentFollowUpRequestLog(Long parentAppointmentId) {
 
         Long appointmentFollowUpTrackerId =
-                appointmentFollowUpTrackerService.fetchByParentAppointmentId(parentAppointmentId);
+                appointmentHospitalDepartmentFollowUpTrackerService.fetchByParentAppointmentId(parentAppointmentId);
 
         appointmentHospitalDepartmentFollowUpRequestLogService.update(appointmentFollowUpTrackerId);
     }

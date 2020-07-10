@@ -92,6 +92,11 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         return parseToAppointmentFollowUpResponseDTOWithStatus(responseDTO);
     }
 
+    /*
+    * CASE : TAKE 3 CONSECUTIVE APPOINTMENTS WITHOUT APPROVING
+    * (THIS WILL PERSIST DATA IN APPOINTMENT TABLE AND OTHER RELATED TABLES)
+    * THEN APPROVE/CHECK-IN EACH APPOINTMENTS SIMULTANEOUSLY.
+    * */
     @Override
     public AppointmentFollowUpTracker save(Long parentAppointmentId,
                                            Hospital hospital,
@@ -102,6 +107,11 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
+
+        appointmentFollowUpTrackerRepository.updateAppointmentFollowUpTrackerStatus(patient.getId(),
+                doctor.getId(),
+                specialization.getId(),
+                hospital.getId());
 
         Integer numberOfFollowUps = hospitalRepository.fetchHospitalFollowUpCount(hospital.getId());
 

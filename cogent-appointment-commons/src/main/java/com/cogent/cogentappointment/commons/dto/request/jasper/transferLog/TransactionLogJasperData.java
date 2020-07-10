@@ -22,7 +22,5 @@ public class TransactionLogJasperData implements Serializable {
     private String address;
     private String doctorDetails;
 
-    private TransferLogHeaderData transferLogHeaderData;
-
 
 }

@@ -32,7 +32,7 @@ public class JwtUtils implements Serializable {
 
     public static String generateToken(Object request) {
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.valueOf(eSewaHMAC.getHMAC_ALGORITHM());
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_API_SECRET_ESEWA());
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());

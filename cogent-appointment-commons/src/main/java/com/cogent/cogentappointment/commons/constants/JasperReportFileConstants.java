@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.constants;
+package com.cogent.cogentappointment.commons.constants;
 
 /**
  * @author rupak ON 2020/07/10-11:04 AM

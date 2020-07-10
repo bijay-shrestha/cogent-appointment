@@ -1,12 +1,19 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
+import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import io.swagger.annotations.Api;
+import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLConnection;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ExcelReportConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
@@ -30,15 +37,63 @@ public class ExcelReportResource {
 
 
     @PutMapping(TRANSACTION_LOG)
-    public ResponseEntity<?> generateTransactionLogExcelReport(@RequestBody TransactionLogSearchDTO searchRequestDTO,
+    public ResponseEntity<?> generateAppointmentLogExcelReport(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
                                                                @RequestParam("page") int page,
-                                                               @RequestParam("size") int size) throws Exception {
+                                                               @RequestParam("size") int size,
+                                                               HttpServletResponse response) throws Exception {
 
         Pageable pageable = PageRequest.of(page, size);
-        excelReportService.generateTransactionLogReport(searchRequestDTO,pageable);
+        JasperReportDownloadResponse downloadResponse = excelReportService.generateAppointmentLogExcelReport(searchRequestDTO,
+                pageable);
+
+        //         SET THE CONTENT TYPE AND ATTACHMENT HEADER.
+        response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
+        response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
+
+        // COPY THE STREAM TO THE RESPONSE'S OUTPUT STREAM.
+        IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
+        response.flushBuffer();
 
         return ok().build();
+    }
 
+    @PutMapping(TRANSACTION_LOG)
+    public ResponseEntity<?> generateRescheduleLogExcelReport(@RequestBody AppointmentRescheduleLogSearchDTO searchRequestDTO,
+                                                              @RequestParam("page") int page,
+                                                              @RequestParam("size") int size,
+                                                              HttpServletResponse response) throws Exception {
 
+        Pageable pageable = PageRequest.of(page, size);
+        JasperReportDownloadResponse downloadResponse = excelReportService.generateRescheduleLogExcelReport(searchRequestDTO, pageable);
+
+        //         SET THE CONTENT TYPE AND ATTACHMENT HEADER.
+        response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
+        response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
+
+        // COPY THE STREAM TO THE RESPONSE'S OUTPUT STREAM.
+        IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
+        response.flushBuffer();
+
+        return ok().build();
+    }
+
+    @PutMapping(TRANSACTION_LOG)
+    public ResponseEntity<?> generateTransactionLogExcelReport(@RequestBody TransactionLogSearchDTO searchRequestDTO,
+                                                               @RequestParam("page") int page,
+                                                               @RequestParam("size") int size,
+                                                               HttpServletResponse response) throws Exception {
+
+        Pageable pageable = PageRequest.of(page, size);
+        JasperReportDownloadResponse downloadResponse = excelReportService.generateTransactionLogReport(searchRequestDTO, pageable);
+
+        //         SET THE CONTENT TYPE AND ATTACHMENT HEADER.
+        response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
+        response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
+
+        // COPY THE STREAM TO THE RESPONSE'S OUTPUT STREAM.
+        IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
+        response.flushBuffer();
+
+        return ok().build();
     }
 }

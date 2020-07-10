@@ -1,10 +1,13 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.jasper.transferLog.TransactionLogJasperData;
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
+import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
@@ -25,8 +28,8 @@ import java.util.Map;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
-import static com.cogent.cogentappointment.admin.constants.JasperReportFileConstants.JASPER_REPORT_TRANSACTION_LOG;
-import static com.cogent.cogentappointment.admin.utils.jasperreport.GenerateExcelReportUtils.generateExcelReport;
+import static com.cogent.cogentappointment.commons.constants.JasperReportFileConstants.JASPER_REPORT_TRANSACTION_LOG;
+import static com.cogent.cogentappointment.commons.utils.jasperreport.GenerateExcelReportUtils.generateExcelReport;
 
 /**
  * @author rupak ON 2020/07/09-12:54 PM
@@ -43,8 +46,8 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     @Override
-    public void generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO,
-                                             Pageable pageable) throws IOException, JRException {
+    public JasperReportDownloadResponse generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO,
+                                                                     Pageable pageable) throws IOException, JRException {
 
         String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
@@ -91,10 +94,22 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         Map hParam = reportParamtersGenerator(searchRequestDTO, transactionLogs);
 
-        generateExcelReport(jasperData,
+        return generateExcelReport(jasperData,
                 hParam,
                 JASPER_REPORT_TRANSACTION_LOG);
 
+    }
+
+    @Override
+    public JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO,
+                                                                          Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO,
+                                                                         Pageable pageable) {
+        return null;
     }
 
     private Map reportParamtersGenerator(TransactionLogSearchDTO searchRequestDTO, TransactionLogResponseDTO transactionLogs) {

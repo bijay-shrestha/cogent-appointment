@@ -1,25 +1,28 @@
-package com.cogent.cogentappointment.admin.utils.jasperreport;
+package com.cogent.cogentappointment.commons.utils.jasperreport;
 
+import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import org.springframework.core.io.InputStreamResource;
 
 import java.io.*;
 import java.util.List;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.utils.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author rupak ON 2020/07/09-2:25 PM
  */
 public class GenerateExcelReportUtils {
 
-    public static void generateExcelReport(List<?> cList,
-                                           Map hParam, String reportPath) throws FileNotFoundException, JRException {
+    public static JasperReportDownloadResponse generateExcelReport(List<?> cList,
+                                                                   Map hParam,
+                                                                   String reportPath) throws FileNotFoundException, JRException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -32,7 +35,8 @@ public class GenerateExcelReportUtils {
         JRBeanCollectionDataSource jrbcds = new JRBeanCollectionDataSource(cList);
         JasperPrint print = JasperFillManager.fillReport(report, hParam, jrbcds);
 
-        String reportDestination = "./reports/" + getTimeInMillisecondsFromLocalDate() + ".xlsx";  //This is generated Correctly
+        String fileName = getTimeInMillisecondsFromLocalDate() + ".xlsx";
+        String reportDestination = "./reports/" + fileName;  //This is generated Correctly
 
 //        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 //        IOUtils.copy(fis, response.getOutputStream());
@@ -40,7 +44,6 @@ public class GenerateExcelReportUtils {
 //        response.setHeader("Content-Disposition", "attachment; filename=" + "OutStanding_DC_Report" + ".xlsx"); //This is downloaded as .xhtml
 //        response.flushBuffer();
 //        fis.close();
-
 
         try {
 
@@ -61,8 +64,20 @@ public class GenerateExcelReportUtils {
 
             FileInputStream fis = new FileInputStream(new File(reportDestination));
 
+            InputStream inputStream = fis;
+            InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+
+            JasperReportDownloadResponse downloadResponse = JasperReportDownloadResponse.builder()
+                    .fileName(fileName)
+                    .inputStream(inputStream)
+                    .build();
+
+            return downloadResponse;
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+        return null;
     }
 }

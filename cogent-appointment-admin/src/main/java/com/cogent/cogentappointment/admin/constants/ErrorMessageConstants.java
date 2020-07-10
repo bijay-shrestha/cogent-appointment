@@ -10,6 +10,8 @@ public class ErrorMessageConstants {
 
     public static final String ALIAS_DUPLICATION_MESSAGE = "%s already exists with alias '%s' ";
 
+    public static  final  String APPOINTMENT_MODE_NOT_VALID="APPOINTMENT MODE NOT VALID";
+
 
     public interface AdminServiceMessages {
 
@@ -217,6 +219,9 @@ public class ErrorMessageConstants {
 
 
     //T
+    public static  final  String THIRD_PARTY_API_RESPONSE_IS_NULL="ThirdParty API response is null";
+
+    public static  final  String THIRD_PARTY_API_INFORMATION_NOT_FOUND="Third party API information Not found";
 
 
     //U

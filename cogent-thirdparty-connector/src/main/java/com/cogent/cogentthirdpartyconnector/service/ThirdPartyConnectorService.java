@@ -19,7 +19,7 @@ public interface ThirdPartyConnectorService {
     ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
 
     ResponseEntity<?> callEsewaRefundStatusService(BackendIntegrationApiInfo integrationApiInfo,
-                                                   String encryptedRequestBody);
+                                                   Map<String, Object> map);
 
     String hmacForFrontendIntegration(String esewaId,String merchantCode);
 }

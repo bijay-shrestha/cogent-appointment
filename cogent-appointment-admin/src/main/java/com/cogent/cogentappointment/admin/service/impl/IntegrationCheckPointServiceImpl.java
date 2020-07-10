@@ -45,6 +45,7 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.DATA;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSignatureForEsewa;
@@ -228,7 +229,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         Map<String, Object> map = new HashMap<>();
 
-        map.put("data", encryptedRequestBody);
+        map.put(DATA, encryptedRequestBody);
 
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
                 map);
@@ -476,7 +477,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             default:
-                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+                throw new BadRequestException(APPOINTMENT_MODE_NOT_VALID);
         }
 
 
@@ -510,19 +511,21 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     appointment.getHospitalId().getEsewaMerchantCode(),
                     transactionDetail.getTransactionNumber());
 
-            String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaPaymentStatus);
-
-            log.info(encryptedRequestBody);
-
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(),
                     transactionDetail.getTransactionNumber()));
 
+            String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaPaymentStatus);
+
+            Map<String, Object> map = new HashMap<>();
+
+            map.put(DATA, encryptedRequestBody);
+
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.
                     callEsewaRefundStatusService(integrationApiInfo,
-                            encryptedRequestBody);
+                            map);
 
             if (responseEntity.getBody() == null) {
-                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+                throw new OperationUnsuccessfulException(THIRD_PARTY_API_RESPONSE_IS_NULL);
             }
 
 
@@ -534,7 +537,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             {
                 e.printStackTrace();
-                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+                throw new OperationUnsuccessfulException(THIRD_PARTY_API_RESPONSE_IS_NULL);
             }
 
             if (thirdPartyResponse.getCode() != null) {
@@ -545,8 +548,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             return thirdPartyResponse;
 
         } else {
-            return new ThirdPartyResponse("400", "Third party API information Not found",
-                    "Third party API information Not found");
+            return new ThirdPartyResponse("400", THIRD_PARTY_API_INFORMATION_NOT_FOUND,
+                    THIRD_PARTY_API_INFORMATION_NOT_FOUND);
         }
 
 
@@ -576,15 +579,24 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         response);
                 break;
 
+
+            case COMPLETE:
+                IntegrationRefundRequestDTO integrationRefundRequestDTO=IntegrationRefundRequestDTO.builder()
+                        .featureCode("REFUND")
+                        .integrationChannelCode("BACK")
+                        .appointmentId(appointment.getId())
+                        .appointmentModeId(appointment.getAppointmentModeId().getId())
+                        .build();
+
+                apiIntegrationCheckpointForRefundAppointment(appointment,
+                        appointmentTransactionDetail,
+                        appointmentRefundDetail,
+                        integrationRefundRequestDTO);
+                break;
+
             case AMBIGIOUS:
                 throw new BadRequestException("Communicate with Esewa");
 
-            case COMPLETE:
-                apiIntegrationCheckpointForRefundStatus(appointment,
-                        appointmentRefundDetail,
-                        appointmentTransactionDetail,
-                        refundStatusRequestDTO);
-                break;
 
             case PENDING:
                 throw new BadRequestException("Communicate with Esewa");

@@ -127,7 +127,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
     @Override
     public ResponseEntity<?> callEsewaRefundStatusService(BackendIntegrationApiInfo integrationApiInfo,
-                                                          String encryptedRequestBody) {
+                                                          Map<String, Object> map) {
         HttpMethod httpMethod = getHttpRequestMethod(integrationApiInfo.getHttpMethod());
 
         String uri = "";
@@ -142,7 +142,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         ResponseEntity<?> response = restTemplateUtils.
                 requestAPI(httpMethod,
                         uri,
-                        new HttpEntity<>(encryptedRequestBody, integrationApiInfo.getHttpHeaders()));
+                        new HttpEntity<>(map, integrationApiInfo.getHttpHeaders()));
 
         System.out.println(response);
 

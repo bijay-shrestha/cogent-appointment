@@ -49,6 +49,7 @@ import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
+import static com.cogent.cogentappointment.commons.constants.StringConstant.DATA;
 import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.commons.security.jwt.JwtUtils.generateToken;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
@@ -420,7 +421,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             default:
-                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+                throw new BadRequestException(APPOINTMENT_MODE_NOT_VALID);
         }
 
 
@@ -451,10 +452,17 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             case COMPLETE:
 
-                apiIntegrationCheckpointForRefundStatus(appointment,
-                        appointmentRefundDetail,
+                IntegrationRefundRequestDTO integrationRefundRequestDTO=IntegrationRefundRequestDTO.builder()
+                        .featureCode("REFUND")
+                        .integrationChannelCode("BACK")
+                        .appointmentId(appointment.getId())
+                        .appointmentModeId(appointment.getAppointmentModeId().getId())
+                        .build();
+
+                apiIntegrationCheckpointForRefundAppointment(appointment,
                         appointmentTransactionDetail,
-                        statusRequestDTO);
+                        appointmentRefundDetail,
+                        integrationRefundRequestDTO);
 
 
                 break;
@@ -562,21 +570,19 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaRefundRequestDTO);
 
-            log.info(encryptedRequestBody);
-
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(),
                     transactionDetail.getTransactionNumber()));
 
             Map<String, Object> map = new HashMap<>();
 
-            map.put("data", encryptedRequestBody);
+            map.put(DATA, encryptedRequestBody);
 
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.
                     callEsewaRefundService(integrationApiInfo,
                             map);
 
             if (responseEntity.getBody() == null) {
-                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+                throw new OperationUnsuccessfulException(THIRD_PARTY_API_RESPONSE_IS_NULL);
             }
 
 
@@ -588,7 +594,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             {
                 e.printStackTrace();
-                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+                throw new OperationUnsuccessfulException(THIRD_PARTY_API_RESPONSE_IS_NULL);
             }
 
             if (thirdPartyResponse.getCode() != null) {
@@ -599,8 +605,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             return thirdPartyResponse;
 
         } else {
-            return new ThirdPartyResponse("400", "Third party API information Not found",
-                    "Third party API information Not found");
+            return new ThirdPartyResponse("400", THIRD_PARTY_API_INFORMATION_NOT_FOUND,
+                    THIRD_PARTY_API_INFORMATION_NOT_FOUND);
         }
 
 
@@ -611,6 +617,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                                                            AppointmentTransactionDetail transactionDetail) {
 
         String esewaId = getEsewaId(appointment.getId());
+
         String generatedEsewaHmac = getSigatureForEsewa.apply(esewaId,
                 appointment.getHospitalId().getEsewaMerchantCode());
 
@@ -629,14 +636,16 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaPaymentStatus);
 
-            log.info(encryptedRequestBody);
+            Map<String, Object> map = new HashMap<>();
+
+            map.put(DATA, encryptedRequestBody);
 
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.
                     callEsewaRefundStatusService(integrationApiInfo,
-                            encryptedRequestBody);
+                            map);
 
             if (responseEntity.getBody() == null) {
-                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+                throw new OperationUnsuccessfulException(THIRD_PARTY_API_RESPONSE_IS_NULL);
             }
 
 
@@ -648,7 +657,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             {
                 e.printStackTrace();
-                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+                throw new OperationUnsuccessfulException(THIRD_PARTY_API_RESPONSE_IS_NULL);
             }
 
             if (thirdPartyResponse.getCode() != null) {
@@ -659,8 +668,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             return thirdPartyResponse;
 
         } else {
-            return new ThirdPartyResponse("400", "Third party API information Not found",
-                    "Third party API information Not found");
+            return new ThirdPartyResponse("400", THIRD_PARTY_API_INFORMATION_NOT_FOUND,
+                    THIRD_PARTY_API_INFORMATION_NOT_FOUND);
         }
 
 

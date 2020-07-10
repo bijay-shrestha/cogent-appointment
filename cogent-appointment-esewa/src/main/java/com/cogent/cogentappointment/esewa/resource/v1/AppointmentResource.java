@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
@@ -33,8 +33,8 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 2019-10-22
  */
-@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @RestController
+@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @Api(BASE_API_VALUE)
 public class AppointmentResource {
 

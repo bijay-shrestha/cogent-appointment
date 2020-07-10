@@ -220,11 +220,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentCheckAvailabilityResponseDTO fetchAvailableTimeSlots(
-            AppointmentCheckAvailabilityRequestDTO requestDTO) {
+            @Valid AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
 
@@ -241,11 +243,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentCheckAvailabilityResponseDTO fetchCurrentAvailableTimeSlots
-            (AppointmentCheckAvailabilityRequestDTO requestDTO) {
+            (@Valid AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
 
@@ -401,10 +405,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentMinResponseWithStatusDTO fetchPendingAppointments(AppointmentHistorySearchDTO searchDTO) {
+    public AppointmentMinResponseWithStatusDTO fetchPendingAppointments(@Valid AppointmentHistorySearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PENDING_APPOINTMENTS);
+
+        validateConstraintViolation(validator.validate(searchDTO));
 
         List<AppointmentMinResponseDTO> pendingAppointments =
                 appointmentRepository.fetchPendingAppointments(searchDTO);
@@ -415,11 +421,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentCancelResponseDTO cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO) {
+    public AppointmentCancelResponseDTO cancelAppointment(@Valid AppointmentCancelRequestDTO cancelRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(CANCELLING_PROCESS_STARTED);
+
+        validateConstraintViolation(validator.validate(cancelRequestDTO));
 
         Appointment appointment = findPendingAppointmentById(cancelRequestDTO.getAppointmentId());
 
@@ -440,11 +448,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public StatusResponseDTO rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
+    public StatusResponseDTO rescheduleAppointment(@Valid AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(RESCHEDULE_PROCESS_STARTED);
+
+        validateConstraintViolation(validator.validate(rescheduleRequestDTO));
 
         Appointment appointment = findPendingAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
@@ -491,10 +501,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO) {
+    public AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(@Valid AppointmentHistorySearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
+
+        validateConstraintViolation(validator.validate(searchDTO));
 
         List<AppointmentMinResponseDTO> appointmentHistory =
                 appointmentRepository.fetchAppointmentHistory(searchDTO);
@@ -506,10 +518,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     //    todo: serviceType Code must be dynamic
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO) {
+    public AppointmentResponseWithStatusDTO searchAppointments (@Valid AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
+
+        validateConstraintViolation(validator.validate(searchDTO));
 
 //        AppointmentServiceType appointmentServiceType =
 //                fetchAppointmentServiceType(searchDTO.getAppointmentServiceTypeId());
@@ -545,7 +559,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentTransactionStatusResponseDTO fetchAppointmentTransactionStatus
-            (AppointmentTransactionStatusRequestDTO requestDTO) {
+            (@Valid AppointmentTransactionStatusRequestDTO requestDTO) {
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         Character appointmentTransactionRequestLogStatus =
                 appointmentTransactionRequestLogService.fetchAppointmentTransactionStatus

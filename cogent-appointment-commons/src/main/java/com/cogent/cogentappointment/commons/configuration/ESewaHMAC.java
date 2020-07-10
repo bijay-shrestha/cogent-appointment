@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.commons.configuration;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +23,10 @@ public class ESewaHMAC {
     @Value("${esewa-hmac-api-secret}")
     public String HMAC_API_SECRET_ESEWA;
 
-//    @Value("${esewa-decode-hmac-api-secret}")
-//    private String HMAC_DECODE_API_SECRET_ESEWA;
+    @Value("${esewa-decode-hmac-api-secret}")
+    private String HMAC_DECODE_API_SECRET_ESEWA;
+
+    @Value("${esewa-decode-hmac-api-time-validity}")
+    private String HMAC_API_SECRET_ESEWA_TIME_VALIDITY;
 
 }

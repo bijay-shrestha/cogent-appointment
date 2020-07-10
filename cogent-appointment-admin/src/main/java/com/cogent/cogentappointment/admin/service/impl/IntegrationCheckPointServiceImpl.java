@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -51,6 +52,7 @@ import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRef
 import static com.cogent.cogentappointment.admin.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.commons.security.jwt.JwtUtils.generateToken;
 import static com.cogent.cogentappointment.commons.utils.StringUtil.toNormalCase;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
 import static com.cogent.cogentthirdpartyconnector.utils.HMACUtils.getSigatureForEsewa;
@@ -219,10 +221,14 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 isRefund, refundRequestDTO.getRemarks());
         esewaRefundRequestDTO.setEsewa_id(esewaId);
 
+        String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaRefundRequestDTO);
+        log.info(encryptedRequestBody);
+
+
         integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                esewaRefundRequestDTO);
+                encryptedRequestBody);
 
         if (responseEntity.getBody() == null) {
             throw new OperationUnsuccessfulException("ThirdParty API response is null");
@@ -326,7 +332,6 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
                 saveAppointmentRefundDetail(parseRefundRejectDetails(refundRequestDTO,
                         refundAppointmentDetail));
-
 
             } else {
 
@@ -488,6 +493,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 .build();
 
         String esewaId = getEsewaId(appointment.getId());
+
         String generatedEsewaHmac = getSigatureForEsewa.apply(esewaId,
                 appointment.getHospitalId().getEsewaMerchantCode());
 
@@ -497,16 +503,20 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         if (!Objects.isNull(integrationApiInfo)) {
 
-            EsewaPaymentStatus esewaPayementStatus = getEsewaPayementStatusRequestBody(esewaId,
+            EsewaPaymentStatus esewaPaymentStatus = getEsewaPayementStatusRequestBody(esewaId,
                     appointment.getHospitalId().getEsewaMerchantCode(),
                     transactionDetail.getTransactionNumber());
+
+            String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaPaymentStatus);
+
+            log.info(encryptedRequestBody);
 
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(),
                     transactionDetail.getTransactionNumber()));
 
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.
                     callEsewaRefundStatusService(integrationApiInfo,
-                            esewaPayementStatus);
+                            encryptedRequestBody);
 
             if (responseEntity.getBody() == null) {
                 throw new OperationUnsuccessfulException("ThirdParty API response is null");
@@ -830,6 +840,10 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
         }
 
         return requestBody;
+    }
+
+    private String convertObjectToEncryptedEsewaRequestBody(Object obj) {
+        return generateToken(obj);
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {

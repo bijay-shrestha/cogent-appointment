@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.esewa.security.filter;
 
+import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
 import com.cogent.cogentappointment.esewa.dto.request.login.ThirdPartyDetail;
 import com.cogent.cogentappointment.esewa.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.esewa.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.esewa.security.hmac.HMACBuilder;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,8 +35,12 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
-    public HmacAuthenticationFilter(HmacApiInfoRepository hmacApiInfoRepository) {
+    private final JwtUtils jwtUtils;
+
+    public HmacAuthenticationFilter(HmacApiInfoRepository hmacApiInfoRepository,
+                                    JwtUtils jwtUtils) {
         this.hmacApiInfoRepository = hmacApiInfoRepository;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override

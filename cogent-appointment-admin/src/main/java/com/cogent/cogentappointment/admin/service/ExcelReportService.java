@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadRespo
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.data.domain.Pageable;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public interface ExcelReportService {
@@ -18,5 +19,5 @@ public interface ExcelReportService {
                                                                    Pageable pageable);
 
     JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO,
-                                                                  Pageable pageable);
+                                                                  Pageable pageable) throws FileNotFoundException, JRException;
 }

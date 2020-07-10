@@ -7,10 +7,13 @@ import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentResc
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
-import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
+import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
+import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
+import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
+import com.cogent.cogentappointment.commons.dto.request.jasper.reshsceduleLog.RescheduleLogJasperData;
 import com.cogent.cogentappointment.commons.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +32,7 @@ import java.util.Map;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
+import static com.cogent.cogentappointment.commons.constants.JasperReportFileConstants.JASPER_REPORT_RESHCEDULE_LOG;
 import static com.cogent.cogentappointment.commons.constants.JasperReportFileConstants.JASPER_REPORT_TRANSACTION_LOG;
 import static com.cogent.cogentappointment.commons.utils.jasperreport.GenerateExcelReportUtils.generateExcelReport;
 
@@ -108,8 +113,42 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
     @Override
     public JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO,
-                                                                         Pageable pageable) {
-        return null;
+                                                                         Pageable pageable) throws FileNotFoundException, JRException {
+
+        AppointmentRescheduleLogResponseDTO responseDTOS =
+                appointmentRepository.fetchRescheduleAppointment(searchRequestDTO, pageable);
+
+
+        List<AppointmentRescheduleLogDTO> rescheduleLogDTO = responseDTOS.getAppointmentRescheduleLogDTOS();
+
+        List<RescheduleLogJasperData> jasperData = new ArrayList<>();
+
+        rescheduleLogDTO.forEach(rescheduleLog -> {
+
+            RescheduleLogJasperData rescheduleLogJasperData = RescheduleLogJasperData.builder()
+                    .appointmentNumber(rescheduleLog.getAppointmentNumber())
+                    .appointmentDateTime(new SimpleDateFormat("yyyy/MM/dd, hh:mm a").format(rescheduleLog.getRescheduleAppointmentDate()))
+                    .rescheduleDate(new SimpleDateFormat("yyyy/MM/dd, hh:mm a").format(rescheduleLog.getRescheduleAppointmentDate()))
+                    .patientDetails(rescheduleLog.getPatientName() + ", " + StringUtil.toNormalCase(rescheduleLog.getPatientGender().name()))
+                    .registrationNumber(
+                            (rescheduleLog.getRegistrationNumber() == null) ?
+                                    "" : rescheduleLog.getRegistrationNumber())
+                    .esewaId((rescheduleLog.getEsewaId() == null) ?
+                            "" : rescheduleLog.getEsewaId())
+                    .doctorDetails(rescheduleLog.getDoctorName() + "/" + rescheduleLog.getSpecializationName())
+                    .build();
+
+            jasperData.add(rescheduleLogJasperData);
+
+        });
+
+        Map hParam = new HashMap<String, String>();
+
+        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
+        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getToDate()));
+
+
+        return generateExcelReport(jasperData, hParam, JASPER_REPORT_RESHCEDULE_LOG);
     }
 
     private Map reportParamtersGenerator(TransactionLogSearchDTO searchRequestDTO, TransactionLogResponseDTO transactionLogs) {

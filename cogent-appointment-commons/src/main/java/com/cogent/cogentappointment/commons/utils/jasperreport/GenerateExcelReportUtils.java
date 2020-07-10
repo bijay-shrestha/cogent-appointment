@@ -7,7 +7,6 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import org.springframework.core.io.InputStreamResource;
 
 import java.io.*;
 import java.util.List;
@@ -36,7 +35,7 @@ public class GenerateExcelReportUtils {
         JasperPrint print = JasperFillManager.fillReport(report, hParam, jrbcds);
 
         String fileName = getTimeInMillisecondsFromLocalDate() + ".xlsx";
-        String reportDestination = "./reports/" + fileName;  //This is generated Correctly
+//        String reportDestination = "./reports/" + fileName;  //This is generated Correctly
 
 //        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 //        IOUtils.copy(fis, response.getOutputStream());
@@ -47,13 +46,14 @@ public class GenerateExcelReportUtils {
 
         try {
 
-            File xlsFile = new File(reportDestination);
+            File xlsFile = File.createTempFile(String.valueOf(getTimeInMillisecondsFromLocalDate()), ".xlsx");
+
+//            FileOutputStream fos = new FileOutputStream(xlsFile,true);
 
             JRXlsxExporter xlsExporter = new JRXlsxExporter();
-
             xlsExporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-            xlsExporter.setParameter(JRExporterParameter.OUTPUT_FILE, xlsFile);
-
+//            xlsExporter.setParameter(JRExporterParameter.OUTPUT_FILE, xlsFile);
+            xlsExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
             xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
             xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
             xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
@@ -61,11 +61,8 @@ public class GenerateExcelReportUtils {
 
             xlsExporter.exportReport();
 
-
-            FileInputStream fis = new FileInputStream(new File(reportDestination));
-
-            InputStream inputStream = fis;
-            InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+            // Create an Input Stream from the bytes extracted by the OutputStream
+            InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
 
             JasperReportDownloadResponse downloadResponse = JasperReportDownloadResponse.builder()
                     .fileName(fileName)

@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.commons.dto.request.jasper.reshsceduleLog;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -10,11 +9,16 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RescheduleLogJasperData implements Serializable {
 
     private String appointmentNumber;
     private String appointmentDateTime;
     private String rescheduleDate;
+    private String patientDetails;
+    private String esewaId;
     private String registrationNumber;
     private String doctorDetails;
 

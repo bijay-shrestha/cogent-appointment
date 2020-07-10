@@ -6,7 +6,7 @@ package com.cogent.cogentappointment.commons.constants;
 public class JasperReportFileConstants {
 
     public static final String JASPER_REPORT_APPOINTMENT_LOG = "./reporting/transaction-log/Reports.jrxml";
-    public static final String JASPER_REPORT_RESHCEDULE_LOG = "./reporting/transaction-log/Reports.jrxml";
+    public static final String JASPER_REPORT_RESHCEDULE_LOG = "./reporting/reschedule-log/reschedule_log.jrxml";
     public static final String JASPER_REPORT_TRANSFER_LOG = "./reporting/transaction-log/Reports.jrxml";
     public static final String JASPER_REPORT_TRANSACTION_LOG = "./reporting/transaction-log/Reports.jrxml";
 }

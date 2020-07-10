@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.jasper;
+package com.cogent.cogentappointment.admin.dto.jasper;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.Getter;
@@ -12,11 +12,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class PatientDetailsJasperResponseDTO implements Serializable{
-
-    private String client;
-
-    private String patientType;
+public class PatientDetailsJasperResponse implements Serializable{
 
     private String patientName;
 
@@ -24,11 +20,13 @@ public class PatientDetailsJasperResponseDTO implements Serializable{
 
     private String registrationNumber;
 
-    private String eSewaId;
+    private String esewaId;
 
     private String status;
 
+    private String client;
+
     private String hospitalNumber;
 
-    private Integer totalItems;
+    private String patientType;
 }

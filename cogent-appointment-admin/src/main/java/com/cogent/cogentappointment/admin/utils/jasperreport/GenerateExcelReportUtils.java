@@ -5,11 +5,9 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
-import net.sf.jasperreports.export.XlsReportConfiguration;
-import net.sf.jasperreports.export.XlsxExporterConfiguration;
 
 import java.io.*;
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,12 +19,13 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
 public class GenerateExcelReportUtils {
 
     public static void generateExcelReport(List<?> cList,
-                                         Map hParam) throws FileNotFoundException, JRException {
+                                           Map hParam,
+                                           String reportName) throws FileNotFoundException, JRException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // LOCATION OF JASPER REPOTR TEMPLATE FILE.
-        String string = "././reporting/Reports.jrxml";
+        String string = "././reporting/" + reportName + ".jrxml";
 
         // READ TEMPLATE AS INPUT STREAM
         InputStream fileRead = new FileInputStream(string);
@@ -35,9 +34,11 @@ public class GenerateExcelReportUtils {
         JasperReport report = JasperCompileManager.compileReport(design);
 
         JRBeanCollectionDataSource jrbcds = new JRBeanCollectionDataSource(cList);
+
         JasperPrint print = JasperFillManager.fillReport(report, hParam, jrbcds);
 
-        String reportDestination = "./reports/"+getTimeInMillisecondsFromLocalDate() + ".xlsx";  //This is generated Correctly
+
+        String reportDestination = "./reports/" + getTimeInMillisecondsFromLocalDate() + ".xlsx";  //This is generated Correctly
 
 //        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 //        IOUtils.copy(fis, response.getOutputStream());

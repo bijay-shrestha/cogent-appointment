@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.jasper.PatientDetailsJasperResponseDTO;
 import com.cogent.cogentappointment.admin.dto.jasper.TransactionLogJasperData;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
@@ -88,13 +89,18 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         });
 
-        generateExcelReport(jasperData, null);
+        generateExcelReport(jasperData, null,"Reports");
 
     }
 
     @Override
     public void generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO, Pageable pageable)
             throws IOException, JRException {
+
+        PatientDetailsJasperResponseDTO patientDetailsJasperResponseDTO=patientRepository.getPatientDetailsForExcel
+                (searchRequestDTO, pageable);
+
+        generateExcelReport(patientDetailsJasperResponseDTO.getResponseList(), null,"patientDetails");
 
     }
 }

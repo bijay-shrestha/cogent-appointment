@@ -518,7 +518,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     //    todo: serviceType Code must be dynamic
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointments (@Valid AppointmentSearchDTO searchDTO) {
+    public AppointmentResponseWithStatusDTO searchAppointments(@Valid AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
@@ -695,11 +695,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Patient patient;
 
-        if (isNewRegistration) {
+        if (isNewRegistration)
             patient = patientService.saveSelfPatient(patientRequestDTO);
-            patientMetaInfoService.savePatientMetaInfo(patient);
-        } else
+        else
             patient = patientService.fetchPatientById(patientId);
+
+        patientMetaInfoService.savePatientMetaInfo(patient);
 
         hospitalPatientInfoService.saveHospitalPatientInfoForSelf(
                 hospital, patient,
@@ -746,12 +747,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 validatePatientDuplicity(parentPatient, childPatient, requestForPatientInfo);
             } else {
                 childPatient = patientService.saveOtherPatient(requestForPatientInfo);
-                patientMetaInfoService.savePatientMetaInfo(childPatient);
                 patientRelationInfoService.savePatientRelationInfo(parentPatient, childPatient);
             }
 
         } else
             childPatient = patientService.fetchPatientById(patientId);
+
+        patientMetaInfoService.savePatientMetaInfo(childPatient);
 
         hospitalPatientInfoService.saveHospitalPatientInfoForOthers(
                 hospital, childPatient,

@@ -20,7 +20,7 @@ public interface ExcelReportService {
                                                               Pageable pageable) throws IOException, JRException;
 
     JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO,
-                                                                   Pageable pageable);
+                                                                   Pageable pageable) throws FileNotFoundException, JRException;
 
     JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO,
                                                                   Pageable pageable) throws FileNotFoundException, JRException;

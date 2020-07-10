@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
+import com.cogent.cogentappointment.commons.dto.request.jasper.appointmentLog.AppointmentLogJasperData;
 import com.cogent.cogentappointment.commons.dto.request.jasper.reshsceduleLog.RescheduleLogJasperData;
 import com.cogent.cogentappointment.commons.dto.request.jasper.transferLog.TransactionLogJasperData;
 import com.cogent.cogentappointment.commons.utils.StringUtil;
@@ -111,24 +112,73 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     @Override
-    public JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO
-                                                                                  searchRequestDTO,
-                                                                          Pageable pageable) {
-        return null;
+    public JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO,
+                                                                          Pageable pageable) throws FileNotFoundException, JRException {
+        String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
+
+        AppointmentLogResponseDTO appointmentLogs;
+
+        switch (appointmentServiceTypeCode) {
+            case DOCTOR_CONSULTATION_CODE:
+                appointmentLogs = appointmentRepository.searchDoctorAppointmentLogs(
+                        searchRequestDTO, pageable, appointmentServiceTypeCode);
+                break;
+
+            case DEPARTMENT_CONSULTATION_CODE:
+                appointmentLogs = appointmentRepository.searchHospitalDepartmentAppointmentLogs(
+                        searchRequestDTO, pageable, appointmentServiceTypeCode);
+                break;
+
+            default:
+                throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode));
+        }
+
+        List<AppointmentLogDTO> appointmentLogDTOList = appointmentLogs.getAppointmentLogs();
+
+        List<AppointmentLogJasperData> jasperData = new ArrayList<>();
+
+        appointmentLogDTOList.forEach(appointmentLogDTO -> {
+
+            AppointmentLogJasperData appointmentLogJasperData = new AppointmentLogJasperData();
+
+            appointmentLogJasperData.setAppointmentStatus(appointmentLogDTO.getStatus());
+            appointmentLogJasperData.setAppointmentNumber(appointmentLogDTO.getAppointmentNumber());
+            appointmentLogJasperData.setAppointmentDateTime(new SimpleDateFormat("yyyy/MM/dd").format(appointmentLogDTO.getTransactionDate()) +
+                    ", " + appointmentLogDTO.getAppointmentTime());
+            appointmentLogJasperData.setTransactionDetails(appointmentLogDTO.getTransactionNumber() +
+                    ", " + appointmentLogDTO.getRefundAmount());
+            appointmentLogJasperData.setPatientDetails(appointmentLogDTO.getPatientName() +
+                    ", " + StringUtil.toNormalCase(appointmentLogDTO.getPatientGender().name()));
+            appointmentLogJasperData.setRegistrationNumber(
+                    (appointmentLogDTO.getRegistrationNumber() == null) ?
+                            "" : appointmentLogDTO.getRegistrationNumber());
+            appointmentLogJasperData.setEsewaId((appointmentLogDTO.getEsewaId() == null) ?
+                    "" : appointmentLogDTO.getEsewaId());
+            appointmentLogJasperData.setAddress(appointmentLogDTO.getPatientAddress());
+            appointmentLogJasperData.setDoctorDetails(appointmentLogDTO.getDoctorName() + "/" + appointmentLogDTO.getSpecializationName());
+
+            jasperData.add(appointmentLogJasperData);
+
+        });
+
+        Map hParam = appointmentLogReportParamtersGenerator(searchRequestDTO, appointmentLogs);
+
+        return generateExcelReport(jasperData,
+                hParam,
+                JASPER_REPORT_APPOINTMENT_LOG);
+
+
     }
 
     @Override
-    public JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO
-                                                                                 searchRequestDTO,
+    public JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO,
                                                                          Pageable pageable) throws FileNotFoundException, JRException {
 
-        AppointmentRescheduleLogResponseDTO
-                responseDTOS =
+        AppointmentRescheduleLogResponseDTO responseDTOS =
                 appointmentRepository.fetchRescheduleAppointment(searchRequestDTO, pageable);
 
 
-        List<AppointmentRescheduleLogDTO
-                > rescheduleLogDTO = responseDTOS.getAppointmentRescheduleLogDTOS();
+        List<AppointmentRescheduleLogDTO> rescheduleLogDTO = responseDTOS.getAppointmentRescheduleLogDTOS();
 
         List<RescheduleLogJasperData> jasperData = new ArrayList<>();
 
@@ -160,6 +210,30 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_RESHCEDULE_LOG);
     }
 
+    private Map appointmentLogReportParamtersGenerator(AppointmentLogSearchDTO searchRequestDTO, AppointmentLogResponseDTO appointmentLogResponseDTO) {
+
+        BookedAppointmentResponseDTO bookedInfo = appointmentLogResponseDTO.getBookedInfo();
+        CheckedInAppointmentResponseDTO checkedInInfo = appointmentLogResponseDTO.getCheckedInInfo();
+        RefundAppointmentResponseDTO refundInfo = appointmentLogResponseDTO.getRefundInfo();
+//        transactionLogs.getRe
+        CancelledAppointmentResponseDTO cancelledInfo = appointmentLogResponseDTO.getCancelledInfo();
+        RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo = appointmentLogResponseDTO.getRevenueFromRefundInfo();
+
+        Map hParam = new HashMap<String, String>();
+
+        dynamicStataticsGenerator(hParam,
+                searchRequestDTO.getFromDate(),
+                searchRequestDTO.getToDate(),
+                bookedInfo,
+                checkedInInfo,
+                refundInfo,
+                cancelledInfo,
+                revenueFromRefundInfo);
+
+
+        return hParam;
+    }
+
     private Map reportParamtersGenerator(TransactionLogSearchDTO searchRequestDTO, TransactionLogResponseDTO transactionLogs) {
 
         BookedAppointmentResponseDTO bookedInfo = transactionLogs.getBookedInfo();
@@ -175,8 +249,29 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         Map hParam = new HashMap<String, String>();
 
-        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
-        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getToDate()));
+        dynamicStataticsGenerator(hParam,
+                searchRequestDTO.getFromDate(),
+                searchRequestDTO.getToDate(),
+                bookedInfo,
+                checkedInInfo,
+                refundInfo,
+                cancelledInfo,
+                revenueFromRefundInfo);
+
+        return hParam;
+    }
+
+
+    private void dynamicStataticsGenerator(Map hParam,
+                                           Date fromDate,
+                                           Date toDate,
+                                           BookedAppointmentResponseDTO bookedInfo,
+                                           CheckedInAppointmentResponseDTO checkedInInfo,
+                                           RefundAppointmentResponseDTO refundInfo,
+                                           CancelledAppointmentResponseDTO cancelledInfo, RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo) {
+
+        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(fromDate));
+        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(toDate));
 
         hParam.put("booked", "NPR " + bookedInfo.getBookedAmount() +
                 " from " + bookedInfo.getBookedCount() + " Appt. " + "Follow-up " +
@@ -201,7 +296,6 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         hParam.put("totalRevenue", "NPR " + revenueFromRefundInfo.getRevenueFromRefundAmount() + " from " + revenueFromRefundInfo.getRevenueFromRefundCount() + " Appt. " +
                 "Follow-up " + "NPR " + revenueFromRefundInfo.getFollowUpAmount() + " from " + revenueFromRefundInfo.getFollowUpCount() + " Appt.");
 
-        return hParam;
     }
 
     @Override
@@ -211,7 +305,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         PatientDetailsJasperResponseDTO patientDetailsJasperResponseDTO = patientRepository.getPatientDetailsForExcel
                 (searchRequestDTO, pageable);
 
-      return   generateExcelReport(patientDetailsJasperResponseDTO.getResponseList(),
+        return generateExcelReport(patientDetailsJasperResponseDTO.getResponseList(),
                 null,
                 JASPER_REPORT_PATIENT_DETAILS);
 

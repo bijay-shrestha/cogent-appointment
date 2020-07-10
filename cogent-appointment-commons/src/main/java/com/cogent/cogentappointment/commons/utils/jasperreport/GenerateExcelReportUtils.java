@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.commons.utils.jasperreport;
 
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
+import com.cogent.cogentappointment.commons.log.CommonLogConstant;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
@@ -12,16 +14,24 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.commons.log.CommonLogConstant.EXCEL_REPORT_DOWNLOAD;
+import static com.cogent.cogentappointment.commons.log.CommonLogConstant.EXCEL_REPORT_DOWNLOAD_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.commons.utils.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.commons.utils.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author rupak ON 2020/07/09-2:25 PM
  */
+@Slf4j
 public class GenerateExcelReportUtils {
 
     public static JasperReportDownloadResponse generateExcelReport(List<?> cList,
                                                                    Map hParam,
                                                                    String reportPath) throws FileNotFoundException, JRException {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(CommonLogConstant.EXCEL_REPORT_DOWNLOAD_PROCESS_STARTED, EXCEL_REPORT_DOWNLOAD);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -56,6 +66,8 @@ public class GenerateExcelReportUtils {
                 .fileName(fileName)
                 .inputStream(inputStream)
                 .build();
+
+        log.info(EXCEL_REPORT_DOWNLOAD_PROCESS_COMPLETED, EXCEL_REPORT_DOWNLOAD, getDifferenceBetweenTwoTime(startTime));
 
         return downloadResponse;
     }

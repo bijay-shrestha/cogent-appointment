@@ -39,78 +39,80 @@
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
 			<staticText>
 				<reportElement x="-10" y="47" width="20" height="30" uuid="654909ca-d2fd-4415-a6ef-c3114b16c978"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[S.N.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="10" y="47" width="60" height="30" uuid="77338d2e-cdac-4d30-859d-5b1993968511"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Appointment No.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="70" y="47" width="80" height="30" uuid="416e847e-126a-4120-8e3f-abc05a2962b6"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Appointment Date/Time]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="150" y="47" width="80" height="30" uuid="df5b60e3-83ef-40a2-8af8-7a84f9579c57"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Reshcedule Date]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="230" y="47" width="120" height="30" uuid="dbb52b32-68a7-4c31-8221-9303e43ac57a"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Patient Details]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="350" y="47" width="50" height="30" uuid="0f60f9cf-c0cd-4372-8c88-36808887c1e7"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Reg No.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="450" y="47" width="122" height="30" uuid="a5249cd1-619d-4e65-b47d-56410d509214"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Doctor Details]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="520" y="0" width="52" height="18" uuid="2a1c40f4-3581-4086-81f9-ec7c49534e3c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="450" y="18" width="70" height="18" uuid="52f349bb-789a-4509-9614-cb3444bab3db"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[To Date:]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="520" y="18" width="52" height="18" uuid="c5c2a05e-0903-4499-9916-35b080748b22"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="450" y="0" width="70" height="18" uuid="575f75de-bc71-4908-acae-1026c19ebe04"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[From Date:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="400" y="47" width="50" height="30" uuid="74f64e37-0901-4512-a5f1-e45fd26eb107"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Esewa Id.]]></text>
@@ -121,34 +123,42 @@
 		<band height="253" splitType="Stretch">
 			<textField>
 				<reportElement x="-10" y="0" width="20" height="30" uuid="57a166b3-8210-4e4f-a7d0-3d20ca29b609"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="10" y="0" width="60" height="30" uuid="683fc9d8-e063-47f3-b6bf-5e105f56e2fc"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{appointmentNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="70" y="0" width="80" height="30" uuid="006a6625-6c31-4717-8712-d302a1631120"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{appointmentDateTime}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="150" y="0" width="80" height="30" uuid="b5b16681-2e93-4ad2-90d9-fc12da07300d"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{rescheduleDate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="230" y="0" width="120" height="30" uuid="58f3a14b-88e6-4e60-a46e-e196533068f3"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{patientDetails}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="350" y="0" width="50" height="30" uuid="3b39ccb7-3212-4279-b6e3-82fa7809eb55"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{registrationNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="450" y="0" width="122" height="30" uuid="f4b5c04a-2430-4075-8aeb-b81368851052"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{doctorDetails}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="400" y="0" width="50" height="30" uuid="d8ca071e-127d-4dc6-a1bc-6603ce2a5c01"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{esewaId}]]></textFieldExpression>
 			</textField>
 		</band>

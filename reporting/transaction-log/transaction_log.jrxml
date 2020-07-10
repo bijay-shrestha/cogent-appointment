@@ -22,6 +22,7 @@
 	<field name="registrationNumber" class="java.lang.String"/>
 	<field name="address" class="java.lang.String"/>
 	<field name="doctorDetails" class="java.lang.String"/>
+	<field name="esewaId" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -37,94 +38,102 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="98" splitType="Stretch">
+		<band height="95" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
 			<staticText>
 				<reportElement x="460" y="0" width="70" height="18" uuid="da9ce4b9-f3fa-4159-aa29-75bc9aedba63"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[From Date:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="460" y="18" width="70" height="18" uuid="c7e264ba-973b-447c-9df5-2c613d2c7f23"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[To Date:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="-10" y="22" width="60" height="26" uuid="9e505b30-191c-4adf-a1da-d2475c955759"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Booked:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="-10" y="60" width="60" height="28" uuid="f909d0ae-1710-4de0-b3a3-8292495cb936"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Refunded:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="150" y="21" width="66" height="28" uuid="da09b198-f797-44a8-8cfb-44ed94fb2405"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Checked In:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="150" y="60" width="66" height="28" uuid="a9a30059-8a1b-4e80-8ab6-ba606589bf73"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Refuned To Client:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="308" y="20" width="62" height="28" uuid="9740051e-f014-47cd-a3b9-05371046f090"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cancelled:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="308" y="60" width="92" height="28" uuid="37f5845f-483d-4d49-a4a9-58e09df9246f"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Revenue Amount:]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="50" y="22" width="96" height="26" uuid="72e70a53-9ec8-41f7-a4ce-0be6301c2ab3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{booked}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="50" y="60" width="96" height="28" uuid="0b761301-eba7-4812-b30c-99dcb063a4a7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{refunded}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="216" y="22" width="80" height="27" uuid="c505395d-b29a-4129-a32d-86f4055e9d4e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{checkedIn}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="216" y="60" width="80" height="28" uuid="1d8da658-002f-4be3-b808-d1deb8bc9b21"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{refundedToClient}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="400" y="60" width="80" height="28" uuid="28dbb7ce-e42b-450c-a858-6ebf27a03678"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalRevenue}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="374" y="21" width="80" height="26" uuid="1a5d55bc-f5b5-44c2-b997-7fcc13cbcd0d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{cancelled}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="530" y="0" width="42" height="18" uuid="82faaf28-6a97-4630-af36-1b14a37d7bd7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="530" y="18" width="42" height="18" uuid="19e1189e-4151-4755-a04b-d207cb6e24a6"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -134,106 +143,127 @@
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
 			<staticText>
 				<reportElement x="-10" y="13" width="20" height="30" uuid="654909ca-d2fd-4415-a6ef-c3114b16c978"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[S.N.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="10" y="13" width="60" height="30" uuid="77338d2e-cdac-4d30-859d-5b1993968511"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Appointment No.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="70" y="13" width="76" height="30" uuid="416e847e-126a-4120-8e3f-abc05a2962b6"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Appointment Date/Time]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="146" y="13" width="84" height="30" uuid="df5b60e3-83ef-40a2-8af8-7a84f9579c57"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Appointment Transaction Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="230" y="13" width="66" height="30" uuid="9ca6e17d-b32d-4ede-9b57-94ea3f1db0ca"/>
-				<textElement>
+				<reportElement x="230" y="13" width="40" height="30" uuid="9ca6e17d-b32d-4ede-9b57-94ea3f1db0ca"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Transaction Details]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="296" y="13" width="104" height="30" uuid="dbb52b32-68a7-4c31-8221-9303e43ac57a"/>
-				<textElement>
+				<reportElement x="270" y="13" width="74" height="30" uuid="dbb52b32-68a7-4c31-8221-9303e43ac57a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Patient Details]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="400" y="13" width="40" height="30" uuid="0f60f9cf-c0cd-4372-8c88-36808887c1e7"/>
-				<textElement>
+				<reportElement x="390" y="13" width="40" height="30" uuid="0f60f9cf-c0cd-4372-8c88-36808887c1e7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Reg No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="440" y="13" width="50" height="30" uuid="9e1745c0-ff12-4e8b-ba8e-d5e87266c0d4"/>
-				<textElement>
+				<reportElement x="430" y="13" width="60" height="30" uuid="9e1745c0-ff12-4e8b-ba8e-d5e87266c0d4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Address]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="490" y="13" width="82" height="30" uuid="a5249cd1-619d-4e65-b47d-56410d509214"/>
-				<textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Doctor Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="13" width="46" height="30" uuid="f9ff96f1-f912-4422-acf8-4b88ffc81151"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Esewa Id]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="253" splitType="Stretch">
-			<textField>
+			<textField textAdjust="StretchHeight">
 				<reportElement x="-10" y="0" width="20" height="30" uuid="57a166b3-8210-4e4f-a7d0-3d20ca29b609"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField textAdjust="StretchHeight">
 				<reportElement x="10" y="0" width="60" height="30" uuid="683fc9d8-e063-47f3-b6bf-5e105f56e2fc"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{appointmentNumber}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField textAdjust="StretchHeight">
 				<reportElement x="70" y="0" width="76" height="30" uuid="006a6625-6c31-4717-8712-d302a1631120"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{appointmentDateTime}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField textAdjust="StretchHeight">
 				<reportElement x="146" y="0" width="84" height="30" uuid="b5b16681-2e93-4ad2-90d9-fc12da07300d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{appointmentTransactionDate}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="230" y="0" width="66" height="30" uuid="230d3dd3-6f6f-4a13-805c-88e6fa5788cc"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="230" y="0" width="40" height="30" uuid="230d3dd3-6f6f-4a13-805c-88e6fa5788cc"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{transactionDetails}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="296" y="0" width="104" height="30" uuid="58f3a14b-88e6-4e60-a46e-e196533068f3"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="270" y="0" width="74" height="30" uuid="58f3a14b-88e6-4e60-a46e-e196533068f3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{patientDetails}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="400" y="0" width="40" height="30" uuid="3b39ccb7-3212-4279-b6e3-82fa7809eb55"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="390" y="0" width="40" height="30" uuid="3b39ccb7-3212-4279-b6e3-82fa7809eb55"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{registrationNumber}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="440" y="0" width="50" height="30" uuid="508fd18a-9dda-4bc5-862d-727a14448923"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="430" y="0" width="60" height="30" uuid="508fd18a-9dda-4bc5-862d-727a14448923"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField textAdjust="StretchHeight">
 				<reportElement x="490" y="0" width="82" height="30" uuid="f4b5c04a-2430-4075-8aeb-b81368851052"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{doctorDetails}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="344" y="0" width="46" height="30" uuid="f2ad66eb-c6ab-480d-ae6c-08d7e9a943fe"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{esewaId}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

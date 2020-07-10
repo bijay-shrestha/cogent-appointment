@@ -35,46 +35,28 @@ public class GenerateExcelReportUtils {
         JasperPrint print = JasperFillManager.fillReport(report, hParam, jrbcds);
 
         String fileName = getTimeInMillisecondsFromLocalDate() + ".xlsx";
-//        String reportDestination = "./reports/" + fileName;  //This is generated Correctly
 
-//        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-//        IOUtils.copy(fis, response.getOutputStream());
-//        response.setContentType("application/vnd.ms-excel");
-//        response.setHeader("Content-Disposition", "attachment; filename=" + "OutStanding_DC_Report" + ".xlsx"); //This is downloaded as .xhtml
-//        response.flushBuffer();
-//        fis.close();
-
-        try {
-
-            File xlsFile = File.createTempFile(String.valueOf(getTimeInMillisecondsFromLocalDate()), ".xlsx");
-
-//            FileOutputStream fos = new FileOutputStream(xlsFile,true);
-
-            JRXlsxExporter xlsExporter = new JRXlsxExporter();
-            xlsExporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+        JRXlsxExporter xlsExporter = new JRXlsxExporter();
+        xlsExporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
 //            xlsExporter.setParameter(JRExporterParameter.OUTPUT_FILE, xlsFile);
-            xlsExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+        xlsExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
+        xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+        xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+        xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+        xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
 
-            xlsExporter.exportReport();
+        xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
 
-            // Create an Input Stream from the bytes extracted by the OutputStream
-            InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+        xlsExporter.exportReport();
 
-            JasperReportDownloadResponse downloadResponse = JasperReportDownloadResponse.builder()
-                    .fileName(fileName)
-                    .inputStream(inputStream)
-                    .build();
+        // Create an Input Stream from the bytes extracted by the OutputStream
+        InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
 
-            return downloadResponse;
+        JasperReportDownloadResponse downloadResponse = JasperReportDownloadResponse.builder()
+                .fileName(fileName)
+                .inputStream(inputStream)
+                .build();
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
+        return downloadResponse;
     }
 }

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.jasper.transferLog.TransactionLogJasperData;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
@@ -14,6 +13,7 @@ import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import com.cogent.cogentappointment.commons.dto.request.jasper.reshsceduleLog.RescheduleLogJasperData;
+import com.cogent.cogentappointment.commons.dto.request.jasper.transferLog.TransactionLogJasperData;
 import com.cogent.cogentappointment.commons.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -85,11 +85,13 @@ public class ExcelReportServiceImpl implements ExcelReportService {
             transactionLogJasperData.setAppointmentNumber(transactionLogDTO.getAppointmentNumber());
             transactionLogJasperData.setAppointmentDateTime(new SimpleDateFormat("yyyy/MM/dd").format(transactionLogDTO.getTransactionDate()) + ", " + transactionLogDTO.getAppointmentTime());
             transactionLogJasperData.setAppointmentTransactionDate(new SimpleDateFormat("yyyy/MM/dd").format(transactionLogDTO.getTransactionDate()) + ", " + transactionLogDTO.getTransactionTime());
-            transactionLogJasperData.setTransactionDetails(transactionLogDTO.getTransactionNumber());
-            transactionLogJasperData.setPatientDetails(transactionLogDTO.getPatientName() + ", " + StringUtil.toNormalCase(transactionLogDTO.getPatientGender().name()) + ", " + transactionLogDTO.getEsewaId());
+            transactionLogJasperData.setTransactionDetails(transactionLogDTO.getTransactionNumber() + ", " + transactionLogDTO.getRefundAmount());
+            transactionLogJasperData.setPatientDetails(transactionLogDTO.getPatientName() + ", " + StringUtil.toNormalCase(transactionLogDTO.getPatientGender().name()));
             transactionLogJasperData.setRegistrationNumber(
                     (transactionLogDTO.getRegistrationNumber() == null) ?
                             "" : transactionLogDTO.getRegistrationNumber());
+            transactionLogJasperData.setEsewaId((transactionLogDTO.getEsewaId() == null) ?
+                    "" : transactionLogDTO.getEsewaId());
             transactionLogJasperData.setAddress(transactionLogDTO.getPatientAddress());
             transactionLogJasperData.setDoctorDetails(transactionLogDTO.getDoctorName() + "/" + transactionLogDTO.getSpecializationName());
 

@@ -213,10 +213,13 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     private Map appointmentLogReportParamtersGenerator(AppointmentLogSearchDTO searchRequestDTO, AppointmentLogResponseDTO appointmentLogResponseDTO) {
 
         BookedAppointmentResponseDTO bookedInfo = appointmentLogResponseDTO.getBookedInfo();
+
         CheckedInAppointmentResponseDTO checkedInInfo = appointmentLogResponseDTO.getCheckedInInfo();
+
         RefundAppointmentResponseDTO refundInfo = appointmentLogResponseDTO.getRefundInfo();
 //        transactionLogs.getRe
         CancelledAppointmentResponseDTO cancelledInfo = appointmentLogResponseDTO.getCancelledInfo();
+
         RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo = appointmentLogResponseDTO.getRevenueFromRefundInfo();
 
         Map hParam = new HashMap<String, String>();

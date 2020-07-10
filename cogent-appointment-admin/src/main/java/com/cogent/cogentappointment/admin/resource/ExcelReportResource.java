@@ -3,8 +3,8 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
+import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import io.swagger.annotations.Api;
 import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +17,10 @@ import java.net.URLConnection;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ExcelReportConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.RESCHEDULE_LOG;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.TRANSACTION_LOG;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ExcelReportConstants.BASE_EXCEL_REPORT;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_LOG;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -36,7 +38,7 @@ public class ExcelReportResource {
     }
 
 
-    @PutMapping(TRANSACTION_LOG)
+    @PutMapping(APPOINTMENT_LOG)
     public ResponseEntity<?> generateAppointmentLogExcelReport(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
                                                                @RequestParam("page") int page,
                                                                @RequestParam("size") int size,
@@ -57,7 +59,7 @@ public class ExcelReportResource {
         return ok().build();
     }
 
-    @PutMapping(TRANSACTION_LOG)
+    @PutMapping(RESCHEDULE_LOG)
     public ResponseEntity<?> generateRescheduleLogExcelReport(@RequestBody AppointmentRescheduleLogSearchDTO searchRequestDTO,
                                                               @RequestParam("page") int page,
                                                               @RequestParam("size") int size,

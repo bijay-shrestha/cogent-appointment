@@ -219,16 +219,19 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 transactionDetail,
                 appointmentRefundDetail,
                 isRefund, refundRequestDTO.getRemarks());
+
         esewaRefundRequestDTO.setEsewa_id(esewaId);
 
         String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaRefundRequestDTO);
-        log.info(encryptedRequestBody);
-
 
         integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("data", encryptedRequestBody);
+
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                encryptedRequestBody);
+                map);
 
         if (responseEntity.getBody() == null) {
             throw new OperationUnsuccessfulException("ThirdParty API response is null");

@@ -24,6 +24,11 @@ public class CommonLogConstant {
 
     //E
 
+    public static final String EXCEL_REPORT_DOWNLOAD = "EXCEL REPORT DOWNLOAD";
+
+    public static String EXCEL_REPORT_DOWNLOAD_PROCESS_STARTED = ":::: EXCEL REPORT DOWNLOAD {} PROCESS STARTED ::::";
+    public static String EXCEL_REPORT_DOWNLOAD_PROCESS_COMPLETED = ":::: EXCEL REPORT DOWNLOAD {} PROCESS COMPLETED IN :::: {} ms";
+
     //F
 
     public static String FETCHING_DETAIL_PROCESS_STARTED = ":::: FETCHING DETAIL {} PROCESS STARTED ::::";

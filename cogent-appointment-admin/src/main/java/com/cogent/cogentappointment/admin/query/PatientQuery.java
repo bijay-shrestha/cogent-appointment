@@ -157,6 +157,7 @@ public class PatientQuery {
                     " atd.appointmentAmount as appointmentAmount," +            //[11]
                     " a.appointmentModeId.name as appointmentMode," +            //[12]
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +                            //[13]
+                    " a.id as appointmentId," +
                     " a.isFollowUp as isFollowUp" +
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +

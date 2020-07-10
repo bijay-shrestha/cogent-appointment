@@ -15,6 +15,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class PatientMinDetailResponseDTO implements Serializable {
 
+    private Long appointmentId;
+
     private String appointmentNumber;
 
     private String name;

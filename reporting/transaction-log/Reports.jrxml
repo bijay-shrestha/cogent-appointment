@@ -2,6 +2,14 @@
 <!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reports" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d74831b0-8ea2-4b9e-b193-5c575ea5f53b">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="booked" class="java.lang.String"/>
+	<parameter name="refunded" class="java.lang.String"/>
+	<parameter name="checkedIn" class="java.lang.String"/>
+	<parameter name="refundedToClient" class="java.lang.String"/>
+	<parameter name="cancelled" class="java.lang.String"/>
+	<parameter name="totalRevenue" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.lang.String"/>
+	<parameter name="toDate" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -14,7 +22,6 @@
 	<field name="registrationNumber" class="java.lang.String"/>
 	<field name="address" class="java.lang.String"/>
 	<field name="doctorDetails" class="java.lang.String"/>
-
 	<variable name="booked" class="java.lang.String"/>
 	<variable name="refunded" class="java.lang.String"/>
 	<variable name="checkedIn" class="java.lang.String"/>
@@ -22,7 +29,7 @@
 	<variable name="cancelled" class="java.lang.String"/>
 	<variable name="totalRevenue" class="java.lang.String"/>
 	<variable name="fromDate" class="java.lang.String"/>
-	<variable name="toDate" class="java.lang.String"/>
+	<variable name="toDtae" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -39,6 +46,7 @@
 	</title>
 	<pageHeader>
 		<band height="98" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
 			<staticText>
 				<reportElement x="460" y="0" width="70" height="18" uuid="da9ce4b9-f3fa-4159-aa29-75bc9aedba63"/>
 				<textElement>
@@ -97,11 +105,11 @@
 			</staticText>
 			<textField>
 				<reportElement x="50" y="22" width="96" height="26" uuid="72e70a53-9ec8-41f7-a4ce-0be6301c2ab3"/>
-				<textFieldExpression><![CDATA[$V{booked}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{booked}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="50" y="60" width="96" height="28" uuid="0b761301-eba7-4812-b30c-99dcb063a4a7"/>
-				<textFieldExpression><![CDATA[$V{refunded}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{refunded}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="216" y="22" width="80" height="27" uuid="c505395d-b29a-4129-a32d-86f4055e9d4e"/>
@@ -109,62 +117,90 @@
 			</textField>
 			<textField>
 				<reportElement x="216" y="60" width="80" height="28" uuid="1d8da658-002f-4be3-b808-d1deb8bc9b21"/>
-				<textFieldExpression><![CDATA[$V{refundedToClient}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{refundedToClient}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="400" y="60" width="80" height="28" uuid="28dbb7ce-e42b-450c-a858-6ebf27a03678"/>
-				<textFieldExpression><![CDATA[$V{totalRevenue}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{totalRevenue}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="374" y="21" width="80" height="26" uuid="1a5d55bc-f5b5-44c2-b997-7fcc13cbcd0d"/>
-				<textFieldExpression><![CDATA[$V{cancelled}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{cancelled}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="530" y="0" width="42" height="18" uuid="82faaf28-6a97-4630-af36-1b14a37d7bd7"/>
-				<textFieldExpression><![CDATA[$V{fromDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="530" y="18" width="42" height="18" uuid="19e1189e-4151-4755-a04b-d207cb6e24a6"/>
-				<textFieldExpression><![CDATA[$V{toDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="43" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
 			<staticText>
 				<reportElement x="-10" y="13" width="24" height="30" uuid="654909ca-d2fd-4415-a6ef-c3114b16c978"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[S.N.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="14" y="13" width="66" height="30" uuid="77338d2e-cdac-4d30-859d-5b1993968511"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Appointment No.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="80" y="13" width="70" height="30" uuid="416e847e-126a-4120-8e3f-abc05a2962b6"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Appointment Date/Time]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="150" y="13" width="90" height="30" uuid="df5b60e3-83ef-40a2-8af8-7a84f9579c57"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Appointment Transaction Date]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="240" y="13" width="70" height="30" uuid="9ca6e17d-b32d-4ede-9b57-94ea3f1db0ca"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Transaction Details]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="310" y="13" width="90" height="30" uuid="dbb52b32-68a7-4c31-8221-9303e43ac57a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Patient Details]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="400" y="13" width="40" height="30" uuid="0f60f9cf-c0cd-4372-8c88-36808887c1e7"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Reg No.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="440" y="13" width="50" height="30" uuid="9e1745c0-ff12-4e8b-ba8e-d5e87266c0d4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Address]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="490" y="13" width="60" height="30" uuid="a5249cd1-619d-4e65-b47d-56410d509214"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Doctor Details]]></text>
 			</staticText>
 		</band>
@@ -189,7 +225,7 @@
 			</textField>
 			<textField>
 				<reportElement x="240" y="0" width="68" height="30" uuid="230d3dd3-6f6f-4a13-805c-88e6fa5788cc"/>
-				<textFieldExpression><![CDATA[$F{appointmentTransactionDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionDetails}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="310" y="0" width="90" height="30" uuid="58f3a14b-88e6-4e60-a46e-e196533068f3"/>

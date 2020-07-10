@@ -1,12 +1,13 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.jasper.TransactionLogJasperData;
+import com.cogent.cogentappointment.admin.dto.jasper.transferLog.TransactionLogJasperData;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
+import com.cogent.cogentappointment.commons.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.data.domain.Pageable;
@@ -69,34 +70,34 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         transactionLogDTOList.forEach(transactionLogDTO -> {
 
-            int i = 0;
             TransactionLogJasperData transactionLogJasperData = new TransactionLogJasperData();
 
-            transactionLogJasperData.setSerialNumber(String.valueOf(i++));
             transactionLogJasperData.setAppointmentNumber(transactionLogDTO.getAppointmentNumber());
-            transactionLogJasperData.setAppointmentDateTime(transactionLogDTO.getAppointmentDate() + " " + transactionLogDTO.getAppointmentTime());
-            transactionLogJasperData.setAppointmentTransactionDate(transactionLogDTO.getTransactionDate() + " " + transactionLogDTO.getTransactionTime());
+            transactionLogJasperData.setAppointmentDateTime(new SimpleDateFormat("yyyy/MM/dd").format(transactionLogDTO.getTransactionDate()) + ", " + transactionLogDTO.getAppointmentTime());
+            transactionLogJasperData.setAppointmentTransactionDate(new SimpleDateFormat("yyyy/MM/dd").format(transactionLogDTO.getTransactionDate()) + ", " + transactionLogDTO.getTransactionTime());
             transactionLogJasperData.setTransactionDetails(transactionLogDTO.getTransactionNumber());
-            transactionLogJasperData.setPatientDetails(transactionLogDTO.getPatientName() + " " + transactionLogDTO.getPatientGender());
+            transactionLogJasperData.setPatientDetails(transactionLogDTO.getPatientName() + ", " + StringUtil.toNormalCase(transactionLogDTO.getPatientGender().name()) + ", " + transactionLogDTO.getMobileNumber());
             transactionLogJasperData.setRegistrationNumber(
                     (transactionLogDTO.getRegistrationNumber() == null) ?
                             "" : transactionLogDTO.getRegistrationNumber());
             transactionLogJasperData.setAddress(transactionLogDTO.getPatientAddress());
-            transactionLogJasperData.setDoctorDetails(transactionLogDTO.getDoctorName() + " " + transactionLogDTO.getSpecializationName());
+            transactionLogJasperData.setDoctorDetails(transactionLogDTO.getDoctorName() + "/" + transactionLogDTO.getSpecializationName());
 
             jasperData.add(transactionLogJasperData);
 
         });
 
-        Map hParam = new HashMap();
+        Map hParam = new HashMap<String, String>();
 
-        hParam.put("fromDate",new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
-        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
+        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
+        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getToDate()));
+
         hParam.put("booked", "NPR " + "20" + " from " + "20 Appt. " + "Follow-up " + "NPR 0 " + " from 1 Appt.");
         hParam.put("checkedIn", "NPR " + "20" + " from " + "20 Appt. " + "Follow-up " + "NPR 0 " + " from 1 Appt.");
+        hParam.put("refunded", "NPR " + "20" + " from " + "20 Appt. " + "Follow-up " + "NPR 0 " + " from 1 Appt.");
         hParam.put("refundedToClient", "NPR " + "20" + " from " + "20 Appt. " + "Follow-up " + "NPR 0 " + " from 1 Appt.");
         hParam.put("cancelled", "NPR " + "20" + " from " + "20 Appt. " + "Follow-up " + "NPR 0 " + " from 1 Appt.");
-        hParam.put("refundedToClient", "NPR " + "20" + " from " + "20 Appt. " + "Follow-up " + "NPR 0 " + " from 1 Appt.");
+        hParam.put("totalRevenue", "NPR " + "20" + " from " + "20 Appt. " + "Follow-up " + "NPR 0 " + " from 1 Appt.");
 
         generateExcelReport(jasperData, hParam);
 

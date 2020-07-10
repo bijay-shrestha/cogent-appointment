@@ -26,7 +26,7 @@ public class GenerateExcelReportUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // LOCATION OF JASPER REPOTR TEMPLATE FILE.
-        String string = "././reporting/Reports.jrxml";
+        String string = "././reporting/transaction-log/Reports.jrxml";
 
         // READ TEMPLATE AS INPUT STREAM
         InputStream fileRead = new FileInputStream(string);

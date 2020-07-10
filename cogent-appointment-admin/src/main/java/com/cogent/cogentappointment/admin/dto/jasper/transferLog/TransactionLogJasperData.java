@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.jasper;
+package com.cogent.cogentappointment.admin.dto.jasper.transferLog;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +21,8 @@ public class TransactionLogJasperData implements Serializable {
     private String registrationNumber;
     private String address;
     private String doctorDetails;
+
+    private TransferLogHeaderData transferLogHeaderData;
 
 
 }

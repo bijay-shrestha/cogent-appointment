@@ -6,10 +6,8 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.export.*;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,15 +19,12 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
 public class GenerateExcelReportUtils {
 
     public static void generateExcelReport(List<?> cList,
-                                         Map hParam) throws FileNotFoundException, JRException {
+                                           Map hParam, String reportPath) throws FileNotFoundException, JRException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        // LOCATION OF JASPER REPOTR TEMPLATE FILE.
-        String string = "././reporting/transaction-log/Reports.jrxml";
-
         // READ TEMPLATE AS INPUT STREAM
-        InputStream fileRead = new FileInputStream(string);
+        InputStream fileRead = new FileInputStream(reportPath);
 
         JasperDesign design = JRXmlLoader.load(fileRead);
         JasperReport report = JasperCompileManager.compileReport(design);
@@ -37,7 +32,7 @@ public class GenerateExcelReportUtils {
         JRBeanCollectionDataSource jrbcds = new JRBeanCollectionDataSource(cList);
         JasperPrint print = JasperFillManager.fillReport(report, hParam, jrbcds);
 
-        String reportDestination = "./reports/"+getTimeInMillisecondsFromLocalDate() + ".xlsx";  //This is generated Correctly
+        String reportDestination = "./reports/" + getTimeInMillisecondsFromLocalDate() + ".xlsx";  //This is generated Correctly
 
 //        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 //        IOUtils.copy(fis, response.getOutputStream());

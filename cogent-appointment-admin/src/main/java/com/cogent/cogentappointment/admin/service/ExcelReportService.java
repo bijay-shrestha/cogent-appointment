@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public interface ExcelReportService {
 
-    void generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO,
+    JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO,
                                            Pageable pageable) throws IOException, JRException;
 
     JasperReportDownloadResponse generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO,

@@ -1,19 +1,13 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.jasper.PatientDetailsJasperResponseDTO;
-import com.cogent.cogentappointment.admin.dto.jasper.TransactionLogJasperData;
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
-import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
-import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
@@ -33,16 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DEPARTMENT_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
-import static com.cogent.cogentappointment.commons.constants.JasperReportFileConstants.JASPER_REPORT_RESHCEDULE_LOG;
-import static com.cogent.cogentappointment.commons.constants.JasperReportFileConstants.JASPER_REPORT_TRANSACTION_LOG;
+import static com.cogent.cogentappointment.commons.constants.JasperReportFileConstants.*;
 import static com.cogent.cogentappointment.commons.utils.jasperreport.GenerateExcelReportUtils.generateExcelReport;
 
 /**
@@ -122,14 +112,14 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
     @Override
     public JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO
-                                                                                      searchRequestDTO,
+                                                                                  searchRequestDTO,
                                                                           Pageable pageable) {
         return null;
     }
 
     @Override
     public JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO
-                                                                                     searchRequestDTO,
+                                                                                 searchRequestDTO,
                                                                          Pageable pageable) throws FileNotFoundException, JRException {
 
         AppointmentRescheduleLogResponseDTO
@@ -215,13 +205,15 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     @Override
-    public void generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO, Pageable pageable)
+    public JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO, Pageable pageable)
             throws IOException, JRException {
 
-        PatientDetailsJasperResponseDTO patientDetailsJasperResponseDTO=patientRepository.getPatientDetailsForExcel
+        PatientDetailsJasperResponseDTO patientDetailsJasperResponseDTO = patientRepository.getPatientDetailsForExcel
                 (searchRequestDTO, pageable);
 
-        generateExcelReport(patientDetailsJasperResponseDTO.getResponseList(), null,"patientDetails");
+      return   generateExcelReport(patientDetailsJasperResponseDTO.getResponseList(),
+                null,
+                JASPER_REPORT_PATIENT_DETAILS);
 
     }
 }

@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.esewa.pki.wrapper.BufferedServletResponseWra
 import com.cogent.cogentappointment.esewa.pki.wrapper.DataWrapper;
 import com.cogent.cogentappointment.esewa.pki.wrapper.RequestWrapper;
 import com.cogent.cogentappointment.esewa.service.PKIAuthenticationInfoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,12 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.rmi.server.ExportException;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.PKIMessages.MISSING_PAYLOAD;
 import static com.cogent.cogentappointment.esewa.pki.utils.SecurityUtil.encryptPayloadAndGenerateSignature;
 import static com.cogent.cogentappointment.esewa.pki.utils.SecurityUtil.responseValidator;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * @author smriti on 06/07/20
@@ -52,56 +52,52 @@ public class PKIFilter extends OncePerRequestFilter implements javax.servlet.Fil
             throws ServletException, IOException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        BufferedServletResponseWrapper customResponse = new BufferedServletResponseWrapper(httpServletResponse);
-
-        RequestWrapper requestWrapper = new RequestWrapper();
+        BufferedServletResponseWrapper customResponse = new BufferedServletResponseWrapper(response);
 
         String serverPrivateKey = pkiAuthenticationInfoService.findServerPrivateKeyByClientId("eSewa");
 
         try (BufferedReader reader = request.getReader()) {
             String encryptedPayloadData = this.getPayloadData(reader);
 
-            requestWrapper = JacksonUtil.get(encryptedPayloadData, RequestWrapper.class);
+            RequestWrapper requestWrapper = JacksonUtil.get(encryptedPayloadData, RequestWrapper.class);
 
             String clientPublicKey = pkiAuthenticationInfoService.findClientPublicKeyByClientId(
                     requestWrapper.getClient_id());
 
-            String decryptedData = responseValidator(encryptedPayloadData, clientPublicKey, serverPrivateKey);
+            String decryptedData = responseValidator(requestWrapper, clientPublicKey, serverPrivateKey);
 
             dataWrapper.setData(decryptedData);
+
+            filterChain.doFilter(request, response);
+
+            if (!ObjectUtils.isEmpty(customResponse.getResponseData())) {
+//                uri.startsWith(WebRoutes.CLIENT_REQUEST + "/")) {
+                encryptResponse(response, customResponse, requestWrapper);
+            }
         } catch (Exception e) {
             log.error("Error occurred while validating encrypted request :: {}", e.getMessage());
-            handleFilterException(httpServletResponse, e);
-        }
-
-        filterChain.doFilter(request, response);
-
-        if (!ObjectUtils.isEmpty(customResponse.getResponseData())) {
-//                uri.startsWith(WebRoutes.CLIENT_REQUEST + "/")) {
-            encryptResponse(httpServletResponse, customResponse, requestWrapper);
+            handleFilterException(response, e);
         }
     }
 
     private void handleFilterException(HttpServletResponse httpServletResponse,
                                        Exception exception) throws IOException {
 
-        ObjectMapper mapper = new ObjectMapper();
-        httpServletResponse.setContentType("application/json");
-        httpServletResponse.setStatus(BAD_REQUEST.value());
-        PrintWriter out = httpServletResponse.getWriter();
-
-        System.out.println(exception.getMessage());
-        System.out.println(exception.toString());
-
-        System.out.println(exception.getCause().getLocalizedMessage());
-
-        out.print(mapper.writeValueAsString(PKIErrorResponseDTO.builder()
-                .status(BAD_REQUEST.value())
+        PKIErrorResponseDTO errorResponseDTO = PKIErrorResponseDTO.builder()
+                .status(400)
                 .errorMessage(exception.getMessage())
-                .build()));
+                .build();
 
-        out.flush();
+        String json = null;
+        try {
+            json = new ObjectMapper().writeValueAsString(errorResponseDTO);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        assert json != null;
+        httpServletResponse.getWriter().write(json);
+        httpServletResponse.setStatus(errorResponseDTO.getStatus());
+        httpServletResponse.flushBuffer();
     }
 
     private void encryptResponse(HttpServletResponse httpServletResponse,
@@ -138,11 +134,7 @@ public class PKIFilter extends OncePerRequestFilter implements javax.servlet.Fil
         final StringBuilder builder = new StringBuilder();
         if (reader == null) {
             log.error("Request body is null");
-
-            //todo: exception
-
-            return null;
-//            throw new CoreClientException(ClientResponse.MISSING_PAYLOAD.getCode(), ClientResponse.MISSING_PAYLOAD.getValue());
+            throw new BadRequestException(MISSING_PAYLOAD);
         }
         String line;
         while ((line = reader.readLine()) != null) {

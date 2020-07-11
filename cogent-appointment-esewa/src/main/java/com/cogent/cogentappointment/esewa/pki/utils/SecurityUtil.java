@@ -37,18 +37,19 @@ public class SecurityUtil {
         }
     }
 
-    public static String responseValidator(String payload, String clientPublicKey, String serverPrivateKey) {
+    public static String responseValidator(RequestWrapper requestWrapper, String clientPublicKey, String serverPrivateKey) {
+
         try {
-            RequestWrapper requestWrapper = JacksonUtil.get(payload, RequestWrapper.class);
             boolean verified = validateSignature(requestWrapper.getSignature(), requestWrapper.getData(), clientPublicKey);
 
-            byte[] decodedSecretKey = AESEncryptionUtil.base64Decode(requestWrapper.getSecret_key());
-            String plainSecretKey = RSAEncryptionUtil.decrypt(decodedSecretKey, serverPrivateKey);
-
-            String data = AESEncryptionUtil.decrypt(requestWrapper.getData(),
-                    AESEncryptionUtil.getSecretKey(plainSecretKey));
-
             if (verified) {
+                byte[] decodedSecretKey = AESEncryptionUtil.base64Decode(requestWrapper.getSecret_key());
+                String plainSecretKey = RSAEncryptionUtil.decrypt(decodedSecretKey, serverPrivateKey);
+
+                String data = AESEncryptionUtil.decrypt(requestWrapper.getData(),
+                        AESEncryptionUtil.getSecretKey(plainSecretKey));
+
+                log.info("DECRYPTED DATA :::::::::::::" + data);
                 return data;
             } else {
                 log.error("Error occurred while validating signature.");
@@ -71,7 +72,10 @@ public class SecurityUtil {
 
     private static String generateSignature(String payload, String privateKey) {
         try {
-            String encodedSignature = Base64.getEncoder().encodeToString(RSAEncryptionUtil.generateSignature(payload.getBytes(), privateKey));
+            String encodedSignature = Base64.getEncoder()
+                    .encodeToString(RSAEncryptionUtil.generateSignature(payload.getBytes(), privateKey));
+
+            log.info("Encoded Signature ::::::::::::" + encodedSignature);
             return encodedSignature;
         } catch (Exception e) {
             log.error("Exception : ", e);

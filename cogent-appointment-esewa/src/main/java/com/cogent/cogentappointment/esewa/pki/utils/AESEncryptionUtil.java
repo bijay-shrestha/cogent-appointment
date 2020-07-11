@@ -17,7 +17,7 @@ public class AESEncryptionUtil {
      * @param secretKey
      * @return String - encrypted plaintext
      */
-    public static String encrypt(String strToEncrypt, SecretKey secretKey) throws Exception {
+    static String encrypt(String strToEncrypt, SecretKey secretKey) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         return base64Encode(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
@@ -30,7 +30,7 @@ public class AESEncryptionUtil {
      * @param secretKey
      * @return String - plaintext
      */
-    public static String decrypt(String strToDecrypt, SecretKey secretKey) throws Exception {
+    static String decrypt(String strToDecrypt, SecretKey secretKey) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
         return new String(cipher.doFinal(base64Decode(strToDecrypt)));
@@ -42,7 +42,7 @@ public class AESEncryptionUtil {
      * @return SecretKey
      * @throws Exception
      */
-    public static SecretKey generateSecretKey() throws Exception {
+    static SecretKey generateSecretKey() throws Exception {
         String secretStr = RandomGenerator.getAlphaNumericString(32);
         log.info("Generated secret key : " + secretStr);
         return getSecretKey(secretStr);
@@ -53,7 +53,7 @@ public class AESEncryptionUtil {
      * @return
      * @throws Exception
      */
-    public static SecretKey getSecretKey(String secretKey) throws Exception {
+    static SecretKey getSecretKey(String secretKey) throws Exception {
         byte[] decodeSecretKey = base64Decode(secretKey);
         log.info("length" + decodeSecretKey.length);
         return new SecretKeySpec(decodeSecretKey, 0, decodeSecretKey.length, "AES");
@@ -63,7 +63,7 @@ public class AESEncryptionUtil {
      * @param data
      * @return String - encoded text
      */
-    public static String base64Encode(byte[] data) {
+    static String base64Encode(byte[] data) {
         return Base64.getEncoder().encodeToString(data);
     }
 
@@ -71,7 +71,7 @@ public class AESEncryptionUtil {
      * @param data - encoded text
      * @return byte[]
      */
-    public static byte[] base64Decode(String data) {
+    static byte[] base64Decode(String data) {
         return Base64.getDecoder().decode(data);
     }
 
@@ -79,7 +79,7 @@ public class AESEncryptionUtil {
      * @param secretKey
      * @return String
      */
-    public static String keyToString(SecretKey secretKey) {
+    static String keyToString(SecretKey secretKey) {
         byte encoded[] = secretKey.getEncoded();
         String encodedKey = base64Encode(encoded);
         return encodedKey;

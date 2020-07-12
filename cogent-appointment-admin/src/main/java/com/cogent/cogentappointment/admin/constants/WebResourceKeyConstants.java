@@ -257,6 +257,7 @@ public class WebResourceKeyConstants {
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
         String ESEWA_ID = "/eSewaId";
+        String PATIENT_DETAILS = "/patientDetails";
     }
 
     public interface ProfileSetupConstants {

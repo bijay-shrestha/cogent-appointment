@@ -19,9 +19,7 @@ import java.net.URLConnection;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ExcelReportConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.RESCHEDULE_LOG;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.TRANSACTION_LOG;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.TRANSFER_LOG;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ExcelReportConstants.BASE_EXCEL_REPORT;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_LOG;
 import static org.springframework.http.ResponseEntity.ok;
@@ -48,15 +46,18 @@ public class ExcelReportResource {
                                                                HttpServletResponse response) throws Exception {
 
         Pageable pageable = PageRequest.of(page, size);
-        JasperReportDownloadResponse downloadResponse = excelReportService.generateAppointmentLogExcelReport(searchRequestDTO,
-                pageable);
+
+        JasperReportDownloadResponse downloadResponse = excelReportService
+                .generateAppointmentLogExcelReport(searchRequestDTO, pageable);
 
         //         SET THE CONTENT TYPE AND ATTACHMENT HEADER.
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
+
         response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
 
         // COPY THE STREAM TO THE RESPONSE'S OUTPUT STREAM.
         IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
+
         response.flushBuffer();
 
         return ok().build();
@@ -69,12 +70,15 @@ public class ExcelReportResource {
                                                               HttpServletResponse response) throws Exception {
 
         Pageable pageable = PageRequest.of(page, size);
-        JasperReportDownloadResponse downloadResponse = excelReportService.generateRescheduleLogExcelReport(searchRequestDTO, pageable);
+        JasperReportDownloadResponse downloadResponse = excelReportService
+                .generateRescheduleLogExcelReport(searchRequestDTO, pageable);
 
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
+
         response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
 
         IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
+
         response.flushBuffer();
 
         return ok().build();
@@ -90,18 +94,22 @@ public class ExcelReportResource {
         JasperReportDownloadResponse downloadResponse = excelReportService.generateTransactionLogReport(searchRequestDTO, pageable);
 
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
+
         response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
 
         IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
+
         response.flushBuffer();
 
         return ok().build();
+
+
     }
 
     @PutMapping(TRANSFER_LOG)
     public ResponseEntity<?> generateAppointmentTransferLogExcelReport(@Valid
                                                                @RequestBody
-                                                                       AppointmentTransferSearchRequestDTO searchRequestDTO,
+                                                                               AppointmentTransferSearchRequestDTO searchRequestDTO,
                                                                @RequestParam("page") int page,
                                                                @RequestParam("size") int size,
                                                                HttpServletResponse response) throws Exception {

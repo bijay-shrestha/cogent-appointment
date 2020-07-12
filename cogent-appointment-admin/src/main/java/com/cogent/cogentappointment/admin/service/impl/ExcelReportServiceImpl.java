@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
@@ -53,6 +54,11 @@ public class ExcelReportServiceImpl implements ExcelReportService {
                                   AppointmentTransferRepository appointmentTransferRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentTransferRepository = appointmentTransferRepository;
+    }
+
+    @Override
+    public JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) throws IOException, JRException {
+        return null;
     }
 
     @Override

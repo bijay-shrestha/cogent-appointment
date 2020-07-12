@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
@@ -21,6 +22,7 @@ import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.Exce
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ExcelReportConstants.BASE_EXCEL_REPORT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.PatientConstant.PATIENT_DETAILS;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_LOG;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -123,6 +125,30 @@ public class ExcelReportResource {
         response.flushBuffer();
 
         return ok().build();
+    }
+
+    @PutMapping(PATIENT_DETAILS)
+    public ResponseEntity<?> generatePatientDetailsExcelReport(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
+                                                               @RequestParam("page") int page,
+                                                               @RequestParam("size") int size,
+                                                               HttpServletResponse response) throws Exception {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        JasperReportDownloadResponse downloadResponse = excelReportService.
+                generatePatientDetailsExcelReport(searchRequestDTO, pageable);
+
+        response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
+
+        response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
+
+        IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
+
+        response.flushBuffer();
+
+        return ok().build();
+
+
     }
 
 }

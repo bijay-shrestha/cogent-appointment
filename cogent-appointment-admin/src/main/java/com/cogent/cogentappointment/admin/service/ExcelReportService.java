@@ -3,20 +3,15 @@ package com.cogent.cogentappointment.admin.service;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
-import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
-import net.sf.jasperreports.engine.JRException;
 import org.springframework.data.domain.Pageable;
-
-import javax.validation.Valid;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public interface ExcelReportService {
 
     JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO,
-                                           Pageable pageable) throws IOException, JRException;
+                                                                   Pageable pageable);
 
     JasperReportDownloadResponse generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO,
                                                               Pageable pageable);

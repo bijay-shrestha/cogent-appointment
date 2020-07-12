@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.jasper.PatientDetailsJasperResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
@@ -14,6 +15,7 @@ import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRes
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentTransferRepository;
+import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import com.cogent.cogentappointment.commons.dto.request.jasper.appointmentLog.AppointmentLogJasperData;
@@ -27,7 +29,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -50,15 +51,27 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
     private final AppointmentTransferRepository appointmentTransferRepository;
 
+    private final PatientRepository patientRepository;
+
     public ExcelReportServiceImpl(AppointmentRepository appointmentRepository,
-                                  AppointmentTransferRepository appointmentTransferRepository) {
+                                  AppointmentTransferRepository appointmentTransferRepository,
+                                  PatientRepository patientRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentTransferRepository = appointmentTransferRepository;
+        this.patientRepository = patientRepository;
     }
 
     @Override
-    public JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) throws IOException, JRException {
-        return null;
+    public JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO,
+                                                                          Pageable pageable) {
+
+        PatientDetailsJasperResponseDTO patientDetailsJasperResponseDTO = patientRepository.getPatientDetailsForExcel
+                (searchRequestDTO, pageable);
+
+        return generateExcelReport(patientDetailsJasperResponseDTO.getResponseList(),
+                null,
+                JASPER_REPORT_PATIENT_DETAILS);
+
     }
 
     @Override
@@ -232,8 +245,8 @@ public class ExcelReportServiceImpl implements ExcelReportService {
             AppointmentTransferLogJasperData transferLogJasperData = AppointmentTransferLogJasperData.builder()
                     .appointmentStatus(transferLog.getStatus())
                     .appointmentNumber(transferLog.getApptNumber())
-                    .transferFromDateTime(transferLog.getTransferredFromDate()+", "+transferLog.getTransferredFromTime())
-                    .transferToDateTime(transferLog.getTransferredToDate()+", "+transferLog.getTransferredToTime())
+                    .transferFromDateTime(transferLog.getTransferredFromDate() + ", " + transferLog.getTransferredFromTime())
+                    .transferToDateTime(transferLog.getTransferredToDate() + ", " + transferLog.getTransferredToTime())
                     .patientDetails(transferLog.getPatientName() + ", " + StringUtil.toNormalCase(transferLog.getGender().name() + ", " + transferLog.getMobileNumber()))
                     .transferFromDoctor(transferLog.getTransferredFromDoctor() + "/" + transferLog.getTransferredFromSpecialization())
                     .transferToDoctor(transferLog.getTransferredToDoctor() + "/" + transferLog.getTransferredToSpecialization())
@@ -248,7 +261,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 //        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentFromDate()));
 //        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentToDate()));
 
-        hParam.put("fromDate","2019/06/10");
+        hParam.put("fromDate", "2019/06/10");
         hParam.put("toDate", "2020/01/02");
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_TRANSFER_LOG);
     }

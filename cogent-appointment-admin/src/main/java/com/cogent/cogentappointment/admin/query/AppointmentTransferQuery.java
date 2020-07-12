@@ -188,12 +188,12 @@ public class AppointmentTransferQuery {
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
                 && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
-            whereClause += " And ((apt.previousAppointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+            whereClause += " And ((apt.previousAppointmentDateAndTime BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
                     + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "')";
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
                 && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
-            whereClause += " OR (apt.currentAppointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+            whereClause += " OR (apt.currentAppointmentDateAndTime BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
                     + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "'))";
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))

@@ -68,6 +68,7 @@ public class AppointmentQuery {
                 " s.name as specializationName," +
                 " atd.transactionNumber as transactionNumber," +
                 " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
+                " DATE_FORMAT(ard.cancelledDate ,'%h:%i %p') as cancelledTime," +
                 " p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
@@ -981,8 +982,7 @@ public class AppointmentQuery {
                     " AND a.status!='RE'" +
                     " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode";
 
-
-    public static final String QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(
+    public static String QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(
             CancelledHospitalDeptAppointmentSearchDTO searchDTO) {
 
         return " SELECT" +
@@ -1002,6 +1002,7 @@ public class AppointmentQuery {
                 "  hd.name as departmentName," +
                 " atd.transactionNumber as transactionNumber," +
                 " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
+                " DATE_FORMAT(ard.cancelledDate ,'%h:%i %p') as cancelledTime," +
                 " p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +

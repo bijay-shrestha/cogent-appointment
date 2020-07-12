@@ -65,6 +65,7 @@ public class ErrorMessageConstants {
     public interface AppointmentTransferMessage {
         String APPOINTMENT_DOCTOR_INFORMATION_NOT_FOUND = "Appointment Doctor Information not found";
 
+        String INVALID_APPOINTMENT_DATE_TIME = "Sorry! Appointment failed because requested date/time has already passed.";
     }
 
     //B

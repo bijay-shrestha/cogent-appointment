@@ -17,4 +17,9 @@ public interface AppointmentFollowUpTrackerRepositoryCustom {
                                                                Long hospitalId);
 
     AppointmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId);
+
+    void updateAppointmentFollowUpTrackerStatus(Long patientId,
+                                                Long doctorId,
+                                                Long specializationId,
+                                                Long hospitalId);
 }

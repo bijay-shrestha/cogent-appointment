@@ -148,6 +148,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentEsewaRequestRepository appointmentEsewaRequestRepository;
 
+    private final AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService;
+
     public AppointmentServiceImpl(
             PatientService patientService,
             DoctorService doctorService,
@@ -181,7 +183,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
             AppointmentServiceTypeRepository appointmentServiceTypeRepository,
             HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
-            NepaliDateUtility nepaliDateUtility, AppointmentEsewaRequestRepository appointmentEsewaRequestRepository) {
+            NepaliDateUtility nepaliDateUtility,
+            AppointmentEsewaRequestRepository appointmentEsewaRequestRepository,
+            AppointmentHospitalDepartmentFollowUpTrackerService appointmentHospitalDepartmentFollowUpTrackerService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -216,6 +220,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.nepaliDateUtility = nepaliDateUtility;
         this.appointmentEsewaRequestRepository = appointmentEsewaRequestRepository;
+        this.appointmentHospitalDepartmentFollowUpTrackerService = appointmentHospitalDepartmentFollowUpTrackerService;
     }
 
     @Override
@@ -518,7 +523,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     //    todo: serviceType Code must be dynamic
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointments (@Valid AppointmentSearchDTO searchDTO) {
+    public AppointmentResponseWithStatusDTO searchAppointments(@Valid AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
@@ -695,11 +700,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Patient patient;
 
-        if (isNewRegistration) {
+        if (isNewRegistration)
             patient = patientService.saveSelfPatient(patientRequestDTO);
-            patientMetaInfoService.savePatientMetaInfo(patient);
-        } else
+        else
             patient = patientService.fetchPatientById(patientId);
+
+        patientMetaInfoService.savePatientMetaInfo(patient);
 
         hospitalPatientInfoService.saveHospitalPatientInfoForSelf(
                 hospital, patient,
@@ -746,12 +752,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 validatePatientDuplicity(parentPatient, childPatient, requestForPatientInfo);
             } else {
                 childPatient = patientService.saveOtherPatient(requestForPatientInfo);
-                patientMetaInfoService.savePatientMetaInfo(childPatient);
                 patientRelationInfoService.savePatientRelationInfo(parentPatient, childPatient);
             }
 
         } else
             childPatient = patientService.fetchPatientById(patientId);
+
+        patientMetaInfoService.savePatientMetaInfo(childPatient);
 
         hospitalPatientInfoService.saveHospitalPatientInfoForOthers(
                 hospital, childPatient,
@@ -872,7 +879,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void updateAppointmentHospitalDepartmentFollowUpRequestLog(Long parentAppointmentId) {
 
         Long appointmentFollowUpTrackerId =
-                appointmentFollowUpTrackerService.fetchByParentAppointmentId(parentAppointmentId);
+                appointmentHospitalDepartmentFollowUpTrackerService.fetchByParentAppointmentId(parentAppointmentId);
 
         appointmentHospitalDepartmentFollowUpRequestLogService.update(appointmentFollowUpTrackerId);
     }

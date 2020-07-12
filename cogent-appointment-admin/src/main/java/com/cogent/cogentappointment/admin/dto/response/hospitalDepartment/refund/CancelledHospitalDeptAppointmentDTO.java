@@ -24,6 +24,8 @@ public class CancelledHospitalDeptAppointmentDTO implements Serializable {
 
     private String appointmentTime;
 
+    private String cancelledTime;
+
     private String appointmentNumber;
 
     private String patientName;

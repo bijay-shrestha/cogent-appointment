@@ -73,4 +73,7 @@ public class AppointmentHospitalDepartmentCheckInDetailResponseDTO implements Se
     private String transactionNumber;
 
     private Character isSelf;
+
+    private String emailAddress;
+
 }

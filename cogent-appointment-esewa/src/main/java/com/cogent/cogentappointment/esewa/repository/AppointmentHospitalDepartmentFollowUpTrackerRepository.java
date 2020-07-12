@@ -16,7 +16,8 @@ import java.util.Optional;
 public interface AppointmentHospitalDepartmentFollowUpTrackerRepository extends
         JpaRepository<AppointmentHospitalDepartmentFollowUpTracker, Long>, AppointmentHospitalDeptFollowUpTrackerRepositoryCustom {
 
-    @Query("SELECT f.id FROM AppointmentFollowUpTracker f WHERE f.status = 'Y' AND f.parentAppointmentId =:parentAppointmentId")
+    @Query("SELECT f.id FROM AppointmentHospitalDepartmentFollowUpTracker f WHERE f.status = 'Y' " +
+            "AND f.parentAppointmentId =:parentAppointmentId")
     Optional<Long> fetchByParentAppointmentId(@Param("parentAppointmentId") Long parentAppointmentId);
 }
 

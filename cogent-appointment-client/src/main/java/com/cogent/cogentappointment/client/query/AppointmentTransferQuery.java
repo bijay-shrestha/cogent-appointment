@@ -269,10 +269,38 @@ public class AppointmentTransferQuery {
                 " apt.lastModifiedDate as lastModifiedDate";
     }
 
-    public static String QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID =
-            "SELECT a.id FROM Appointment a WHERE a.hasTransferred='Y' AND a.hospitalId.id=:hospitalId";
+    public static String QUERY_TO_GET_APPOINTMENT_ID_LIST_OF_TRANSFERRED_APPOINTMENT(
+            AppointmentTransferSearchRequestDTO requestDTO) {
 
-    public static String QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID =
+        String sql = "SELECT" +
+                " a.id" +
+                " FROM Appointment a" +
+                " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
+                " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=a.patientId.id" +
+                " WHERE a.hasTransferred='Y'" +
+                " AND a.hospitalId.id=:hospitalId" ;
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
+                && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
+            sql += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+                    + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "')";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
+            sql += " AND a.appointmentNumber='" + requestDTO.getAppointmentNumber() + "'";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getDoctorId()))
+            sql += " AND adi.doctor.id=" + requestDTO.getDoctorId();
+
+        if (!ObjectUtils.isEmpty(requestDTO.getSpecializationId()))
+            sql += " AND adi.specializationId.id=" + requestDTO.getSpecializationId();
+
+        if (!ObjectUtils.isEmpty(requestDTO.getPatientMetaInfoId()))
+            sql += " AND pmi.id=" + requestDTO.getPatientMetaInfoId();
+
+        return sql;
+    }
+
+    public static String QUERY_TO_GET_LATEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID =
             "SELECT" +
                     " apt.id as appointmentTransferredId," +
                     " a.status  as status" +

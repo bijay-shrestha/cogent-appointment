@@ -18,7 +18,7 @@
 	<title>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="554" height="79" uuid="d55a51ec-4f58-41b1-a35e-9383f6f166b4"/>
+				<reportElement x="0" y="0" width="556" height="79" uuid="d55a51ec-4f58-41b1-a35e-9383f6f166b4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14"/>
 				</textElement>
@@ -27,7 +27,13 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="38" splitType="Stretch">
+			<textField pattern="MM-dd-yyyy">
+				<reportElement isPrintRepeatedValues="false" x="480" y="10" width="76" height="28" uuid="fb7132fa-efb2-4fba-8db5-6a9069e065fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="31" splitType="Stretch">

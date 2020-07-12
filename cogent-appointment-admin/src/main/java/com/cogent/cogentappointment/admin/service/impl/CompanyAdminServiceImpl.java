@@ -500,7 +500,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
 
-            integrationResponseDTOList.forEach(responseDTO -> {
+            responseMap.getValue().forEach(responseDTO -> {
 
                 Map<String, String> requestHeaderResponseDTO = integrationRepository.
                         findApiRequestHeadersResponse(responseDTO.getApiIntegrationFormatId());

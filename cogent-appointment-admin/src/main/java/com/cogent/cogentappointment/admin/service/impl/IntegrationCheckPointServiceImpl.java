@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,8 +39,8 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_INTEGRATION_CHANNEL_CODE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INTEGRATION_CHANNEL_CODE_IS_NULL;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_MODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
@@ -313,7 +312,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     break;
 
                 default:
-                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE,
+                            refundRequestDTO.getIntegrationChannelCode());
             }
 
         }

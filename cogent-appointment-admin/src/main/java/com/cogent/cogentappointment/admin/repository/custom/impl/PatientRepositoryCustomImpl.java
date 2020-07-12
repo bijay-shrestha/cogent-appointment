@@ -157,7 +157,8 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         if (results.isEmpty())
             PATIENT_NOT_FOUND();
 
-        List<PatientDetailsJasperResponse> responseDTOS = transformNativeQueryToResultList(query, PatientDetailsJasperResponse.class);
+        List<PatientDetailsJasperResponse> responseDTOS = transformNativeQueryToResultList(query,
+                PatientDetailsJasperResponse.class);
 
         return  PatientDetailsJasperResponseDTO.builder()
                 .responseList(responseDTOS)

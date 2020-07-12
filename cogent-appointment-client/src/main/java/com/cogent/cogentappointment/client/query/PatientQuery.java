@@ -298,4 +298,53 @@ public class PatientQuery {
             " FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)" +
                     " AS ageDay";
 
+    public static String QUERY_TO_GET_PATIENT_FOR_EXCEL(PatientSearchRequestDTO searchRequestDTO) {
+        return "SELECT" +
+                " p.name as patientName," +
+                " p.mobile_number as contact," +
+                " CASE" +
+                " WHEN hpi.registration_number IS NULL THEN '-'" +
+                " WHEN hpi.registration_number IS NOT NULL THEN hpi.registration_number END as registrationNumber," +
+                " CASE" +
+                " WHEN p.e_sewa_id IS NULL THEN '-'" +
+                " WHEN p.e_sewa_id IS NOT NULL THEN p.e_sewa_id END as esewaId," +
+                " CASE " +
+                " When hpi.status ='Y' THEN 'Active'" +
+                " When hpi.status ='N' THEN 'Inactive' END as status," +
+                " CASE" +
+                " WHEN hpi.hospital_number IS NULL THEN '-'" +
+                " WHEN hpi.hospital_number IS NOT NULL THEN hpi.hospital_number END as hospitalNumber," +
+                " h.name as client," +
+                " CASE " +
+                " When hpi.is_registered ='Y' THEN 'Registered'" +
+                " When hpi.is_registered ='N' THEN 'New' END as patientType" +
+                " FROM" +
+                " patient p" +
+                " LEFT JOIN hospital_patient_info hpi ON" +
+                " hpi.patient_id = p.id" +
+                " LEFT JOIN hospital h ON" +
+                " h.id = hpi.hospital_id " +
+                " LEFT JOIN patient_meta_info pmi ON pmi.patient_id = p.id AND pmi.status = 'Y'" +
+                GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT_FOR_EXCEL(searchRequestDTO);
+    }
+
+    private static String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT_FOR_EXCEL(PatientSearchRequestDTO searchRequestDTO) {
+
+        String whereClause = " WHERE hpi.status!='D'" +
+                " AND h.id=:hospitalId";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
+            whereClause += " AND p.e_sewa_id LIKE '%" + searchRequestDTO.getEsewaId() + "%'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            whereClause += " AND hpi.status='" + searchRequestDTO.getStatus() + "'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfoId()))
+            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfoId();
+
+        whereClause += " ORDER BY p.id DESC";
+
+        return whereClause;
+    }
+
 }

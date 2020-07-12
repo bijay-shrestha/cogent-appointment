@@ -7,9 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 import java.io.*;
@@ -62,24 +63,20 @@ public class GenerateExcelReportUtils {
 
             String fileName = getTimeInMillisecondsFromLocalDate() + ".xlsx";
 
-            JRXlsxExporter xlsExporter = new JRXlsxExporter();
-            xlsExporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-//            xlsExporter.setParameter(JRExporterParameter.OUTPUT_FILE, xlsFile);
-            xlsExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+            JRXlsxExporter exporter = new JRXlsxExporter();
 
-            xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
+            exporter.setExporterInput(new SimpleExporterInput(print));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(baos));
 
             SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-            configuration.setWhitePageBackground(true);
+            configuration.setOnePagePerSheet(false);
             configuration.setDetectCellType(true);
+            configuration.setWhitePageBackground(false);
+            configuration.setRemoveEmptySpaceBetweenColumns(true);
+            configuration.setRemoveEmptySpaceBetweenRows(true);
 
-
-
-            xlsExporter.exportReport();
+            exporter.setConfiguration(configuration);
+            exporter.exportReport();
 
             // Create an Input Stream from the bytes extracted by the OutputStream
             InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());

@@ -47,7 +47,6 @@ public class GenerateExcelReportUtils {
             throw new InternalServerErrorException(InputStream.class, "Report Template Not Found");
         }
 
-
         JasperDesign design = null;
         JasperPrint print = null;
         JasperReport report = null;
@@ -56,7 +55,6 @@ public class GenerateExcelReportUtils {
         JRBeanCollectionDataSource jrbcds = new JRBeanCollectionDataSource(cList);
 
         try {
-
             design = JRXmlLoader.load(fileRead);
             report = JasperCompileManager.compileReport(design);
             print = JasperFillManager.fillReport(report, hParam, jrbcds);
@@ -88,6 +86,7 @@ public class GenerateExcelReportUtils {
 
 
         } catch (JRException e) {
+            log.error(EXCEL_REPORT_DOWNLOAD, e.getMessage());
             e.printStackTrace();
         }
 

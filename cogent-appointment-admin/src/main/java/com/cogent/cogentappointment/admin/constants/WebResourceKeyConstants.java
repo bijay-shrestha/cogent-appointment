@@ -55,6 +55,7 @@ public class WebResourceKeyConstants {
         String RESCHEDULE_LOG = "/reschedule-log";
         String DETAILS = "/detail";
         String TRANSACTION_LOG = "/transaction-log";
+        String TRANSFER_LOG = "/transfer-log";
         String TRANSACTION = "/transaction";
         String RESCHEDULE = "/reschedule";
         String COUNT="/count";

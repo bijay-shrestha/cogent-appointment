@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.commons.utils.jasperreport;
 
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
+import com.cogent.cogentappointment.commons.exception.InternalServerErrorException;
 import com.cogent.cogentappointment.commons.log.CommonLogConstant;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
@@ -27,7 +28,7 @@ public class GenerateExcelReportUtils {
 
     public static JasperReportDownloadResponse generateExcelReport(List<?> cList,
                                                                    Map hParam,
-                                                                   String reportPath) throws FileNotFoundException, JRException {
+                                                                   String reportPath) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -36,36 +37,56 @@ public class GenerateExcelReportUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // READ TEMPLATE AS INPUT STREAM
-        InputStream fileRead = new FileInputStream(reportPath);
+        InputStream fileRead = null;
+        try {
+            fileRead = new FileInputStream(reportPath);
+        } catch (FileNotFoundException e) {
 
-        JasperDesign design = JRXmlLoader.load(fileRead);
-        JasperReport report = JasperCompileManager.compileReport(design);
+            throw new InternalServerErrorException(InputStream.class, "Report Template Not Found");
+        }
+
+
+        JasperDesign design = null;
+        JasperPrint print = null;
+        JasperReport report = null;
+        JasperReportDownloadResponse downloadResponse = null;
 
         JRBeanCollectionDataSource jrbcds = new JRBeanCollectionDataSource(cList);
-        JasperPrint print = JasperFillManager.fillReport(report, hParam, jrbcds);
 
-        String fileName = getTimeInMillisecondsFromLocalDate() + ".xlsx";
+        try {
 
-        JRXlsxExporter xlsExporter = new JRXlsxExporter();
-        xlsExporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+            design = JRXmlLoader.load(fileRead);
+            report = JasperCompileManager.compileReport(design);
+            print = JasperFillManager.fillReport(report, hParam, jrbcds);
+
+            String fileName = getTimeInMillisecondsFromLocalDate() + ".xlsx";
+
+            JRXlsxExporter xlsExporter = new JRXlsxExporter();
+            xlsExporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
 //            xlsExporter.setParameter(JRExporterParameter.OUTPUT_FILE, xlsFile);
-        xlsExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
-        xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-        xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
-        xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
-        xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+            xlsExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
 
-        xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
+            xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
 
-        xlsExporter.exportReport();
+            xlsExporter.exportReport();
 
-        // Create an Input Stream from the bytes extracted by the OutputStream
-        InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+            // Create an Input Stream from the bytes extracted by the OutputStream
+            InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
 
-        JasperReportDownloadResponse downloadResponse = JasperReportDownloadResponse.builder()
-                .fileName(fileName)
-                .inputStream(inputStream)
-                .build();
+            downloadResponse = JasperReportDownloadResponse.builder()
+                    .fileName(fileName)
+                    .inputStream(inputStream)
+                    .build();
+
+
+        } catch (JRException e) {
+            e.printStackTrace();
+        }
+
 
         log.info(EXCEL_REPORT_DOWNLOAD_PROCESS_COMPLETED, EXCEL_REPORT_DOWNLOAD, getDifferenceBetweenTwoTime(startTime));
 

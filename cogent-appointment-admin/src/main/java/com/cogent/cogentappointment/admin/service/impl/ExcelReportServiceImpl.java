@@ -2,19 +2,23 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.repository.AppointmentTransferRepository;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import com.cogent.cogentappointment.commons.dto.request.jasper.appointmentLog.AppointmentLogJasperData;
 import com.cogent.cogentappointment.commons.dto.request.jasper.reshsceduleLog.RescheduleLogJasperData;
-import com.cogent.cogentappointment.commons.dto.request.jasper.transferLog.TransactionLogJasperData;
+import com.cogent.cogentappointment.commons.dto.request.jasper.transactionLog.TransactionLogJasperData;
+import com.cogent.cogentappointment.commons.dto.request.jasper.transferLog.AppointmentTransferLogJasperData;
 import com.cogent.cogentappointment.commons.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -43,13 +47,17 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
     private final AppointmentRepository appointmentRepository;
 
-    public ExcelReportServiceImpl(AppointmentRepository appointmentRepository) {
+    private final AppointmentTransferRepository appointmentTransferRepository;
+
+    public ExcelReportServiceImpl(AppointmentRepository appointmentRepository,
+                                  AppointmentTransferRepository appointmentTransferRepository) {
         this.appointmentRepository = appointmentRepository;
+        this.appointmentTransferRepository = appointmentTransferRepository;
     }
 
     @Override
     public JasperReportDownloadResponse generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO,
-                                                                     Pageable pageable) throws IOException, JRException {
+                                                                     Pageable pageable) {
 
         String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
@@ -106,7 +114,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
     @Override
     public JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO,
-                                                                          Pageable pageable) throws FileNotFoundException, JRException {
+                                                                          Pageable pageable) {
         String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
         AppointmentLogResponseDTO appointmentLogs;
@@ -165,7 +173,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
     @Override
     public JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO,
-                                                                         Pageable pageable) throws FileNotFoundException, JRException {
+                                                                         Pageable pageable) {
 
         AppointmentRescheduleLogResponseDTO responseDTOS =
                 appointmentRepository.fetchRescheduleAppointment(searchRequestDTO, pageable);
@@ -203,7 +211,43 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_RESHCEDULE_LOG);
     }
 
-    private Map appointmentLogReportParamtersGenerator(AppointmentLogSearchDTO searchRequestDTO, AppointmentLogResponseDTO appointmentLogResponseDTO) {
+    @Override
+    public JasperReportDownloadResponse generateAppointmentTransferLogReport(AppointmentTransferSearchRequestDTO searchRequestDTO,
+                                                                             Pageable pageable) {
+
+        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = appointmentTransferRepository.
+                getApptTransferredList(searchRequestDTO, pageable);
+
+
+        List<AppointmentTransferLogJasperData> jasperData = new ArrayList<>();
+
+        appointmentTransferLogDTOS.getResponse().forEach(transferLog -> {
+
+            AppointmentTransferLogJasperData transferLogJasperData = AppointmentTransferLogJasperData.builder()
+                    .appointmentNumber(transferLog.getApptNumber())
+                    .transferFromDateTime(transferLog.getTransferredFromDate()+", "+transferLog.getTransferredFromTime())
+                    .transferToDateTime(transferLog.getTransferredToDate()+", "+transferLog.getTransferredToTime())
+                    .patientDetails(transferLog.getPatientName() + ", " + StringUtil.toNormalCase(transferLog.getGender().name() + ", " + transferLog.getMobileNumber()))
+                    .transferFromDoctor(transferLog.getTransferredFromDoctor() + "/" + transferLog.getTransferredFromSpecialization())
+                    .transferToDoctor(transferLog.getTransferredToDoctor() + "/" + transferLog.getTransferredToSpecialization())
+                    .build();
+
+            jasperData.add(transferLogJasperData);
+
+        });
+
+        Map hParam = new HashMap<String, String>();
+
+//        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentFromDate()));
+//        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentToDate()));
+
+        hParam.put("fromDate","2019/06/10");
+        hParam.put("toDate", "2020/01/02");
+        return generateExcelReport(jasperData, hParam, JASPER_REPORT_TRANSFER_LOG);
+    }
+
+    private Map appointmentLogReportParamtersGenerator(AppointmentLogSearchDTO searchRequestDTO,
+                                                       AppointmentLogResponseDTO appointmentLogResponseDTO) {
 
         BookedAppointmentResponseDTO bookedInfo = appointmentLogResponseDTO.getBookedInfo();
         CheckedInAppointmentResponseDTO checkedInInfo = appointmentLogResponseDTO.getCheckedInInfo();

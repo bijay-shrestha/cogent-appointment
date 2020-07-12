@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.commons.dto.request.jasper.transferLog;
+package com.cogent.cogentappointment.commons.dto.request.jasper.transactionLog;
 
 import lombok.Getter;
 import lombok.Setter;

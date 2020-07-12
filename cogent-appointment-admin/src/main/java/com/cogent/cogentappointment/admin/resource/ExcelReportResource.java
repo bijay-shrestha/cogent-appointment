@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.ExcelReportService;
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
@@ -13,12 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.net.URLConnection;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ExcelReportConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.RESCHEDULE_LOG;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.TRANSACTION_LOG;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.TRANSFER_LOG;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ExcelReportConstants.BASE_EXCEL_REPORT;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_LOG;
 import static org.springframework.http.ResponseEntity.ok;
@@ -94,4 +97,25 @@ public class ExcelReportResource {
 
         return ok().build();
     }
+
+    @PutMapping(TRANSFER_LOG)
+    public ResponseEntity<?> generateAppointmentTransferLogExcelReport(@Valid
+                                                               @RequestBody
+                                                                       AppointmentTransferSearchRequestDTO searchRequestDTO,
+                                                               @RequestParam("page") int page,
+                                                               @RequestParam("size") int size,
+                                                               HttpServletResponse response) throws Exception {
+
+        Pageable pageable = PageRequest.of(page, size);
+        JasperReportDownloadResponse downloadResponse = excelReportService.generateAppointmentTransferLogReport(searchRequestDTO, pageable);
+
+        response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
+        response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
+
+        IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
+        response.flushBuffer();
+
+        return ok().build();
+    }
+
 }

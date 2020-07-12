@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.resource;
+package com.cogent.cogentappointment.esewa.resource.v1;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;
@@ -22,8 +22,8 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 16/02/20
  */
-@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @RestController
+@RequestMapping(API_V1 + BASE_APPOINTMENT + FOLLOW_UP)
 @Api(BASE_API_VALUE)
 public class AppointmentFollowUpTrackerResource {
 
@@ -33,7 +33,7 @@ public class AppointmentFollowUpTrackerResource {
         this.followUpTrackerService = followUpTrackerService;
     }
 
-    @PutMapping(FOLLOW_UP)
+    @PutMapping
     @ApiOperation(FETCH_FOLLOW_UP_DETAILS)
     public ResponseEntity<?> fetchFollowUpTrackerDetails(@Valid @RequestBody AppointmentFollowUpRequestDTO requestDTO) {
         return ok().body(followUpTrackerService.fetchAppointmentFollowUpDetails(requestDTO));

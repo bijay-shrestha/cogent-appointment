@@ -644,7 +644,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(CancelledHospitalDeptAppointmentSearchDTO searchDTO,
                                                                                               Pageable pageable) {
 
-
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_HOSPITAL_DEPT_APPOINTMENTS(searchDTO));
 
         int totalItems = query.getResultList().size();

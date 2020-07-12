@@ -280,9 +280,11 @@ public class PatientServiceImpl implements PatientService {
 
         saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
-        savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
-                patientMetaInfoRepository.fetchByPatientId(patientToUpdate.getId()),
-                updateRequestDTO));
+        savePatientMetaInfo(updatePatientMetaInfo(
+                hospitalPatientInfoToBeUpdated,
+                fetchPatientMetaInfo(patientToUpdate.getId()),
+                updateRequestDTO)
+        );
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -332,7 +334,8 @@ public class PatientServiceImpl implements PatientService {
 
             registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
 
-            PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(patientId);
+            PatientMetaInfo patientMetaInfo = fetchPatientMetaInfo(patientId);
+
             updatePatientMetaInfoDetails(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
         }
 
@@ -455,6 +458,10 @@ public class PatientServiceImpl implements PatientService {
         throw new NoContentFoundException(Patient.class);
     }
 
-
+    private PatientMetaInfo fetchPatientMetaInfo(Long patientId) {
+        return patientMetaInfoRepository.fetchByPatientId(patientId)
+                .orElseThrow(() -> new NoContentFoundException(PatientMetaInfo.class, "patientId",
+                        patientId.toString()));
+    }
 }
 

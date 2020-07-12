@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.esewa.configuration;
 
 import com.cogent.cogentappointment.esewa.exception.authentication.AuthEntryPointHmac;
 import com.cogent.cogentappointment.esewa.security.filter.HmacAuthenticationFilter;
+import com.cogent.cogentappointment.esewa.security.filter.JwtRequestFilter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,10 +24,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final HmacAuthenticationFilter hmacAuthenticationFilter;
 
+    private final JwtRequestFilter jwtRequestFilter;
+
     public WebSecurityConfig(AuthEntryPointHmac unauthorizedHandler,
-                             HmacAuthenticationFilter hmacAuthenticationFilter) {
+                             HmacAuthenticationFilter hmacAuthenticationFilter,
+                             JwtRequestFilter jwtRequestFilter) {
         this.unauthorizedHandler = unauthorizedHandler;
         this.hmacAuthenticationFilter = hmacAuthenticationFilter;
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
 
@@ -34,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .addFilterBefore(hmacAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtRequestFilter,HmacAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

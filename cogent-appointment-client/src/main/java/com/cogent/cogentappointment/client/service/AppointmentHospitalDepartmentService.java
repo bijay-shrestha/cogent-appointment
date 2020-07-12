@@ -24,8 +24,9 @@ public interface AppointmentHospitalDepartmentService {
 
     void approveAppointment(IntegrationBackendRequestDTO integrationRequestDTO);
 
-    CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(CancelledHospitalDeptAppointmentSearchDTO searchDTO,
-                                                                                       Pageable pageable);
+    CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(
+            CancelledHospitalDeptAppointmentSearchDTO searchDTO,
+            Pageable pageable);
 
     HospitalDeptCancelledAppointmentDetailResponseDTO fetchCancelledAppointmentDetail(Long appointmentId);
 }

@@ -11,4 +11,12 @@ public class AppointmentHospitalDepartmentFollowUpTrackerQuery {
                     " AND f.parent_appointment_id=:parentAppointmentId" +
                     " ORDER BY f.id DESC LIMIT 1";
 
+    public static final String QUERY_TO_UPDATE_HOSPITAL_DEPT_APPOINTMENT_FOLLOW_UP_TRACKER =
+            "UPDATE AppointmentHospitalDepartmentFollowUpTracker f " +
+                    " SET remainingNumberOfFollowUps = 0, status = 'N'" +
+                    " WHERE" +
+                    " f.status = 'Y'" +
+                    " AND f.patient.id = :patientId" +
+                    " AND f.hospitalDepartment.id = :hospitalDepartmentId" +
+                    " AND f.hospital.id =:hospitalId";
 }

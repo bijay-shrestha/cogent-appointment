@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.client.service.PatientMetaInfoService;
+import com.cogent.cogentappointment.commons.exception.NoContentFoundException;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,8 @@ public class PatientMetaInfoServiceImpl implements PatientMetaInfoService {
     }
 
     private PatientMetaInfo fetchPatientMetaInfo(Long patientId) {
-        return patientMetaInfoRepository.fetchByPatientId(patientId);
+        return patientMetaInfoRepository.fetchByPatientId(patientId)
+                .orElseThrow(() -> new NoContentFoundException(PatientMetaInfo.class, "patientId",
+                        patientId.toString()));
     }
 }

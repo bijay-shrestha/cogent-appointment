@@ -3,17 +3,23 @@ package com.cogent.cogentappointment.esewa.constants;
 public class SwaggerConstants {
     public static String BASE_PACKAGE = "com.cogent.cogentappointment.esewa.resource";
 
-    public static String PATH_REGEX = "/api.*";
+    public interface SwaggerVersionConstant {
+        String VERSION_1 = "v1";
+        String VERSION_2 = "v2";
+
+        String PATH_REGEX_V1 = "/api/v1.*";
+        String PATH_REGEX_V2 = "/api/v2.*";
+    }
 
     //A
     public interface AddressConstant {
         String BASE_API_VALUE = "This resource is used to fetch address details ";
-        String FETCH_ZONE_LIST="Fetch Zones for dropdown";
-        String FETCH_PROVINCE_LIST="Fetch Province for dropdown";
-        String FETCH_DISTRICT_LIST_BY_ZONE_ID="Fetch District for dropdown by zone id ";
-        String FETCH_DISTRICT_LIST_BY_PROVINCE_ID="Fetch District for dropdown by province id ";
-        String FETCH_STREET_LIST_BY_DISTRICT_ID="Fetch Street for dropdown by district id ";
-        String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID="Fetch Municipality for dropdown by district id ";
+        String FETCH_ZONE_LIST = "Fetch Zones for dropdown";
+        String FETCH_PROVINCE_LIST = "Fetch Province for dropdown";
+        String FETCH_DISTRICT_LIST_BY_ZONE_ID = "Fetch District for dropdown by zone id ";
+        String FETCH_DISTRICT_LIST_BY_PROVINCE_ID = "Fetch District for dropdown by province id ";
+        String FETCH_STREET_LIST_BY_DISTRICT_ID = "Fetch Street for dropdown by district id ";
+        String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID = "Fetch Municipality for dropdown by district id ";
     }
 
 
@@ -151,7 +157,7 @@ public class SwaggerConstants {
     //R
     public interface RefundStatusConstant {
         String BASE_API_VALUE = "This is Refund Status Resource";
-        String FETCH_REFUND_DETAILS_TO_APPROVE="Fetch Appointment Refund Details To Approve(change status to A) ";
+        String FETCH_REFUND_DETAILS_TO_APPROVE = "Fetch Appointment Refund Details To Approve(change status to A) ";
     }
 
     //S
@@ -161,6 +167,9 @@ public class SwaggerConstants {
     public interface TestConstant {
         String BASE_API_VALUE = "This is Test Resource";
         String TEST_OPERATION = "This is Test Operation";
+        String JWT_TOKEN_ENCODE_OPERATION = "This is used to generate token that is suppose to be sent by eSewa";
+        String JWT_TOKEN_DECODE_OPERATION = "This is used to decode token";
+
     }
 
 

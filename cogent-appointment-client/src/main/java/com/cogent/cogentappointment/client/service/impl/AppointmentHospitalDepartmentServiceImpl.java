@@ -131,14 +131,15 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     }
 
     @Override
-    public CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(CancelledHospitalDeptAppointmentSearchDTO searchDTO, Pageable pageable) {
+    public CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(
+            CancelledHospitalDeptAppointmentSearchDTO searchDTO, Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT);
 
-        CancelledHospitalDeptAppointmentResponseDTO cancelledAppointments = appointmentRepository.
-                fetchCancelledHospitalDeptAppointments(searchDTO,
-                        pageable);
+        CancelledHospitalDeptAppointmentResponseDTO cancelledAppointments =
+                appointmentRepository.fetchCancelledHospitalDeptAppointments(searchDTO, pageable);
 
         log.info(FETCHING_PROCESS_COMPLETED, CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 

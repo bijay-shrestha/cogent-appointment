@@ -22,4 +22,14 @@ public class AppointmentFollowUpTrackerQuery {
                     " AND f.parent_appointment_id=:parentAppointmentId" +
                     " ORDER BY f.id DESC LIMIT 1";
 
+    public static final String QUERY_TO_UPDATE_APPOINTMENT_FOLLOW_UP_TRACKER =
+            "UPDATE AppointmentFollowUpTracker f " +
+                    " SET remainingNumberOfFollowUps = 0, status = 'N'" +
+                    " WHERE" +
+                    " f.status = 'Y'" +
+                    " AND f.patientId.id = :patientId" +
+                    " AND f.doctorId.id = :doctorId" +
+                    " AND f.specializationId.id=:specializationId" +
+                    " AND f.hospitalId.id =:hospitalId";
+
 }

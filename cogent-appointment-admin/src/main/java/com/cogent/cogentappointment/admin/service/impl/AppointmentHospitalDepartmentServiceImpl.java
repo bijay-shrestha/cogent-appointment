@@ -137,9 +137,8 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         log.info(FETCHING_PROCESS_STARTED, CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT);
 
-        CancelledHospitalDeptAppointmentResponseDTO cancelledAppointments = appointmentRepository.
-                fetchCancelledHospitalDeptAppointments(searchDTO,
-                        pageable);
+        CancelledHospitalDeptAppointmentResponseDTO cancelledAppointments =
+                appointmentRepository.fetchCancelledHospitalDeptAppointments(searchDTO, pageable);
 
         log.info(FETCHING_PROCESS_COMPLETED, CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 

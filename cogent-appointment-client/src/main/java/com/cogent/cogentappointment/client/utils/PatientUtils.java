@@ -19,8 +19,6 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 import static org.springframework.http.HttpStatus.OK;
 
 /**
@@ -34,7 +32,7 @@ public class PatientUtils {
                                          String eSewaId,
                                          Gender gender) {
         Patient patient = new Patient();
-        patient.setName(toNormalCase(name));
+        patient.setName(name);
         patient.setMobileNumber(mobileNumber);
         patient.setDateOfBirth(dateOfBirth);
         patient.setESewaId(eSewaId);
@@ -45,7 +43,8 @@ public class PatientUtils {
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {
-        patient.setName(toNormalCase(requestDTO.getName()));
+
+        patient.setName(requestDTO.getName());
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setGender(requestDTO.getGender());
@@ -66,11 +65,14 @@ public class PatientUtils {
     public static PatientMetaInfo updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
                                                         PatientMetaInfo patientMetaInfo,
                                                         PatientUpdateRequestDTO updateRequestDTO) {
-        patientMetaInfo.setMetaInfo(toUpperCase(updateRequestDTO.getName())
-                + OR +
-                updateRequestDTO.getMobileNumber()
-                + OR +
-                hospitalPatientInfo.getRegistrationNumber());
+
+        if (Objects.isNull(hospitalPatientInfo.getRegistrationNumber()))
+            patientMetaInfo.setMetaInfo(
+                    updateRequestDTO.getName()
+                            + OR + updateRequestDTO.getMobileNumber()
+                            + OR + hospitalPatientInfo.getRegistrationNumber()
+            );
+
         patientMetaInfo.setStatus(updateRequestDTO.getStatus());
         patientMetaInfo.setRemarks(updateRequestDTO.getRemarks());
 
@@ -108,7 +110,7 @@ public class PatientUtils {
         if (Objects.isNull(latestRegistrationNumber)) {
             registrationNumber = year + month + day + String.format("%04d", 1);
         } else {
-            long l1 = Long.parseLong((latestRegistrationNumber.substring(alias.length()+7)));
+            long l1 = Long.parseLong((latestRegistrationNumber.substring(alias.length() + 7)));
 
             String patientCount = (l1 < 9999) ?
                     String.format("%04d", l1 + 1) : String.format("%d", l1 + 1);
@@ -126,7 +128,7 @@ public class PatientUtils {
         hospitalPatientInfo.setAddress(requestDTO.getAddress());
 
         Patient patient = hospitalPatientInfo.getPatient();
-        patient.setName(toUpperCase(requestDTO.getName()));
+        patient.setName(requestDTO.getName());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setGender(fetchGenderByCode(requestDTO.getGender()));

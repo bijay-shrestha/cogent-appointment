@@ -17,11 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
+import javax.validation.Validator;
 import java.util.Date;
 import java.util.Objects;
 
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.esewa.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
@@ -47,24 +50,31 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
     private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
 
+    private final Validator validator;
+
     public AppointmentFollowUpTrackerServiceImpl(AppointmentFollowUpTrackerRepository appointmentFollowUpTrackerRepository,
                                                  HospitalRepository hospitalRepository,
                                                  DoctorRepository doctorRepository,
                                                  AppointmentReservationLogService appointmentReservationLogService,
-                                                 AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService) {
+                                                 AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
+                                                 Validator validator) {
         this.appointmentFollowUpTrackerRepository = appointmentFollowUpTrackerRepository;
         this.hospitalRepository = hospitalRepository;
         this.doctorRepository = doctorRepository;
         this.appointmentReservationLogService = appointmentReservationLogService;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
+        this.validator = validator;
     }
 
     @Override
-    public AppointmentFollowUpResponseDTOWithStatus fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO) {
+    public AppointmentFollowUpResponseDTOWithStatus fetchAppointmentFollowUpDetails(
+            @Valid AppointmentFollowUpRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         /*TEMPORARILY HOLD SELECTED TIME SLOT
         * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOUSLY RESERVED FOR

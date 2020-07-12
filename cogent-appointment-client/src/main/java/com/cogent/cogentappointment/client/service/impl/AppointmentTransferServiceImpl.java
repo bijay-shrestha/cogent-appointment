@@ -22,9 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
@@ -186,12 +188,12 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
+        Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId());
+
         validateAppointmentAmount(requestDTO.getDoctorId(),
                 requestDTO.getIsFollowUp(), requestDTO.getAppointmentCharge());
 
-        Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId());
-
-        validateAppointmentDate(appointment.getAppointmentDate());
+        validateAppointmentDate(appointment.getAppointmentDate(), requestDTO.getAppointmentTime());
 
         AppointmentTransactionDetail transactionDetail = fetchAppointmentTransactionDetailByappointmentId(
                 requestDTO.getAppointmentId());
@@ -199,15 +201,13 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         AppointmentDoctorInfo appointmentDoctorInfo = appointmentRepository.getPreviousAppointmentDoctorAndSpecialization
                 (appointment.getId());
 
-        if (appointmentDoctorInfo.getSpecialization().getId() == requestDTO.getSpecializationId() &&
+        if (Objects.equals(appointmentDoctorInfo.getSpecialization().getId(), requestDTO.getSpecializationId()) &&
                 (transactionDetail.getAppointmentAmount().compareTo(requestDTO.getAppointmentCharge()) == 0)) {
 
             transferForSameSpecializationAndCharge(appointment, requestDTO, appointmentDoctorInfo, transactionDetail);
 
         } else {
-
             transferWithNewCharge(appointment, requestDTO, appointmentDoctorInfo, transactionDetail);
-
         }
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
@@ -238,7 +238,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 requestDTO);
 
         SaveAppointmentDoctorInfo(parseAppointmentDoctorInfo
-                (transferredToDoctor,transferredToSpecialization,appointmentDoctorInfo));
+                (transferredToDoctor, transferredToSpecialization, appointmentDoctorInfo));
 
         AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
                 transactionDetail,
@@ -274,7 +274,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 requestDTO);
 
         SaveAppointmentDoctorInfo(parseAppointmentDoctorInfo
-                (transferredToDoctor,transferredToSpecialization,appointmentDoctorInfo));
+                (transferredToDoctor, transferredToSpecialization, appointmentDoctorInfo));
 
         AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
                 transactionDetail,
@@ -387,7 +387,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                         code);
 
                 List<String> actualTime = getGapDuration(codeAndTime.getStartTime(), codeAndTime.getEndTime(),
-                        actualDutyRosterDateAndTime.getGapDuration(),sqlRequestDate);
+                        actualDutyRosterDateAndTime.getGapDuration(), sqlRequestDate);
 
                 finaltime = getVacantTime(actualTime, unavailableTime);
 
@@ -453,7 +453,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         transactionRequestLogRepository.save(transactionRequestLog);
     }
 
-    public void SaveAppointmentDoctorInfo(AppointmentDoctorInfo appointmentDoctorInfo){
+    public void SaveAppointmentDoctorInfo(AppointmentDoctorInfo appointmentDoctorInfo) {
         appointmentDoctorInfoRepository.save(appointmentDoctorInfo);
     }
 
@@ -482,6 +482,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         throw new NoContentFoundException(AppointmentTransactionRequestLog.class, "transactionNumber", transactionNumber.toString());
     };
 
+
     private void validateAppointmentAmount(Long doctorId,
                                            Character isFollowUp, Double appointmentAmount) {
 
@@ -498,14 +499,21 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         }
     }
 
-    private void validateAppointmentDate(Date appointmentDate) {
-       if(appointmentDate.before(new Date())){
-           log.error("Appointment Date has passed");
-           throw new BadRequestException("Appointment Date has passed");
-       }
+    private void validateAppointmentDate(Date appointmentDate, String appointmentTime) {
+
+        Date requestedAppointmentDate = parseAppointmentTime(appointmentDate, appointmentTime);
+
+        Date currentDate = new Date();
+
+        boolean hasAppointmentDatePassed = requestedAppointmentDate.before(currentDate);
+
+        if (hasAppointmentDatePassed) {
+            log.error(INVALID_APPOINTMENT_DATE_TIME);
+            throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+        }
     }
 
-    public AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId) {
+    private AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId) {
         return appointmentTransferRepository.getAppointmentChargeByDoctorId(doctorId);
     }
 

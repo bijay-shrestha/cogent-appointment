@@ -38,6 +38,17 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         this.hospitalRepository = hospitalRepository;
     }
 
+    /*
+ * CASE FOR UPDATING APPOINTMENT FOLLOW UP TRACKER :
+ *
+ * TAKE 3 CONSECUTIVE APPOINTMENTS WITHOUT APPROVING
+ * (THIS WILL PERSIST DATA IN APPOINTMENT TABLE AND OTHER RELATED TABLES)
+ * THEN APPROVE/CHECK-IN EACH APPOINTMENTS SIMULTANEOUSLY.
+ * FOR THE SAME PARAMETERS (HOSPITAL, DOCTOR, SPECIALIZATION, PATIENT),
+ * IF FOLLOW UP TRACKER ALREADY EXISTS, THEN CHANGE OTHER STATUS AS 'N' AND REMAINING FOLLOW UP COUNT TO 0
+ * AND PERSIST NEW FOLLOW UP REQUEST WITH NEW REMAINING NUMBER OF FOLLOWUPS.
+ *
+ * */
     @Override
     public AppointmentFollowUpTracker save(Long parentAppointmentId,
                                            Hospital hospital,
@@ -48,6 +59,13 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
+
+        appointmentFollowUpTrackerRepository.updateAppointmentFollowUpTrackerStatus(
+                patient.getId(),
+                doctor.getId(),
+                specialization.getId(),
+                hospital.getId()
+        );
 
         Integer numberOfFollowUps = hospitalRepository.fetchHospitalFollowUpCount(hospital.getId());
 

@@ -22,9 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentTransferMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
@@ -186,10 +188,12 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
+        Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId(), requestDTO.getHospitalId());
+
         validateAppointmentAmount(requestDTO.getDoctorId(), requestDTO.getHospitalId(),
                 requestDTO.getIsFollowUp(), requestDTO.getAppointmentCharge());
 
-        Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId(), requestDTO.getHospitalId());
+        validateAppointmentDate(requestDTO.getAppointmentDate(), requestDTO.getAppointmentTime());
 
         AppointmentTransactionDetail transactionDetail = fetchAppointmentTransactionDetailByappointmentId(
                 requestDTO.getAppointmentId());
@@ -197,7 +201,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         AppointmentDoctorInfo appointmentDoctorInfo = appointmentRepository.getPreviousAppointmentDoctorAndSpecialization
                 (appointment.getId());
 
-        if (appointmentDoctorInfo.getSpecialization().getId() == requestDTO.getSpecializationId() &&
+        if (Objects.equals(appointmentDoctorInfo.getSpecialization().getId(), requestDTO.getSpecializationId()) &&
                 (transactionDetail.getAppointmentAmount().compareTo(requestDTO.getAppointmentCharge()) == 0)) {
 
             transferForSameSpecializationAndCharge(appointment, requestDTO, appointmentDoctorInfo, transactionDetail);
@@ -237,8 +241,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
                 requestDTO);
 
-        SaveAppointmentDoctorInfo(parseAppointmentDoctorInfo
-                (transferredToDoctor,transferredToSpecialization,appointmentDoctorInfo));
+        saveAppointmentDoctorInfo(parseAppointmentDoctorInfo
+                (transferredToDoctor, transferredToSpecialization, appointmentDoctorInfo));
 
         AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
                 transactionDetail,
@@ -275,8 +279,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
                 requestDTO);
 
-        SaveAppointmentDoctorInfo(parseAppointmentDoctorInfo
-                (transferredToDoctor,transferredToSpecialization,appointmentDoctorInfo));
+        saveAppointmentDoctorInfo(parseAppointmentDoctorInfo
+                (transferredToDoctor, transferredToSpecialization, appointmentDoctorInfo));
 
         AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
                 transactionDetail,
@@ -429,7 +433,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         }
     }
 
-    public AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId, Long hospitalId) {
+    private AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId, Long hospitalId) {
         return appointmentTransferRepository.getAppointmentChargeByDoctorId(doctorId,
                 hospitalId);
     }
@@ -479,13 +483,14 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         transactionRequestLogRepository.save(transactionRequestLog);
     }
 
-    public void SaveAppointmentDoctorInfo(AppointmentDoctorInfo appointmentDoctorInfo){
+    private void saveAppointmentDoctorInfo(AppointmentDoctorInfo appointmentDoctorInfo) {
         appointmentDoctorInfoRepository.save(appointmentDoctorInfo);
     }
 
-    private Function<String, NoContentFoundException> APPOINTMENT_TRANSACTION_REQUEST_LOG_WITH_GIVEN_TXN_NUMBER_NOT_FOUND = (transactionNumber) -> {
+    private Function<String, NoContentFoundException> APPOINTMENT_TRANSACTION_REQUEST_LOG_WITH_GIVEN_TXN_NUMBER_NOT_FOUND
+            = (transactionNumber) -> {
         log.error(CONTENT_NOT_FOUND_BY_APPOINTMENT_NUMBER, APPOINTMENT_TRANSACTION_REQUEST_LOG, transactionNumber);
-        throw new NoContentFoundException(AppointmentTransactionRequestLog.class, "transactionNumber", transactionNumber.toString());
+        throw new NoContentFoundException(AppointmentTransactionRequestLog.class, "transactionNumber", transactionNumber);
     };
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
@@ -509,5 +514,17 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         throw new NoContentFoundException(AppointmentTransactionDetail.class, "appointmentId", appointmentId.toString());
     };
 
+    private void validateAppointmentDate(Date appointmentDate, String appointmentTime) {
 
+        Date requestedAppointmentDate = parseAppointmentTime(appointmentDate, appointmentTime);
+
+        Date currentDate = new Date();
+
+        boolean hasAppointmentDatePassed = requestedAppointmentDate.before(currentDate);
+
+        if (hasAppointmentDatePassed) {
+            log.error(INVALID_APPOINTMENT_DATE_TIME);
+            throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+        }
+    }
 }

@@ -43,6 +43,17 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements
         this.appointmentHospitalDepartmentFollowUpTrackerRepository = appointmentHospitalDepartmentFollowUpTrackerRepository;
     }
 
+    /*
+* CASE FOR UPDATING APPOINTMENT FOLLOW UP TRACKER :
+*
+* TAKE 3 CONSECUTIVE APPOINTMENTS WITHOUT APPROVING
+* (THIS WILL PERSIST DATA IN APPOINTMENT TABLE AND OTHER RELATED TABLES)
+* THEN APPROVE/CHECK-IN EACH APPOINTMENTS SIMULTANEOUSLY.
+* FOR THE SAME PARAMETERS (HOSPITAL, DOCTOR, SPECIALIZATION, PATIENT),
+* IF FOLLOW UP TRACKER ALREADY EXISTS, THEN CHANGE OTHER STATUS AS 'N' AND REMAINING FOLLOW UP COUNT TO 0
+* AND PERSIST NEW FOLLOW UP REQUEST WITH NEW REMAINING NUMBER OF FOLLOWUPS.
+*
+* */
     @Override
     public AppointmentHospitalDepartmentFollowUpTracker save(Long parentAppointmentId,
                                                              Hospital hospital,
@@ -52,6 +63,12 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER);
+
+        appointmentHospitalDepartmentFollowUpTrackerRepository.updateAppointmentFollowUpTrackerStatus(
+                hospital.getId(),
+                hospitalDepartment.getId(),
+                patient.getId()
+        );
 
         Integer numberOfFollowUps = hospitalRepository.fetchHospitalFollowUpCount(hospital.getId());
 

@@ -170,8 +170,9 @@ public interface AppointmentRepositoryCustom {
     AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber,
                                                              String appointmentServiceTypeCode);
 
-    CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(CancelledHospitalDeptAppointmentSearchDTO searchDTO,
-                                                                                       Pageable pageable);
+    CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(
+            CancelledHospitalDeptAppointmentSearchDTO searchDTO,
+            Pageable pageable);
 
     List<AppointmentCountWithStatusDTO> getAppointmentCountWithStatus(HospitalDeptAppointmentStatusCountRequestDTO requestDTO);
 

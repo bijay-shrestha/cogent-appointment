@@ -215,18 +215,19 @@ public class AppointmentHospitalDepartmentQuery {
                     " case when hr.id is null then null" +
                     " when hr.id is not null then r.roomNumber" +
                     " end as roomNumber," +                                                      //[14]
-                    " pr.value as province," +
-                    " d.value as district," +
-                    " vm.value as vdcOrMunicipality," +
-                    " hpi.wardNumber as ward," +
-                    " hpi.address AS address," +                                                  //[15]
-                    QUERY_TO_CALCULATE_PATIENT_AGE_YEAR + "," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE_MONTH + "," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE_DAY + "," +
-                    " p.eSewaId as eSewaId," +
-                    " a.isSelf as isSelf," +
-                    " a.appointmentModeId.name as appointmentMode," +                                               //[16]
-                    " hb.billingMode.name as billingModeName" +
+                    " pr.value as province," +                                                  //[15]
+                    " d.value as district," +                                                   //[16]
+                    " vm.value as vdcOrMunicipality," +                                         //[17]
+                    " hpi.wardNumber as ward," +                                                //[18]
+                    " hpi.address AS address," +                                                  //[19]
+                    QUERY_TO_CALCULATE_PATIENT_AGE_YEAR + "," +                                  //[20]
+                    QUERY_TO_CALCULATE_PATIENT_AGE_MONTH + "," +                                //[21]
+                    QUERY_TO_CALCULATE_PATIENT_AGE_DAY + "," +                                  //[22]
+                    " p.eSewaId as eSewaId," +                                                  //[23]
+                    " a.isSelf as isSelf," +                                                    //[24]
+                    " a.appointmentModeId.name as appointmentMode," +                            //[25]
+                    " hb.billingMode.name as billingModeName," +                                 //[26]
+                    " hpi.email as emailAddress"+                                                   //[27]
                     " FROM Appointment a" +
                     " INNER JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ad.hospitalDepartment.id" +

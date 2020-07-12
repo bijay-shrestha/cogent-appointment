@@ -14,17 +14,20 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class EsewaRefundRequestDTO implements Serializable {
 
-    private Double txn_amount;
-
-    private Double refund_amount;
+    private String esewa_id;
 
     private String product_code;
 
-    private String esewa_id;
+    private String txn_code;
+
+    private Double txn_amount;
+
+    private Double refund_amount;
 
     private Boolean is_refund;
 
     private String remarks;
 
     private Properties properties;
+
 }

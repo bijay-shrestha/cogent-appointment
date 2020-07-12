@@ -7,6 +7,8 @@ public class WebResourceKeyConstants {
 
     //A
     public static final String API_V1 = "/api/v1";
+    public static final String API_V2 = "/api/v2";
+
     public static final String ACTIVE = "/active";
 
     public interface AddressConstants {
@@ -69,6 +71,8 @@ public class WebResourceKeyConstants {
 
 
     //E
+
+    public static final String requestKey="data";
     public interface EsewaConstants {
         String BASE_ESEWA = "/esewa";
         String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";
@@ -107,6 +111,7 @@ public class WebResourceKeyConstants {
     //K
 
     //L
+    public static final String LOGIN = "/login";
 
     //M
     public static final String MIN = "/min";

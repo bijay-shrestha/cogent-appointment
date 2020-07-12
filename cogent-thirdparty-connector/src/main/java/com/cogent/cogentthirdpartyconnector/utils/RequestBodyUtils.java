@@ -45,6 +45,7 @@ public class RequestBodyUtils {
                 .product_code(appointment.getHospitalId().getEsewaMerchantCode())
                 .remarks(remarks)
                 .txn_amount(transactionDetail.getAppointmentAmount())
+                .txn_code(transactionDetail.getTransactionNumber())
                 .properties(Properties.builder()
                         .appointmentId(appointment.getId())
                         .hospitalName(appointment.getHospitalId().getName())

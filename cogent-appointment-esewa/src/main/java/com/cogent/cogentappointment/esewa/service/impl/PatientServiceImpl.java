@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
+import javax.validation.Validator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +27,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.DELETED;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.esewa.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.esewa.utils.GenderUtils.fetchGenderByCode;
@@ -45,12 +48,16 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientRelationInfoRepository patientRelationInfoRepository;
 
+    private final Validator validator;
+
     public PatientServiceImpl(PatientRepository patientRepository,
                               HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                              PatientRelationInfoRepository patientRelationInfoRepository) {
+                              PatientRelationInfoRepository patientRelationInfoRepository,
+                              Validator validator) {
         this.patientRepository = patientRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.patientRelationInfoRepository = patientRelationInfoRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -113,10 +120,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTOWithStatus searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO) {
+    public PatientDetailResponseDTOWithStatus searchForSelfHospitalWise(@Valid PatientMinSearchRequestDTO searchRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+
+        validateConstraintViolation(validator.validate(searchRequestDTO));
 
         PatientDetailResponseDTO responseDTO = patientRepository.searchForSelfHospitalWise(searchRequestDTO);
 
@@ -126,12 +135,14 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+    public PatientResponseDTOForOthersWithStatus searchForOthers(@Valid PatientMinSearchRequestDTO searchRequestDTO,
                                                                  Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+
+        validateConstraintViolation(validator.validate(searchRequestDTO));
 
         List<PatientRelationInfoResponseDTO> patientRelationInfo =
                 patientRepository.fetchPatientRelationInfo(searchRequestDTO);
@@ -145,12 +156,14 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientResponseDTOForOthersWithStatus searchForOthersHospitalWise(PatientMinSearchRequestDTO searchRequestDTO,
+    public PatientResponseDTOForOthersWithStatus searchForOthersHospitalWise(@Valid PatientMinSearchRequestDTO searchRequestDTO,
                                                                              Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+
+        validateConstraintViolation(validator.validate(searchRequestDTO));
 
         List<PatientRelationInfoResponseDTO> patientRelationInfo =
                 patientRepository.fetchPatientRelationInfoHospitalWise(
@@ -183,10 +196,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void updateOtherPatientDetails(PatientUpdateDTOForOthers requestDTO) {
+    public void updateOtherPatientDetails(@Valid PatientUpdateDTOForOthers requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, PATIENT);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfoById(requestDTO.getHospitalPatientInfoId());
 
@@ -201,10 +216,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void deleteOtherPatient(PatientDeleteRequestDTOForOthers requestDTO) {
+    public void deleteOtherPatient(@Valid PatientDeleteRequestDTOForOthers requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, PATIENT);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         PatientRelationInfo patientRelationInfo = patientRelationInfoRepository.fetchPatientRelationInfo(
                 requestDTO.getParentPatientId(),

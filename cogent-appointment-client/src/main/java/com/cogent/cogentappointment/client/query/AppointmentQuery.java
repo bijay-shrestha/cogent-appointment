@@ -314,7 +314,6 @@ public class AppointmentQuery {
                         GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
     }
 
-    /*admin*/
     public static String QUERY_TO_FETCH_APPOINTMENTS_CANCEL_APPROVALS(AppointmentCancelApprovalSearchDTO searchDTO) {
         return " SELECT" +
                 " a.id as appointmentId," +
@@ -339,6 +338,7 @@ public class AppointmentQuery {
                 " s.name as specializationName," +
                 " atd.transactionNumber as transactionNumber," +
                 " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y') as cancelledDate," +
+                " DATE_FORMAT(ard.cancelledDate ,'%h:%i %p') as cancelledTime," +
                 " p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode, " +
@@ -1031,6 +1031,7 @@ public class AppointmentQuery {
                 "  hd.name as departmentName," +
                 " atd.transactionNumber as transactionNumber," +
                 " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
+                " DATE_FORMAT(ard.cancelledDate ,'%h:%i %p') as cancelledTime," +
                 " p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +

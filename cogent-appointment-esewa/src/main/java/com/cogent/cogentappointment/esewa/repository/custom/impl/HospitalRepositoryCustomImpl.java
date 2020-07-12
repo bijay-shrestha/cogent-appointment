@@ -45,7 +45,11 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_HOSPITAL(searchRequestDTO));
 
+        System.out.println("hospital query-------->"+ QUERY_TO_FETCH_MIN_HOSPITAL(searchRequestDTO));
+
         List<HospitalMinResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinResponseDTO.class);
+
+        System.out.println("hospital data-------->"+results);
 
         if (results.isEmpty()) {
             log.error(CONTENT_NOT_FOUND, HOSPITAL);

@@ -1,6 +1,3 @@
-catalina:
-  home: /home/rupak/Softwares/tomcat
-
 spring:
   profiles:
-    active: dev
+    active: uat

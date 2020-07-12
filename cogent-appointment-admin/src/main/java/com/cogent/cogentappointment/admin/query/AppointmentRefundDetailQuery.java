@@ -160,6 +160,7 @@ public class AppointmentRefundDetailQuery {
                     " a.appointmentModeId.name as appointmentMode," +
                     " hpi.isRegistered as isRegistered," +
                     " a.hospitalId.name as hospitalName," +
+                    " a.hospitalId.id as hospitalId," +
                     " ard.remarks as remarks," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     " CASE WHEN" +

@@ -3,8 +3,6 @@ package com.cogent.cogentthirdpartyconnector.service;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.OperationUnsuccessfulException;
 import com.cogent.cogentthirdpartyconnector.request.ClientSaveRequestDTO;
-import com.cogent.cogentthirdpartyconnector.request.EsewaPaymentStatus;
-import com.cogent.cogentthirdpartyconnector.request.EsewaRefundRequestDTO;
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import com.cogent.cogentthirdpartyconnector.service.utils.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +80,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
     @Override
     public ResponseEntity<?> callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
-                                                    EsewaRefundRequestDTO esewaRefundRequestDTO) {
+                                                    Map<String, Object> map) {
 
         HttpMethod httpMethod = getHttpRequestMethod(backendIntegrationApiInfo.getHttpMethod());
 
@@ -97,7 +95,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         ResponseEntity<?> response = restTemplateUtils.
                 requestAPI(httpMethod,
                         uri,
-                        new HttpEntity<>(esewaRefundRequestDTO, backendIntegrationApiInfo.getHttpHeaders()));
+                        new HttpEntity<>(map, backendIntegrationApiInfo.getHttpHeaders()));
 
         return response;
 
@@ -129,7 +127,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
 
     @Override
     public ResponseEntity<?> callEsewaRefundStatusService(BackendIntegrationApiInfo integrationApiInfo,
-                                                          EsewaPaymentStatus esewaPayementStatus) {
+                                                          Map<String, Object> map) {
         HttpMethod httpMethod = getHttpRequestMethod(integrationApiInfo.getHttpMethod());
 
         String uri = "";
@@ -144,7 +142,7 @@ public class ThirdPartyConnectorServiceImpl implements ThirdPartyConnectorServic
         ResponseEntity<?> response = restTemplateUtils.
                 requestAPI(httpMethod,
                         uri,
-                        new HttpEntity<>(esewaPayementStatus, integrationApiInfo.getHttpHeaders()));
+                        new HttpEntity<>(map, integrationApiInfo.getHttpHeaders()));
 
         System.out.println(response);
 

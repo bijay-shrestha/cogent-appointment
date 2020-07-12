@@ -89,6 +89,11 @@ public class QueryConstants {
     //O
 
     //P
+    public interface PatientQueryConstants {
+        String PATIENT_ID = "patientId";
+
+    }
+
 
     //Q
 

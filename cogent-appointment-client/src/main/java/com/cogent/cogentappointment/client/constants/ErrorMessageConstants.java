@@ -6,6 +6,7 @@ package com.cogent.cogentappointment.client.constants;
 public class ErrorMessageConstants {
 
     //A
+    public static  final  String APPOINTMENT_MODE_NOT_VALID="APPOINTMENT MODE NOT VALID";
 
     public interface AppointmentServiceMessage {
         String APPOINTMENT_EXISTS = "Appointment already exists for the selected time: '%s'";
@@ -225,6 +226,9 @@ public class ErrorMessageConstants {
 
 
     //T
+    public static  final  String THIRD_PARTY_API_RESPONSE_IS_NULL="ThirdParty API response is null";
+
+    public static  final  String THIRD_PARTY_API_INFORMATION_NOT_FOUND="Third party API information Not found";
 
 
     //U

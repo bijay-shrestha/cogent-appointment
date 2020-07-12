@@ -258,11 +258,9 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         Map hParam = new HashMap<String, String>();
 
-//        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentFromDate()));
-//        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentToDate()));
+        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentFromDate()));
+        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentToDate()));
 
-        hParam.put("fromDate", "2019/06/10");
-        hParam.put("toDate", "2020/01/02");
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_TRANSFER_LOG);
     }
 

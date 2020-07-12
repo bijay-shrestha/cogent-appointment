@@ -41,7 +41,6 @@ import static com.cogent.cogentappointment.admin.constants.CogentAppointmentCons
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_INTEGRATION_CHANNEL_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
@@ -312,7 +311,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     break;
 
                 default:
-                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE,
+                            refundRequestDTO.getIntegrationChannelCode());
             }
 
         }

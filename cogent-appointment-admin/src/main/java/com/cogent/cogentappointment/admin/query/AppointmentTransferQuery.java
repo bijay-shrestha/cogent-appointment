@@ -301,7 +301,7 @@ public class AppointmentTransferQuery {
             sql += " AND adi.doctor.id=" + requestDTO.getDoctorId();
 
         if (!ObjectUtils.isEmpty(requestDTO.getSpecializationId()))
-            sql += " AND adi.specializationId.id=" + requestDTO.getSpecializationId();
+            sql += " AND adi.specialization.id=" + requestDTO.getSpecializationId();
 
         if (!ObjectUtils.isEmpty(requestDTO.getPatientMetaInfoId()))
             sql += " AND pmi.id=" + requestDTO.getPatientMetaInfoId();

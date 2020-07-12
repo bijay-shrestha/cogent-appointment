@@ -116,42 +116,42 @@
 	</columnHeader>
 	<detail>
 		<band height="30" splitType="Stretch">
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="-10" y="0" width="20" height="30" uuid="57a166b3-8210-4e4f-a7d0-3d20ca29b609"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="40" y="0" width="60" height="30" uuid="683fc9d8-e063-47f3-b6bf-5e105f56e2fc"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{appointmentNumber}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="100" y="0" width="120" height="30" uuid="58f3a14b-88e6-4e60-a46e-e196533068f3"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{patientDetails}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="10" y="0" width="30" height="30" uuid="836aee11-bf53-4d0b-b51b-dffc244a4ad5"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{appointmentStatus}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="220" y="0" width="80" height="30" uuid="5e51ed17-df7a-4ef6-ac10-29221a2ecc0f"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{transferFromDateTime}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="300" y="0" width="80" height="30" uuid="153e1497-0af0-4d02-8715-eda4c365269b"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{transferToDateTime}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="380" y="0" width="100" height="30" isPrintWhenDetailOverflows="true" uuid="5c88aa39-b6ef-4bfe-ade7-e4113cec6298"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{transferFromDoctor}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement key="" x="480" y="0" width="90" height="30" uuid="5a0d510d-e438-4d60-817f-3990872815a1"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{transferToDoctor}]]></textFieldExpression>

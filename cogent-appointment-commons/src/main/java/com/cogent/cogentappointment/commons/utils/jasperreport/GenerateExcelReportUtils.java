@@ -75,9 +75,6 @@ public class GenerateExcelReportUtils {
             configuration.setRemoveEmptySpaceBetweenColumns(true);
             configuration.setRemoveEmptySpaceBetweenRows(true);
 
-            configuration.setFontSizeFixEnabled(true);
-
-
             exporter.setConfiguration(configuration);
             exporter.exportReport();
 

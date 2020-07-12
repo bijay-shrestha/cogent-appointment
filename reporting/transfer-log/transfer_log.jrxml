@@ -152,7 +152,10 @@
 				<textFieldExpression><![CDATA[$F{transferFromDoctor}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement key="" x="480" y="0" width="90" height="30" uuid="5a0d510d-e438-4d60-817f-3990872815a1"/>
+				<reportElement key="" x="480" y="0" width="90" height="30" uuid="5a0d510d-e438-4d60-817f-3990872815a1">
+					<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+					<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="true"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{transferToDoctor}]]></textFieldExpression>
 			</textField>

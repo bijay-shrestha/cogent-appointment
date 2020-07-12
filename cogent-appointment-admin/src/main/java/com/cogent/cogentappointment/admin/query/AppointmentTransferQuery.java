@@ -306,7 +306,6 @@ public class AppointmentTransferQuery {
         if (!ObjectUtils.isEmpty(requestDTO.getPatientMetaInfoId()))
             sql += " AND pmi.id=" + requestDTO.getPatientMetaInfoId();
 
-
         return sql;
     }
 

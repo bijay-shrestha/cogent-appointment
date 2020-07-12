@@ -206,7 +206,7 @@ public class AppointmentTransferQuery {
             whereClause += " AND (apt.previousSpecialization.id=" + requestDTO.getSpecializationId() +
                     " OR apt.currentSpecialization.id=" + requestDTO.getSpecializationId() + ")";
 
-        whereClause += "ORDER BY a.id,apt.id DESC";
+        whereClause += "ORDER BY a.id DESC";
 
         return whereClause;
     }

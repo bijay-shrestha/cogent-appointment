@@ -42,6 +42,8 @@ public class CancelledHospitalDeptAppointmentDTO implements Serializable {
 
     private String cancelledDate;
 
+    private String cancelledTime;
+
     private String mobileNumber;
 
     private Double refundAmount;

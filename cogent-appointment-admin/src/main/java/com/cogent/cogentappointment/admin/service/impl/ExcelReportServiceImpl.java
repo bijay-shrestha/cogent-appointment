@@ -230,6 +230,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         appointmentTransferLogDTOS.getResponse().forEach(transferLog -> {
 
             AppointmentTransferLogJasperData transferLogJasperData = AppointmentTransferLogJasperData.builder()
+                    .appointmentStatus(transferLog.getStatus())
                     .appointmentNumber(transferLog.getApptNumber())
                     .transferFromDateTime(transferLog.getTransferredFromDate()+", "+transferLog.getTransferredFromTime())
                     .transferToDateTime(transferLog.getTransferredToDate()+", "+transferLog.getTransferredToTime())

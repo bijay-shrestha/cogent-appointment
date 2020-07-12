@@ -50,12 +50,11 @@ public class ExcelReportResource {
         JasperReportDownloadResponse downloadResponse = excelReportService
                 .generateAppointmentLogExcelReport(searchRequestDTO, pageable);
 
-        //         SET THE CONTENT TYPE AND ATTACHMENT HEADER.
+
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
 
         response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
 
-        // COPY THE STREAM TO THE RESPONSE'S OUTPUT STREAM.
         IOUtils.copy(downloadResponse.getInputStream(), response.getOutputStream());
 
         response.flushBuffer();

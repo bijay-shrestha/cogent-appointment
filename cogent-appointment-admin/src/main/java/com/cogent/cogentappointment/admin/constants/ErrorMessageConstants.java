@@ -163,8 +163,6 @@ public class ErrorMessageConstants {
 
     public static final String INVALID_APPOINTMENT_MODE= "APPOINTMENT MODE NOT VALID";
 
-    public static final String INVALID_INTEGRATION_CHANNEL_CODE = "API INTEGRATION CHANNEL CODE NOT VALID";
-
     public static final String INTEGRATION_CHANNEL_CODE_IS_NULL= "API INTEGRATION CHANNEL CODE IS NULL";
 
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";

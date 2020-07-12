@@ -56,7 +56,6 @@ import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT
 import static com.cogent.cogentappointment.commons.security.jwt.JwtUtils.generateToken;
 import static com.cogent.cogentappointment.commons.utils.StringUtil.toNormalCase;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
-import static com.cogent.cogentthirdpartyconnector.utils.HMACUtils.getSigatureForEsewa;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaPayementStatusRequestBody;
@@ -401,6 +400,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 .appointmentId(refundRequestDTO.getAppointmentId())
                 .status(refundRequestDTO.getStatus())
                 .remarks(refundRequestDTO.getRemarks())
+                .hospitalId(refundRequestDTO.getHospitalId())
                 .build();
 
 
@@ -498,7 +498,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         String esewaId = getEsewaId(appointment.getId());
 
-        String generatedEsewaHmac = getSigatureForEsewa.apply(esewaId,
+        String generatedEsewaHmac = getSignatureForEsewa.apply(esewaId,
                 appointment.getHospitalId().getEsewaMerchantCode());
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationBackendRequestDTO,
@@ -581,7 +581,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
 
             case COMPLETE:
-                IntegrationRefundRequestDTO integrationRefundRequestDTO=IntegrationRefundRequestDTO.builder()
+                IntegrationRefundRequestDTO integrationRefundRequestDTO = IntegrationRefundRequestDTO.builder()
                         .featureCode("REFUND")
                         .integrationChannelCode("BACK")
                         .appointmentId(appointment.getId())

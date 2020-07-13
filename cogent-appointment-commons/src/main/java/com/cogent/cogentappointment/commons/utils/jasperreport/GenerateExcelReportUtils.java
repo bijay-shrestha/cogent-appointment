@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.commons.utils.jasperreport;
 import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadResponse;
 import com.cogent.cogentappointment.commons.exception.InternalServerErrorException;
 import com.cogent.cogentappointment.commons.log.CommonLogConstant;
+import com.cogent.cogentappointment.commons.utils.FileResourceUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -41,7 +42,9 @@ public class GenerateExcelReportUtils {
         // READ TEMPLATE AS INPUT STREAM
         InputStream fileRead = null;
         try {
-            fileRead = new FileInputStream(reportPath);
+
+            fileRead = new FileInputStream
+                    (new FileResourceUtils().convertResourcesFileIntoFile(reportPath));
         } catch (FileNotFoundException e) {
 
             throw new InternalServerErrorException(InputStream.class, "Report Template Not Found");

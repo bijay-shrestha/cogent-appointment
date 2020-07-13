@@ -19,6 +19,7 @@
 	<parameter name="totalRevenue" class="java.lang.String"/>
 	<parameter name="fromDate" class="java.lang.String"/>
 	<parameter name="toDate" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -36,14 +37,18 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="32" splitType="Stretch">
+		<band height="86" splitType="Stretch">
 			<staticText>
-				<reportElement x="180" y="0" width="200" height="32" uuid="ac355701-05a3-4ffc-9b6c-02f00909e69e"/>
+				<reportElement x="180" y="54" width="200" height="32" uuid="ac355701-05a3-4ffc-9b6c-02f00909e69e"/>
 				<textElement textAlignment="Center">
 					<font size="18" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Appointment Log]]></text>
 			</staticText>
+			<image>
+				<reportElement x="180" y="4" width="200" height="50" uuid="bb82a3cc-2e90-4a20-8f3d-764b425e7327"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>

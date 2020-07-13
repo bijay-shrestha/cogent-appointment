@@ -26,7 +26,7 @@ public class RefundStatusRequestDTO implements Serializable {
     private Long appointmentModeId;
 
     @NotNull
-    private Long esewaId;
+    private String esewaId;
 
 
     @NotNull
@@ -44,6 +44,5 @@ public class RefundStatusRequestDTO implements Serializable {
     private String integrationChannelCode;
 
     private String remarks;
-
 
 }

@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin;
 import com.cogent.cogentappointment.admin.configuration.YamlPropertySourceFactory;
 import com.cogent.cogentappointment.commons.configuration.ESewaHMAC;
 import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
+import com.cogent.cogentappointment.commons.security.jwt.JwtUtils;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -91,6 +92,11 @@ public class CogentAppointmentAdminApplication extends SpringBootServletInitiali
     @Bean
     public ESewaHMAC eSewaHMAC() {
         return new ESewaHMAC();
+    }
+
+    @Bean
+    public JwtUtils jwtUtils() {
+        return new JwtUtils(eSewaHMAC());
     }
 
 }

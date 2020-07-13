@@ -96,6 +96,9 @@ public class TransactionLogQuery {
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getTransactionNumber()))
             whereClause += " AND atd.transactionNumber LIKE '%" + transactionLogSearchDTO.getTransactionNumber() + "%'";
 
+        if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + transactionLogSearchDTO.getAppointmentNumber() + "%'";
+
         if (!Objects.isNull(transactionLogSearchDTO.getStatus()) && !transactionLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + transactionLogSearchDTO.getStatus() + "'";
 
@@ -292,6 +295,9 @@ public class TransactionLogQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
             query += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentNumber()))
+            query += " AND a.appointmentNumber LIKE '%" + searchRequestDTO.getAppointmentNumber() + "%'";
 
         if (!Objects.isNull(searchRequestDTO.getStatus()) && !searchRequestDTO.getStatus().equals(""))
             query += " AND a.status = '" + searchRequestDTO.getStatus() + "'";

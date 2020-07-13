@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,11 +40,11 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
 import static com.cogent.cogentappointment.admin.constants.CogentAppointmentConstants.RefundResponseConstant.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INTEGRATION_CHANNEL_CODE_IS_NULL;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_MODE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.IntegrationApiMessages.*;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.FRONT_END_CODE;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.DATA;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.security.hmac.HMACUtils.getSignatureForEsewa;
@@ -54,7 +55,6 @@ import static com.cogent.cogentappointment.commons.log.CommonLogConstant.CONTENT
 import static com.cogent.cogentappointment.commons.security.jwt.JwtUtils.generateToken;
 import static com.cogent.cogentappointment.commons.utils.StringUtil.toNormalCase;
 import static com.cogent.cogentthirdpartyconnector.utils.ApiUriUtils.parseApiUri;
-import static com.cogent.cogentthirdpartyconnector.utils.HMACUtils.getSigatureForEsewa;
 import static com.cogent.cogentthirdpartyconnector.utils.HttpHeaderUtils.generateApiHeaders;
 import static com.cogent.cogentthirdpartyconnector.utils.ObjectMapperUtils.map;
 import static com.cogent.cogentthirdpartyconnector.utils.RequestBodyUtils.getEsewaPayementStatusRequestBody;
@@ -218,16 +218,19 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 transactionDetail,
                 appointmentRefundDetail,
                 isRefund, refundRequestDTO.getRemarks());
+
         esewaRefundRequestDTO.setEsewa_id(esewaId);
 
         String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaRefundRequestDTO);
-        log.info(encryptedRequestBody);
-
 
         integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(), transactionDetail.getTransactionNumber()));
 
+        Map<String, Object> map = new HashMap<>();
+
+        map.put(DATA, encryptedRequestBody);
+
         ResponseEntity<?> responseEntity = thirdPartyConnectorService.callEsewaRefundService(integrationApiInfo,
-                encryptedRequestBody);
+                map);
 
         if (responseEntity.getBody() == null) {
             throw new OperationUnsuccessfulException("ThirdParty API response is null");
@@ -397,6 +400,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 .appointmentId(refundRequestDTO.getAppointmentId())
                 .status(refundRequestDTO.getStatus())
                 .remarks(refundRequestDTO.getRemarks())
+                .hospitalId(refundRequestDTO.getHospitalId())
                 .build();
 
 
@@ -473,7 +477,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             default:
-                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+                throw new BadRequestException(APPOINTMENT_MODE_NOT_VALID);
         }
 
 
@@ -494,7 +498,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
         String esewaId = getEsewaId(appointment.getId());
 
-        String generatedEsewaHmac = getSigatureForEsewa.apply(esewaId,
+        String generatedEsewaHmac = getSignatureForEsewa.apply(esewaId,
                 appointment.getHospitalId().getEsewaMerchantCode());
 
         BackendIntegrationApiInfo integrationApiInfo = getAppointmentModeApiIntegration(integrationBackendRequestDTO,
@@ -507,19 +511,21 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     appointment.getHospitalId().getEsewaMerchantCode(),
                     transactionDetail.getTransactionNumber());
 
-            String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaPaymentStatus);
-
-            log.info(encryptedRequestBody);
-
             integrationApiInfo.setApiUri(parseApiUri(integrationApiInfo.getApiUri(),
                     transactionDetail.getTransactionNumber()));
 
+            String encryptedRequestBody = convertObjectToEncryptedEsewaRequestBody(esewaPaymentStatus);
+
+            Map<String, Object> map = new HashMap<>();
+
+            map.put(DATA, encryptedRequestBody);
+
             ResponseEntity<?> responseEntity = thirdPartyConnectorService.
                     callEsewaRefundStatusService(integrationApiInfo,
-                            encryptedRequestBody);
+                            map);
 
             if (responseEntity.getBody() == null) {
-                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+                throw new OperationUnsuccessfulException(THIRD_PARTY_API_RESPONSE_IS_NULL);
             }
 
 
@@ -531,7 +537,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
 
             {
                 e.printStackTrace();
-                throw new OperationUnsuccessfulException("ThirdParty API response is null");
+                throw new OperationUnsuccessfulException(THIRD_PARTY_API_RESPONSE_IS_NULL);
             }
 
             if (thirdPartyResponse.getCode() != null) {
@@ -542,8 +548,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
             return thirdPartyResponse;
 
         } else {
-            return new ThirdPartyResponse("400", "Third party API information Not found",
-                    "Third party API information Not found");
+            return new ThirdPartyResponse("400", THIRD_PARTY_API_INFORMATION_NOT_FOUND,
+                    THIRD_PARTY_API_INFORMATION_NOT_FOUND);
         }
 
 
@@ -573,15 +579,24 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         response);
                 break;
 
+
+            case COMPLETE:
+                IntegrationRefundRequestDTO integrationRefundRequestDTO = IntegrationRefundRequestDTO.builder()
+                        .featureCode("REFUND")
+                        .integrationChannelCode("BACK")
+                        .appointmentId(appointment.getId())
+                        .appointmentModeId(appointment.getAppointmentModeId().getId())
+                        .build();
+
+                apiIntegrationCheckpointForRefundAppointment(appointment,
+                        appointmentTransactionDetail,
+                        appointmentRefundDetail,
+                        integrationRefundRequestDTO);
+                break;
+
             case AMBIGIOUS:
                 throw new BadRequestException("Communicate with Esewa");
 
-            case COMPLETE:
-                apiIntegrationCheckpointForRefundStatus(appointment,
-                        appointmentRefundDetail,
-                        appointmentTransactionDetail,
-                        refundStatusRequestDTO);
-                break;
 
             case PENDING:
                 throw new BadRequestException("Communicate with Esewa");

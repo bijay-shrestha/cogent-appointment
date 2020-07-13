@@ -32,17 +32,18 @@ public class JwtUtils implements Serializable {
 
     public static String generateToken(Object request) {
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.valueOf(eSewaHMAC.getHMAC_ALGORITHM());
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_API_SECRET_ESEWA());
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
+        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         JwtBuilder builder = Jwts.builder()
                 .setClaims(getClaims(request))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(
                         eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY())))
                 .signWith(signatureAlgorithm, signingKey);
+
         return builder.compact();
     }
 
@@ -52,14 +53,15 @@ public class JwtUtils implements Serializable {
 
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(eSewaHMAC.getHMAC_DECODE_API_SECRET_ESEWA());
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
+        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         JwtBuilder builder = Jwts.builder()
                 .setClaims(getClaims(request))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(
                         eSewaHMAC.getHMAC_API_SECRET_ESEWA_TIME_VALIDITY())))
                 .signWith(signatureAlgorithm, signingKey);
+
         return builder.compact();
     }
 

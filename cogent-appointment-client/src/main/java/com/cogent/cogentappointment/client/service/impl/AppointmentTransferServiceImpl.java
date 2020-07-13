@@ -193,7 +193,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         validateAppointmentAmount(requestDTO.getDoctorId(),
                 requestDTO.getIsFollowUp(), requestDTO.getAppointmentCharge());
 
-        validateAppointmentDate(appointment.getAppointmentDate(), requestDTO.getAppointmentTime());
+        validateAppointmentDate(requestDTO.getAppointmentDate(), requestDTO.getAppointmentTime());
 
         AppointmentTransactionDetail transactionDetail = fetchAppointmentTransactionDetailByappointmentId(
                 requestDTO.getAppointmentId());

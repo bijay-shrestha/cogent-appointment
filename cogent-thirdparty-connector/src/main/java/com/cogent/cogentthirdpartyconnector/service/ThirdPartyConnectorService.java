@@ -4,6 +4,8 @@ import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHos
 import com.cogent.cogentthirdpartyconnector.response.integrationBackend.BackendIntegrationApiInfo;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 public interface ThirdPartyConnectorService {
 
     ResponseEntity<?> callThirdPartyDoctorAppointmentCheckInService(BackendIntegrationApiInfo backendIntegrationApiInfo);
@@ -12,12 +14,12 @@ public interface ThirdPartyConnectorService {
                                                                                 ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO checkInDTO);
 
     ResponseEntity<?> callEsewaRefundService(BackendIntegrationApiInfo backendIntegrationApiInfo,
-                                             String encryptedRequestBody);
+                                             Map<String, Object> map);
 
     ResponseEntity<?> getHospitalService(BackendIntegrationApiInfo backendIntegrationApiInfo);
 
     ResponseEntity<?> callEsewaRefundStatusService(BackendIntegrationApiInfo integrationApiInfo,
-                                                   String encryptedRequestBody);
+                                                   Map<String, Object> map);
 
     String hmacForFrontendIntegration(String esewaId,String merchantCode);
 }

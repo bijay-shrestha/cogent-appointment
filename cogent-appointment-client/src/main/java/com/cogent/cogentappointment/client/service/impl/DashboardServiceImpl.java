@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -199,15 +200,24 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
+        List<DoctorRevenueDTO> cancelledAndRefundedRevenue =new ArrayList<>();
+
         List<DoctorRevenueDTO> doctorRevenue =
                 appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pagable);
 
         List<DoctorRevenueDTO> cancelledRevenue =
                 appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO, pagable);
 
-        validateDoctorRevenue(doctorRevenue, cancelledRevenue);
+        List<DoctorRevenueDTO> refundedRevenue =
+                appointmentTransactionDetailRepository.calculateRefundedRevenue(doctorRevenueRequestDTO, pagable);
 
-        List<DoctorRevenueDTO> mergedList = mergeDoctorAndCancelledRevenue(doctorRevenue, cancelledRevenue);
+        cancelledAndRefundedRevenue.addAll(cancelledRevenue);
+
+        cancelledAndRefundedRevenue.addAll(refundedRevenue);
+
+        validateDoctorRevenue(doctorRevenue, cancelledAndRefundedRevenue);
+
+        List<DoctorRevenueDTO> mergedList = mergeDoctorAndCancelledRevenue(doctorRevenue, cancelledAndRefundedRevenue);
 
         DoctorRevenueResponseDTO responseDTO = parseToDoctorRevenueResponseDTO(mergedList);
 

@@ -477,7 +477,7 @@ public class DashBoardQuery {
                 GET_WHERE_CLAUSE_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(requestDTO);
     }
 
-    public static String QUERY_TO_CALCULATE_DOCTOR_COMPANY_REVENUE(DoctorRevenueRequestDTO requestDTO) {
+    public static String QUERY_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(DoctorRevenueRequestDTO requestDTO) {
 
         return "SELECT" +
                 " d.id as doctorId," +                                          //[0]
@@ -499,7 +499,6 @@ public class DashBoardQuery {
                 " CASE" +
                 " WHEN ard.status='PA'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
                 " WHEN ard.status='R'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
-                " WHEN ard.status='A'THEN (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 )) " +
                 " END  as cancelledRevenue" +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
@@ -511,6 +510,39 @@ public class DashBoardQuery {
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
                 " a.status IN ('C')" +
+                GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(requestDTO);
+    }
+
+    public static String QUERY_TO_CALCULATE_DOCTOR_REFUNDED_REVENUE(DoctorRevenueRequestDTO requestDTO) {
+
+        return "SELECT" +
+                " d.id as doctorId," +                                          //[0]
+                " CASE WHEN" +
+                " (d.salutation is null)" +
+                " THEN d.name" +
+                " ELSE" +
+                " CONCAT_WS(' ',d.salutation, d.name)" +
+                " END as doctorName," +                                          //[1]
+                " CASE WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri," +                                            //[2]
+                " s.id as specializationId," +                                  //[3]
+                " s.name as specializationName," +                              //[4]
+                " COUNT(a.id) as cancelledAppointments," +                      //[5]
+                " COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 ) as cancelledRevenue" +
+                " FROM Appointment a" +
+                " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
+                " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                " WHERE" +
+                " a.status IN ('RE')" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(requestDTO);
     }
 

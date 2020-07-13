@@ -228,7 +228,21 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     @Override
     public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable) {
 
-        Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_COMPANY_REVENUE(doctorRevenueRequestDTO))
+        Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(doctorRevenueRequestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
+
+        addPagination.accept(pageable, cancelled);
+
+        List<DoctorRevenueDTO> revenueDTOList = transformQueryToResultList(cancelled, DoctorRevenueDTO.class);
+
+        return revenueDTOList;
+    }
+
+    @Override
+    public List<DoctorRevenueDTO> calculateRefundedRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable) {
+        Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REFUNDED_REVENUE(doctorRevenueRequestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());

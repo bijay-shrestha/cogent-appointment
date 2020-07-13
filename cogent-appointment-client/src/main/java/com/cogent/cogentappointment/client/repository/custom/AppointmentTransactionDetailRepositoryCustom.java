@@ -33,6 +33,8 @@ public interface AppointmentTransactionDetailRepositoryCustom {
 
     List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,Pageable pagable);
 
+    List<DoctorRevenueDTO> calculateRefundedRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                    Pageable pagable);
 
     List<HospitalDepartmentRevenueDTO> calculateHospitalDepartmentRevenue(HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
                                                                           Pageable pageable);

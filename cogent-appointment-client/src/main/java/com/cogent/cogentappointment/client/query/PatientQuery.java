@@ -318,7 +318,8 @@ public class PatientQuery {
                 " h.name as client," +
                 " CASE " +
                 " When hpi.is_registered ='Y' THEN 'Registered'" +
-                " When hpi.is_registered ='N' THEN 'New' END as patientType" +
+                " When hpi.is_registered ='N' THEN 'New' END as patientType," +
+                QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE +
                 " FROM" +
                 " patient p" +
                 " LEFT JOIN hospital_patient_info hpi ON" +

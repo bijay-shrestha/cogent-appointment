@@ -40,4 +40,6 @@ public class TransactionLogSearchDTO implements Serializable {
     private String appointmentServiceTypeCode;
 
     private Long hospitalDepartmentId;
+
+    private String appointmentNumber;
 }

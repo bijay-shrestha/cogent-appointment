@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URLConnection;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ExcelReportConstant.*;
@@ -46,7 +47,7 @@ public class ExcelReportResource {
     public ResponseEntity<?> generateAppointmentLogExcelReport(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
                                                                @RequestParam("page") int page,
                                                                @RequestParam("size") int size,
-                                                               HttpServletResponse response) throws Exception {
+                                                               HttpServletResponse response) throws IOException {
 
         Pageable pageable = PageRequest.of(page, size);
 

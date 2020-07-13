@@ -88,6 +88,9 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
             whereClause += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";
 
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + searchRequestDTO.getAppointmentNumber() + "%'";
+
         if (!Objects.isNull(searchRequestDTO.getStatus()) && !searchRequestDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + searchRequestDTO.getStatus() + "'";
 

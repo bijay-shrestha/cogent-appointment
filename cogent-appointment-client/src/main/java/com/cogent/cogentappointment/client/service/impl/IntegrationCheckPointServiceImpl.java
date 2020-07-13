@@ -239,7 +239,8 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                     break;
 
                 default:
-                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE);
+                    throw new BadRequestException(INVALID_INTEGRATION_CHANNEL_CODE,
+                            refundRequestDTO.getIntegrationChannelCode());
             }
 
         }

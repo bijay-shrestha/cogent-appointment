@@ -167,14 +167,11 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
         addPagination.accept(pageable, query);
 
-//        Query queryToGetCurretAppointment=createQuery.apply(entityManager,
-//                QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(requestDTO));
-//
-//        List<LastModifiedAppointmentIdAndStatus> currentDetails=transformQueryToResultList(
-//                queryToGetCurretAppointment, LastModifiedAppointmentIdAndStatus.class);
+        List<AppointmentTransferLogDTO> responses = transformQueryToResultList(
+                query, AppointmentTransferLogDTO.class);
 
         Query queryToGetTransferredAppointmentId = createQuery.apply(entityManager,
-                QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID)
+                QUERY_TO_GET_APPOINTMENT_ID_LIST_OF_TRANSFERRED_APPOINTMENT(requestDTO))
                 .setParameter(HOSPITAL_ID,hospitalId);
 
         List<Long> appointmentIds = queryToGetTransferredAppointmentId.getResultList();
@@ -183,24 +180,22 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
         appointmentIds.forEach(appointmentId -> {
 
-            Query query1 = createQuery.apply(entityManager,
-                    QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID)
+            Query latestAppointmentTransferStatus = createQuery.apply(entityManager,
+                    QUERY_TO_GET_LATEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID)
                     .setParameter(APPOINTMENT_ID, appointmentId);
 
             LastModifiedAppointmentIdAndStatus dtoList = transformQueryToSingleResult(
-                    query1, LastModifiedAppointmentIdAndStatus.class);
+                    latestAppointmentTransferStatus, LastModifiedAppointmentIdAndStatus.class);
 
             lastModifiedAppointmentIdAndStatuses.add(dtoList);
         });
-
-        List<AppointmentTransferLogDTO> responses = transformQueryToResultList(
-                query, AppointmentTransferLogDTO.class);
 
         if (responses.isEmpty()) {
             throw APPOINTMENT_TRANSFERE_NOT_FOUND.get();
         }
 
-        appointmentTransferLogResponseDTO.setResponse(mergeCurrentAppointmentStatus(lastModifiedAppointmentIdAndStatuses, responses));
+        appointmentTransferLogResponseDTO.setResponse(mergeCurrentAppointmentStatus(
+                lastModifiedAppointmentIdAndStatuses, responses));
 
         appointmentTransferLogResponseDTO.setTotalItems(totalItems);
 

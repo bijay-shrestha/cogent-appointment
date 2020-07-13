@@ -667,7 +667,12 @@ public class AppointmentQuery {
                     " sp.name as specializationName," +                                         //[11]
                     " atd.transactionNumber as transactionNumber," +                            //[12]
                     " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                //[13]
-                    " d.name as doctorName," +                                                  //[14]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as doctorName," +                                                     //[14]
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +                                                //[16]
                     " a.appointmentModeId.name as appointmentMode," +                          //[17]

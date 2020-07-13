@@ -228,7 +228,21 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     @Override
     public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable) {
 
-        Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_COMPANY_REVENUE(doctorRevenueRequestDTO))
+        Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(doctorRevenueRequestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
+
+        addPagination.accept(pageable, cancelled);
+
+        List<DoctorRevenueDTO> revenueDTOList = transformQueryToResultList(cancelled, DoctorRevenueDTO.class);
+
+        return revenueDTOList;
+    }
+
+    @Override
+    public List<DoctorRevenueDTO> calculateRefundedRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable) {
+        Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REFUNDED_REVENUE(doctorRevenueRequestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDateInString(doctorRevenueRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
@@ -294,60 +308,5 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         queriesWithFilterAsKey.put('Y', QUERY_TO_FETCH_REVENUE_YEARLY(hospitalId, appointmentServiceTypeCode));
 
         return queriesWithFilterAsKey.get(filter);
-    }
-
-    public static String QUERY_TO_CALCULATE_DOCTOR_COMPANY_REVENUE(DoctorRevenueRequestDTO requestDTO) {
-
-        return "SELECT" +
-                " d.id as doctorId," +                                          //[0]
-                " CASE WHEN" +
-                " (d.salutation is null)" +
-                " THEN d.name" +
-                " ELSE" +
-                " CONCAT_WS(' ',d.salutation, d.name)" +
-                " END as doctorName," +                                          //[1]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," +                                            //[2]
-                " s.id as specializationId," +                                  //[3]
-                " s.name as specializationName," +                              //[4]
-                " COUNT(a.id) as cancelledAppointments," +                      //[5]
-                " CASE" +
-                " WHEN ard.status='PA'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
-                " WHEN ard.status='R'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
-                " WHEN ard.status='A'THEN (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 )) " +
-                " END  as cancelledRevenue" +
-                " FROM Appointment a" +
-                " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
-                " LEFT JOIN Doctor d ON d.id= ad.doctor.id" +
-                " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
-                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                " WHERE" +
-                " a.status IN ('RE','C')" +
-                GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(requestDTO);
-    }
-
-    private static String GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(
-            DoctorRevenueRequestDTO requestDTO) {
-
-        String whereClause = " AND h.id=:hospitalId ";
-
-        if (requestDTO.getDoctorId() != 0 && !Objects.isNull(requestDTO.getDoctorId()))
-            whereClause += " AND d.id=" + requestDTO.getDoctorId();
-
-        if (requestDTO.getSpecializationId() != 0 && !Objects.isNull(requestDTO.getSpecializationId()))
-            whereClause += " AND s.id=" + requestDTO.getSpecializationId();
-
-
-        whereClause += " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate" +
-                " GROUP BY d.id,s.id  ";
-
-        return whereClause;
     }
 }

@@ -52,7 +52,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="122" splitType="Stretch">
+		<band height="160" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
 			<staticText>
 				<reportElement x="580" y="0" width="100" height="20" uuid="da9ce4b9-f3fa-4159-aa29-75bc9aedba63"/>
@@ -69,74 +69,74 @@
 				<text><![CDATA[To Date:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="50" width="80" height="26" uuid="9e505b30-191c-4adf-a1da-d2475c955759"/>
+				<reportElement x="0" y="50" width="80" height="40" uuid="9e505b30-191c-4adf-a1da-d2475c955759"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Booked:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="76" width="80" height="31" uuid="f909d0ae-1710-4de0-b3a3-8292495cb936"/>
+				<reportElement x="0" y="90" width="80" height="40" uuid="f909d0ae-1710-4de0-b3a3-8292495cb936"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Refunded:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="180" y="50" width="100" height="26" uuid="da09b198-f797-44a8-8cfb-44ed94fb2405"/>
+				<reportElement x="180" y="50" width="100" height="40" uuid="da09b198-f797-44a8-8cfb-44ed94fb2405"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Checked In:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="180" y="76" width="100" height="31" uuid="a9a30059-8a1b-4e80-8ab6-ba606589bf73"/>
+				<reportElement x="180" y="90" width="100" height="40" uuid="a9a30059-8a1b-4e80-8ab6-ba606589bf73"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Refuned To Client:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="50" width="100" height="26" uuid="9740051e-f014-47cd-a3b9-05371046f090"/>
+				<reportElement x="380" y="50" width="100" height="40" uuid="9740051e-f014-47cd-a3b9-05371046f090"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cancelled:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="76" width="100" height="31" uuid="37f5845f-483d-4d49-a4a9-58e09df9246f"/>
+				<reportElement x="380" y="90" width="100" height="40" uuid="37f5845f-483d-4d49-a4a9-58e09df9246f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Revenue Amount:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="80" y="50" width="100" height="26" uuid="72e70a53-9ec8-41f7-a4ce-0be6301c2ab3"/>
+				<reportElement x="80" y="50" width="100" height="40" uuid="72e70a53-9ec8-41f7-a4ce-0be6301c2ab3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{booked}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="80" y="76" width="100" height="31" uuid="0b761301-eba7-4812-b30c-99dcb063a4a7"/>
+				<reportElement x="80" y="90" width="100" height="40" uuid="0b761301-eba7-4812-b30c-99dcb063a4a7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{refunded}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="280" y="50" width="100" height="26" uuid="c505395d-b29a-4129-a32d-86f4055e9d4e"/>
+				<reportElement x="280" y="50" width="100" height="40" uuid="c505395d-b29a-4129-a32d-86f4055e9d4e"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{checkedIn}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="280" y="76" width="100" height="31" uuid="1d8da658-002f-4be3-b808-d1deb8bc9b21"/>
+				<reportElement x="280" y="90" width="100" height="40" uuid="1d8da658-002f-4be3-b808-d1deb8bc9b21"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{refundedToClient}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="480" y="76" width="100" height="31" uuid="28dbb7ce-e42b-450c-a858-6ebf27a03678"/>
+				<reportElement x="480" y="90" width="100" height="40" uuid="28dbb7ce-e42b-450c-a858-6ebf27a03678"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalRevenue}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="480" y="50" width="100" height="26" uuid="1a5d55bc-f5b5-44c2-b997-7fcc13cbcd0d"/>
+				<reportElement x="480" y="50" width="100" height="40" uuid="1a5d55bc-f5b5-44c2-b997-7fcc13cbcd0d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{cancelled}]]></textFieldExpression>
 			</textField>
@@ -264,7 +264,7 @@
 			</textField>
 			<textField>
 				<reportElement x="0" y="0" width="80" height="40" uuid="a88db7fa-bede-4cdd-8400-6708bf45fb95"/>
-				<textElement textAlignment="Left"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{appointmentStatus}]]></textFieldExpression>
 			</textField>
 		</band>

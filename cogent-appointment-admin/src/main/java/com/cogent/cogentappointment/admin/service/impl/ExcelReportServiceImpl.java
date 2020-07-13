@@ -227,7 +227,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getToDate()));
-        hParam.put("logo", "./reporting/eappointments_logo.png");
+        hParam.put("logo", JASPER_REPORT_EAPPOINTMENT_LOGO);
 
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_RESHCEDULE_LOG);
     }
@@ -262,7 +262,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentFromDate()));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentToDate()));
-        hParam.put("logo", "./reporting/eappointments_logo.png");
+        hParam.put("logo", JASPER_REPORT_EAPPOINTMENT_LOGO);
 
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_TRANSFER_LOG);
     }
@@ -327,7 +327,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(fromDate));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(toDate));
-        hParam.put("logo", "./reporting/eappointments_logo.png");
+        hParam.put("logo", JASPER_REPORT_EAPPOINTMENT_LOGO);
 
         hParam.put("booked", "NPR " + bookedInfo.getBookedAmount() +
                 " from " + bookedInfo.getBookedCount() + " Appt. " + "Follow-up " +

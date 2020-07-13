@@ -24,12 +24,10 @@ import com.cogent.cogentappointment.commons.dto.request.jasper.transactionLog.Tr
 import com.cogent.cogentappointment.commons.dto.request.jasper.transferLog.AppointmentTransferLogJasperData;
 import com.cogent.cogentappointment.commons.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.JRException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -225,7 +223,6 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getToDate()));
-
         hParam.put("logo", "./reporting/eappointments_logo.png");
 
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_RESHCEDULE_LOG);
@@ -261,6 +258,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentFromDate()));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentToDate()));
+        hParam.put("logo", "./reporting/eappointments_logo.png");
 
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_TRANSFER_LOG);
     }
@@ -320,10 +318,12 @@ public class ExcelReportServiceImpl implements ExcelReportService {
                                            BookedAppointmentResponseDTO bookedInfo,
                                            CheckedInAppointmentResponseDTO checkedInInfo,
                                            RefundAppointmentResponseDTO refundInfo,
-                                           CancelledAppointmentResponseDTO cancelledInfo, RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo) {
+                                           CancelledAppointmentResponseDTO cancelledInfo,
+                                           RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo) {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(fromDate));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(toDate));
+        hParam.put("logo", "./reporting/eappointments_logo.png");
 
         hParam.put("booked", "NPR " + bookedInfo.getBookedAmount() +
                 " from " + bookedInfo.getBookedCount() + " Appt. " + "Follow-up " +

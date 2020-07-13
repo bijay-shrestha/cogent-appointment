@@ -219,7 +219,8 @@ public class AppointmentQuery {
                             " p.gender as gender," +                                                    //[15]
                             " hpi.address as address," +                                                //[16]
                             " hpi.isRegistered as isRegistered," +                                      //[17]
-                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[18]
+                            " h.name as hospitalName," +                                                //[18]
+                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[19]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +

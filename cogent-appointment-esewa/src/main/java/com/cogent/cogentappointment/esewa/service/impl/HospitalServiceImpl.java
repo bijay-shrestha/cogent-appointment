@@ -69,16 +69,14 @@ public class HospitalServiceImpl implements HospitalService {
         responseDTO.forEach((HospitalMinResponseDTO hospital) -> {
 
             if (!isEmpty(hospital.getHospitalLogo()) && !Objects.isNull(hospital.getHospitalLogo())) {
-                FileURLRequestDTO fileRequestDTO = FileURLRequestDTO.builder()
-                        .fileName(hospital.getHospitalLogo())
-                        .build();
+                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
+                fileRequestDTO.setFileName(hospital.getHospitalLogo());
                 hospital.setHospitalLogo(minIOService.getPresignedObjectURL(fileRequestDTO));
             }
 
             if (!isEmpty(hospital.getHospitalBanner()) && !Objects.isNull(hospital.getHospitalBanner())) {
-                FileURLRequestDTO fileRequestDTO = FileURLRequestDTO.builder()
-                        .fileName(hospital.getHospitalLogo())
-                        .build();
+                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
+                fileRequestDTO.setFileName(hospital.getHospitalBanner());
                 hospital.setHospitalBanner(minIOService.getPresignedObjectURL(fileRequestDTO));
             }
         });

@@ -57,9 +57,8 @@ public class CommonServiceImpl implements CommonService {
         doctorInfo.forEach(doctor -> {
 
             if (!isEmpty(doctor.getFileUri()) && !Objects.isNull(doctor.getFileUri())) {
-                FileURLRequestDTO fileRequestDTO = FileURLRequestDTO.builder()
-                        .fileName(doctor.getFileUri())
-                        .build();
+                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
+                fileRequestDTO.setFileName(doctor.getFileUri());
                 doctor.setFileUri(minIOService.getPresignedObjectURL(fileRequestDTO));
             }
         });

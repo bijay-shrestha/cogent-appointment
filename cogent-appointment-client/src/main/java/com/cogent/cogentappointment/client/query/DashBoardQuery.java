@@ -534,7 +534,7 @@ public class DashBoardQuery {
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
-                " a.status IN ('RE','C')" +
+                " a.status IN ('C')" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
 }

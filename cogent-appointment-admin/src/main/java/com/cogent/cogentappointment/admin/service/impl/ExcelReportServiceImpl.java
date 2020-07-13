@@ -136,6 +136,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     @Override
     public JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO,
                                                                           Pageable pageable) {
+
         String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
         AppointmentLogResponseDTO appointmentLogs;

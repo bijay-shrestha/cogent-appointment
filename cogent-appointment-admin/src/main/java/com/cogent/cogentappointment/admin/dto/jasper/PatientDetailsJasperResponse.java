@@ -29,4 +29,6 @@ public class PatientDetailsJasperResponse implements Serializable{
     private String hospitalNumber;
 
     private String patientType;
+
+    private String age;
 }

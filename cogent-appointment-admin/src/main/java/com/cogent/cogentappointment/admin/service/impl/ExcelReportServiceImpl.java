@@ -66,8 +66,12 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         PatientDetailsJasperResponseDTO patientDetailsJasperResponseDTO = patientRepository.getPatientDetailsForExcel
                 (searchRequestDTO, pageable);
 
+        Map hParam = new HashMap<String, String>();
+
+        hParam.put("logo", "./reporting/eappointments_logo.png");
+
         return generateExcelReport(patientDetailsJasperResponseDTO.getResponseList(),
-                null,
+                hParam,
                 JASPER_REPORT_PATIENT_DETAILS);
 
     }

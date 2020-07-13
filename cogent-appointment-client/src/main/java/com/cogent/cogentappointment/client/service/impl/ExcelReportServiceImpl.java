@@ -246,6 +246,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getToDate()));
+        hParam.put(LOGO, JASPER_REPORT_EAPPOINTMENT_LOGO);
 
 
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_RESHCEDULE_LOG);
@@ -291,11 +292,10 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         Map hParam = new HashMap<String, String>();
 
-//        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentFromDate()));
-//        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentToDate()));
+        hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentFromDate()));
+        hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getAppointmentToDate()));
+        hParam.put(LOGO, JASPER_REPORT_EAPPOINTMENT_LOGO);
 
-        hParam.put("fromDate", "2019/06/10");
-        hParam.put("toDate", "2020/01/02");
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_TRANSFER_LOG);
     }
 
@@ -365,6 +365,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(fromDate));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(toDate));
+        hParam.put(LOGO, JASPER_REPORT_EAPPOINTMENT_LOGO);
 
         hParam.put(LOGO, JASPER_REPORT_EAPPOINTMENT_LOGO);
 

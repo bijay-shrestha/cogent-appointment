@@ -318,7 +318,9 @@ public class ExcelReportServiceImpl implements ExcelReportService {
                 checkedInInfo,
                 refundInfo,
                 cancelledInfo,
-                revenueFromRefundInfo);
+                revenueFromRefundInfo,
+                appointmentLogResponseDTO.getTotalAmount(),
+                appointmentLogResponseDTO.getTotalItems());
 
 
         return hParam;
@@ -342,7 +344,9 @@ public class ExcelReportServiceImpl implements ExcelReportService {
                 checkedInInfo,
                 refundInfo,
                 cancelledInfo,
-                revenueFromRefundInfo);
+                revenueFromRefundInfo,
+                transactionLogs.getTotalAmount(),
+                transactionLogs.getTotalItems());
 
         return hParam;
     }
@@ -354,10 +358,15 @@ public class ExcelReportServiceImpl implements ExcelReportService {
                                            BookedAppointmentResponseDTO bookedInfo,
                                            CheckedInAppointmentResponseDTO checkedInInfo,
                                            RefundAppointmentResponseDTO refundInfo,
-                                           CancelledAppointmentResponseDTO cancelledInfo, RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo) {
+                                           CancelledAppointmentResponseDTO cancelledInfo,
+                                           RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo,
+                                           Double totalAmount,
+                                           int totalItems) {
 
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(fromDate));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(toDate));
+
+        hParam.put(LOGO, JASPER_REPORT_EAPPOINTMENT_LOGO);
 
         hParam.put("booked", "NPR " + bookedInfo.getBookedAmount() +
                 " from " + bookedInfo.getBookedCount() + " Appt. " + "Follow-up " +
@@ -369,18 +378,21 @@ public class ExcelReportServiceImpl implements ExcelReportService {
                 "Follow-up " + "NPR " + checkedInInfo.getFollowUpAmount() + " from " +
                 checkedInInfo.getFollowUpCount() + " Appt.");
 
-        hParam.put("refunded", "NPR " + refundInfo.getRefundedAmount() +
-                " from " + refundInfo.getRefundedCount() +
-                " Appt. " + "Follow-up " + "NPR " + refundInfo.getFollowUpAmount() +
-                " from " + refundInfo.getFollowUpCount() + " Appt.");
+        hParam.put("refunded", "NPR " + revenueFromRefundInfo.getRevenueFromRefundAmount() +
+                " from " + revenueFromRefundInfo.getRevenueFromRefundCount() +
+                " Appt. " + "Follow-up " + "NPR " + revenueFromRefundInfo.getFollowUpCount() +
+                " from " + revenueFromRefundInfo.getFollowUpCount() + " Appt.");
 
-        hParam.put("refundedToClient", "NPR " + "20" + " from " + "20 Appt. " + "Follow-up " + "NPR 0 " + " from 1 Appt.");
+        hParam.put("refundedToClient", "NPR " + refundInfo.getRefundedAmount()
+                + " from " + refundInfo.getRefundedCount()
+                + "Follow-up " + "NPR " + refundInfo.getFollowUpAmount() +
+                " from " + refundInfo.getFollowUpCount() + " Appt.");
 
         hParam.put("cancelled", "NPR " + cancelledInfo.getCancelAmount() + " from " + cancelledInfo.getCancelledCount() + " Appt. " +
                 "Follow-up " + "NPR " + cancelledInfo.getFollowUpAmount() + " from " + cancelledInfo.getFollowUpCount() + " Appt.");
 
-        hParam.put("totalRevenue", "NPR " + revenueFromRefundInfo.getRevenueFromRefundAmount() + " from " + revenueFromRefundInfo.getRevenueFromRefundCount() + " Appt. " +
-                "Follow-up " + "NPR " + revenueFromRefundInfo.getFollowUpAmount() + " from " + revenueFromRefundInfo.getFollowUpCount() + " Appt.");
+        hParam.put("totalRevenue", "NPR " + totalAmount + " from " + totalItems + " Appt. " +
+                "(incl. booked appts. revenue)");
 
     }
 

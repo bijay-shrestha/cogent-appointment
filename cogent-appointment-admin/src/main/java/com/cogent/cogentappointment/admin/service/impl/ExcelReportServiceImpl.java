@@ -226,6 +226,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         hParam.put("fromDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getFromDate()));
         hParam.put("toDate", new SimpleDateFormat("yyyy/MM/dd").format(searchRequestDTO.getToDate()));
 
+        hParam.put("logo", "./reporting/eappointments_logo.png");
 
         return generateExcelReport(jasperData, hParam, JASPER_REPORT_RESHCEDULE_LOG);
     }

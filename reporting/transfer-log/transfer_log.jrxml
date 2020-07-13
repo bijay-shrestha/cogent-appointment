@@ -4,6 +4,7 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="fromDate" class="java.lang.String"/>
 	<parameter name="toDate" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -18,14 +19,18 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="74" splitType="Stretch">
+		<band height="75" splitType="Stretch">
 			<staticText>
-				<reportElement x="180" y="10" width="200" height="30" uuid="ac355701-05a3-4ffc-9b6c-02f00909e69e"/>
+				<reportElement x="180" y="44" width="200" height="31" uuid="ac355701-05a3-4ffc-9b6c-02f00909e69e"/>
 				<textElement textAlignment="Center">
 					<font size="18" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Transfer Log]]></text>
 			</staticText>
+			<image>
+				<reportElement x="180" y="10" width="200" height="34" uuid="30a8e44c-e3e3-4390-bb35-b1ad26f794e7"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<columnHeader>

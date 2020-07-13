@@ -68,7 +68,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
 
         Map hParam = new HashMap<String, String>();
 
-        hParam.put("logo", "./reporting/eappointments_logo.png");
+        hParam.put(LOGO, JASPER_REPORT_EAPPOINTMENT_LOGO);
 
         return generateExcelReport(patientDetailsJasperResponseDTO.getResponseList(),
                 hParam,

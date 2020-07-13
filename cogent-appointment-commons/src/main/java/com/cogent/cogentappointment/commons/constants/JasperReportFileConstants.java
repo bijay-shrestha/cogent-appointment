@@ -5,6 +5,8 @@ package com.cogent.cogentappointment.commons.constants;
  */
 public class JasperReportFileConstants {
 
+    public static final String LOGO="logo";
+
     public static final String JASPER_REPORT_EAPPOINTMENT_LOGO = "./reporting/eappointments_logo.png";
 
     public static final String JASPER_REPORT_APPOINTMENT_LOG = "./reporting/appointment-log/appointment_log.jrxml";

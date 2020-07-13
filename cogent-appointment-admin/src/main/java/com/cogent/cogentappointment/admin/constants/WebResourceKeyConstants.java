@@ -53,10 +53,9 @@ public class WebResourceKeyConstants {
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
         String RESCHEDULE_LOG = "/reschedule-log";
-        String DETAILS = "/detail";
         String TRANSACTION_LOG = "/transaction-log";
-        String TRANSACTION = "/transaction";
-        String RESCHEDULE = "/reschedule";
+        String APPOINTMENT_LOG = "/appointment-log";
+        String TRANSFER_LOG = "/transfer-log";
         String COUNT="/count";
     }
 
@@ -149,6 +148,10 @@ public class WebResourceKeyConstants {
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
         String EXISTING = "/existing";
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
+    }
+
+    public interface ExcelReportConstants {
+        String BASE_EXCEL_REPORT = "/excel-report";
     }
 
     //F
@@ -252,6 +255,7 @@ public class WebResourceKeyConstants {
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
         String ESEWA_ID = "/eSewaId";
+        String PATIENT_DETAILS = "/patientDetails";
     }
 
     public interface ProfileSetupConstants {

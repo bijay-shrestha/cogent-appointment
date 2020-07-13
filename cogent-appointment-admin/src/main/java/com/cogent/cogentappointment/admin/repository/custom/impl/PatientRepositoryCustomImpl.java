@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.jasper.PatientDetailsJasperResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.jasper.PatientDetailsJasperResponse;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientResponseDTO;
@@ -85,9 +87,9 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT(searchRequestDTO));
 
-        Integer totalItems = query.getResultList().size();
-
         addPagination.accept(pageable, query);
+
+        Integer totalItems = query.getResultList().size();
 
         List<Object[]> results = query.getResultList();
 
@@ -139,6 +141,29 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         if (list.isEmpty()) PATIENT_NOT_FOUND();
 
         return list;
+    }
+
+    @Override
+    public PatientDetailsJasperResponseDTO getPatientDetailsForExcel(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_GET_PATIENT_FOR_EXCEL(searchRequestDTO));
+
+        addPagination.accept(pageable, query);
+
+        Integer totalItems = query.getResultList().size();
+
+        List<Object[]> results = query.getResultList();
+
+        if (results.isEmpty())
+            PATIENT_NOT_FOUND();
+
+        List<PatientDetailsJasperResponse> responseDTOS = transformNativeQueryToResultList(query,
+                PatientDetailsJasperResponse.class);
+
+        return  PatientDetailsJasperResponseDTO.builder()
+                .responseList(responseDTOS)
+                .totalItems(totalItems)
+                .build();
     }
 
     private void PATIENT_NOT_FOUND() {

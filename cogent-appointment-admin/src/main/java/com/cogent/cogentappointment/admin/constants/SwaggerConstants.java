@@ -265,6 +265,14 @@ public class SwaggerConstants {
 
 
     //E
+    public interface ExcelReportConstant {
+        String BASE_API_VALUE = "This is Excel Report Resource";
+        String DOWNLOAD_EXCEL_APPOINTMENT_LOG="Download Excel sheet of Appointment Log";
+        String DOWNLOAD_EXCEL_TRANSACTION_LOG="Download Excel sheet of Transaction Log";
+        String DOWNLOAD_EXCEL_TRANSFER_LOG="Download Excel sheet of Transfer Log";
+        String DOWNLOAD_EXCEL_RESCHEDULE_LOG="Download Excel sheet of Reschedule Log";
+        String DOWNLOAD_EXCEL_PATIENT_DETAILS="Download Excel sheet of Patient Details";
+    }
 
 
     //F

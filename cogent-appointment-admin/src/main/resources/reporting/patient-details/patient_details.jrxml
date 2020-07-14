@@ -19,7 +19,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="100" splitType="Stretch">
+		<band height="134" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="50" width="555" height="50" uuid="d55a51ec-4f58-41b1-a35e-9383f6f166b4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -28,19 +28,25 @@
 				<text><![CDATA[Patient Details]]></text>
 			</staticText>
 			<image>
-				<reportElement x="164" y="0" width="216" height="50" uuid="3b68747d-8bd1-4296-9046-2f0c7fa1a91b"/>
+				<reportElement x="144" y="0" width="236" height="50" uuid="3b68747d-8bd1-4296-9046-2f0c7fa1a91b"/>
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
+			<textField pattern="MM-dd-yyyy">
+				<reportElement isPrintRepeatedValues="false" x="260" y="106" width="70" height="28" uuid="ffc5891e-14bb-4781-b11c-56a550a007ae"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="210" y="106" width="50" height="28" uuid="6596b493-6380-478e-b48d-e4d2ca9ed901"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[As of ]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="61" splitType="Stretch">
-			<textField pattern="MM-dd-yyyy">
-				<reportElement isPrintRepeatedValues="false" x="480" y="20" width="76" height="28" uuid="fb7132fa-efb2-4fba-8db5-6a9069e065fd"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="15" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
 		<band height="36" splitType="Stretch">

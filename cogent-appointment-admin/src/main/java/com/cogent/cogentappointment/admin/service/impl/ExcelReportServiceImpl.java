@@ -24,7 +24,6 @@ import com.cogent.cogentappointment.commons.dto.request.jasper.transactionLog.Tr
 import com.cogent.cogentappointment.commons.dto.request.jasper.transferLog.AppointmentTransferLogJasperData;
 import com.cogent.cogentappointment.commons.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,11 +59,10 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     @Override
-    public JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO,
-                                                                          Pageable pageable) {
+    public JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO) {
 
         PatientDetailsJasperResponseDTO patientDetailsJasperResponseDTO = patientRepository.getPatientDetailsForExcel
-                (searchRequestDTO, pageable);
+                (searchRequestDTO, null);
 
         Map hParam = new HashMap<String, String>();
 
@@ -77,8 +75,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     @Override
-    public JasperReportDownloadResponse generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO,
-                                                                     Pageable pageable) {
+    public JasperReportDownloadResponse generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO) {
 
         String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
@@ -87,12 +84,12 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         switch (appointmentServiceTypeCode) {
             case DOCTOR_CONSULTATION_CODE:
                 transactionLogs = appointmentRepository.searchDoctorAppointmentTransactionLogs(
-                        searchRequestDTO, pageable, appointmentServiceTypeCode);
+                        searchRequestDTO, null, appointmentServiceTypeCode);
                 break;
 
             case DEPARTMENT_CONSULTATION_CODE:
                 transactionLogs = appointmentRepository.searchHospitalDepartmentTransactionLogs(
-                        searchRequestDTO, pageable, appointmentServiceTypeCode);
+                        searchRequestDTO, null, appointmentServiceTypeCode);
                 break;
 
             default:
@@ -134,8 +131,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     @Override
-    public JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO,
-                                                                          Pageable pageable) {
+    public JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO) {
 
         String appointmentServiceTypeCode = searchRequestDTO.getAppointmentServiceTypeCode().trim().toUpperCase();
 
@@ -144,12 +140,12 @@ public class ExcelReportServiceImpl implements ExcelReportService {
         switch (appointmentServiceTypeCode) {
             case DOCTOR_CONSULTATION_CODE:
                 appointmentLogs = appointmentRepository.searchDoctorAppointmentLogs(
-                        searchRequestDTO, pageable, appointmentServiceTypeCode);
+                        searchRequestDTO, null, appointmentServiceTypeCode);
                 break;
 
             case DEPARTMENT_CONSULTATION_CODE:
                 appointmentLogs = appointmentRepository.searchHospitalDepartmentAppointmentLogs(
-                        searchRequestDTO, pageable, appointmentServiceTypeCode);
+                        searchRequestDTO, null, appointmentServiceTypeCode);
                 break;
 
             default:
@@ -194,11 +190,10 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     @Override
-    public JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO,
-                                                                         Pageable pageable) {
+    public JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO) {
 
         AppointmentRescheduleLogResponseDTO responseDTOS =
-                appointmentRepository.fetchRescheduleAppointment(searchRequestDTO, pageable);
+                appointmentRepository.fetchRescheduleAppointment(searchRequestDTO, null);
 
 
         List<AppointmentRescheduleLogDTO> rescheduleLogDTO = responseDTOS.getAppointmentRescheduleLogDTOS();
@@ -234,11 +229,10 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     @Override
-    public JasperReportDownloadResponse generateAppointmentTransferLogReport(AppointmentTransferSearchRequestDTO searchRequestDTO,
-                                                                             Pageable pageable) {
+    public JasperReportDownloadResponse generateAppointmentTransferLogReport(AppointmentTransferSearchRequestDTO searchRequestDTO) {
 
         AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = appointmentTransferRepository.
-                getApptTransferredList(searchRequestDTO, pageable);
+                getApptTransferredList(searchRequestDTO, null);
 
 
         List<AppointmentTransferLogJasperData> jasperData = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.jasper;
 
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,4 +30,6 @@ public class PatientDetailsJasperResponse implements Serializable{
     private String patientType;
 
     private String age;
+
+    private String gender;
 }

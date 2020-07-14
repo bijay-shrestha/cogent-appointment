@@ -61,7 +61,6 @@ public class WebResourceKeyConstants {
 
     public interface AppointmentModeConstants {
         String BASE_APPOINTMENT_MODE = "/appointmentMode";
-
     }
 
     public interface BillingModeConstants {

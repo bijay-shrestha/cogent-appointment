@@ -683,7 +683,6 @@ public class AppointmentQuery {
                     " ELSE" +
                     " da.fileUri" +
                     " END as fileUri," +                                                        //[18]
-                    " d.salutation as doctorSalutation," +                                      //[19]
                     " d.id as doctorId," +                                                      //[20]
                     " sp.id as specializationId," +                                             //[21]
                     " a.isFollowUp as followUp," +                                               //[22]

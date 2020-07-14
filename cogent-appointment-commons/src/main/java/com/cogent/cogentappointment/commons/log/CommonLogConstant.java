@@ -23,6 +23,10 @@ public class CommonLogConstant {
     public static String DUPLICATION_ERROR = BOLD + ":::: {} WITH {} ALREADY EXISTS ::::";
 
     //E
+    public static final String EXCEL_REPORT_DOWNLOAD = "EXCEL REPORT DOWNLOAD";
+
+    public static String EXCEL_REPORT_DOWNLOAD_PROCESS_STARTED = ":::: EXCEL REPORT DOWNLOAD {} PROCESS STARTED ::::";
+    public static String EXCEL_REPORT_DOWNLOAD_PROCESS_COMPLETED = ":::: EXCEL REPORT DOWNLOAD {} PROCESS COMPLETED IN :::: {} ms";
 
     //F
 

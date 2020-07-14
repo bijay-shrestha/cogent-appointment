@@ -64,6 +64,8 @@ public class WebResourceKeyConstants {
         String TRANSACTION_STATUS = "/transaction-status";
         String TRANSACTION_LOG = "/transaction-log";
         String COUNT="/count";
+        String APPOINTMENT_LOG = "/appointment-log";
+        String TRANSFER_LOG = "/transfer-log";
     }
 
     public interface AppointmentTransferConstants {
@@ -145,6 +147,11 @@ public class WebResourceKeyConstants {
 
 
     //E
+
+    public interface ExcelReportConstants {
+        String BASE_EXCEL_REPORT = "/excel-report";
+    }
+
     public interface EsewaConstants {
         String BASE_ESEWA = "/esewa";
         String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";
@@ -238,6 +245,7 @@ public class WebResourceKeyConstants {
         String BASE_PATIENT = "/patient";
         String HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE = "/{hospitalPatientInfoId}";
         String ESEWA_ID = "/eSewaId";
+        String PATIENT_DETAILS = "/patientDetails";
     }
 
     public interface ProfileSetupConstants {

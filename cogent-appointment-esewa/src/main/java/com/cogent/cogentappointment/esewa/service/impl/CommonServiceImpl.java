@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
 import com.cogent.cogentappointment.commons.service.MinIOService;
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.common.DoctorSpecializationResponseDTO;
@@ -54,8 +55,12 @@ public class CommonServiceImpl implements CommonService {
         List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(hospitalId);
 
         doctorInfo.forEach(doctor -> {
-            if (!isEmpty(doctor.getFileUri()) && !Objects.isNull(doctor.getFileUri()))
-                doctor.setFileUri(minIOService.getObjectUrl(doctor.getFileUri()));
+
+            if (!isEmpty(doctor.getFileUri()) && !Objects.isNull(doctor.getFileUri())) {
+                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
+                fileRequestDTO.setFileName(doctor.getFileUri());
+                doctor.setFileUri(minIOService.getPresignedObjectURL(fileRequestDTO));
+            }
         });
 
         List<DropDownResponseDTO> specializationInfo =

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reports" pageWidth="900" pageHeight="842" columnWidth="860" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d74831b0-8ea2-4b9e-b193-5c575ea5f53b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="fromDate" class="java.lang.String"/>
+	<parameter name="toDate" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="appointmentNumber" class="java.lang.String"/>
+	<field name="patientDetails" class="java.lang.String"/>
+	<field name="appointmentStatus" class="java.lang.String"/>
+	<field name="transferFromDateTime" class="java.lang.String"/>
+	<field name="transferToDateTime" class="java.lang.String"/>
+	<field name="transferFromDoctor" class="java.lang.String"/>
+	<field name="transferToDoctor" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="75" splitType="Stretch">
+			<staticText>
+				<reportElement x="180" y="44" width="200" height="31" uuid="ac355701-05a3-4ffc-9b6c-02f00909e69e"/>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transfer Log]]></text>
+			</staticText>
+			<image>
+				<reportElement x="180" y="10" width="200" height="34" uuid="30a8e44c-e3e3-4390-bb35-b1ad26f794e7"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="106" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
+			<staticText>
+				<reportElement x="-20" y="77" width="20" height="29" uuid="654909ca-d2fd-4415-a6ef-c3114b16c978"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[S.N.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="77" width="80" height="29" uuid="77338d2e-cdac-4d30-859d-5b1993968511"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Appointment No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="77" width="100" height="29" uuid="dbb52b32-68a7-4c31-8221-9303e43ac57a"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patient Details]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="580" y="10" width="100" height="20" uuid="2a1c40f4-3581-4086-81f9-ec7c49534e3c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="480" y="30" width="100" height="20" uuid="52f349bb-789a-4509-9614-cb3444bab3db"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[To Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="580" y="30" width="100" height="20" uuid="c5c2a05e-0903-4499-9916-35b080748b22"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="480" y="10" width="100" height="20" uuid="575f75de-bc71-4908-acae-1026c19ebe04"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[From Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="77" width="100" height="29" uuid="011f62ca-cc01-4144-b9b4-21daa388589c"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="77" width="100" height="29" uuid="14f74491-cf3e-41aa-aae9-39e03538e24d"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transfer From Date/Time]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="77" width="100" height="29" uuid="3b0f38cc-b340-4033-ae8b-b647d786a7b0"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transfer To Date/Time]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="77" width="100" height="29" uuid="2ff2186e-c47f-4505-a2cd-a2d04606089d"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transfer From Doctor
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="580" y="77" width="100" height="29" uuid="1640eda5-5c96-46d9-ac82-a847ed6a2a57"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transfer To Doctor]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<textField>
+				<reportElement x="-20" y="0" width="20" height="40" uuid="57a166b3-8210-4e4f-a7d0-3d20ca29b609"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="80" height="40" uuid="683fc9d8-e063-47f3-b6bf-5e105f56e2fc"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{appointmentNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="100" height="40" uuid="58f3a14b-88e6-4e60-a46e-e196533068f3"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{patientDetails}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="100" height="40" uuid="836aee11-bf53-4d0b-b51b-dffc244a4ad5"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{appointmentStatus}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="100" height="40" uuid="5e51ed17-df7a-4ef6-ac10-29221a2ecc0f"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{transferFromDateTime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="0" width="100" height="40" uuid="153e1497-0af0-4d02-8715-eda4c365269b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{transferToDateTime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="100" height="40" isPrintWhenDetailOverflows="true" uuid="5c88aa39-b6ef-4bfe-ade7-e4113cec6298"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{transferFromDoctor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement key="" x="580" y="0" width="100" height="40" isPrintWhenDetailOverflows="true" uuid="5a0d510d-e438-4d60-817f-3990872815a1">
+					<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+					<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="true"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{transferToDoctor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="237" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

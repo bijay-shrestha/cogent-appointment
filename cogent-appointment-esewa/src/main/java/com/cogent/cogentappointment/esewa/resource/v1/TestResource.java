@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.TestConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.TestConstant.TEST_OPERATION;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
@@ -19,7 +21,8 @@ public class TestResource {
 
     @GetMapping
     @ApiOperation(TEST_OPERATION)
-    public String testClient(){
-        return "Congratulations! e-Appointment esewa module is running successfully in Kubeshpere! ....";
+    public String testClient() {
+        Date date = new Date();
+        return "Congratulations! e-Appointment esewa module is running successfully ...." + date;
     }
 }

@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.jasper.PatientDetailsJasperResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.jasper.PatientDetailsJasperResponse;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientResponseDTO;
@@ -34,4 +36,6 @@ public interface PatientRepositoryCustom {
     PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 
     List<DropDownResponseDTO> fetchPatientEsewaId(Long hospitalId);
+
+    PatientDetailsJasperResponseDTO getPatientDetailsForExcel(PatientSearchRequestDTO searchRequestDTO, Pageable pageable);
 }

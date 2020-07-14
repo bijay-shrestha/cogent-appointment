@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.commons.dto.request.file;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 

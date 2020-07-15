@@ -14,11 +14,12 @@
 	<field name="status" class="java.lang.String"/>
 	<field name="hospitalNumber" class="java.lang.String"/>
 	<field name="age" class="java.lang.String"/>
+	<field name="gender" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="100" splitType="Stretch">
+		<band height="134" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="50" width="555" height="50" uuid="d55a51ec-4f58-41b1-a35e-9383f6f166b4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -27,60 +28,66 @@
 				<text><![CDATA[Patient Details]]></text>
 			</staticText>
 			<image>
-				<reportElement x="164" y="0" width="216" height="50" uuid="3b68747d-8bd1-4296-9046-2f0c7fa1a91b"/>
+				<reportElement x="144" y="0" width="236" height="50" uuid="3b68747d-8bd1-4296-9046-2f0c7fa1a91b"/>
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
+			<textField pattern="MM-dd-yyyy">
+				<reportElement isPrintRepeatedValues="false" x="260" y="106" width="70" height="28" uuid="ffc5891e-14bb-4781-b11c-56a550a007ae"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="210" y="106" width="50" height="28" uuid="6596b493-6380-478e-b48d-e4d2ca9ed901"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[As of ]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="60" splitType="Stretch">
-			<textField pattern="MM-dd-yyyy">
-				<reportElement isPrintRepeatedValues="false" x="480" y="20" width="76" height="28" uuid="fb7132fa-efb2-4fba-8db5-6a9069e065fd"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="15" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="31" splitType="Stretch">
+		<band height="36" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
 			<staticText>
-				<reportElement x="0" y="0" width="50" height="31" uuid="57de9435-0f78-4430-91ee-e16fad12516b"/>
+				<reportElement x="0" y="0" width="40" height="31" uuid="57de9435-0f78-4430-91ee-e16fad12516b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[S.N.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="50" y="0" width="60" height="31" uuid="ed5bb336-06cf-4bb5-a445-f38c386d4fd7"/>
+				<reportElement x="40" y="0" width="50" height="31" uuid="ed5bb336-06cf-4bb5-a445-f38c386d4fd7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Client]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="110" y="0" width="54" height="31" uuid="1e863c35-8bef-49b3-af42-2140b1157e01"/>
+				<reportElement x="90" y="0" width="54" height="31" uuid="1e863c35-8bef-49b3-af42-2140b1157e01"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Patient Type]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="164" y="0" width="66" height="31" uuid="27c481c7-02e9-4026-a429-116466105ff8"/>
+				<reportElement x="144" y="0" width="66" height="31" uuid="27c481c7-02e9-4026-a429-116466105ff8"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Patient Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="266" y="0" width="54" height="31" uuid="d981a05d-f800-45a8-a2cc-025118f0bf2f"/>
+				<reportElement x="276" y="0" width="54" height="31" uuid="d981a05d-f800-45a8-a2cc-025118f0bf2f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Contact]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="320" y="0" width="60" height="31" uuid="4b667683-92c9-4a97-8fce-1e5a18bb9f6d"/>
+				<reportElement x="330" y="0" width="50" height="31" uuid="4b667683-92c9-4a97-8fce-1e5a18bb9f6d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
@@ -108,51 +115,58 @@
 				<text><![CDATA[Hospital No]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="230" y="0" width="36" height="31" uuid="e036292f-d66b-4b10-99d5-e71f6cfc1fc0"/>
+				<reportElement x="210" y="0" width="30" height="31" uuid="e036292f-d66b-4b10-99d5-e71f6cfc1fc0"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Age]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="0" width="36" height="31" uuid="b3d70c47-cb84-4f04-a92b-d11062835ed7"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gender]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="153" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="40" width="50" height="30" uuid="1f97db5b-ec5a-4c70-953f-9f8949b2ac3a"/>
+				<reportElement x="0" y="40" width="40" height="30" uuid="1f97db5b-ec5a-4c70-953f-9f8949b2ac3a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="40" width="60" height="30" uuid="da1f65a1-8f37-4ee6-8fad-fe15b3b146a5">
+				<reportElement x="40" y="40" width="50" height="30" uuid="da1f65a1-8f37-4ee6-8fad-fe15b3b146a5">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4281aeee-3790-4fea-a4b4-3bfafa72083e"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{client}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="110" y="40" width="54" height="30" uuid="5904d46a-768e-4314-825e-2d37a83ede0a">
+				<reportElement x="90" y="40" width="54" height="30" uuid="5904d46a-768e-4314-825e-2d37a83ede0a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="51da1d12-e31b-43e6-a702-e4a8beae1b4c"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{patientType}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="164" y="40" width="66" height="30" uuid="694ac7ed-378d-4de8-9681-12f9af84514c">
+				<reportElement x="144" y="40" width="66" height="30" uuid="694ac7ed-378d-4de8-9681-12f9af84514c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f5758c8-75f9-446a-8ea4-597fd0035582"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{patientName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="266" y="40" width="54" height="30" uuid="3d49aaad-c548-4a18-b5a4-d5d4e92b7b54">
+				<reportElement x="276" y="40" width="54" height="30" uuid="3d49aaad-c548-4a18-b5a4-d5d4e92b7b54">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e49c679e-e84e-4f5b-9cd1-dde932cc9608"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{contact}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="320" y="40" width="60" height="30" uuid="20546852-cf65-432f-b72a-885e9b0f072b">
+				<reportElement x="330" y="40" width="50" height="30" uuid="20546852-cf65-432f-b72a-885e9b0f072b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="57905781-b84b-4612-8926-9ebde5ddc1b6"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
@@ -180,11 +194,18 @@
 				<textFieldExpression><![CDATA[$F{hospitalNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="230" y="40" width="36" height="30" uuid="2c1b3892-efc5-432b-9d06-7a6efaca1ce9">
+				<reportElement x="210" y="40" width="30" height="30" uuid="2c1b3892-efc5-432b-9d06-7a6efaca1ce9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac213371-2105-437b-86ed-02e8543817ea"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{age}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="240" y="40" width="36" height="30" uuid="8c6e5ced-64f7-4472-849a-826a8f895ae8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a130b100-2e3d-4ec7-ab12-f2d37de80da6"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

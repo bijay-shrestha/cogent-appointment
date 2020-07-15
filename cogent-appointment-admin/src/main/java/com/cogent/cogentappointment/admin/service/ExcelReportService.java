@@ -10,18 +10,13 @@ import org.springframework.data.domain.Pageable;
 
 public interface ExcelReportService {
 
-    JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO,
-                                                                   Pageable pageable);
+    JasperReportDownloadResponse generatePatientDetailsExcelReport(PatientSearchRequestDTO searchRequestDTO);
 
-    JasperReportDownloadResponse generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO,
-                                                              Pageable pageable);
+    JasperReportDownloadResponse generateTransactionLogReport(TransactionLogSearchDTO searchRequestDTO);
 
-    JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO,
-                                                                   Pageable pageable);
+    JasperReportDownloadResponse generateAppointmentLogExcelReport(AppointmentLogSearchDTO searchRequestDTO);
 
-    JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO,
-                                                                  Pageable pageable);
+    JasperReportDownloadResponse generateRescheduleLogExcelReport(AppointmentRescheduleLogSearchDTO searchRequestDTO);
 
-    JasperReportDownloadResponse generateAppointmentTransferLogReport(AppointmentTransferSearchRequestDTO searchRequestDTO,
-                                                                      Pageable pageable);
+    JasperReportDownloadResponse generateAppointmentTransferLogReport(AppointmentTransferSearchRequestDTO searchRequestDTO);
 }

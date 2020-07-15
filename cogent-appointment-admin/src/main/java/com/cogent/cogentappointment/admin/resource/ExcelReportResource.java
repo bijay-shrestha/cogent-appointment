@@ -10,8 +10,6 @@ import com.cogent.cogentappointment.commons.dto.jasper.JasperReportDownloadRespo
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,14 +43,11 @@ public class ExcelReportResource {
     @PutMapping(APPOINTMENT_LOG)
     @ApiOperation(DOWNLOAD_EXCEL_APPOINTMENT_LOG)
     public ResponseEntity<?> generateAppointmentLogExcelReport(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
-                                                               @RequestParam("page") int page,
-                                                               @RequestParam("size") int size,
                                                                HttpServletResponse response) throws IOException {
 
-        Pageable pageable = PageRequest.of(page, size);
 
         JasperReportDownloadResponse downloadResponse = excelReportService
-                .generateAppointmentLogExcelReport(searchRequestDTO, pageable);
+                .generateAppointmentLogExcelReport(searchRequestDTO);
 
 
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
@@ -69,13 +64,10 @@ public class ExcelReportResource {
     @PutMapping(RESCHEDULE_LOG)
     @ApiOperation(DOWNLOAD_EXCEL_RESCHEDULE_LOG)
     public ResponseEntity<?> generateRescheduleLogExcelReport(@RequestBody AppointmentRescheduleLogSearchDTO searchRequestDTO,
-                                                              @RequestParam("page") int page,
-                                                              @RequestParam("size") int size,
                                                               HttpServletResponse response) throws Exception {
 
-        Pageable pageable = PageRequest.of(page, size);
         JasperReportDownloadResponse downloadResponse = excelReportService
-                .generateRescheduleLogExcelReport(searchRequestDTO, pageable);
+                .generateRescheduleLogExcelReport(searchRequestDTO);
 
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
 
@@ -91,12 +83,9 @@ public class ExcelReportResource {
     @PutMapping(TRANSACTION_LOG)
     @ApiOperation(DOWNLOAD_EXCEL_TRANSACTION_LOG)
     public ResponseEntity<?> generateTransactionLogExcelReport(@RequestBody TransactionLogSearchDTO searchRequestDTO,
-                                                               @RequestParam("page") int page,
-                                                               @RequestParam("size") int size,
                                                                HttpServletResponse response) throws Exception {
 
-        Pageable pageable = PageRequest.of(page, size);
-        JasperReportDownloadResponse downloadResponse = excelReportService.generateTransactionLogReport(searchRequestDTO, pageable);
+        JasperReportDownloadResponse downloadResponse = excelReportService.generateTransactionLogReport(searchRequestDTO);
 
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
 
@@ -114,14 +103,10 @@ public class ExcelReportResource {
     @PutMapping(TRANSFER_LOG)
     @ApiOperation(DOWNLOAD_EXCEL_TRANSFER_LOG)
     public ResponseEntity<?> generateAppointmentTransferLogExcelReport(@Valid
-                                                                       @RequestBody
-                                                                               AppointmentTransferSearchRequestDTO searchRequestDTO,
-                                                                       @RequestParam("page") int page,
-                                                                       @RequestParam("size") int size,
+                                                                       @RequestBody AppointmentTransferSearchRequestDTO searchRequestDTO,
                                                                        HttpServletResponse response) throws Exception {
 
-        Pageable pageable = PageRequest.of(page, size);
-        JasperReportDownloadResponse downloadResponse = excelReportService.generateAppointmentTransferLogReport(searchRequestDTO, pageable);
+        JasperReportDownloadResponse downloadResponse = excelReportService.generateAppointmentTransferLogReport(searchRequestDTO);
 
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
         response.setContentType(URLConnection.guessContentTypeFromName(downloadResponse.getFileName()));
@@ -135,14 +120,10 @@ public class ExcelReportResource {
     @PutMapping(PATIENT_DETAILS)
     @ApiOperation(DOWNLOAD_EXCEL_PATIENT_DETAILS)
     public ResponseEntity<?> generatePatientDetailsExcelReport(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
-                                                               @RequestParam("page") int page,
-                                                               @RequestParam("size") int size,
                                                                HttpServletResponse response) throws Exception {
 
-        Pageable pageable = PageRequest.of(page, size);
-
         JasperReportDownloadResponse downloadResponse = excelReportService.
-                generatePatientDetailsExcelReport(searchRequestDTO, pageable);
+                generatePatientDetailsExcelReport(searchRequestDTO);
 
         response.addHeader("Content-disposition", "attachment;filename=" + downloadResponse.getFileName());
 

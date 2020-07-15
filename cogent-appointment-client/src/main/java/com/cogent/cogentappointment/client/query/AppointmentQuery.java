@@ -171,8 +171,7 @@ public class AppointmentQuery {
                     " d.id as doctorId," +                                                  //[11]
                     " d.name as doctorName," +                                              //[12]
                     " s.id as specializationId," +                                          //[13]
-                    " s.name as specializationName," +                                       //[14]
-                    " d.salutation as doctorSalutation" +
+                    " s.name as specializationName" +                                       //[14]
                     " FROM Appointment a" +
                     " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -442,7 +441,8 @@ public class AppointmentQuery {
                             " p.gender as gender," +                                                    //[16]
                             " hpi.address as address," +                                                //[17]
                             " hpi.isRegistered as isRegistered," +                                      //[18]
-                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[19]
+                            " h.name as hospitalName," +                                                //[19]
+                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[20]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
@@ -999,7 +999,12 @@ public class AppointmentQuery {
                     " a.isFollowUp as isFollowUp," +
                     " a.hasTransferred as hasTransferred," +
                     " adi.doctor.id as doctorId, " +
-                    " adi.doctor.name as doctorName, " +
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as doctorName," +
                     " adi.specialization.id as specializationId, " +
                     " adi.specialization.name as specializationName," +
                     " a.hospitalId.id as hospitalId," +
@@ -1009,7 +1014,7 @@ public class AppointmentQuery {
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
-                    " LEFT JOIN DoctorSalutation ds ON ds.doctorId.id = adi.doctor.id" +
+                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id"+
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
                     " AND a.status!='RE'" +

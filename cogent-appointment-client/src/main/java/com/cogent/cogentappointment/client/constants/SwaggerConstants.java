@@ -142,6 +142,11 @@ public class SwaggerConstants {
         String FETCH_NAME_AND_CODE_FOR_DROPDOWN = "Fetch Appointment Service Type name and code for dropdown";
     }
 
+    public interface AppointmentModeConstant {
+        String BASE_API_VALUE = "This is Appointment Mode Resource.";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Mode details for dropdown";
+    }
+
     //B
     public interface BillingModeConstant {
         String BASE_API_VALUE = "This is Billing Mode Resource.";

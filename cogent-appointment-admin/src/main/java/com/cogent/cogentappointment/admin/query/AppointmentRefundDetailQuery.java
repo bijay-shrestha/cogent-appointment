@@ -31,7 +31,12 @@ public class AppointmentRefundDetailQuery {
                 " a.patientId.name as patientName," +
                 " a.patientId.gender as gender," +
                 " a.patientId.mobileNumber as mobileNumber," +
-                " adi.doctor.name as doctorName," +
+                " CASE WHEN" +
+                " (d.salutation is null)" +
+                " THEN d.name" +
+                " ELSE" +
+                " CONCAT_WS(' ',d.salutation, d.name)" +
+                " END as doctorName," +
                 " adi.specialization.name as specializationName," +
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
@@ -44,6 +49,7 @@ public class AppointmentRefundDetailQuery {
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
                 " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON da.doctorId.id = adi.doctor.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
@@ -52,7 +58,6 @@ public class AppointmentRefundDetailQuery {
                 " a.status IN ('C','RE')" +
                 " AND ard.status IN ('PA','A','R')"+
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
-
     }
 
 
@@ -151,7 +156,12 @@ public class AppointmentRefundDetailQuery {
                     " a.patientId.eSewaId" +
                     " END as eSewaId," +
                     " a.patientId.mobileNumber as mobileNumber," +
-                    " adi.doctor.name as doctorName," +
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as doctorName," +
                     " adi.specialization.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +

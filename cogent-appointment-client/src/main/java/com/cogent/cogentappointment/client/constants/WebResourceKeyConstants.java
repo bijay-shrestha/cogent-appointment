@@ -80,8 +80,10 @@ public class WebResourceKeyConstants {
         String BASE_APPOINTMENT_SERVICE_TYPE = "/appointmentServiceType";
     }
 
+    public interface AppointmentModeConstants {
+        String BASE_APPOINTMENT_MODE = "/appointmentMode";
 
-
+    }
 
     //B
     public static final String BASE_PASSWORD = "/password";

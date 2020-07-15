@@ -219,7 +219,8 @@ public class AppointmentQuery {
                             " p.gender as gender," +                                                    //[15]
                             " hpi.address as address," +                                                //[16]
                             " hpi.isRegistered as isRegistered," +                                      //[17]
-                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[18]
+                            " h.name as hospitalName," +                                                //[18]
+                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[19]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -970,10 +971,14 @@ public class AppointmentQuery {
                     " a.isFollowUp as isFollowUp," +
                     " a.hasTransferred as hasTransferred," +
                     " adi.doctor.id as doctorId, " +
-                    " adi.doctor.name as doctorName, " +
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as doctorName," +
                     " adi.specialization.id as specializationId, " +
                     " adi.specialization.name as specializationName," +
-//                    " ds.salutationId.name as doctorSalutation," +
                     " a.hospitalId.id as hospitalId," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
@@ -981,7 +986,7 @@ public class AppointmentQuery {
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
-                    " LEFT JOIN DoctorSalutation ds ON ds.doctorId.id = adi.doctor.id" +
+                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id"+
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
                     " AND a.status!='RE'" +

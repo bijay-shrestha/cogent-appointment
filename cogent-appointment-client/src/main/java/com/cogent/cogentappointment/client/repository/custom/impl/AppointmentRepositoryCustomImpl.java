@@ -662,7 +662,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         try {
             Appointment appointment = entityManager.createQuery(QUERY_TO_GET_CANCELLED_APPOINTMENT,
                     Appointment.class)
-                    .setParameter(ESEWA_ID, requestDTO.getEsewaId())
                     .setParameter(TRANSACTION_NUMBER, requestDTO.getTransactionNumber())
                     .getSingleResult();
 

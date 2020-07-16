@@ -952,8 +952,7 @@ public class AppointmentQuery {
                     " FROM" +
                     " Appointment a " +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id " +
-                    " WHERE atd.transactionNumber=:transactionNumber" +
-                    " AND a.patientId.eSewaId =:esewaId";
+                    " WHERE atd.transactionNumber=:transactionNumber";
 
     public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_BY_APPT_NUMBER =
             "SELECT" +

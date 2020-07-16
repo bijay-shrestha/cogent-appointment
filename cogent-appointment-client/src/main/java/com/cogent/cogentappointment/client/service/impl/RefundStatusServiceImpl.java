@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.APPOINTMENT_HAS_BEEN_REJECTED;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
@@ -83,6 +85,10 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         log.info(SAVING_PROCESS_STARTED, REFUND_STATUS);
 
         AppointmentRefundDetail appointmentRefundDetail = getAppointmentRefundDetail(requestDTO);
+
+        if(appointmentRefundDetail.getStatus().equals(REJECTED)){
+            throw new BadRequestException(APPOINTMENT_HAS_BEEN_REJECTED);
+        }
 
         Appointment appointment = getAppointment(requestDTO);
 

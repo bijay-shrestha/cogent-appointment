@@ -7,8 +7,23 @@ public class WebResourceKeyConstants {
 
     //A
     public static final String API_V1 = "/api/v1";
+    public static final String API_V2 = "/api/v2";
+
     public static final String ACTIVE = "/active";
 
+    public interface AddressConstants {
+        String BASE_ADDRESS = "/address";
+        String NEW = "/new";
+        String OLD = "/old";
+        String ZONE = "/zone";
+        String PROVINCE = "/province";
+        String DISTRICT = "/district";
+        String MUNICIPALITY = "/municipality";
+        String STREET = "/street";
+        String ZONE_ID_PATH_VARIABLE_BASE = "/{zoneId}";
+        String PROVINCE_ID_PATH_VARIABLE_BASE = "/{provinceId}";
+        String DISTRICT_ID_PATH_VARIABLE_BASE = "/{districtId}";
+    }
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
@@ -24,11 +39,23 @@ public class WebResourceKeyConstants {
         String TRANSACTION_STATUS = "/transaction-status";
     }
 
+    public interface AppointmentHospitalDepartmentConstants {
+        String BASE_APPOINTMENT = "/appointment";
+        String FETCH_AVAILABLE_TIMESLOTS = "/availableTimeSlots";
+        String ROOM_WISE = "/roomWise";
+        String AVAILABLE_DATES = "/availableDates";
+    }
+
+
+    public interface AppointmentServiceType {
+        String APPOINTMENT_SERVICE_TYPE = "/appointmentServiceType";
+    }
+
     //B
 
     //C
     public interface CommonConstants {
-        String BASE_COMMON = "/common";
+        String BASE_COMMON = "/commons";
         String DOCTOR_SPECIALIZATION = "/doctor-specialization";
     }
 
@@ -44,6 +71,8 @@ public class WebResourceKeyConstants {
 
 
     //E
+
+    public static final String requestKey="data";
     public interface EsewaConstants {
         String BASE_ESEWA = "/esewa";
         String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";
@@ -65,6 +94,13 @@ public class WebResourceKeyConstants {
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
+    public interface HospitalDepartmentConstants {
+        String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
+        String HOSPITAL_DEPARTMENT_ID = "/{hospitalDepartmentId}";
+        String BILLING_MODE = "/billingMode";
+    }
+
+
     //I
     public static final String INFO = "/info";
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
@@ -75,13 +111,15 @@ public class WebResourceKeyConstants {
     //K
 
     //L
+    public static final String LOGIN = "/login";
 
     //M
     public static final String MIN = "/min";
 
-    public interface MinioFileConstants {
+    public interface MinioResourceConstant {
         String BASE_FILE = "/file";
-        String FETCH_FILE = "/{subDirectory}/{object}";
+        String PUT_PERSIGNED_URL = "putPresignedURL";
+        String GET_PERSIGNED_URL = "getPresignedURL";
     }
 
     //N
@@ -102,6 +140,10 @@ public class WebResourceKeyConstants {
 
 
     //R
+    public interface RefundStatusConstants {
+        String BASE_REFUND_STATUS = "/refund";
+        String APPROVE = "/approve";
+    }
 
 
     //S

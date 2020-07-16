@@ -20,4 +20,6 @@ public class DashBoardRequestDTO implements Serializable {
     @NotNull
     private Date toDate;
 
+    private String appointmentServiceTypeCode;
+
 }

@@ -49,4 +49,12 @@ public class AppointmentResponseDTO implements Serializable {
     private String status;
 
     private String registrationNumber;
+
+    private String hospitalDepartmentName;
+
+    private String roomNumber;
+
+    private Long hospitalDepartmentRoomInfoId;
+
+    private String appointmentDateInNepali;
 }

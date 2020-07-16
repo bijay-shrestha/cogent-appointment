@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.dto.request.hospital;
 import com.cogent.cogentappointment.admin.constraintvalidator.SpecialCharacters;
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -47,16 +48,20 @@ public class HospitalRequestDTO implements Serializable {
     private Character status;
 
     @NotNull
+    @Range(min = 0L, message = "Please select positive numbers Only")
     private Double refundPercentage;
 
     @NotNull
+    @Range(min = 0L, message = "Please select positive numbers Only")
     private Integer numberOfAdmins;
 
     @NotEmpty
     private List<String> contactNumber;
 
+    @Range(min = 0L, message = "Please select positive numbers Only")
     private Integer numberOfFollowUps;
 
+    @Range(min = 0L, message = "Please select positive numbers Only")
     private Integer followUpIntervalDays;
 
     @NotNull
@@ -69,6 +74,10 @@ public class HospitalRequestDTO implements Serializable {
     private List<Long> appointmentServiceTypeIds;
 
     private Long primaryAppointmentServiceTypeId;
+
+    private String hospitalLogo;
+
+    private String hospitalBanner;
 
 }
 

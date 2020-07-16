@@ -31,4 +31,5 @@ public class GenerateRevenueRequestDTO implements Serializable {
 
     private Character filterType;
 
+    private String appointmentServiceTypeCode;
 }

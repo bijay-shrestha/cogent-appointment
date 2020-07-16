@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.utils.commons;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
-import com.cogent.cogentappointment.admin.constants.UtilityConfigConstants;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +34,16 @@ public class DateUtils {
         try {
             DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
             return java.sql.Date.valueOf(sqlDateFormatter.format(uDate));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String utilDateToSqlDateInString(Date uDate) {
+        try {
+            DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+            return java.sql.Date.valueOf(sqlDateFormatter.format(uDate)).toString();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -97,7 +105,8 @@ public class DateUtils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         return dateFormat.format(date);
     }
-  public static String getTimeFromDateIn12HrFormat(Date date) {
+
+    public static String getTimeFromDateIn12HrFormat(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
         return dateFormat.format(date);
     }
@@ -186,6 +195,68 @@ public class DateUtils {
         return formatter.format(date);
     }
 
+    public static List<Date> getDates(
+            Date startDate, Date endDate) {
+        List<Date> datesInRange = new ArrayList<>();
+        Date today = utilDateToSqlDate(new Date());
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (!calendar.after(endCalendar)) {
+            Date result = calendar.getTime();
+            if (utilDateToSqlDate(calendar.getTime()).before(today)) {
+                calendar.add(Calendar.DATE, 1);
+
+            } else {
+                datesInRange.add(result);
+                calendar.add(Calendar.DATE, 1);
+            }
+        }
+        return datesInRange;
+    }
+
+    public static List<String> getDayNames(
+            Date startDate, Date endDate) {
+        List<String> daysName = new ArrayList<>();
+        Date today = utilDateToSqlDate(new Date());
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (!calendar.after(endCalendar)) {
+            Date result = calendar.getTime();
+            if (utilDateToSqlDate(calendar.getTime()).before(today)) {
+                calendar.add(Calendar.DATE, 1);
+
+            } else {
+                String day = convertDateToLocalDate(result).getDayOfWeek().toString();
+                daysName.add(day);
+                calendar.add(Calendar.DATE, 1);
+            }
+        }
+        return daysName;
+    }
+
+    public static List<Date> utilDateListToSqlDateList(List<Date> uDates) {
+        List<Date> resultDates = new ArrayList<>();
+        uDates.forEach(uDate -> {
+            try {
+                DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = java.sql.Date.valueOf(sqlDateFormatter.format(uDate));
+                resultDates.add(date);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return resultDates;
+
+    }
+
     public static void validateIsFirstDateGreater(Date fromDate, Date toDate) {
         boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
 
@@ -211,44 +282,5 @@ public class DateUtils {
             throw new BadRequestException(INVALID_DATE_TIME_MESSAGE, INVALID_DATE_TIME_DEBUG_MESSAGE);
         }
     }
-
-    public static List<Date> getDates(
-            Date startDate, Date endDate) {
-        List<Date> datesInRange = new ArrayList<>();
-        Date today = utilDateToSqlDate(new Date());
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(startDate);
-
-        Calendar endCalendar = new GregorianCalendar();
-        endCalendar.setTime(endDate);
-
-        while (!calendar.after(endCalendar)) {
-            Date result = calendar.getTime();
-            if (utilDateToSqlDate(calendar.getTime()).before(today)) {
-                calendar.add(Calendar.DATE, 1);
-
-            } else {
-                datesInRange.add(result);
-                calendar.add(Calendar.DATE, 1);
-            }
-        }
-        return datesInRange;
-    }
-
-    public static List<Date> utilDateListToSqlDateList(List<Date> uDates) {
-        List<Date> resultDates = new ArrayList<>();
-        uDates.forEach(uDate -> {
-            try {
-                DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = java.sql.Date.valueOf(sqlDateFormatter.format(uDate));
-                resultDates.add(date);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        return resultDates;
-
-    }
-
 
 }

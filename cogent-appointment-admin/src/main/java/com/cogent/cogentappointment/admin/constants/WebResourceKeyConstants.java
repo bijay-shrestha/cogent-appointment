@@ -9,6 +9,20 @@ public class WebResourceKeyConstants {
     public static final String API_V1 = "/api/v1";
     public static final String ACTIVE = "/active";
 
+    public interface AddressConstants {
+        String BASE_ADDRESS = "/address";
+        String NEW = "/new";
+        String OLD = "/old";
+        String ZONE = "/zone";
+        String PROVINCE = "/province";
+        String DISTRICT = "/district";
+        String MUNICIPALITY = "/municipality";
+        String STREET = "/street";
+        String ZONE_ID_PATH_VARIABLE_BASE = "/{zoneId}";
+        String PROVINCE_ID_PATH_VARIABLE_BASE = "/{provinceId}";
+        String DISTRICT_ID_PATH_VARIABLE_BASE = "/{districtId}";
+    }
+
     public interface AdminConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
@@ -18,6 +32,11 @@ public class WebResourceKeyConstants {
         String RESET_PASSWORD = "/resetPassword";
         String VERIFY = "/verify";
         String EMAIL = "/email";
+    }
+
+    public interface AdminFavouriteConstants {
+        String BASE_ADMIN_FAVOURITE = "/adminFavourite";
+        String ICON = "/icon";
     }
 
     public interface AdminFeatureConstants {
@@ -34,13 +53,14 @@ public class WebResourceKeyConstants {
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
         String RESCHEDULE_LOG = "/reschedule-log";
-        String DETAILS = "/detail";
         String TRANSACTION_LOG = "/transaction-log";
+        String APPOINTMENT_LOG = "/appointment-log";
+        String TRANSFER_LOG = "/transfer-log";
+        String COUNT = "/count";
     }
 
     public interface AppointmentModeConstants {
         String BASE_APPOINTMENT_MODE = "/appointmentMode";
-
     }
 
     public interface AppointmentTransferConstants {
@@ -68,6 +88,7 @@ public class WebResourceKeyConstants {
     }
 
     //C
+    public static final String CODE = "/code";
 
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
@@ -108,6 +129,7 @@ public class WebResourceKeyConstants {
         String REVENUE_TREND = "/revenueTrend";
         String DOCTOR_REVENUE = "/doctorRevenue";
         String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
+        String HOSPITAL_DEPARTMENT_REVENUE = "/hospitalDepartmentRevenue";
     }
 
     public static final String DETAIL = "/detail";
@@ -129,6 +151,10 @@ public class WebResourceKeyConstants {
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
         String EXISTING = "/existing";
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
+    }
+
+    public interface ExcelReportConstants {
+        String BASE_EXCEL_REPORT = "/excel-report";
     }
 
     public interface DDRShiftWiseConstants {
@@ -157,6 +183,8 @@ public class WebResourceKeyConstants {
     //G
 
     //H
+    public static final String HMAC = "/hmac";
+
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_WISE = "/hospital-wise";
@@ -180,6 +208,7 @@ public class WebResourceKeyConstants {
     }
 
     //I
+    public static final String ICON = "/icon";
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 
     public interface IntegrationConstants {
@@ -228,13 +257,14 @@ public class WebResourceKeyConstants {
     public static final String META_INFO = "/metaInfo";
     public static final String MIN = "/min";
 
-    public interface MinioFileConstants {
+    public interface MinioResourceConstant {
         String BASE_FILE = "/file";
-        String FETCH_FILE = "/{subDirectory}/{object}";
-
+        String PUT_PERSIGNED_URL = "putPresignedURL";
+        String GET_PERSIGNED_URL = "getPresignedURL";
     }
 
     //N
+    public static final String NAME = "/name";
 
 
     //O
@@ -243,6 +273,7 @@ public class WebResourceKeyConstants {
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
         String ESEWA_ID = "/eSewaId";
+        String PATIENT_DETAILS = "/patientDetails";
     }
 
     public interface ProfileSetupConstants {
@@ -259,6 +290,11 @@ public class WebResourceKeyConstants {
     }
 
     //R
+    public interface RefundStatusConstants {
+        String BASE_REFUND_STATUS = "/refundStatus";
+        String CHECK = "/check";
+    }
+
     public interface RoomConstants {
         String BASE_ROOM = "/room";
         String HOSPITAL_DEPARTMENT_WISE = "/hospitalDepartmentWise";

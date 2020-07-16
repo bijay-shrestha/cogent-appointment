@@ -23,7 +23,7 @@ public class AppointmentSearchDTO implements Serializable {
     @NotNull
     private Date toDate;
 
-    private Character status;
+    private String status;
 
     private Long hospitalId;
 
@@ -43,4 +43,7 @@ public class AppointmentSearchDTO implements Serializable {
     @NotNull
     @Status
     private Character isSelf;
+
+    //    @NotNull
+    private String appointmentServiceTypeCode;
 }

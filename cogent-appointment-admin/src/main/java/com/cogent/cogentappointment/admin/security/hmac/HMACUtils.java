@@ -2,10 +2,12 @@ package com.cogent.cogentappointment.admin.security.hmac;
 
 import com.cogent.cogentappointment.admin.service.impl.UserDetailsImpl;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.function.BiFunction;
+
 import static com.cogent.cogentappointment.admin.constants.HMACConstant.*;
+import static com.cogent.cogentappointment.admin.security.hmac.HMACBuilderForEsewa.hmacShaGenerator;
 import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generateNonce;
 
 /**
@@ -15,6 +17,7 @@ import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generate
 public class HMACUtils {
 
     public String getHash(Authentication authentication) {
+
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         Integer id= Math.toIntExact(userPrincipal.getId());
         String email = userPrincipal.getEmail();
@@ -55,5 +58,12 @@ public class HMACUtils {
 
         return hash;
     }
+
+    public static BiFunction<String, String, String> getSignatureForEsewa = (esewaId, merchantCode) -> {
+
+        final String signature = hmacShaGenerator(esewaId + COLON + merchantCode);
+
+        return signature;
+    };
 
 }

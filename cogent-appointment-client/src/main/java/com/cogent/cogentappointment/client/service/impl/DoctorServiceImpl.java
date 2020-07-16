@@ -2,35 +2,37 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.*;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.*;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
-import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.client.service.DoctorService;
+import com.cogent.cogentappointment.client.service.HospitalService;
+import com.cogent.cogentappointment.client.service.QualificationService;
+import com.cogent.cogentappointment.client.service.SpecializationService;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.*;
+import static com.cogent.cogentappointment.client.log.constants.SalutationLog.SALUTATION;
 import static com.cogent.cogentappointment.client.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.client.utils.SalutationUtils.parseToDoctorSalutation;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -45,6 +47,8 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
 
+    private final DoctorSalutationRepository doctorSalutationRepository;
+
     private final DoctorSpecializationRepository doctorSpecializationRepository;
 
     private final SpecializationService specializationService;
@@ -57,32 +61,34 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorAppointmentChargeRepository doctorAppointmentChargeRepository;
 
-    private final MinioFileService minioFileService;
-
     private final DoctorAvatarRepository doctorAvatarRepository;
 
+    private final SalutationRepository salutationRepository;
+
     public DoctorServiceImpl(DoctorRepository doctorRepository,
+                             DoctorSalutationRepository doctorSalutationRepository,
                              DoctorSpecializationRepository doctorSpecializationRepository,
                              SpecializationService specializationService,
                              QualificationService qualificationService,
                              DoctorQualificationRepository doctorQualificationRepository,
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
-                             MinioFileService minioFileService,
-                             DoctorAvatarRepository doctorAvatarRepository) {
+                             DoctorAvatarRepository doctorAvatarRepository,
+                             SalutationRepository salutationRepository) {
         this.doctorRepository = doctorRepository;
+        this.doctorSalutationRepository = doctorSalutationRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
         this.qualificationService = qualificationService;
         this.doctorQualificationRepository = doctorQualificationRepository;
         this.hospitalService = hospitalService;
         this.doctorAppointmentChargeRepository = doctorAppointmentChargeRepository;
-        this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
+        this.salutationRepository = salutationRepository;
     }
 
     @Override
-    public String save(DoctorRequestDTO requestDTO, MultipartFile avatar) {
+    public String save(DoctorRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -101,13 +107,20 @@ public class DoctorServiceImpl implements DoctorService {
 
         saveDoctor(doctor);
 
+        if (requestDTO.getSalutationIds().size() > 0) {
+            String salutations = findDoctorSalutation(requestDTO.getSalutationIds());
+            doctor.setSalutation(salutations);
+
+            saveDoctorSalutation(doctor.getId(), requestDTO.getSalutationIds());
+        }
+
         saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
 
         saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds(), hospitalId);
 
         saveDoctorQualifications(doctor.getId(), requestDTO.getQualificationIds());
 
-        saveDoctorAvatar(doctor, avatar);
+        saveDoctorAvatar(doctor, requestDTO.getAvatar());
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -115,7 +128,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public void update(DoctorUpdateRequestDTO requestDTO, MultipartFile avatar) {
+    public void update(DoctorUpdateRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -135,6 +148,11 @@ public class DoctorServiceImpl implements DoctorService {
                 requestDTO.getDoctorInfo().getName(),
                 requestDTO.getDoctorInfo().getMobileNumber());
 
+        if (requestDTO.getDoctorSalutationInfo().size() > 0) {
+            String doctorSalutations = updateDoctorSalutations(requestDTO.getDoctorSalutationInfo(), doctor);
+            doctor.setSalutation(doctorSalutations);
+        }
+
         convertToUpdatedDoctor(
                 requestDTO.getDoctorInfo(),
                 doctor,
@@ -151,10 +169,83 @@ public class DoctorServiceImpl implements DoctorService {
         updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationInfo());
 
         if (requestDTO.getDoctorInfo().getIsAvatarUpdate().equals(YES))
-            updateDoctorAvatar(doctor, avatar);
+            updateDoctorAvatar(doctor, requestDTO.getDoctorInfo().getAvatar());
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
     }
+
+    private String updateDoctorSalutations(List<DoctorSalutationUpdateDTO> updateDTOS, Doctor doctor) {
+
+        List<String> salutationList = new ArrayList<>();
+        if (doctor.getSalutation() != null) {
+            salutationList.addAll(Arrays.asList(doctor.getSalutation().split("\\s+")));
+        }
+
+        List<DoctorSalutation> doctorSalutationListToUpdate = new ArrayList<>();
+
+        updateDTOS.forEach(result -> {
+
+            if (result.getDoctorSalutationId() == null) {
+
+                Salutation salutation = findActiveSalutation(result.getSalutationId());
+                doctorSalutationRepository.save(parseToDoctorSalutation(doctor, salutation));
+                salutationList.add(salutation.getCode());
+
+            } else {
+
+                DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
+                        .orElse(null);
+
+
+                Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
+
+                if (result.getStatus().equals(INACTIVE)) {
+                    salutationList.remove(salutation.getCode());
+                    doctorSalutation.setStatus(INACTIVE);
+
+                }
+
+                if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())) {
+                    salutationList.add(salutation.getCode());
+                    doctorSalutation.setStatus(ACTIVE);
+
+
+                }
+
+                doctorSalutationListToUpdate.add(doctorSalutation);
+
+            }
+
+        });
+
+        if (salutationList.size() == 0) {
+            return null;
+        }
+
+        if (salutationList.size() == 1) {
+            return salutationList.stream()
+                    .collect(Collectors.joining());
+        }
+
+        return salutationList.stream()
+                .collect(Collectors.joining(SPACE));
+
+    }
+
+    private Salutation findActiveSalutation(Long salutationId) {
+
+        return salutationRepository.fetchActiveSalutationById(salutationId)
+                .orElseThrow(() -> new NoContentFoundException(Salutation.class));
+    }
+
+    private List<DoctorSalutation> validateDoctorSalutations(String ids) {
+        return doctorSalutationRepository.validateDoctorSalutationCount(ids);
+    }
+
+    private void updateDoctorSalutation(List<DoctorSalutation> doctorSalutationListToUpdate) {
+        doctorSalutationRepository.saveAll(doctorSalutationListToUpdate);
+    }
+
 
     @Override
     public void delete(DeleteRequestDTO deleteRequestDTO) {
@@ -233,6 +324,10 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id, getLoggedInHospitalId());
 
+        List<DoctorSalutationResponseDTO> salutationResponseDTOList = doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
+        responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
+
+
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
@@ -290,6 +385,47 @@ public class DoctorServiceImpl implements DoctorService {
         return responseDTOS;
     }
 
+    private String findDoctorSalutation(List<Long> salutationIds) {
+
+        String salutations = "";
+        if (salutationIds.size() > 0) {
+            List<Salutation> salutationList = findActiveSalutations(salutationIds);
+            if (salutationList.size() == 1) {
+                salutations = salutationList.stream()
+                        .map(request -> request.getCode()).collect(Collectors.joining());
+            }
+
+            if (salutationList.size() > 1) {
+                salutations = salutationList.stream()
+                        .map(request -> request.getCode())
+                        .collect(Collectors.joining(" "));
+            }
+        }
+
+        return salutations;
+    }
+
+    private List<Salutation> findActiveSalutations(List<Long> salutationIds) {
+
+        String ids = salutationIds.stream()
+                .map(request -> request.toString())
+                .collect(Collectors.joining(","));
+
+        List<Salutation> salutationList = validateSalutations(ids);
+        int requestCount = salutationIds.size();
+
+        if ((salutationList.size()) != requestCount) {
+            throw new NoContentFoundException(Salutation.class);
+        }
+
+        return salutationList;
+
+    }
+
+    private List<Salutation> validateSalutations(String ids) {
+        return salutationRepository.validateSalutationCount(ids);
+    }
+
     private Gender fetchGender(Character genderCode) {
         return fetchGenderByCode(genderCode);
     }
@@ -343,23 +479,15 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void saveDoctorAvatar(Doctor doctor, MultipartFile file) {
+    private void saveDoctorAvatar(Doctor doctor, String avatar) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR_AVATAR);
 
-        if (!Objects.isNull(file)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{file});
-            saveDoctorAvatar(convertFileToDoctorAvatar(responseList.get(0), doctor));
-        }
+        if (!Objects.isNull(avatar))
+            saveDoctorAvatar(convertFileToDoctorAvatar(new DoctorAvatar(), avatar, doctor));
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    private List<FileUploadResponseDTO> uploadFiles(Doctor doctor, MultipartFile[] file) {
-        String subDirectoryLocation = doctor.getName();
-
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectoryLocation, file);
     }
 
     private void saveDoctorAppointmentCharge(Doctor doctor, Double appointmentCharge, Double appointmentFollowUpCharge) {
@@ -433,25 +561,25 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void updateDoctorAvatar(Doctor doctor, MultipartFile file) {
+    private void updateDoctorAvatar(Doctor doctor, String avatar) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR_AVATAR);
 
         DoctorAvatar doctorAvatar = doctorAvatarRepository.findByDoctorId(doctor.getId());
 
-        if (Objects.isNull(doctorAvatar)) saveDoctorAvatar(doctor, file);
-        else updateDoctorAvatar(doctor, doctorAvatar, file);
+        if (Objects.isNull(doctorAvatar)) saveDoctorAvatar(doctor, avatar);
+        else updateDoctorAvatar(doctor, doctorAvatar, avatar);
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void updateDoctorAvatar(Doctor doctor,
                                     DoctorAvatar doctorAvatar,
-                                    MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{files});
-            setAvatarFileProperties(responseList.get(0), doctorAvatar);
+                                    String avatar) {
+
+        if (!Objects.isNull(avatar)) {
+            convertFileToDoctorAvatar(doctorAvatar, avatar, doctor);
         } else doctorAvatar.setStatus(INACTIVE);
 
         saveDoctorAvatar(doctorAvatar);
@@ -494,10 +622,20 @@ public class DoctorServiceImpl implements DoctorService {
         throw new NoContentFoundException(Doctor.class, "id", id.toString());
     };
 
+    private Function<Long, NoContentFoundException> SALUTATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, SALUTATION, id);
+        throw new NoContentFoundException(Salutation.class, "id", id.toString());
+    };
+
     private Function<Long, NoContentFoundException> DOCTOR_APPOINTMENT_CHARGE_WITH_GIVEN_DOCTOR_ID_NOT_FOUND = (doctorId) -> {
         log.error(DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND, DoctorAppointmentCharge.class.getSimpleName(), doctorId);
         throw new NoContentFoundException(DoctorAppointmentCharge.class, "doctorId", doctorId.toString());
     };
+
+    private void saveDoctorSalutation(Long doctorId, List<Long> salutationIds) {
+        doctorSalutationRepository.saveAll(parseToDoctorSalutation(doctorId, salutationIds));
+
+    }
 }
 
 

@@ -36,4 +36,5 @@ public class DoctorSalutationEntityListener {
         EntityManager entityManager = BeanUtil.getBean(EntityManager.class);
         entityManager.persist(new DoctorSalutationHistory(target, action));
     }
+
 }

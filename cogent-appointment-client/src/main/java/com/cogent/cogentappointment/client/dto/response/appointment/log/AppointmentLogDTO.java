@@ -19,7 +19,7 @@ public class AppointmentLogDTO implements Serializable {
 
     private String status;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
     private String appointmentNumber;
@@ -36,9 +36,9 @@ public class AppointmentLogDTO implements Serializable {
 
     private Gender patientGender;
 
-    private String patientAge;
+    private String age;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")
     private Date patientDob;
 
     private Character isRegistered;
@@ -57,7 +57,7 @@ public class AppointmentLogDTO implements Serializable {
 
     private Double refundAmount;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")
     private Date transactionDate;
 
     private String appointmentMode;
@@ -65,5 +65,12 @@ public class AppointmentLogDTO implements Serializable {
     private Character isFollowUp;
 
     private Double revenueAmount;
+
+    /*department info*/
+    private String hospitalDepartmentName;
+
+    private String roomNumber;
+
+    private String billingModeName;
 
 }

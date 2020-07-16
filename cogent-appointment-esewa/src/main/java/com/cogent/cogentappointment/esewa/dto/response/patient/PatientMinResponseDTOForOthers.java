@@ -36,5 +36,15 @@ public class PatientMinResponseDTOForOthers implements Serializable {
 
     private String hospitalName;
 
+    private Character hasAddress = 'N';
+
+    private String province;
+
+    private String district;
+
+    private String vdcOrMunicipality;
+
+    private String wardNumber;
+
     private Integer totalItems;
 }

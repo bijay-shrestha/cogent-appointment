@@ -28,13 +28,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public LoggedInAdminDTO getAdmin(String email) {
-        return adminRepository.getLoggedInAdmin(email);
+
+        try {
+            return adminRepository.getLoggedInAdmin(email);
+        } catch (NoContentFoundException ex) {
+            throw new NoContentFoundException("USER NOT FOUND");
+        }
     }
 
     @Override
     public UserDetailsImpl loadUserByUsername(String email) throws UsernameNotFoundException {
-        LoggedInAdminDTO loggedInAdminDTO = getAdmin(email);
-        if (loggedInAdminDTO == null) {
+        LoggedInAdminDTO loggedInAdminDTO = null;
+
+//        if (loggedInAdminDTO == null) {
+//            log.error(USER_NOT_FOUND, email);
+//            throw new NoContentFoundException("USER NOT FOUND");
+//        }
+
+        try {
+            loggedInAdminDTO = getAdmin(email);
+        } catch (NoContentFoundException e) {
             log.error(USER_NOT_FOUND, email);
             throw new NoContentFoundException("USER NOT FOUND");
         }

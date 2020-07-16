@@ -1,14 +1,14 @@
 package com.cogent.cogentappointment.client.query;
 
-
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDateInString;
 
 /**
  * @author Sauravi Thapa ON 4/19/20
@@ -30,23 +30,43 @@ public class TransactionLogQuery {
                     " sp.name as specializationName," +                             //[10]
                     " atd.transactionNumber as transactionNumber," +                //[11]
                     " atd.appointmentAmount as appointmentAmount," +                //[12]
-                    " d.name as doctorName," +                                     //[13]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as doctorName," +                                         //[13]
                     " a.status as status," +                                       //[14]
-                    " ard.refundAmount as refundAmount," +                         //[15]
-                    " hpi.address as patientAddress," +                            //[16]
-                    " atd.transactionDate as transactionDate," +                    //[17]
-                    " am.name as appointmentMode," +                                //[18]
-                    " a.isFollowUp as isFollowUp," +                                //[19]
-                    " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," + //[20]
-                    " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[21]
-                    " da.fileUri as fileUri" +                                                     //[22]
+                    " CASE WHEN" +
+                    " a.status = 'RE'" +
+                    " THEN " +
+                    " (COALESCE(ard.refundAmount,0))" +
+                    " ELSE" +
+                    " 0" +
+                    " END AS refundAmount," +
+                    " hpi.address as patientAddress," +                            //[15]
+                    " atd.transactionDate as transactionDate," +                    //[16]
+                    " am.name as appointmentMode," +                                //[17]
+                    " a.isFollowUp as isFollowUp," +                                //[18]
+                    " CASE WHEN" +
+                    " a.status!= 'RE'" +
+                    " THEN" +
+                    " atd.appointmentAmount" +
+                    " ELSE" +
+                    " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +
+                    " END AS revenueAmount," +
+                    " da.fileUri as fileUri," +                                                        //[19]
+                    " DATE_FORMAT(atd.transactionDate, '%h:%i %p') as transactionTime," +              //[20]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                                                   //[21]
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN DoctorAvatar da ON d.id= da.doctorId.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
@@ -63,16 +83,21 @@ public class TransactionLogQuery {
         String whereClause = " WHERE " +
                 " sp.status!='D'" +
                 " AND d.status!='D'" +
-                " AND h.id=:hospitalId";
+                " AND h.id=:hospitalId" +
+                " AND has.appointmentServiceType.code =:appointmentServiceTypeCode";
+
+        String fromDate = utilDateToSqlDate(transactionLogSearchDTO.getFromDate()) + " 00:00:00";
+        String toDate = utilDateToSqlDate(transactionLogSearchDTO.getToDate()) + " 23:59:59";
 
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(transactionLogSearchDTO.getToDate()))
-            whereClause += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(transactionLogSearchDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(transactionLogSearchDTO.getToDate()) + "')";
+            whereClause += " AND atd.transactionDate BETWEEN '" + fromDate + "' AND '" + toDate + "'";
 
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getTransactionNumber()))
             whereClause += " AND atd.transactionNumber LIKE '%" + transactionLogSearchDTO.getTransactionNumber() + "%'";
+
+        if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + transactionLogSearchDTO.getAppointmentNumber() + "%'";
 
         if (!Objects.isNull(transactionLogSearchDTO.getStatus()) && !transactionLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + transactionLogSearchDTO.getStatus() + "'";
@@ -101,16 +126,19 @@ public class TransactionLogQuery {
             "SELECT" +
                     " COALESCE (SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " h.id=:hospitalId" +
+                    " AND has.appointmentServiceType.code =:appointmentServiceTypeCode" +
                     " AND sp.status!='D'" +
                     " AND d.status!='D'";
 
@@ -119,18 +147,21 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " COALESCE(SUM(atd.appointmentAmount ),0)" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
                     " WHERE" +
                     " sp.status!='D'" +
                     " AND d.status!='D'" +
-                    " AND h.id=:hospitalId";
+                    " AND h.id=:hospitalId" +
+                    " AND has.appointmentServiceType.code =:appointmentServiceTypeCode";
 
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
@@ -187,16 +218,19 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " COALESCE (SUM(ard.refundAmount ),0) as amount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " h.id=:hospitalId" +
+                    " AND has.appointmentServiceType.code =:appointmentServiceTypeCode" +
                     " AND sp.status!='D'" +
                     " AND d.status!='D'" +
                     " AND a.status='RE'";
@@ -220,16 +254,19 @@ public class TransactionLogQuery {
                     " COUNT(a.id)," +
                     " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
                     " FROM Appointment a" +
+                    " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
+                    " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                    " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " h.id=:hospitalId" +
+                    " AND has.appointmentServiceType.code =:appointmentServiceTypeCode" +
                     " AND sp.status!='D'" +
                     " AND d.status!='D'" +
                     " AND a.status='RE'";
@@ -252,12 +289,15 @@ public class TransactionLogQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
                 && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
+            query += " AND (DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN '" +
+                    utilDateToSqlDateInString(searchRequestDTO.getFromDate())
+                    + "' AND '" + utilDateToSqlDateInString(searchRequestDTO.getToDate()) + "')";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
             query += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentNumber()))
+            query += " AND a.appointmentNumber LIKE '%" + searchRequestDTO.getAppointmentNumber() + "%'";
 
         if (!Objects.isNull(searchRequestDTO.getStatus()) && !searchRequestDTO.getStatus().equals(""))
             query += " AND a.status = '" + searchRequestDTO.getStatus() + "'";

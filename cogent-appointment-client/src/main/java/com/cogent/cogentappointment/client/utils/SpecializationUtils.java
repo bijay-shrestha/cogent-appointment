@@ -6,7 +6,6 @@ import com.cogent.cogentappointment.client.dto.request.specialization.Specializa
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
 
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -16,7 +15,7 @@ public class SpecializationUtils {
     public static Specialization parseToSpecialization(SpecializationRequestDTO requestDTO, Hospital hospital) {
 
         Specialization specialization = new Specialization();
-        specialization.setName(toNormalCase(requestDTO.getName()));
+        specialization.setName(requestDTO.getName());
         specialization.setCode(toUpperCase(requestDTO.getCode()));
         specialization.setStatus(requestDTO.getStatus());
         specialization.setHospital(hospital);
@@ -26,7 +25,7 @@ public class SpecializationUtils {
     public static void parseToUpdatedSpecialization(SpecializationUpdateRequestDTO updateRequestDTO,
                                                     Specialization specialization) {
 
-        specialization.setName(toNormalCase(updateRequestDTO.getName()));
+        specialization.setName(updateRequestDTO.getName());
         specialization.setStatus(updateRequestDTO.getStatus());
         specialization.setRemarks(updateRequestDTO.getRemarks());
     }

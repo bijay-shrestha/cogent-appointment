@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.*;
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -16,18 +13,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.DOCTOR_REVENUE_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.DYNAMIC_DASHBOARD_FEATURE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercentage;
 
 
@@ -73,18 +71,21 @@ public class DashboardServiceImpl implements DashboardService {
         Double currentTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getCurrentToDate(),
                 requestDTO.getCurrentFromDate(),
-                requestDTO.getHospitalId());
+                requestDTO.getHospitalId(),
+                requestDTO.getAppointmentServiceTypeCode());
 
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getPreviousToDate(),
                 requestDTO.getPreviousFromDate(),
-                requestDTO.getHospitalId());
+                requestDTO.getHospitalId(),
+                requestDTO.getAppointmentServiceTypeCode());
 
         AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
-                        requestDTO.getCurrentToDate(),
-                        requestDTO.getCurrentFromDate(),
-                        requestDTO.getHospitalId()
+                        utilDateToSqlDateInString(requestDTO.getCurrentToDate()),
+                        utilDateToSqlDateInString(requestDTO.getCurrentFromDate()),
+                        requestDTO.getHospitalId(),
+                        requestDTO.getAppointmentServiceTypeCode()
                 );
 
         RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(
@@ -118,7 +119,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient,followUpPatient, pillType);
+        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient, followUpPatient, pillType);
     }
 
     @Override
@@ -149,8 +150,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         Map<String, String> map = revenueTrendResponseDTO.getData();
 
-        if (!isMapContainsEveryField
-                (map, dashBoardRequestDTO.getToDate(), filter)) {
+        if (!isMapContainsEveryField(map, dashBoardRequestDTO.getToDate(), filter)) {
             map = addRemainingFields
                     (revenueTrendResponseDTO.getData(),
                             dashBoardRequestDTO.getFromDate(),
@@ -182,9 +182,9 @@ public class DashboardServiceImpl implements DashboardService {
      * 2. CALCULATE CANCELLED/COMPANY REVENUE i.e. APPOINTMENT WITH TRANSACTION STATUS 'A' AND
      * APPOINTMENT WITH STATUS 'RE'
      * 3. UNION (1) & (2).
-      * ADD TO FINAL LIST CONSIDERING DISTINCT ELEMENTS NEEDS TO BE ADDED AND
-      * BASED ON CONDITION-> SAME DOCTOR ID & SPECIALIZATION ID
-      * */
+     * ADD TO FINAL LIST CONSIDERING DISTINCT ELEMENTS NEEDS TO BE ADDED AND
+     * BASED ON CONDITION-> SAME DOCTOR ID & SPECIALIZATION ID
+     * */
     @Override
     public DoctorRevenueResponseDTO calculateOverallDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
                                                                   Pageable pageable) {
@@ -193,19 +193,54 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
+        List<DoctorRevenueDTO> cancelledAndRefundedRevenue =new ArrayList<>();
+
         List<DoctorRevenueDTO> doctorRevenue =
-                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO,pageable);
+                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
 
         List<DoctorRevenueDTO> cancelledRevenue =
-                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO,pageable);
+                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO, pageable);
 
-        validateDoctorRevenue(doctorRevenue, cancelledRevenue);
+        List<DoctorRevenueDTO> refundedRevenue =
+                appointmentTransactionDetailRepository.calculateRefundedRevenue(doctorRevenueRequestDTO, pageable);
 
-        List<DoctorRevenueDTO> mergedList = mergeDoctorAndCancelledRevenue(doctorRevenue, cancelledRevenue);
+        cancelledAndRefundedRevenue.addAll(cancelledRevenue);
+
+        cancelledAndRefundedRevenue.addAll(refundedRevenue);
+
+        validateDoctorRevenue(doctorRevenue, cancelledAndRefundedRevenue);
+
+        List<DoctorRevenueDTO> mergedList = mergeDoctorAndCancelledRevenue(doctorRevenue, cancelledAndRefundedRevenue);
 
         DoctorRevenueResponseDTO responseDTO = parseToDoctorRevenueResponseDTO(mergedList);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
+    @Override
+    public HospitalDepartmentRevenueResponseDTO calculateOverallHospitalDeptRevenue(
+            HospitalDepartmentRevenueRequestDTO revenueRequestDTO, Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REVENUE);
+
+        List<HospitalDepartmentRevenueDTO> hospitalDeptRevenue =
+                appointmentTransactionDetailRepository.calculateHospitalDepartmentRevenue(revenueRequestDTO, pageable);
+
+        List<HospitalDepartmentRevenueDTO> cancelledRevenue =
+                appointmentTransactionDetailRepository.calculateCancelledHospitalDepartmentRevenue(revenueRequestDTO, pageable);
+
+        validateHospitalDepartmentRevenue(hospitalDeptRevenue, cancelledRevenue);
+
+        List<HospitalDepartmentRevenueDTO> mergedList = mergeHospitalDepartmentAndCancelledRevenue
+                (hospitalDeptRevenue, cancelledRevenue);
+
+        HospitalDepartmentRevenueResponseDTO responseDTO = parseToHospitalDeptRevenueResponseDTO(mergedList);
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REVENUE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -240,9 +275,19 @@ public class DashboardServiceImpl implements DashboardService {
 
     private void validateDoctorRevenue(List<DoctorRevenueDTO> doctorRevenue,
                                        List<DoctorRevenueDTO> cancelledRevenue) {
+
         if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
             log.error(CONTENT_NOT_FOUND, DOCTOR_REVENUE);
             throw new NoContentFoundException(DOCTOR_REVENUE_NOT_FOUND);
+        }
+    }
+
+    private void validateHospitalDepartmentRevenue(List<HospitalDepartmentRevenueDTO> doctorRevenue,
+                                                   List<HospitalDepartmentRevenueDTO> cancelledRevenue) {
+
+        if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
+            log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_REVENUE);
+            throw new NoContentFoundException(HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND);
         }
     }
 }

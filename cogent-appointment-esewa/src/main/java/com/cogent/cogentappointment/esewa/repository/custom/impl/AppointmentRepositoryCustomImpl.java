@@ -24,18 +24,24 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ROOM_INFO_ID;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentQuery.QUERY_TO_VALIDATE_IF_APPOINTMENT_EXISTS_DEPT_WISE;
 import static com.cogent.cogentappointment.esewa.query.AppointmentQuery.*;
+import static com.cogent.cogentappointment.esewa.query.HospitalDepartmentRoomInfoQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_NUMBER;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.parseToAppointmentHistory;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
@@ -86,7 +92,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     /*eg. 2076-10-10 lies in between 2076-04-01 to 2077-03-31 Fiscal Year ie. 2076/2077*/
     @Override
     public String generateAppointmentNumber(String nepaliCreatedDate,
-                                            Long hospitalId) {
+                                            Long hospitalId,
+                                            String hospitalCode) {
 
         int year = getYearFromNepaliDate(nepaliCreatedDate);
         int month = getMonthFromNepaliDate(nepaliCreatedDate);
@@ -99,7 +106,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(TO_DATE, endingFiscalYear)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return AppointmentUtils.generateAppointmentNumber(query.getResultList(), startingFiscalYear, endingFiscalYear);
+        return AppointmentUtils.generateAppointmentNumber(query.getResultList(),
+                startingFiscalYear, endingFiscalYear, hospitalCode);
     }
 
     @Override
@@ -127,6 +135,33 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         } catch (NoResultException e) {
             throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
         }
+    }
+
+    @Override
+    public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
+            Date appointmentDate, Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE(hospitalDepartmentRoomInfoId))
+                .setParameter(DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        return transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
+    }
+
+    @Override
+    public Long validateIfAppointmentExistsDeptWise(Date appointmentDate,
+                                                    String appointmentTime,
+                                                    Long hospitalDepartmentId,
+                                                    Long hospitalDepartmentRoomInfoId) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_VALIDATE_IF_APPOINTMENT_EXISTS_DEPT_WISE(hospitalDepartmentRoomInfoId))
+                .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(APPOINTMENT_TIME, appointmentTime)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        return (Long) query.getSingleResult();
     }
 
     @Override
@@ -160,18 +195,28 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(searchDTO))
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(searchDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
                 .setParameter(NAME, searchDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchDTO.getDateOfBirth()));
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchDTO.getDateOfBirth()))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, searchDTO.getAppointmentServiceTypeCode());
 
         List<AppointmentResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentResponseDTO.class);
 
         if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
+
+        appointmentHistory.forEach(appointment -> {
+            if (!Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
+                String roomNumber = fetchRoomNumber(appointment.getHospitalDepartmentRoomInfoId());
+                appointment.setRoomNumber(roomNumber);
+            }
+        });
 
         return parseToAppointmentHistory(appointmentHistory);
     }
@@ -194,13 +239,21 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_OTHERS(searchDTO, childPatientIds))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, searchDTO.getAppointmentServiceTypeCode());
 
         List<AppointmentResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentResponseDTO.class);
 
         if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
+
+        appointmentHistory.forEach(appointment -> {
+            if (!Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
+                String roomNumber = fetchRoomNumber(appointment.getHospitalDepartmentRoomInfoId());
+                appointment.setRoomNumber(roomNumber);
+            }
+        });
 
         return parseToAppointmentHistory(appointmentHistory);
     }
@@ -214,4 +267,15 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         log.error(CONTENT_NOT_FOUND, APPOINTMENT);
         throw new NoContentFoundException(Appointment.class);
     };
+
+    private String fetchRoomNumber(Long hospitalDepartmentRoomInfoId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_NUMBER)
+                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId);
+
+        try {
+            return (String) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

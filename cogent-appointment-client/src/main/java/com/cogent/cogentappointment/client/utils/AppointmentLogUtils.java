@@ -64,12 +64,13 @@ public class AppointmentLogUtils {
                 .build();
     }
 
-    public static void parseToAppointmentLogResponseDTO(AppointmentLogResponseDTO responseDTO,
-                                                        BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
-                                                        CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
-                                                        CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
-                                                        RefundAppointmentResponseDTO refundAppointmentResponseDTO,
-                                                        RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
+    public static void parseToAppointmentLogResponseDTO(
+            AppointmentLogResponseDTO responseDTO,
+            BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
+            CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
+            CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
+            RefundAppointmentResponseDTO refundAppointmentResponseDTO,
+            RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
 
         responseDTO.setBookedInfo(bookedAppointmentResponseDTO);
         responseDTO.setCheckedInInfo(checkedInAppointmentResponseDTO);
@@ -78,12 +79,13 @@ public class AppointmentLogUtils {
         responseDTO.setRevenueFromRefundInfo(revenueFromRefundAppointmentResponseDTO);
     }
 
-    public static void parseToTxnLogResponseDTO(TransactionLogResponseDTO responseDTO,
-                                                BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
-                                                CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
-                                                CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
-                                                RefundAppointmentResponseDTO refundAppointmentResponseDTO,
-                                                RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
+    public static void parseToTxnLogResponseDTO(
+            TransactionLogResponseDTO responseDTO,
+            BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
+            CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
+            CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
+            RefundAppointmentResponseDTO refundAppointmentResponseDTO,
+            RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
 
         responseDTO.setBookedInfo(bookedAppointmentResponseDTO);
         responseDTO.setCheckedInInfo(checkedInAppointmentResponseDTO);

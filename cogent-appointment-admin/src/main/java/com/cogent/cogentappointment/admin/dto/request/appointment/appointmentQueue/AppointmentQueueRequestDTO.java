@@ -3,6 +3,8 @@ package com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQu
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,4 +20,10 @@ public class AppointmentQueueRequestDTO implements Serializable {
     private Long doctorId;
 
     private Date date;
+
+    @NotNull
+    @NotEmpty
+    private String appointmentServiceType;
+
+    private Long hospitalDepartmentId;
 }

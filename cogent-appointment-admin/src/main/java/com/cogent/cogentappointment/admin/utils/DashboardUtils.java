@@ -2,10 +2,7 @@ package com.cogent.cogentappointment.admin.utils;
 
 
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -59,7 +56,7 @@ public class DashboardUtils {
         final int WEEK_MONTH_YEAR_INDEX = 0;
         final int TOTAL_REVENUE = 1;
         Map<String, String> map = new LinkedHashMap<>();
-        resultList.stream().forEach(objects -> {
+        resultList.forEach(objects -> {
             map.put(objects[WEEK_MONTH_YEAR_INDEX].toString(), objects[TOTAL_REVENUE].toString());
         });
 
@@ -228,10 +225,45 @@ public class DashboardUtils {
         return finalRevenueResponse;
     }
 
+    public static List<HospitalDepartmentRevenueDTO> mergeHospitalDepartmentAndCancelledRevenue(List<HospitalDepartmentRevenueDTO> revenueResponse,
+                                                                                                List<HospitalDepartmentRevenueDTO> cancelledRevenueResponse) {
+
+        List<HospitalDepartmentRevenueDTO> combinedRevenueResponse =
+                combineHospitalDepartmentAndCancelledRevenue(revenueResponse, cancelledRevenueResponse);
+
+        List<HospitalDepartmentRevenueDTO> finalRevenueResponse = new ArrayList<>();
+
+        combinedRevenueResponse.forEach(combinedInfo -> {
+
+                    HospitalDepartmentRevenueDTO hospitalDepartmentRevenueDTO = finalRevenueResponse.stream()
+                            .filter(finalRevenue ->
+                                    isHospitalDepartmentRevenueConditionMatched(combinedInfo, finalRevenue)
+                            ).findAny().orElse(null);
+
+                    if (!Objects.isNull(hospitalDepartmentRevenueDTO)) {
+                        calculateMatchedHospitalDepartmentRevenueDetails(hospitalDepartmentRevenueDTO, combinedInfo);
+                    } else {
+
+                        calculateUnmatchedMatchedHospitalDeptRevenueDetails(combinedInfo);
+
+                        finalRevenueResponse.add(combinedInfo);
+                    }
+                }
+        );
+
+        return finalRevenueResponse;
+    }
+
     private static boolean isDoctorRevenueConditionMatched(DoctorRevenueDTO doctorRevenue,
                                                            DoctorRevenueDTO cancelledRevenue) {
         return doctorRevenue.getDoctorId().equals(cancelledRevenue.getDoctorId())
                 && (doctorRevenue.getSpecializationId().equals(cancelledRevenue.getSpecializationId()));
+
+    }
+
+    private static boolean isHospitalDepartmentRevenueConditionMatched(HospitalDepartmentRevenueDTO hospitalDepartmentRevenue,
+                                                                       HospitalDepartmentRevenueDTO cancelledRevenue) {
+        return hospitalDepartmentRevenue.getHospitalDepartmentId().equals(cancelledRevenue.getHospitalDepartmentId());
 
     }
 
@@ -243,6 +275,16 @@ public class DashboardUtils {
         combinedDoctorRevenueResponse.addAll(cancelledRevenueResponse);
 
         return combinedDoctorRevenueResponse;
+    }
+
+    private static List<HospitalDepartmentRevenueDTO> combineHospitalDepartmentAndCancelledRevenue(List<HospitalDepartmentRevenueDTO> revenueResponse,
+                                                                                                   List<HospitalDepartmentRevenueDTO> cancelledRevenueResponse) {
+
+        List<HospitalDepartmentRevenueDTO> combinedRevenueResponse = new ArrayList<>();
+        combinedRevenueResponse.addAll(revenueResponse);
+        combinedRevenueResponse.addAll(cancelledRevenueResponse);
+
+        return combinedRevenueResponse;
     }
 
     private static void calculateMatchedRevenueDetails(DoctorRevenueDTO doctorRevenueDTO,
@@ -267,12 +309,42 @@ public class DashboardUtils {
                 doctorRevenueDTO.getDoctorRevenue() + doctorRevenueDTO.getCancelledRevenue());
     }
 
+    private static void calculateMatchedHospitalDepartmentRevenueDetails(HospitalDepartmentRevenueDTO hospitalDepartmentRevenue,
+                                                                         HospitalDepartmentRevenueDTO combinedInfo) {
+
+        hospitalDepartmentRevenue.setSuccessfulAppointments(
+                combinedInfo.getSuccessfulAppointments() + hospitalDepartmentRevenue.getSuccessfulAppointments());
+
+        hospitalDepartmentRevenue.setCancelledAppointments(
+                combinedInfo.getCancelledAppointments() + hospitalDepartmentRevenue.getCancelledAppointments());
+
+        hospitalDepartmentRevenue.setTotalAppointments(hospitalDepartmentRevenue.getSuccessfulAppointments() +
+                hospitalDepartmentRevenue.getCancelledAppointments());
+
+        hospitalDepartmentRevenue.setDepartmentRevenue(
+                combinedInfo.getDepartmentRevenue() + hospitalDepartmentRevenue.getDepartmentRevenue());
+
+        hospitalDepartmentRevenue.setCancelledRevenue(
+                combinedInfo.getCancelledRevenue() + hospitalDepartmentRevenue.getCancelledRevenue());
+
+        hospitalDepartmentRevenue.setTotalRevenue(
+                hospitalDepartmentRevenue.getDepartmentRevenue() + hospitalDepartmentRevenue.getCancelledRevenue());
+    }
+
     private static void calculateUnmatchedMatchedRevenueDetails(DoctorRevenueDTO combinedInfo) {
 
         combinedInfo.setTotalAppointments(combinedInfo.getSuccessfulAppointments() +
                 combinedInfo.getCancelledAppointments());
 
         combinedInfo.setTotalRevenue(combinedInfo.getDoctorRevenue() + combinedInfo.getCancelledRevenue());
+    }
+
+    private static void calculateUnmatchedMatchedHospitalDeptRevenueDetails(HospitalDepartmentRevenueDTO combinedInfo) {
+
+        combinedInfo.setTotalAppointments(combinedInfo.getSuccessfulAppointments() +
+                combinedInfo.getCancelledAppointments());
+
+        combinedInfo.setTotalRevenue(combinedInfo.getDepartmentRevenue() + combinedInfo.getCancelledRevenue());
     }
 
     public static DoctorRevenueResponseDTO parseToDoctorRevenueResponseDTO(List<DoctorRevenueDTO> revenueDTOList) {
@@ -293,6 +365,32 @@ public class DashboardUtils {
 
         return DoctorRevenueResponseDTO.builder()
                 .doctorRevenueInfo(revenueDTOList)
+                .totalAppointmentCount(overallAppointmentCount)
+                .totalRevenueAmount(totalRevenueAmount)
+                .totalFollowUpCount(overallFollowUpCount)
+                .totalItems(revenueDTOList.size())
+                .build();
+    }
+
+    public static HospitalDepartmentRevenueResponseDTO parseToHospitalDeptRevenueResponseDTO(
+            List<HospitalDepartmentRevenueDTO> revenueDTOList) {
+
+        Long overallAppointmentCount = revenueDTOList.stream()
+                .mapToLong(HospitalDepartmentRevenueDTO::getTotalAppointments)
+                .sum();
+
+        Long overallFollowUpCount = revenueDTOList.stream()
+                .mapToLong(HospitalDepartmentRevenueDTO::getTotalFollowUp)
+                .sum();
+
+        Double totalRevenueAmount = revenueDTOList.stream()
+                .mapToDouble(HospitalDepartmentRevenueDTO::getTotalRevenue)
+                .sum();
+
+        revenueDTOList.sort((o1, o2) -> Double.compare(o2.getTotalRevenue(), o1.getTotalRevenue()));
+
+        return HospitalDepartmentRevenueResponseDTO.builder()
+                .revenueDTOS(revenueDTOList)
                 .totalAppointmentCount(overallAppointmentCount)
                 .totalRevenueAmount(totalRevenueAmount)
                 .totalFollowUpCount(overallFollowUpCount)

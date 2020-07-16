@@ -19,5 +19,7 @@ public class AvailableDatesWithDoctor implements Serializable {
 
     private String doctorName;
 
+    private String doctorSalutation;
+
     private List<Date> avaliableDates;
 }

@@ -15,6 +15,7 @@ public class StringConstant {
     public static final String COMMA_SEPARATED = ",";
 
     //D
+    public static final String DATA = "data";
 
     public static final Character D = 'D';
 
@@ -40,7 +41,7 @@ public class StringConstant {
     //M
 
     //N
-
+    public static final String NO_SPACE = "";
 
     //O
     public static final String OR = "|";

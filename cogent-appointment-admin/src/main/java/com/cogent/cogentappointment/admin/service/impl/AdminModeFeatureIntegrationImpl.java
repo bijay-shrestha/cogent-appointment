@@ -12,7 +12,10 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIn
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.*;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeApiIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
@@ -28,10 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.*;
 import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.parseToDeletedApiQueryParameters;
@@ -60,6 +65,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     private final FeatureRepository featureRepository;
     private final HttpRequestMethodRepository httpRequestMethodRepository;
     private final IntegrationChannelRepository integrationChannelRepository;
+    private final HospitalRepository hospitalRepository;
 
     public AdminModeFeatureIntegrationImpl(
             AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository,
@@ -73,7 +79,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
             AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
             ApiIntegrationFormatRespository apiIntegrationFormatRespository,
             FeatureRepository featureRepository,
-            IntegrationChannelRepository integrationChannelRepository) {
+            IntegrationChannelRepository integrationChannelRepository, HospitalRepository hospitalRepository) {
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
         this.appointmentModeRepository = appointmentModeRepository;
         this.adminModeRequestHeaderRepository = adminModeRequestHeaderRepository;
@@ -86,6 +92,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         this.apiIntegrationFormatRespository = apiIntegrationFormatRespository;
         this.featureRepository = featureRepository;
         this.integrationChannelRepository = integrationChannelRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     @Override
@@ -100,9 +107,14 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         checkAdminModeFeatureIntegrationDuplicity(requestDTO.getAppointmentModeId(),
                 requestDTO.getFeatureTypeId(),
-                requestDTO.getRequestMethodId());
+                requestDTO.getRequestMethodId(),
+                requestDTO.getHospitalId());
 
         AppointmentMode appointmentMode = findAppointmentMode(requestDTO.getAppointmentModeId());
+
+        Hospital hospital = hospitalRepository.findActiveHospitalById(requestDTO.getHospitalId())
+                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getHospitalId()));
+
 
         IntegrationChannel integrationChannel = integrationChannelRepository.
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
@@ -111,7 +123,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         AdminModeFeatureIntegration adminModeFeatureIntegration =
                 parseToAdminModeFeatureIntegration(appointmentMode,
                         requestDTO.getFeatureTypeId(),
-                        integrationChannel);
+                        integrationChannel, hospital);
 
         saveAdminModeFeatureIntegration(adminModeFeatureIntegration);
 
@@ -141,11 +153,12 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     }
 
-    private void checkAdminModeFeatureIntegrationDuplicity(Long appointmentModeId, Long featureTypeId, Long requestMethodId) {
+    private void checkAdminModeFeatureIntegrationDuplicity(Long appointmentModeId, Long featureTypeId, Long requestMethodId,
+                                                           Long hospitalId) {
 
 
         Long count = adminModeFeatureIntegrationRepository.findAppointmentModeWiseFeatureAndRequestMethod(appointmentModeId,
-                featureTypeId, requestMethodId);
+                featureTypeId, requestMethodId,hospitalId);
 
         if (count > 0) {
 
@@ -266,15 +279,19 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         AppointmentMode appointmentMode = appointmentModeRepository.fetchAppointmentModeById(requestDTO.getAppointmentModeId())
                 .orElseThrow(() -> APPOINTMENT_MODE_NOT_FOUND.apply(requestDTO.getAppointmentModeId()));
 
-
         IntegrationChannel integrationChannel = integrationChannelRepository.
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
 
 
+        Hospital hospital = hospitalRepository.findActiveHospitalById(requestDTO.getHospitalId())
+                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getHospitalId()));
+
         parseToUpdateAdminModeFeatureIntegration(appointmentMode,
                 integrationChannel,
-                requestDTO, adminModeFeatureIntegration);
+                requestDTO,
+                adminModeFeatureIntegration,
+                hospital);
 
         List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList =
                 adminModeApiFeatureIntegrationRepository.
@@ -319,12 +336,14 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 findAdminModeFeatureIntegration(id);
 
         List<ApiRequestHeaderUpdateResponseDTO> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
-                findAdminModeApiRequestHeaderForUpdate(featureIntegrationResponse.getFeatureId());
+                findAdminModeApiRequestHeaderForUpdate(featureIntegrationResponse.getApiIntegrationFormatId());
 
         List<ApiQueryParametersUpdateResponseDTO> queryParametersResponseDTO = adminModeQueryParametersRepository.
-                findAdminModeApiQueryParameterForUpdate(featureIntegrationResponse.getFeatureId());
+                findAdminModeApiQueryParameterForUpdate(featureIntegrationResponse.getApiIntegrationFormatId());
 
         AdminModeIntegrationUpdateResponseDTO responseDTO = new AdminModeIntegrationUpdateResponseDTO();
+        responseDTO.setHospitalId(featureIntegrationResponse.getHospitalId());
+        responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setFeatureName(featureIntegrationResponse.getFeatureName());
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
@@ -338,6 +357,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         responseDTO.setAppointmentModeId(featureIntegrationResponse.getAppointmentModeId());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         return responseDTO;
 
@@ -433,10 +453,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 findAdminModeFeatureIntegration(id);
 
         List<ApiRequestHeaderDetailResponse> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
-                findAdminModeApiRequestHeaders(featureIntegrationResponse.getFeatureId());
+                findAdminModeApiRequestHeaders(featureIntegrationResponse.getApiIntegrationFormatId());
 
         List<ApiQueryParametersDetailResponse> queryParametersResponseDTO = adminModeQueryParametersRepository.
-                findAdminModeApiQueryParameters(featureIntegrationResponse.getFeatureId());
+                findAdminModeApiQueryParameters(featureIntegrationResponse.getApiIntegrationFormatId());
 
         AdminModeIntegrationDetailResponseDTO responseDTO = new AdminModeIntegrationDetailResponseDTO();
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
@@ -446,9 +466,11 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
         responseDTO.setIntegrationType(featureIntegrationResponse.getIntegrationType());
         responseDTO.setAppointmentMode(featureIntegrationResponse.getAppointmentModeName());
+        responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+        responseDTO.setStatus(featureIntegrationResponse.getStatus());
 
         //autitable data
         responseDTO.setCreatedBy(featureIntegrationResponse.getCreatedBy());
@@ -560,5 +582,11 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     private Function<Long, NoContentFoundException> INTEGRATION_TYPE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(ApiIntegrationType.class, "id", id.toString());
     };
+
+    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "id", id.toString());
+    };
+
 
 }

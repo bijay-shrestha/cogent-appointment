@@ -8,10 +8,16 @@ public class QueryConstants {
     //A
     public static final String APPOINTMENT_ID = "appointmentId";
     public static final String APPOINTMENT_MODE_ID = "appointmentModeId";
+    public static final String APPOINTMENT_NUMBER = "appointmentNumber";
     public static final String APPOINTMENT_TRANSFER_ID = "appointmentTransferId";
     public static final String ALIAS = "alias";
 
+    public static final String ADMIN_MODE_FEATURE_INTEGRATION_ID = "adminModeFeatureIntegrationId";
+    public static final String API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
+    public static final String API_FEATURE_ID = "featureId";
+
     public static final String APPOINTMENT_SERVICE_TYPE_ID = "appointmentServiceTypeId";
+    public static final String APPOINTMENT_SERVICE_TYPE_CODE = "appointmentServiceTypeCode";
 
     //B
     public static final String BILLING_MODE_ID = "billingModeId";
@@ -44,6 +50,7 @@ public class QueryConstants {
 
 
     //E
+    public static final String ESEWA_ID = "esewaId";
     public static final String ESEWA_MERCHANT_CODE = "esewaMerchantCode";
     public static final String EMAIL = "email";
 
@@ -55,6 +62,8 @@ public class QueryConstants {
 
     public static final String FROM_DATE = "fromDate";
 
+    public static final String FEATURE_CODE = "featureCode";
+
     //G
 
     //H
@@ -62,16 +71,15 @@ public class QueryConstants {
 
     public static final String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";
 
+    public static final String HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID = "hospitalDepartmentDutyRosterId";
+
     public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
 
     public static final String HOSPITAL_DEPARTMENT_ROOM_INFO_ID = "hospitalDepartmentRoomInfoId";
 
-
     //I
     public static final String ID = "id";
-    public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
-    public static final String API_FEATURE_ID = "featureId";
-    public static final String ADMIN_MODE_FEATURE_INTEGRATION_ID = "adminModeFeatureIntegrationId";
+    public static final String INTEGRATION_CHANNEL_CODE = "integrationChannelCode";
     public static final String CLIENT_FEATURE_INTEGRATION_ID = "clientFeatureIntegrationId";
     public static final String CLIENT_API_INTEGRATION_TYPE_ID = "apiIntegrationTypeId";
 
@@ -91,6 +99,11 @@ public class QueryConstants {
     //O
 
     //P
+    public interface PatientQueryConstants {
+        String PATIENT_ID = "patientId";
+
+    }
+
 
     //Q
 
@@ -108,6 +121,7 @@ public class QueryConstants {
 
     //T
     public static final String TO_DATE = "toDate";
+    public static final String TRANSACTION_NUMBER = "transactionNumber";
 
 
     //U
@@ -116,6 +130,7 @@ public class QueryConstants {
     //V
 
     //W
+    public static final String WEEK_DAY_NAME = "weekDayName";
 
 
     //X

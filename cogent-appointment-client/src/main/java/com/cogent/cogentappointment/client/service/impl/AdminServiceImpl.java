@@ -8,18 +8,23 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailRespons
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.integration.IntegrationBodyAttributeResponse;
+import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
+import com.cogent.cogentappointment.client.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
-import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.client.service.AdminFeatureService;
+import com.cogent.cogentappointment.client.service.AdminService;
+import com.cogent.cogentappointment.client.service.EmailService;
+import com.cogent.cogentappointment.client.service.ProfileService;
 import com.cogent.cogentappointment.client.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -27,10 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import javax.validation.Validator;
 import java.util.*;
 import java.util.function.Consumer;
@@ -39,7 +42,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
+import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
@@ -52,6 +55,8 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDif
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static java.lang.reflect.Array.get;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author smriti on 2019-08-05
@@ -77,8 +82,6 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
 
-    private final MinioFileService minioFileService;
-
     private final EmailService emailService;
 
     private final ProfileService profileService;
@@ -89,6 +92,16 @@ public class AdminServiceImpl implements AdminService {
 
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
 
+    private final AdminFavouriteRepository adminFavouriteRepository;
+
+    private final AppointmentServiceTypeRepository appointmentServiceTypeRepository;
+
+    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
+
+    private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
+
+    private final HospitalRepository hospitalRepository;
+
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -97,10 +110,15 @@ public class AdminServiceImpl implements AdminService {
                             AdminConfirmationTokenRepository confirmationTokenRepository,
                             DashboardFeatureRepository dashboardFeatureRepository,
                             AdminDashboardFeatureRepository adminDashboardFeatureRepository,
-                            MinioFileService minioFileService,
                             EmailService emailService,
                             ProfileService profileService,
-                            AdminFeatureService adminFeatureService, IntegrationRepository integrationRepository, IntegrationRequestBodyParametersRepository requestBodyParametersRepository) {
+                            AdminFeatureService adminFeatureService,
+                            IntegrationRepository integrationRepository,
+                            IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
+                            AdminFavouriteRepository adminFavouriteRepository, HospitalRepository hospitalRepository,
+                            AppointmentServiceTypeRepository appointmentServiceTypeRepository,
+                            AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
+                            AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -109,16 +127,20 @@ public class AdminServiceImpl implements AdminService {
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
-        this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
+        this.adminFavouriteRepository = adminFavouriteRepository;
+        this.appointmentServiceTypeRepository = appointmentServiceTypeRepository;
+        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
+        this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     @Override
-    public void save(@Valid AdminRequestDTO adminRequestDTO, MultipartFile files) {
+    public void save(AdminRequestDTO adminRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -141,9 +163,9 @@ public class AdminServiceImpl implements AdminService {
                 hospitalId
         );
 
-        Admin admin = save(adminRequestDTO, hospitalId);
+        Admin admin = saveAdmin(adminRequestDTO, hospitalId);
 
-        saveAdminAvatar(admin, files);
+        saveAdminAvatar(admin, adminRequestDTO.getAvatar());
 
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
@@ -217,7 +239,7 @@ public class AdminServiceImpl implements AdminService {
 
         deleteAdminMetaInfo(admin, deleteRequestDTO);
 
-        save(convertAdminToDeleted(admin, deleteRequestDTO));
+        saveAdmin(convertAdminToDeleted(admin, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -245,7 +267,7 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findAdminByIdAndHospitalId(requestDTO.getId(), getLoggedInHospitalId());
 
-        save(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
+        saveAdmin(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
 
         sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getFullName()));
 
@@ -253,26 +275,24 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateAvatar(MultipartFile files, Long adminId) {
+    public void updateAvatar(AdminAvatarUpdateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR);
 
-        Admin admin = findAdminByIdAndHospitalId(adminId, getLoggedInHospitalId());
+        Admin admin = findAdminByIdAndHospitalId(requestDTO.getAdminId(), getLoggedInHospitalId());
 
-        updateAvatar(admin, files);
+        updateAvatar(admin, requestDTO.getAvatar());
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public void update(@Valid AdminUpdateRequestDTO updateRequestDTO, MultipartFile files) {
+    public void update(AdminUpdateRequestDTO updateRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN);
-
-        validateConstraintViolation(validator.validate(updateRequestDTO));
 
         Long hospitalId = getLoggedInHospitalId();
 
@@ -289,22 +309,23 @@ public class AdminServiceImpl implements AdminService {
                 hospitalId
         );
 
-        emailIsNotUpdated(updateRequestDTO, admin, files, hospitalId);
+        emailIsNotUpdated(updateRequestDTO, admin, hospitalId);
 
-        emailIsUpdated(updateRequestDTO, admin, files, hospitalId);
+        emailIsUpdated(updateRequestDTO, admin, hospitalId);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void emailIsNotUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                   Admin admin, MultipartFile files, Long hospitalId) {
+                                   Admin admin, Long hospitalId) {
+
         if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
             update(updateRequestDTO, updateRequestDTO.getStatus(), admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -317,7 +338,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void emailIsUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                Admin admin, MultipartFile files, Long hospitalId) {
+                                Admin admin,
+                                Long hospitalId) {
+
         if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -331,7 +354,7 @@ public class AdminServiceImpl implements AdminService {
             update(updateRequestDTO, INACTIVE, admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -375,7 +398,7 @@ public class AdminServiceImpl implements AdminService {
 
         admin.setStatus(ACTIVE);
 
-        save(admin);
+        saveAdmin(admin);
 
         adminConfirmationToken.setStatus(INACTIVE);
 
@@ -409,50 +432,145 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
+        Long hospitalId = getLoggedInHospitalId();
+
         AdminLoggedInInfoResponseDTO responseDTO =
-                adminRepository.fetchLoggedInAdminInfo(requestDTO, getLoggedInHospitalId());
+                adminRepository.fetchLoggedInAdminInfo(requestDTO, hospitalId);
 
         List<IntegrationBodyAttributeResponse> responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributes();
 
         Map<String, String> map = new HashMap<>();
-        responses.forEach(response -> {
-            map.put(response.getName(), "");
-        });
 
-        ClientIntegrationResponseDTO integrationResponseDTO = getHospitalApiIntegration(getLoggedInHospitalId());
-        responseDTO.setECIntegrate(integrationResponseDTO);
+        if (responses != null) {
+            responses.forEach(response -> {
+                map.put(response.getName(), "");
+            });
+        }
+
+        List<Long> favouriteUserMenuId = adminFavouriteRepository.
+                findUserMenuIdByAdmin(getLoggedInHospitalId()).orElse(emptyList());
+
+        responseDTO.setFavouriteUserMenuId(favouriteUserMenuId);
+        responseDTO.setApiIntegration(getApiIntegrations());
         responseDTO.setRequestBody(map);
+
+        responseDTO.setHospitalAppointmentServiceType(fetchAppointmentServiceType(hospitalId));
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
 
-    private ClientIntegrationResponseDTO getHospitalApiIntegration(Long hospitalId) {
+    private Map<String, List<?>> getApiIntegrations() {
+
+        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTO =
+                getAdminModeApiIntegration(getLoggedInHospitalId());
+
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTO =
+                getHospitalApiIntegration(getLoggedInHospitalId());
+
+        Map<String, List<?>> map = new HashMap();
+
+        if (featureIntegrationResponseDTO != null) {
+            map.put(KEY_APPOINTMENT_MODE_INTEGRATION, featureIntegrationResponseDTO);
+        }
+
+        if (clientIntegrationResponseDTO != null) {
+            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTO);
+        }
+
+        return map;
+    }
+
+    private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration(Long hospitalId) {
+
+        List<AdminFeatureIntegrationResponse> integrationResponse = adminModeFeatureIntegrationRepository.
+                fetchAdminModeIntegrationResponseDTO(hospitalId);
+
+
+        Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = integrationResponse.stream()
+                .collect(groupingBy(AdminFeatureIntegrationResponse::getAppointmentModeId));
+
+        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOS = new ArrayList<>();
+
+
+        integrationResponseMap.entrySet().stream().forEach(responseMap -> {
+
+            List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+
+
+            responseMap.getValue().forEach(response -> {
+
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                        findAdminModeApiRequestHeaders(response.getApiIntegrationFormatId());
+
+                Map<String, String> queryParametersResponseDTO = integrationRepository.
+                        findAdminModeApiQueryParameters(response.getApiIntegrationFormatId());
+
+                Object[] requestBody = getRequestBodyByFeature(response.getFeatureId(),
+                        response.getRequestMethod());
+
+
+                FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
+                if (response.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+                    ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+
+                    apiInfoResponseDTO.setUrl(response.getUrl());
+                    apiInfoResponseDTO.setRequestMethod(response.getRequestMethod());
+                    apiInfoResponseDTO.setRequestBody(requestBody);
+                    apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+                    apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+                    featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+                }
+
+                featureIntegrationResponseDTO.setFeatureCode(response.getFeatureCode());
+                featureIntegrationResponseDTO.setIntegrationChannelCode(response.getIntegrationChannelCode());
+
+
+                features.add(featureIntegrationResponseDTO);
+
+            });
+
+            AdminModeFeatureIntegrationResponseDTO adminModeFeatureIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
+            adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(responseMap.getKey());
+            adminModeFeatureIntegrationResponseDTO.setFeatures(features);
+
+            featureIntegrationResponseDTOS.add(adminModeFeatureIntegrationResponseDTO);
+
+        });
+
+
+        return featureIntegrationResponseDTOS;
+
+    }
+
+    private List<ClientIntegrationResponseDTO> getHospitalApiIntegration(Long hospitalId) {
 
         List<FeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
                 fetchClientIntegrationResponseDTO(hospitalId);
 
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS = new ArrayList<>();
         List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
-        integrationResponseDTOList.forEach(responseDTO -> {
 
-            Map<String, String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+        integrationResponseDTOList.forEach(response -> {
 
-            Map<String, String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+            Map<String, String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(response.getApiIntegrationFormatId());
 
-            Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+            Map<String, String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(response.getApiIntegrationFormatId());
+
+            Object[] requestBody = getRequestBodyByFeature(response.getFeatureId(), response.getRequestMethod());
 
             FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
-            featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
-            featureIntegrationResponseDTO.setIntegrationChannelCode(responseDTO.getIntegrationChannelCode());
+            featureIntegrationResponseDTO.setFeatureCode(response.getFeatureCode());
+            featureIntegrationResponseDTO.setIntegrationChannelCode(response.getIntegrationChannelCode());
 
-            if (responseDTO.getIntegrationChannelCode() != null ||
-                    !responseDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+            if (response.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
                 ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
 
-                apiInfoResponseDTO.setUrl(responseDTO.getUrl());
-                apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+                apiInfoResponseDTO.setUrl(response.getUrl());
+                apiInfoResponseDTO.setRequestMethod(response.getRequestMethod());
                 apiInfoResponseDTO.setRequestBody(requestBody);
                 apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
                 apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
@@ -469,7 +587,9 @@ public class AdminServiceImpl implements AdminService {
         clientIntegrationResponseDTO.setFeatures(features);
         clientIntegrationResponseDTO.setClientId(hospitalId);
 
-        return clientIntegrationResponseDTO;
+        clientIntegrationResponseDTOS.add(clientIntegrationResponseDTO);
+
+        return clientIntegrationResponseDTOS;
 
     }
 
@@ -600,32 +720,27 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private Admin save(AdminRequestDTO adminRequestDTO, Long hospitalId) {
+    private Admin saveAdmin(AdminRequestDTO adminRequestDTO, Long hospitalId) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId(), hospitalId);
 
         Admin admin = parseAdminDetails(adminRequestDTO, gender, profile);
 
-        return save(admin);
+        return saveAdmin(admin);
     }
 
-    private void saveAdminAvatar(Admin admin, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            saveAdminAvatar(convertFileToAdminAvatar(responseList.get(0), admin));
-        }
+    private void saveAdminAvatar(Admin admin, String avatar) {
+        if (!Objects.isNull(avatar))
+            saveAdminAvatar(convertFileToAdminAvatar(new AdminAvatar(), avatar, admin));
     }
 
-    private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getEmail();
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
-    }
+    private void updateAdminAvatar(Admin admin,
+                                   AdminAvatar adminAvatar,
+                                   String avatar) {
 
-    private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            setFileProperties(responseList.get(0), adminAvatar);
+        if (!Objects.isNull(avatar)) {
+            convertFileToAdminAvatar(adminAvatar, avatar, admin);
         } else adminAvatar.setStatus(INACTIVE);
 
         saveAdminAvatar(adminAvatar);
@@ -647,7 +762,7 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private Admin save(Admin admin) {
+    private Admin saveAdmin(Admin admin) {
         return adminRepository.save(admin);
     }
 
@@ -727,11 +842,11 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
-    private void updateAvatar(Admin admin, MultipartFile files) {
+    private void updateAvatar(Admin admin, String avatar) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
-        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, files);
-        else updateAdminAvatar(admin, adminAvatar, files);
+        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, avatar);
+        else updateAdminAvatar(admin, adminAvatar, avatar);
     }
 
     public void update(AdminUpdateRequestDTO adminRequestDTO, Character status, Admin admin, Long hospitalId) {
@@ -833,5 +948,9 @@ public class AdminServiceImpl implements AdminService {
 
     private Profile fetchProfile(Long profileId, Long hospitalId) {
         return profileService.findActiveProfileByIdAndHospitalId(profileId, hospitalId);
+    }
+
+    private List<AppointmentServiceTypeDropDownResponseDTO> fetchAppointmentServiceType(Long hospitalId) {
+        return hospitalRepository.fetchAssignedAppointmentServiceType(hospitalId);
     }
 }

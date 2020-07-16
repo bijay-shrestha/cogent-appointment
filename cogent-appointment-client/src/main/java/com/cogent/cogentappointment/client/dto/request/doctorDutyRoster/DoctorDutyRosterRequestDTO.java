@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ public class DoctorDutyRosterRequestDTO implements Serializable {
     private Long specializationId;
 
     @NotNull
+    @Positive
     private Integer rosterGapDuration;
 
     @NotNull

@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 @Qualifier("appointmentFollowUpTrackerRepositoryCustom")
 public interface AppointmentFollowUpTrackerRepositoryCustom {
 
-    AppointmentFollowUpTracker fetchAppointmentFollowUpTracker(Long patientId,
-                                                               Long doctorId,
-                                                               Long specializationId,
-                                                               Long hospitalId);
-
     AppointmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId);
+
+    void updateAppointmentFollowUpTrackerStatus(Long patientId,
+                                                Long doctorId,
+                                                Long specializationId,
+                                                Long hospitalId);
 }

@@ -21,6 +21,8 @@ public class DoctorMinimalResponseDTO implements Serializable {
 
     private String doctorName;
 
+    private String doctorSalutation;
+
     private String code;
 
     private String mobileNumber;

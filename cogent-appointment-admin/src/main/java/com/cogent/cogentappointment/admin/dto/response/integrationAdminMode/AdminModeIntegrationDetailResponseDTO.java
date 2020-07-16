@@ -19,6 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 public class AdminModeIntegrationDetailResponseDTO implements Serializable {
 
+    private String hospitalName;
+
     private String appointmentMode;
 
     private Long featureId;
@@ -38,6 +40,8 @@ public class AdminModeIntegrationDetailResponseDTO implements Serializable {
     private List<ApiRequestHeaderDetailResponse> headers;
 
     private List<ApiQueryParametersDetailResponse> queryParameters;
+
+    private Character status;
 
     private String createdBy;
 

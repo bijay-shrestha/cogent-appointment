@@ -53,8 +53,29 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     @Column(name = "email", length = 50)
     private String email;
 
+    /*Y -> IN CASE OF DEPT WISE APPOINTMENT
+    * N -> IN CASE OF SELF APPOINTMENT
+    * */
+    @Column(name = "has_address")
+    private Character hasAddress = 'N';
+
     @Column(name = "address")
     private String address;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "province_id")
+    private Address province;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vdc_or_municipality_id")
+    private Address vdcOrMunicipality;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_id")
+    private Address district;
+
+    @Column(name = "ward_number")
+    private String wardNumber;
 
     /*PATIENT STATUS
     * Y = ACTIVE

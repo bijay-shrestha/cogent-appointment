@@ -13,6 +13,34 @@ import java.util.Date;
 
 /**
  * @author smriti on 2019-10-14
+ * <p>
+ * <p>
+ * Connected Table
+ * 1. HospitalAppointmentService Type
+ * Appointment Service Type can be
+ * a. Doctor Consultation (AppointmentDoctorInfo)
+ * i. Doctor
+ * ii. Specialization
+ * <p>
+ * b. Department Consultation (AppointmentHospitalDepartmentInfo)
+ * i. HospitalDepartment
+ * ii. HospitalDepartmentRoomInfo
+ * iii. HospitalDepartmentBillingModeInfo
+ * <p>
+ * 2. AppointmentMode
+ * 3. AppointmentTransactionDetail
+ * 4. AppointmentFollowUpTracker/AppointmentHospitalDepartmentFollowUpTracker
+ * 5. AppointmentFollowUpRequestLog/AppointmentHospitalDepartmentFollowUpRequestLog
+ * 6. AppointmentFollowUpLog/AppointmentHospitalDepartmentFollowUpLog
+ * 7. AppointmentReservationLog/AppointmentHospitalDepartmentReservationLog
+ * 8. AppointmentStatistics
+ * 9. AppointmentEsewaRequest
+ *
+ * <p>
+ * RESCHEDULE -> AppointmentRescheduleLog
+ * REFUND -> AppointmentRefundDetail
+ *
+ *
  */
 @Entity
 @Table(name = "appointment")
@@ -27,15 +55,9 @@ public class Appointment extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*eg.Specialization name like Surgeon, Physician,etc*/
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "specialization_id")
-    private Specialization specializationId;
-
-    /*eg.Doctor name like Dr.Sanjeev Uprety*/
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctorId;
+    @JoinColumn(name = "hospital_appointment_service_type_id")
+    private HospitalAppointmentServiceType hospitalAppointmentServiceType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
@@ -56,6 +78,9 @@ public class Appointment extends Auditable<String> implements Serializable {
 
     @Column(name = "appointment_number", updatable = false)
     private String appointmentNumber;
+
+    @Column(name = "hyphenated_appointment_number", updatable = false)
+    private String hyphenatedAppointmentNumber;
 
     /*maintained to avoid duplicate row persist*/
     @Column(name = "serial_number")
@@ -96,25 +121,29 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "has_transferred")
     private Character hasTransferred = 'N';
 
+    @Column(name = "appointment_date_in_nepali")
+    private String appointmentDateInNepali;
+
     @Override
     public String toString() {
         return "Appointment{" +
                 "id=" + id +
-                ", specializationId=" + specializationId.getName() +
-                ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
+                ", patientId=" + patientId +
                 ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
                 ", appointmentNumber='" + appointmentNumber + '\'' +
+                ", hyphenatedAppointmentNumber='" + hyphenatedAppointmentNumber + '\'' +
                 ", serialNumber='" + serialNumber + '\'' +
                 ", createdDateNepali='" + createdDateNepali + '\'' +
                 ", status='" + status + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", hospitalId=" + hospitalId.getName() +
+                ", hospitalId=" + hospitalId +
                 ", isFollowUp=" + isFollowUp +
                 ", isSelf=" + isSelf +
-                ", hasTransferred='" + hasTransferred + '\'' +
+                ", hasTransferred=" + hasTransferred +
+                ", appointmentDateInNepali='" + appointmentDateInNepali + '\'' +
                 '}';
     }
 }

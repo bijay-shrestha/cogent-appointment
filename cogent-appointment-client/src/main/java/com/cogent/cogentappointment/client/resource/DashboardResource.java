@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.*;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import io.swagger.annotations.Api;
@@ -21,6 +18,7 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Das
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DashboardConstants.*;
 import static com.cogent.cogentappointment.client.utils.DoctorRevenueUtils.convertToDoctorRevenueRequestDTO;
+import static com.cogent.cogentappointment.client.utils.HospitalDepartmentRevenueUtils.convertToHospitalDepartmentRevenueRequestDTO;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -103,6 +101,21 @@ public class DashboardResource {
                 convertToDoctorRevenueRequestDTO(doctorId, getLoggedInHospitalId(), specializationId, fromDate, toDate);
         Pageable pageable = PageRequest.of(page, size);
         return ok(dashboardService.calculateOverallDoctorRevenue(doctorRevenueRequestDTO, pageable));
+    }
+
+    @GetMapping(HOSPITAL_DEPARTMENT_REVENUE)
+    @ApiOperation(HOSPITAL_DEPARTMENT_REVENUE_OPERATION)
+    public ResponseEntity<?> getHospitalDepartmentRevenueList(@RequestParam("toDate") String toDate,
+                                                              @RequestParam("fromDate") String fromDate,
+                                                              @RequestParam("hospitalDepartmentId") Long hospitalDepartmentId,
+                                                              @RequestParam("page") int page,
+                                                              @RequestParam("size") int size) throws ParseException {
+
+        HospitalDepartmentRevenueRequestDTO revenueRequestDTO =
+                convertToHospitalDepartmentRevenueRequestDTO(hospitalDepartmentId, fromDate, toDate);
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(dashboardService.calculateOverallHospitalDeptRevenue(revenueRequestDTO, pageable));
     }
 
     @PutMapping(DYNAMIC_DASHBOARD_FEATURE + ADMIN_ID_PATH_VARIABLE_BASE)

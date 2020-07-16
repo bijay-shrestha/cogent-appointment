@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentServiceTypeRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentServiceTypeService;
@@ -48,6 +49,20 @@ public class AppointmentServiceTypeServiceImpl implements AppointmentServiceType
     public AppointmentServiceType fetchActiveById(Long id) {
         return appointmentServiceTypeRepository.fetchActiveById(id)
                 .orElseThrow(() -> NO_APPOINTMENT_SERVICE_TYPE_FOUND.apply(id));
+    }
+
+    @Override
+    public List<AppointmentServiceTypeDropDownResponseDTO> fetchServiceTypeNameAndCodeList() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, APPOINTMENT_SERVICE_TYPE);
+
+        List<AppointmentServiceTypeDropDownResponseDTO> minInfo =
+                appointmentServiceTypeRepository.fetchServiceTypeNameAndCodeList();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, APPOINTMENT_SERVICE_TYPE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
     }
 
     private Function<Long, NoContentFoundException> NO_APPOINTMENT_SERVICE_TYPE_FOUND = (id) -> {

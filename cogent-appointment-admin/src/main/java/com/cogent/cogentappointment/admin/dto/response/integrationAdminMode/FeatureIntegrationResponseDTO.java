@@ -15,11 +15,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class FeatureIntegrationResponseDTO implements Serializable {
 
+    private Long hospitalId;
+    
     private String featureCode;
 
     private String integrationChannelCode;
 
     private ApiInfoResponseDTO apiInfo;
-
 
 }

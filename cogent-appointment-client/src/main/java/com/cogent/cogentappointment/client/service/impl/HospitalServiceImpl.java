@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResponseDTOWithStatus;
+import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.HospitalRepository;
 import com.cogent.cogentappointment.client.service.HospitalService;
@@ -16,9 +14,9 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
-import static com.cogent.cogentappointment.client.utils.HospitalUtils.parseToHospitalMinResponseDTOWithStatus;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti ON 12/01/2020
@@ -49,21 +47,21 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public HospitalMinResponseDTOWithStatus fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
-
+    public List<AppointmentServiceTypeDropDownResponseDTO> fetchAssignedAppointmentServiceType() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
-        List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
+        List<AppointmentServiceTypeDropDownResponseDTO> assignedAppointmentServiceType =
+                hospitalRepository.fetchAssignedAppointmentServiceType(getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToHospitalMinResponseDTOWithStatus(responseDTO);
+        return assignedAppointmentServiceType;
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,HOSPITAL, id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 }

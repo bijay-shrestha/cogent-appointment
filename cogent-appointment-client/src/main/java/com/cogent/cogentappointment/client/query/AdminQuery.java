@@ -12,15 +12,13 @@ import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderB
 public class AdminQuery {
 
     public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
-            " SELECT " +
-                    " COUNT(a.id)," +                   //[0]
-                    " h.numberOfAdmins" +               //[1]
-                    " FROM Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
-                    " WHERE h.id = :hospitalId" +
-                    " AND a.status !='D'";
+            " SELECT COUNT(a.id)," +
+                    " h.numberOfAdmins" +
+                    " FROM Hospital h" +
+                    " LEFT JOIN Department d ON h.id=d.hospital.id" +
+                    " LEFT JOIN Profile p ON d.id=p.department.id" +
+                    " LEFT JOIN Admin a ON a.profileId.id=p.id AND a.status!='D'" +
+                    " WHERE h.id=:hospitalId";
 
     public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
             "SELECT " +
@@ -166,7 +164,7 @@ public class AdminQuery {
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
-                    " a.email as email," +                                            //[1]
+                    " a.email as email," +                                                 //[1]
                     " a.fullName as fullName," +
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
@@ -178,8 +176,12 @@ public class AdminQuery {
                     " d.name as departmentName," +
                     " h.name as hospitalName," +                                           //[6]
                     " p.isAllRoleAssigned as isAllRoleAssigned," +                         //[7]
-                    " af.isSideBarCollapse as isSideBarCollapse," +                         //[8]
-                    " hl.fileUri as hospitalLogo"+
+                    " af.isSideBarCollapse as isSideBarCollapse," +                        //[8]
+                    " CASE " +
+                    "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
+                    "    ELSE hl.fileUri" +
+                    " END as hospitalLogo," +                                              //[9]
+                    " h.code as hospitalCode" +                                             //[10]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -189,7 +191,6 @@ public class AdminQuery {
                     " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
-                    " AND hl.status='Y'"+
                     " AND a.status='Y'" +
                     " AND h.id=:hospitalId";
 

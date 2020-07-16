@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.esewa.scheduler;
 
 
-import com.cogent.cogentappointment.esewa.service.AppointmentReservationService;
+import com.cogent.cogentappointment.esewa.service.AppointmentReservationLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -19,16 +19,16 @@ import static com.cogent.cogentappointment.esewa.log.constants.AppointmentReserv
 @Slf4j
 public class AppointmentReservationScheduler {
 
-    private final AppointmentReservationService appointmentReservationService;
+    private final AppointmentReservationLogService appointmentReservationLogService;
 
-    public AppointmentReservationScheduler(AppointmentReservationService appointmentReservationService) {
-        this.appointmentReservationService = appointmentReservationService;
+    public AppointmentReservationScheduler(AppointmentReservationLogService appointmentReservationLogService) {
+        this.appointmentReservationLogService = appointmentReservationLogService;
     }
 
     /*RUNS IN 2 MINS*/
     @Scheduled(fixedDelayString = APPOINTMENT_RESERVATION_SCHEDULER)
     public void deleteExpiredAppointmentReservation() {
         log.info(SCHEDULER_RUNNING, APPOINTMENT_RESERVATION_LOG);
-        appointmentReservationService.deleteExpiredAppointmentReservation();
+        appointmentReservationLogService.deleteExpiredAppointmentReservation();
     }
 }

@@ -152,6 +152,22 @@
         <appender-ref ref="COMMON"/>
     </logger>
 
+    <logger name="com.cogent.cogentappointment.commons.service.impl" additivity="false">
+        <Level value="INFO"/>
+        <appender-ref ref="INFO_ERROR"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="COMMON"/>
+    </logger>
+
+    <logger name="com.cogent.cogentthirdpartyconnector.service" additivity="false">
+        <Level value="INFO"/>
+        <appender-ref ref="INFO_ERROR"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="COMMON"/>
+    </logger>
+
     <!--all the logs(info,warn,error..) of repositorycustom-imp is logged in this folder(info-error-repository)-->
     <logger name="com.cogent.cogentappointment.client.repository.custom.impl" additivity="false">
         <Level value="INFO"/>

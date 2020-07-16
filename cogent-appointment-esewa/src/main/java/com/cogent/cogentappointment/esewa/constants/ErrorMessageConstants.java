@@ -21,9 +21,26 @@ public class ErrorMessageConstants {
         String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
 
         String INVALID_TRANSACTION_NUMBER = "Transaction number '%s' and patient '%s' not found";
+
+        String ESEWA_ID_CANNOT_BE_NULL = "eSewa Id cannot be null";
+
+        String INVALID_APPOINTMENT_SERVICE_TYPE_CODE = "Invalid Appointment Service Type Code : '%s'";
+
+        String INVALID_HOSPITAL_APPOINTMENT_SERVICE_TYPE = "Requested appointment service type is not assigned to hospital '%s'";
+
+        String INVALID_ADDRESS_INFO = "Sorry, address information cannot be null or empty";
     }
 
+    public interface AppointmentHospitalDepartmentMessage {
+        String INVALID_ROOM_CHECK_AVAILABILITY_REQUEST = "Sorry, Requested room is not assigned to department duty roster";
 
+        String HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
+                "actual hospital department appointment charge";
+        String HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
+                "Hospital Department actual appointment charge/ follow-up appointment charge";
+
+        String APPOINTMENT_AVAILABLE_DATE_NOT_FOUND = "No available appointment date(s) found";
+    }
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
@@ -43,6 +60,7 @@ public class ErrorMessageConstants {
     }
 
     //E
+    public static final String ERROR_VALIDATING_ENCRYPTED_REQUEST="Error occurred while validating encrypted request :: {}";
 
     //F
 
@@ -53,6 +71,14 @@ public class ErrorMessageConstants {
 
     //H
     public static final String HOSPITAL_NULL_MESSAGE = " Hospital id must not be null";
+
+    public interface HospitalDepartmentDutyRosterMessages {
+        String HOSPITAL_DEPARTMENT_NOT_AVAILABLE_MESSAGE = "Sorry, Selected Hospital Department is not available" +
+                " on date '%s'.";
+
+        String HOSPITAL_DEPARTMENT_NOT_AVAILABLE_DEBUG_MESSAGE = "Sorry, Selected Hospital Department has day off" +
+                " on date '%s'.";
+    }
 
 
     //I
@@ -91,6 +117,7 @@ public class ErrorMessageConstants {
     //Q
 
     //R
+    public static final String REQUEST_BODY_IS_NULL="Request body is null";
 
 
     //S

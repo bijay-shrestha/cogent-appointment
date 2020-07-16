@@ -185,8 +185,9 @@ public class EsewaQuery {
                 " THEN NULL" +
                 " ELSE" +
                 " da.file_uri" +
-                " END as fileUri," +                                //[5]
-                " tbl1.qualificationAlias as qualificationAlias," + //[6]
+                " END as fileUri," +                             //[5]
+                " tbl1.qualificationAlias as qualificationAlias," +  //[6]
+                " d.salutation as doctorSalutation,"+
                 " dc.appointment_charge as appointmentCharge"+      //[7]
                 " FROM doctor_duty_roster ddr" +
                 " LEFT JOIN doctor_week_days_duty_roster dw ON dw.doctor_duty_roster_id = ddr.id" +

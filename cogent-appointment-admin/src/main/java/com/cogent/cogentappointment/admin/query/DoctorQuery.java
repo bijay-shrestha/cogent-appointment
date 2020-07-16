@@ -33,6 +33,7 @@ public class DoctorQuery {
         return " SELECT" +
                 SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                 " tbl1.specialization_name as specializationName," +
+                " d.salutation as doctorSalutation," +
                 " h.name as hospitalName," +
                 " CASE WHEN" +
                 " (da.status is null OR da.status = 'N')" +
@@ -104,7 +105,12 @@ public class DoctorQuery {
     public static final String QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN =
             " SELECT" +
                     " d.id as value," +                                     //[0]
-                    " d.name as label," +                                   //[1]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as label," +
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
@@ -151,7 +157,8 @@ public class DoctorQuery {
                     " tbl1.specialization_name as specializationName," +                //[12]
                     " tbl2.qualification_name as qualificationName," +                   //[13]
                     " tbl3.file_uri as fileUri," +                                       //[14]
-                    DOCTOR_AUDITABLE_QUERY() +
+                    DOCTOR_AUDITABLE_QUERY() + "," +
+                    " d.salutation as doctorSalutation" +
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -232,7 +239,12 @@ public class DoctorQuery {
     public static String QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID =
             "SELECT" +
                     " d.id as value," +                                      //[0]
-                    " d.name as label," +                                    //[1]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as label," +                                  //[1]
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
@@ -249,8 +261,13 @@ public class DoctorQuery {
 
     public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
-                    " d.id as value," +                                     //[0]
-                    " d.name as label," +                                   //[1]
+                    " d.id as value," +                          //[0]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +       //[1]
+                    " END as label," +
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
@@ -269,7 +286,12 @@ public class DoctorQuery {
     public static final String QUERY_TO_FETCH_MIN_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
                     " d.id as value," +                                     //[0]
-                    " d.name as label," +                                   //[1]
+                    " CASE WHEN" +
+                    " (d.salutation is null)" +
+                    " THEN d.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',d.salutation, d.name)" +
+                    " END as label," +                                  //[1]
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +

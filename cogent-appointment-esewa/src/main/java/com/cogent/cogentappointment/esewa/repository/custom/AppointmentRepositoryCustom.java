@@ -23,7 +23,7 @@ public interface AppointmentRepositoryCustom {
     Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
                                      Long doctorId, Long specializationId);
 
-    String generateAppointmentNumber(String nepaliCreatedDate, Long hospitalId);
+    String generateAppointmentNumber(String nepaliCreatedDate, Long hospitalId, String hospitalCode);
 
     List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentHistorySearchDTO searchDTO);
 
@@ -33,9 +33,18 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO);
 
-    AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO);
+    AppointmentResponseWithStatusDTO searchAppointmentsForOthers(
+            AppointmentSearchDTO searchDTO);
 
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     Double calculateRefundAmount(Long appointmentId);
+
+    /*department-wise*/
+    List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
+            Date appointmentDate, Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId);
+
+    Long validateIfAppointmentExistsDeptWise(Date appointmentDate, String appointmentTime,
+                                             Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId);
+
 }

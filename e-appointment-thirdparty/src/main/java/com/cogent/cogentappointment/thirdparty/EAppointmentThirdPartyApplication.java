@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.thirdparty;
 
+import com.cogent.cogentappointment.commons.utils.DateUtils;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import com.cogent.cogentappointment.thirdparty.configuration.YamlPropertySourceFactory;
 import org.modelmapper.ModelMapper;
@@ -10,16 +11,22 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.Date;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {
+        "com.cogent.cogentappointment.thirdparty",
+        "com.cogent.cogentappointment.commons.service"})
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
         "com.cogent.cogentappointment.persistence.history"})
-
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages =
+        {"com.cogent.cogentappointment.commons.repository",
+                "com.cogent.cogentappointment.thirdparty.repository"})
 @PropertySource(
         factory = YamlPropertySourceFactory.class,
         value =
@@ -36,6 +43,8 @@ public class EAppointmentThirdPartyApplication extends SpringBootServletInitiali
     //  BEFORE RUNNING THIS CHECK IF 'catalina.home' 
     // PATH IS SET IN YOUR 'application.yml'
     public static void main(String[] args) {
+
+        System.out.println("DATE DATE :: " + DateUtils.convertToString(new Date(),"yyyy-MM-dd" ));
         
         ConfigurableApplicationContext ctx =
                 SpringApplication.run( EAppointmentThirdPartyApplication.class, args);

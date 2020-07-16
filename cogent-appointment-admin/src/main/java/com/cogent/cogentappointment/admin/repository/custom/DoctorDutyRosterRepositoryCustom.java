@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.repository.custom;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -35,5 +36,7 @@ public interface DoctorDutyRosterRepositoryCustom {
 
     List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
             AppointmentStatusRequestDTO requestDTO);
+
+    RosterDetailsForStatus fetchRosterDetailsToSearchByApptNumber(Long doctorId, Long specializationId, Date date);
 
 }

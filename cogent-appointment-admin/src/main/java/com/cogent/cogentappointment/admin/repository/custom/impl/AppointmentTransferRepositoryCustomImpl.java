@@ -156,7 +156,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public AppointmentTransferLogResponseDTO getApptTransferredList(AppointmentTransferSearchRequestDTO requestDTO, Pageable pageable) {
+    public AppointmentTransferLogResponseDTO getApptTransferredList(AppointmentTransferSearchRequestDTO requestDTO,
+                                                                    Pageable pageable) {
         AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO=new AppointmentTransferLogResponseDTO();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
@@ -165,16 +166,11 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
         addPagination.accept(pageable, query);
 
-//        Query queryToGetCurretAppointment=createQuery.apply(entityManager,
-//                QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(requestDTO))
-//                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
-//
-//        List<LastModifiedAppointmentIdAndStatus> currentDetails=transformQueryToResultList(
-//                queryToGetCurretAppointment, LastModifiedAppointmentIdAndStatus.class);
+        List<AppointmentTransferLogDTO> responses = transformQueryToResultList(
+                query, AppointmentTransferLogDTO.class);
 
         Query queryToGetTransferredAppointmentId = createQuery.apply(entityManager,
-                QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID)
-                .setParameter(HOSPITAL_ID,requestDTO.getHospitalId());
+                QUERY_TO_GET_APPOINTMENT_ID_LIST_OF_TRANSFERRED_APPOINTMENT(requestDTO));
 
         List<Long> appointmentIds = queryToGetTransferredAppointmentId.getResultList();
 
@@ -182,24 +178,22 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
         appointmentIds.forEach(appointmentId -> {
 
-            Query query1 = createQuery.apply(entityManager,
-                    QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID)
+            Query latestAppointmentTransferStatus = createQuery.apply(entityManager,
+                    QUERY_TO_GET_LATEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID)
                     .setParameter(APPOINTMENT_ID, appointmentId);
 
             LastModifiedAppointmentIdAndStatus dtoList = transformQueryToSingleResult(
-                    query1, LastModifiedAppointmentIdAndStatus.class);
+                    latestAppointmentTransferStatus, LastModifiedAppointmentIdAndStatus.class);
 
             lastModifiedAppointmentIdAndStatuses.add(dtoList);
         });
-
-        List<AppointmentTransferLogDTO> responses = transformQueryToResultList(
-                query, AppointmentTransferLogDTO.class);
 
         if (responses.isEmpty()) {
             throw APPOINTMENT_TRANSFERE_NOT_FOUND.get();
         }
 
-        appointmentTransferLogResponseDTO.setResponse(mergeCurrentAppointmentStatus(lastModifiedAppointmentIdAndStatuses, responses));
+        appointmentTransferLogResponseDTO.setResponse(
+                mergeCurrentAppointmentStatus(lastModifiedAppointmentIdAndStatuses, responses));
 
         appointmentTransferLogResponseDTO.setTotalItems(totalItems);
 

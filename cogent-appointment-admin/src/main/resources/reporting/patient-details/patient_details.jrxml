@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="patientDetailsExcel" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f38e3094-0414-409d-9bdd-57795d610f0d">
+	<parameter name="logo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="client" class="java.lang.String"/>
+	<field name="patientType" class="java.lang.String"/>
+	<field name="patientName" class="java.lang.String"/>
+	<field name="contact" class="java.lang.String"/>
+	<field name="registrationNumber" class="java.lang.String"/>
+	<field name="esewaId" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<field name="hospitalNumber" class="java.lang.String"/>
+	<field name="age" class="java.lang.String"/>
+	<field name="gender" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="134" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="50" width="555" height="50" uuid="d55a51ec-4f58-41b1-a35e-9383f6f166b4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patient Details]]></text>
+			</staticText>
+			<image>
+				<reportElement x="144" y="0" width="236" height="50" uuid="3b68747d-8bd1-4296-9046-2f0c7fa1a91b"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField pattern="MM-dd-yyyy">
+				<reportElement isPrintRepeatedValues="false" x="260" y="106" width="70" height="28" uuid="ffc5891e-14bb-4781-b11c-56a550a007ae"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="210" y="106" width="50" height="28" uuid="6596b493-6380-478e-b48d-e4d2ca9ed901"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[As of ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="15" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue()==1]]></printWhenExpression>
+			<staticText>
+				<reportElement x="0" y="0" width="40" height="31" uuid="57de9435-0f78-4430-91ee-e16fad12516b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[S.N.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="0" width="50" height="31" uuid="ed5bb336-06cf-4bb5-a445-f38c386d4fd7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Client]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="0" width="54" height="31" uuid="1e863c35-8bef-49b3-af42-2140b1157e01"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patient Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="144" y="0" width="66" height="31" uuid="27c481c7-02e9-4026-a429-116466105ff8"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patient Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="276" y="0" width="54" height="31" uuid="d981a05d-f800-45a8-a2cc-025118f0bf2f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Contact]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="0" width="50" height="31" uuid="4b667683-92c9-4a97-8fce-1e5a18bb9f6d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reg NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="0" width="60" height="31" uuid="e3d2ad46-1034-4fa8-ba1a-167692fc9a1d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Esewa Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="0" width="40" height="31" uuid="2e909c25-1fb2-4a46-93b1-3da0e5381125"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="76" height="31" uuid="f8f09e7f-59df-4567-bdcb-93c8a63fdd08"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hospital No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="0" width="30" height="31" uuid="e036292f-d66b-4b10-99d5-e71f6cfc1fc0"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Age]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="0" width="36" height="31" uuid="b3d70c47-cb84-4f04-a92b-d11062835ed7"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gender]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="153" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="40" width="40" height="30" uuid="1f97db5b-ec5a-4c70-953f-9f8949b2ac3a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="40" width="50" height="30" uuid="da1f65a1-8f37-4ee6-8fad-fe15b3b146a5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4281aeee-3790-4fea-a4b4-3bfafa72083e"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{client}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="40" width="54" height="30" uuid="5904d46a-768e-4314-825e-2d37a83ede0a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="51da1d12-e31b-43e6-a702-e4a8beae1b4c"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{patientType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="144" y="40" width="66" height="30" uuid="694ac7ed-378d-4de8-9681-12f9af84514c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f5758c8-75f9-446a-8ea4-597fd0035582"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{patientName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="276" y="40" width="54" height="30" uuid="3d49aaad-c548-4a18-b5a4-d5d4e92b7b54">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e49c679e-e84e-4f5b-9cd1-dde932cc9608"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{contact}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="330" y="40" width="50" height="30" uuid="20546852-cf65-432f-b72a-885e9b0f072b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="57905781-b84b-4612-8926-9ebde5ddc1b6"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{registrationNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="40" width="60" height="30" uuid="5169b588-bced-4afd-ba2a-d77df0a76126">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0a8854c3-9f7b-44e1-97eb-a2ead5ee55b1"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{esewaId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="40" width="40" height="30" uuid="76ef4ad0-65cc-4f4f-9137-6e6d15e4245a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fc87d3b3-3944-4493-8863-0acfe9396e5f"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="40" width="76" height="30" uuid="7001203e-80ec-45e1-b24a-29c38545a103">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7e576df0-b11a-4fc6-9c88-9fd682cce98e"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{hospitalNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="210" y="40" width="30" height="30" uuid="2c1b3892-efc5-432b-9d06-7a6efaca1ce9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac213371-2105-437b-86ed-02e8543817ea"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{age}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="240" y="40" width="36" height="30" uuid="8c6e5ced-64f7-4472-849a-826a8f895ae8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a130b100-2e3d-4ec7-ab12-f2d37de80da6"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="33" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

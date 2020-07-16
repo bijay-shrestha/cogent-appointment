@@ -1,12 +1,14 @@
 package com.cogent.cogentappointment.client.security.hmac;
 
-import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
 import com.cogent.cogentappointment.client.service.impl.UserDetailsImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.util.function.BiFunction;
+
 import static com.cogent.cogentappointment.client.constants.HMACConstant.*;
+import static com.cogent.cogentappointment.client.security.hmac.HMACBuilderForEsewa.hmacShaGenerator;
 import static com.cogent.cogentappointment.client.utils.HMACKeyGenerator.generateNonce;
 
 /**
@@ -18,12 +20,12 @@ public class HMACUtils {
 
     public String getHash(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        Integer id= Math.toIntExact(userPrincipal.getId());
+        Integer id = Math.toIntExact(userPrincipal.getId());
         String email = userPrincipal.getEmail();
         String hospitalCode = userPrincipal.getHospitalCode();
         String apiKey = userPrincipal.getApiKey();
         String apiSecret = userPrincipal.getApiSecret();
-        Integer hospitalId= Math.toIntExact(userPrincipal.getHospitalId());
+        Integer hospitalId = Math.toIntExact(userPrincipal.getHospitalId());
         final String nonce = generateNonce();
 
         final HMACBuilder signatureBuilder = new HMACBuilder()
@@ -86,5 +88,13 @@ public class HMACUtils {
 
         return authToken;
     }
+
+    public static BiFunction<String, String, String> getSigatureForEsewa = (esewaId, merchantCode) -> {
+        String messgae = esewaId + COLON + merchantCode;
+
+        final String signature = hmacShaGenerator(messgae);
+
+        return signature;
+    };
 
 }

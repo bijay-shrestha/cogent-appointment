@@ -14,6 +14,9 @@ public class IntegrationAdminModeQuery {
     public static final String ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
+                    " aif.id as apiIntegrationFormatId," +
+                    " h.id as hospitalId," +
+                    " h.name as hospitalName," +
                     " am.id as appointmentModeId," +
                     " am.name as appointmentModeName," +
                     " f.name as featureName," +
@@ -24,6 +27,7 @@ public class IntegrationAdminModeQuery {
                     " ic.name as integrationChannel," +
                     " ait.id as integrationTypeId," +
                     " ait.name as integrationType," +
+                    " amfi.status as status," +
                     ADMIN_MODE_API_INTEGRATION_AUDITABLE_QUERY() +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
@@ -33,10 +37,11 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
                     " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
                     " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
+                    " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id" +
                     " WHERE amfi.id= :adminModeFeatureIntegrationId" +
                     " AND aif.status='Y'" +
                     " AND hrm.status='Y'" +
-                    " AND amfi.status='Y'" +
+                    " AND amfi.status!='D'" +
                     " AND amafi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND f.status='Y'" +
@@ -55,7 +60,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND aif.status='Y'" +
@@ -72,7 +77,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND aif.status='Y'" +
@@ -91,7 +96,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeQueryParameters amqp ON amqp.apiIntegrationFormatId =aif.id" +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND amqp.status='Y'" +
@@ -107,7 +112,7 @@ public class IntegrationAdminModeQuery {
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN AdminModeQueryParameters amqp ON amqp.apiIntegrationFormatId =aif.id" +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND amqp.status='Y'" +
@@ -128,12 +133,45 @@ public class IntegrationAdminModeQuery {
                     " AND aif.status='Y'" +
                     " AND f.id=:featureId" +
                     " AND hrm.id=:requestMethodId" +
+                    " AND amfi.appointmentModeId.id=:appointmentModeId"+
+                    " AND amfi.hospitalId.id=:hospitalId";
+
+    public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY =
+            " SELECT" +
+                    " aif.id as apiIntegrationFormatId," +
+                    " amfi.appointmentModeId.id as appointmentModeId," +
+                    " amfi.hospitalId.id as hospitalId," +
+                    " ic.code as integrationChannelCode," +
+                    " f.id as featureId," +
+                    " f.code as featureCode," +
+                    " hrm.name as requestMethod," +
+                    " aif.url as url" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                    " WHERE aif.status='Y'" +
+                    " AND hrm.status='Y'" +
+                    " AND amafi.status='Y'" +
+                    " AND f.status='Y'" +
+                    " AND amfi.status='Y'" +
+                    " AND ic.status='Y'";
+
+    public static final String APPOINTMENT_MODE_FEATURES_INTEGRATION_BACKEND_API_QUERY =
+            APPOINTMENT_MODE_FEATURES_INTEGRATION_API_QUERY +
+                    " AND amfi.hospitalId.id=:hospitalId" +
+                    " AND f.code=:featureCode" +
+                    " AND ic.code=:integrationChannelCode" +
                     " AND amfi.appointmentModeId.id=:appointmentModeId";
 
     public static Function<AdminModeApiIntegrationSearchRequestDTO, String> ADMIN_MODE_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
                             " amfi.id as id," +
+                            " amfi.status as status," +
+                            " h.name as hospitalName," +
                             " am.name as appointmentMode," +
                             " ic.name as integrationChannel," +
                             " f.name as featureName," +
@@ -147,7 +185,8 @@ public class IntegrationAdminModeQuery {
                             " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                             " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id"
+                            " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
+                            " LEFT JOIN Hospital h ON h.id=amfi.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_ADMIN_MODE_API_INTEGRATION(
@@ -158,7 +197,7 @@ public class IntegrationAdminModeQuery {
                 " AND hrm.status='Y'" +
                 " AND amafi.status='Y'" +
                 " AND f.status='Y'" +
-                " AND amfi.status='Y'";
+                " AND amfi.status!='D'";
 
         if (!Objects.isNull(requestSearchDTO.getAppointmentModeId()))
             whereClause += " AND amfi.appointmentModeId.id=" + requestSearchDTO.getAppointmentModeId();
@@ -175,10 +214,39 @@ public class IntegrationAdminModeQuery {
         if (!ObjectUtils.isEmpty(requestSearchDTO.getUrl()))
             whereClause += " AND aif.url LIKE '%" + requestSearchDTO.getUrl() + "%'";
 
-
+        if (!ObjectUtils.isEmpty(requestSearchDTO.getStatus()))
+            whereClause += " AND amfi.status='" + requestSearchDTO.getStatus() + "'";
 
         return whereClause;
     }
+
+    public static final String ADMIN_MODE_API_FEAUTRES_HEADERS_QUERY =
+            " SELECT " +
+                    " arh.keyName as keyParam," +
+                    " arh.value as valueParam" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN ApiRequestHeader arh ON arh.apiIntegrationFormatId=aif.id" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
+                    " AND aif.status='Y'" +
+                    " AND arh.status='Y'" +
+                    " AND amfi.status='Y'" +
+                    " AND amafi.status='Y'";
+
+    public static final String ADMIN_MODE_API_PARAMETERS_QUERY =
+            " SELECT " +
+                    " aqp.param as keyParam," +
+                    " aqp.value as valueParam" +
+                    " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+                    " LEFT JOIN ApiQueryParameters aqp ON aqp.apiIntegrationFormatId =aif.id" +
+                    " WHERE aif.id=:apiIntegrationFormatId" +
+                    " AND aif.status='Y'" +
+                    " AND amfi.status='Y'" +
+                    " AND amafi.status='Y'" +
+                    " AND aqp.status='Y'";
 
     public static String ADMIN_MODE_API_INTEGRATION_AUDITABLE_QUERY() {
         return " amfi.createdBy as createdBy," +

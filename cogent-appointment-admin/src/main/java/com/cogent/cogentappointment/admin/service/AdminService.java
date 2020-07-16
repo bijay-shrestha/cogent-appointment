@@ -1,16 +1,12 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminResetPasswordRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,7 +15,7 @@ import java.util.List;
  */
 public interface AdminService {
 
-    void save(AdminRequestDTO adminRequestDTO, MultipartFile files);
+    void save(AdminRequestDTO adminRequestDTO);
 
     List<AdminDropdownDTO> fetchActiveAdminsForDropdown();
 
@@ -31,9 +27,9 @@ public interface AdminService {
 
     void resetPassword(AdminResetPasswordRequestDTO resetPasswordRequestDTO);
 
-    void updateAvatar(MultipartFile files, Long adminId);
+    void updateAvatar(AdminAvatarUpdateRequestDTO requestDTO);
 
-    void update(AdminUpdateRequestDTO updateRequestDTO, MultipartFile files);
+    void update(AdminUpdateRequestDTO updateRequestDTO);
 
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
 

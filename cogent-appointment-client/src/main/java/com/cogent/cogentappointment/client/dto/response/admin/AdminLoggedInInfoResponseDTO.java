@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.client.dto.response.admin;
 
-import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.PrimaryAppointmentServiceTypeResponse;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +40,15 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
 
     private Character isSideBarCollapse;
 
-    private ClientIntegrationResponseDTO eCIntegrate;
+    private String hospitalCode;
 
-    Map<String, String> requestBody;
+    private List<Long> favouriteUserMenuId;
+
+    private Map<String, List<?>> apiIntegration;
+
+    private Map<String, String> requestBody;
+
+    private PrimaryAppointmentServiceTypeResponse primaryAppointmentServiceType;
+
+    private List<AppointmentServiceTypeDropDownResponseDTO> hospitalAppointmentServiceType;
 }

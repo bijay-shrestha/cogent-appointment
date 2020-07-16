@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiQueryParametersDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiRequestHeaderDetailResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientFeatureIntegrationResponse;
@@ -23,27 +25,35 @@ import java.util.Map;
 @Qualifier("integrationRepositoryCustom")
 public interface IntegrationRepositoryCustom {
 
-    List<ApiRequestHeaderDetailResponse> findApiRequestHeaders(Long featureId);
+    List<ApiRequestHeaderDetailResponse> findApiRequestHeaders(Long apiIntegrationFormatId);
 
-    List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long featureId);
+    List<ApiQueryParametersDetailResponse> findApiQueryParameters(Long apiIntegrationFormatId);
 
-    Map<String,String> findApiRequestHeadersResponse(Long featureId);
+    Map<String, String> findApiRequestHeadersResponse(Long apiIntegrationFormatId);
 
-    Map<String,String> findApiQueryParametersResponse(Long featureId);
+    Map<String, String> findApiQueryParametersResponse(Long apiIntegrationFormatId);
 
     Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId);
 
     Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId);
 
-    ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable);
+    ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO,
+                                                             Pageable pageable);
 
     ClientApiIntegrationResponseDTO findClientApiIntegration(Long id);
 
-    List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long featureId);
+    List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long apiIntegrationFormatId);
 
-    List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long featureId);
+    List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long apiIntegrationFormatId);
 
     List<ClientFeatureIntegrationResponse> fetchClientIntegrationResponseDTO();
 
+    ClientFeatureIntegrationResponse fetchClientIntegrationResponseDTOForBackendIntegration(
+            IntegrationBackendRequestDTO integrationBackendRequestDTO);
+
     List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId);
+
+    AdminFeatureIntegrationResponse fetchAppointmentModeIntegrationResponseDTOforBackendIntegration(
+            IntegrationBackendRequestDTO integrationBackendRequestDTO,
+            Long appointmentModeId);
 }

@@ -1,15 +1,9 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AvailableDoctorRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterOverrideAppointmentDate;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.RosterDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorWithSpecialization;
-import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
@@ -30,14 +24,10 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverrideQuery.*;
-import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
-import static com.cogent.cogentappointment.client.query.EsewaQuery.*;
-import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
-import static com.cogent.cogentappointment.client.utils.EsewaUtils.parseToDoctorAvailabilityStatusResponseDTO;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.conditionOfBothDateProvided;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createNativeQuery;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
 @Repository
 @Transactional(readOnly = true)
@@ -72,22 +62,6 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 
         return (Long) query.getSingleResult();
-    }
-
-    @Override
-    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterOverrideTime(Date date,
-                                                                             Long doctorId,
-                                                                             Long specializationId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME)
-                .setParameter(DATE, utilDateToSqlDate(date))
-                .setParameter(DOCTOR_ID, doctorId)
-                .setParameter(SPECIALIZATION_ID, specializationId);
-
-        List<DoctorDutyRosterTimeResponseDTO> responseDTOList =
-                transformQueryToResultList(query, DoctorDutyRosterTimeResponseDTO.class);
-
-        return responseDTOList.isEmpty() ? null : responseDTOList.get(0);
     }
 
     @Override
@@ -130,91 +104,20 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     }
 
     @Override
-    public List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByRosterId(Long doctorDutyRosterId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DUTY_ROSTER_ID)
-                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
+    public RosterDetailsForStatus fetchOverrideRosterDetails(RosterDetailsForStatus rosterDetailsForStatus,
+                                                             Date appointmentDate) {
+        Query query =createNativeQuery.apply(entityManager,QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID,rosterDetailsForStatus.getRosterId())
+                .setParameter(DATE,utilDateToSqlDate(appointmentDate));
 
-        try {
-            return transformQueryToResultList(query, DoctorDutyRosterOverrideAppointmentDate.class);
-        } catch (NoResultException e) {
-            error();
-            throw new NoContentFoundException("Not Found");
+        try{
+            Object[] result= (Object[]) query.getSingleResult();
+            rosterDetailsForStatus.setStartTime(result[0].toString());
+            rosterDetailsForStatus.setEndTime(result[1].toString());
+            return rosterDetailsForStatus;
+        }catch (NoResultException e){
+            return rosterDetailsForStatus;
         }
-    }
-
-    @Override
-    public List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByDoctorAndSpecializationId(Long doctorId,
-                                                                                                      Long specializationId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DOCTOR_AND_SPECIALIZATION_ID)
-                .setParameter(DOCTOR_ID, doctorId)
-                .setParameter(SPECIALIZATION_ID, specializationId);
-
-        try {
-            return transformQueryToResultList(query, DoctorDutyRosterOverrideAppointmentDate.class);
-        } catch (NoResultException e) {
-            error();
-            throw new NoContentFoundException("Not Found");
-        }
-    }
-
-    @Override
-    public DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterOverrideStatus(AppointmentDetailRequestDTO requestDTO) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
-                .setParameter(DATE, requestDTO.getDate())
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
-
-        if (!Objects.isNull(requestDTO.getDoctorId()))
-            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
-
-        if (!Objects.isNull(requestDTO.getSpecializationId()))
-            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
-
-        List<Objects[]> results = query.getResultList();
-
-        return results.isEmpty() ? null : parseToDoctorAvailabilityStatusResponseDTO(results.get(0));
-    }
-
-    @Override
-    public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(requestDTO))
-                .setParameter(DATE, utilDateToSqlDate(requestDTO.getDate()))
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
-
-        if (!Objects.isNull(requestDTO.getSpecializationId()))
-            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
-
-        return transformQueryToResultList(query, AvailableDoctorWithSpecialization.class);
-    }
-
-    @Override
-    public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AvailableDoctorRequestDTO requestDTO) {
-
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(requestDTO))
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
-
-        if (conditionOfBothDateProvided(requestDTO.getFromDate(), requestDTO.getToDate())) {
-            query.setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()));
-            query.setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
-        }
-
-        if (!Objects.isNull(requestDTO.getSpecializationId()))
-            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
-
-        if (!Objects.isNull(requestDTO.getDoctorId()))
-            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
-
-        return transformNativeQueryToResultList(query, AvailableDoctorWithSpecialization.class);
-    }
-
-    @Override
-    public List<DutyRosterOverrideAppointmentDate> fetchDayOffRosterOverridebyRosterId(Long doctorDutyRosterId) {
-        Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_DAY_OFF_ROSTER_OVERRIDE_DATES)
-                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
-
-        return transformQueryToResultList(query, DutyRosterOverrideAppointmentDate.class);
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND = () ->

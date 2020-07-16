@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.HospitalDepartmentDutyRosterRoomInfoEntityListener;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +15,8 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-public class HospitalDepartmentDutyRosterRoomInfo implements Serializable{
+@EntityListeners(HospitalDepartmentDutyRosterRoomInfoEntityListener.class)
+public class HospitalDepartmentDutyRosterRoomInfo extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +33,13 @@ public class HospitalDepartmentDutyRosterRoomInfo implements Serializable{
     @Column(name = "status")
     private Character status;
 
+    @Override
+    public String toString() {
+        return "HospitalDepartmentDutyRosterRoomInfo{" +
+                "id=" + id +
+                ", hospitalDepartmentDutyRoster=" + hospitalDepartmentDutyRoster.getId() +
+                ", hospitalDepartmentRoomInfo=" + hospitalDepartmentRoomInfo.getId() +
+                ", status=" + status +
+                '}';
+    }
 }

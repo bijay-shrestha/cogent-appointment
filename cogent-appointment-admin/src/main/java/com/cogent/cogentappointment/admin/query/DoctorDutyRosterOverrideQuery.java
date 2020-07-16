@@ -61,7 +61,8 @@ public class DoctorDutyRosterOverrideQuery {
                 " dr.name as doctorName," +                                  //[6]
                 " dd.specializationId.id as specializationId," +            //[7]
                 " dd.specializationId.name as specializationName," +        //[8]
-                " dd.rosterGapDuration as rosterGapDuration" +             //[9]
+                " dd.rosterGapDuration as rosterGapDuration," +             //[9]
+                " dr.salutation as doctorSalutation"+
                 " FROM DoctorDutyRosterOverride d" +
                 " LEFT JOIN DoctorDutyRoster dd ON dd.id = d.doctorDutyRosterId.id" +
                 " LEFT JOIN Hospital h ON h.id = dd.hospitalId.id" +
@@ -94,5 +95,19 @@ public class DoctorDutyRosterOverrideQuery {
         return " SELECT d FROM DoctorDutyRosterOverride d" +
                 " WHERE d.id IN (" + overrideIds + ")";
     }
+
+
+    public static String QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID=
+            "SELECT " +
+                    " DATE_FORMAT(hddro.start_time,'%H:%i') as startTime , " +
+                    " DATE_FORMAT(hddro.end_time ,'%H:%i') as endTime " +
+                    " FROM " +
+                    " doctor_duty_roster_override hddro " +
+                    " WHERE " +
+                    " doctor_duty_roster_id = :doctorDutyRosterId " +
+                    " AND (hddro.from_date <= :date " +
+                    " AND hddro.to_date >=:date)";
+
+
 
 }

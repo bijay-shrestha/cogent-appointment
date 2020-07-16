@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
@@ -107,5 +109,64 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " FROM HospitalDepartmentDutyRoster dd" +
                     " WHERE dd.status !='D'" +
                     " AND dd.id = :id";
+
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_STATUS(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO,List<Long> rosterIdList) {
+
+        String SQL =
+                "SELECT" +
+                        " hddro.fromDate as fromDate," +                                                             //[0]
+                        " hddro.toDate as toDate," +                                                                 //[1]
+                        " DATE_FORMAT(hddro.startTime, '%H:%i') as startTime," +                                     //[2]
+                        " DATE_FORMAT(hddro.endTime, '%H:%i') as endTime," +                                         //[3]
+                        " hddro.dayOffStatus as dayOffStatus ," +                                                    //[4]
+                        " hddr.rosterGapDuration as gapDuration," +                                                  //[5]
+                        " hd.id as hospitalDepartmentId," +                                     //[6]
+                        " hd.name as hospitatDepartmentName," +                                //[7]
+                        " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[8]
+                        " THEN null" +
+                        " ELSE ri.id END as roomId," +
+                        " CASE WHEN hddro.hospitalDepartmentRoomInfo.id Is NULL " +                                  //[9]
+                        " THEN 'N/A'" +
+                        " ELSE r.roomNumber END as roomNumber," +
+                        " hddr.id as hospitalDepartmentDutyRosterId" +
+                        " FROM" +
+                        " HospitalDepartmentDutyRosterOverride hddro" +
+                        " LEFT JOIN HospitalDepartmentDutyRoster hddr ON hddr.id = hddro .hospitalDepartmentDutyRoster.id" +
+                        " LEFT JOIN HospitalDepartment hd ON hddr.hospitalDepartment.id=hd.id" +
+                        " LEFT JOIN HospitalDepartmentDutyRosterRoomInfo ri ON ri.hospitalDepartmentDutyRoster.id=hddr.id" +
+                        " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.id=ri.hospitalDepartmentRoomInfo.id" +
+                        " LEFT JOIN Room r ON r.id=hdri.room.id " +
+                        " WHERE" +
+                        " hddro.status = 'Y'" +
+                        " AND hddr.status = 'Y'" +
+                        " AND hddro.toDate >=:fromDate" +
+                        " AND hddro.fromDate <=:toDate";
+
+        if (rosterIdList.size() > 0)
+            SQL += " AND hddr.id IN (:hospitalDepartmentDutyRosterId) ";
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            SQL += " AND hd.id = :hospitalDepartmentId";
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
+            SQL += " AND hdri.id = :hospitalDepartmentRoomInfoId";
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            SQL += " AND hddr.hospital.id = :hospitalId";
+
+        return SQL;
+    }
+
+    public static String QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID=
+            "SELECT " +
+                    " DATE_FORMAT(hddro.start_time,'%H:%i') as startTime , " +
+                    " DATE_FORMAT(hddro.end_time ,'%H:%i') as endTime " +
+                    " FROM " +
+                    " hospital_department_duty_roster_override hddro " +
+                    " WHERE " +
+                    " hospital_department_duty_roster_id = :hospitalDepartmentDutyRosterId " +
+                    " AND (hddro.from_date <= :date " +
+                    " AND hddro.to_date >=:date)";
 
 }

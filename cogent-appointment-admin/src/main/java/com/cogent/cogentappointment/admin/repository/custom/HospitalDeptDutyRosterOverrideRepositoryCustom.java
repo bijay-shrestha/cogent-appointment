@@ -1,6 +1,11 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.RosterDetailsForStatus;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.count.HospitalDepartmentRosterDetailsDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRosterOverride;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -32,5 +37,15 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
 
     List<HospitalDepartmentDutyRosterOverride> fetchOverrideList(
             List<HospitalDeptDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS);
+
+    List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterOverrideStatus
+            (HospitalDeptAppointmentStatusRequestDTO requestDTO, List<Long> rosterIdList);
+
+
+    RosterDetailsForStatus fetchOverrideRosterDetails(RosterDetailsForStatus rosterDetailsForStatus,
+                                                      Date appointmentDate);
+
+    List<HospitalDepartmentRosterDetailsDTO> fetchHospitalDepartmentRosterOverrideDetails(HospitalDeptAppointmentStatusCountRequestDTO requestDTO,
+                                                                                          List<Long> rosterIdList);
 
 }

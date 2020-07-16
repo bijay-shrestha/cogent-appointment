@@ -15,6 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ClientApiIntegrationUpdateResponseDTO implements Serializable {
 
+    private Long hospitalId;
+
     private String hospitalName;
 
     private Long featureId;
@@ -34,6 +36,8 @@ public class ClientApiIntegrationUpdateResponseDTO implements Serializable {
     private String integrationType;
 
     private String url;
+
+    private Character status;
 
     private List<ApiRequestHeaderUpdateResponseDTO> headers;
 

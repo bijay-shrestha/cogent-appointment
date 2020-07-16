@@ -22,9 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentTransferMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
@@ -65,6 +67,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
     private final SpecializationRepository specializationRepository;
 
+    private final AppointmentDoctorInfoRepository appointmentDoctorInfoRepository;
+
     public AppointmentTransferServiceImpl(AppointmentTransferRepository appointmentTransferRepository,
                                           AppointmentTransferTransactionDetailRepository transferTransactionRepository,
                                           AppointmentTransferTransactionRequestLogRepository transferTransactionRequestLogRepository,
@@ -72,7 +76,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                                           AppointmentTransactionDetailRepository transactionDetailRepository,
                                           AppointmentTransactionRequestLogRepository transactionRequestLogRepository,
                                           DoctorRepository doctorRepository,
-                                          SpecializationRepository specializationRepository) {
+                                          SpecializationRepository specializationRepository,
+                                          AppointmentDoctorInfoRepository appointmentDoctorInfoRepository) {
         this.appointmentTransferRepository = appointmentTransferRepository;
         this.transferTransactionRepository = transferTransactionRepository;
         this.transferTransactionRequestLogRepository = transferTransactionRequestLogRepository;
@@ -81,6 +86,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         this.transactionRequestLogRepository = transactionRequestLogRepository;
         this.doctorRepository = doctorRepository;
         this.specializationRepository = specializationRepository;
+        this.appointmentDoctorInfoRepository = appointmentDoctorInfoRepository;
     }
 
     /* FETCH APPOINTMENT DATES BASED ON DOCTOR ID AND SPECIALIZATION ID */
@@ -182,85 +188,125 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
+        Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId(), requestDTO.getHospitalId());
+
         validateAppointmentAmount(requestDTO.getDoctorId(), requestDTO.getHospitalId(),
                 requestDTO.getIsFollowUp(), requestDTO.getAppointmentCharge());
 
-        Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId(), requestDTO.getHospitalId());
+        validateAppointmentDate(requestDTO.getAppointmentDate(), requestDTO.getAppointmentTime());
 
         AppointmentTransactionDetail transactionDetail = fetchAppointmentTransactionDetailByappointmentId(
                 requestDTO.getAppointmentId());
 
-        Long specializationId = appointment.getSpecializationId().getId();
-        if (specializationId == requestDTO.getSpecializationId() &&
+        AppointmentDoctorInfo appointmentDoctorInfo = appointmentRepository.getPreviousAppointmentDoctorAndSpecialization
+                (appointment.getId());
+
+        if (Objects.equals(appointmentDoctorInfo.getSpecialization().getId(), requestDTO.getSpecializationId()) &&
                 (transactionDetail.getAppointmentAmount().compareTo(requestDTO.getAppointmentCharge()) == 0)) {
 
-            AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
-                    requestDTO,
-                    fetchDoctorById(requestDTO.getDoctorId(), requestDTO.getHospitalId()),
-                    fetchSpecializationById(requestDTO.getSpecializationId(), requestDTO.getHospitalId()),
-                    fetchDoctorById(appointment.getDoctorId().getId(), requestDTO.getHospitalId()),
-                    fetchSpecializationById(appointment.getSpecializationId().getId(), requestDTO.getHospitalId()));
+            transferForSameSpecializationAndCharge(appointment, requestDTO, appointmentDoctorInfo, transactionDetail);
 
-            Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
-                    requestDTO,
-                    fetchDoctorById(requestDTO.getDoctorId(), requestDTO.getHospitalId()));
-
-            AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
-                    transactionDetail,
-                    requestDTO.getAppointmentCharge(),
-                    requestDTO.getRemarks(),
-                    appointmentTransfer);
-
-            save(transferredAppointment, appointmentTransfer);
-            saveTransferTransaction(transferTransactionDetail);
         } else {
-            Doctor currentDoctor = fetchDoctorById(requestDTO.getDoctorId(), requestDTO.getHospitalId());
 
-            Specialization currentSpecialization = fetchSpecializationById(requestDTO.getSpecializationId(),
-                    requestDTO.getHospitalId());
-
-            AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
-                    requestDTO,
-                    currentDoctor,
-                    currentSpecialization,
-                    fetchDoctorById(appointment.getDoctorId().getId(), requestDTO.getHospitalId()),
-                    fetchSpecializationById(appointment.getSpecializationId().getId(), requestDTO.getHospitalId()));
-
-            Appointment transferredAppointment = parseAppointmentForSpecialization(appointment,
-                    requestDTO,
-                    currentDoctor,
-                    currentSpecialization);
-
-            AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
-                    transactionDetail,
-                    requestDTO.getAppointmentCharge(),
-                    requestDTO.getRemarks(),
-                    appointmentTransfer);
-
-            AppointmentTransactionDetail appointmentTransactionDetail = parseToAppointmentTransactionDetail(
-                    transactionDetail,
-                    requestDTO);
-
-            AppointmentTransactionRequestLog requestLog = fetchByTransactionNumber(transactionDetail.getTransactionNumber());
-
-            AppointmentTransferTransactionRequestLog transferTransactionRequestLog =
-                    parseToAppointmentTransferTransactionRequestLog(requestLog,
-                            requestDTO.getRemarks(),
-                            transferTransactionDetail);
-
-            AppointmentTransactionRequestLog transactionRequestLog = parseToAppointmentTransactionRequestLog(requestLog);
-
-            save(transferredAppointment, appointmentTransfer);
-
-            saveTransferDetails(transferTransactionDetail,
-                    transferTransactionRequestLog,
-                    appointmentTransactionDetail,
-                    transactionRequestLog);
+            transferWithNewCharge(appointment, requestDTO, appointmentDoctorInfo, transactionDetail);
 
         }
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void transferForSameSpecializationAndCharge(Appointment appointment,
+                                                        AppointmentTransferRequestDTO requestDTO,
+                                                        AppointmentDoctorInfo appointmentDoctorInfo,
+                                                        AppointmentTransactionDetail transactionDetail) {
+        Doctor previousDoctor = fetchDoctorById(appointmentDoctorInfo.getDoctor().getId(), requestDTO.getHospitalId());
+
+        Specialization previousSpecialization = fetchSpecializationById(appointmentDoctorInfo.getSpecialization().getId(),
+                requestDTO.getHospitalId());
+
+        Doctor transferredToDoctor = fetchDoctorById(requestDTO.getDoctorId(), requestDTO.getHospitalId());
+
+        Specialization transferredToSpecialization = fetchSpecializationById(requestDTO.getSpecializationId(),
+                requestDTO.getHospitalId());
+
+
+        AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
+                requestDTO,
+                transferredToDoctor,
+                transferredToSpecialization,
+                previousDoctor,
+                previousSpecialization);
+
+        Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
+                requestDTO);
+
+        saveAppointmentDoctorInfo(parseAppointmentDoctorInfo
+                (transferredToDoctor, transferredToSpecialization, appointmentDoctorInfo));
+
+        AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
+                transactionDetail,
+                requestDTO.getAppointmentCharge(),
+                requestDTO.getRemarks(),
+                appointmentTransfer);
+
+        save(transferredAppointment, appointmentTransfer);
+        saveTransferTransaction(transferTransactionDetail);
+    }
+
+    private void transferWithNewCharge(Appointment appointment,
+                                       AppointmentTransferRequestDTO requestDTO,
+                                       AppointmentDoctorInfo appointmentDoctorInfo,
+                                       AppointmentTransactionDetail transactionDetail) {
+
+        Doctor transferredToDoctor = fetchDoctorById(requestDTO.getDoctorId(), requestDTO.getHospitalId());
+
+        Specialization transferredToSpecialization = fetchSpecializationById(requestDTO.getSpecializationId(),
+                requestDTO.getHospitalId());
+
+        Doctor previousDoctor = fetchDoctorById(appointmentDoctorInfo.getDoctor().getId(), requestDTO.getHospitalId());
+
+        Specialization previousSpecialization = fetchSpecializationById(appointmentDoctorInfo.getSpecialization().getId(),
+                requestDTO.getHospitalId());
+
+        AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
+                requestDTO,
+                transferredToDoctor,
+                transferredToSpecialization,
+                previousDoctor,
+                previousSpecialization);
+
+        Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
+                requestDTO);
+
+        saveAppointmentDoctorInfo(parseAppointmentDoctorInfo
+                (transferredToDoctor, transferredToSpecialization, appointmentDoctorInfo));
+
+        AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
+                transactionDetail,
+                requestDTO.getAppointmentCharge(),
+                requestDTO.getRemarks(),
+                appointmentTransfer);
+
+        AppointmentTransactionDetail appointmentTransactionDetail = parseToAppointmentTransactionDetail(
+                transactionDetail,
+                requestDTO);
+
+        AppointmentTransactionRequestLog requestLog = fetchByTransactionNumber(transactionDetail.getTransactionNumber());
+
+        AppointmentTransferTransactionRequestLog transferTransactionRequestLog =
+                parseToAppointmentTransferTransactionRequestLog(requestLog,
+                        requestDTO.getRemarks(),
+                        transferTransactionDetail);
+
+        AppointmentTransactionRequestLog transactionRequestLog = parseToAppointmentTransactionRequestLog(requestLog);
+
+        save(transferredAppointment, appointmentTransfer);
+
+        saveTransferDetails(transferTransactionDetail,
+                transferTransactionRequestLog,
+                appointmentTransactionDetail,
+                transactionRequestLog);
     }
 
     @Override
@@ -273,7 +319,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = appointmentTransferRepository.
                 getApptTransferredList(requestDTO,
-                pageable);
+                        pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -387,7 +433,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         }
     }
 
-    public AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId, Long hospitalId) {
+    private AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId, Long hospitalId) {
         return appointmentTransferRepository.getAppointmentChargeByDoctorId(doctorId,
                 hospitalId);
     }
@@ -437,9 +483,14 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         transactionRequestLogRepository.save(transactionRequestLog);
     }
 
-    private Function<String, NoContentFoundException> APPOINTMENT_TRANSACTION_REQUEST_LOG_WITH_GIVEN_TXN_NUMBER_NOT_FOUND = (transactionNumber) -> {
+    private void saveAppointmentDoctorInfo(AppointmentDoctorInfo appointmentDoctorInfo) {
+        appointmentDoctorInfoRepository.save(appointmentDoctorInfo);
+    }
+
+    private Function<String, NoContentFoundException> APPOINTMENT_TRANSACTION_REQUEST_LOG_WITH_GIVEN_TXN_NUMBER_NOT_FOUND
+            = (transactionNumber) -> {
         log.error(CONTENT_NOT_FOUND_BY_APPOINTMENT_NUMBER, APPOINTMENT_TRANSACTION_REQUEST_LOG, transactionNumber);
-        throw new NoContentFoundException(AppointmentTransactionRequestLog.class, "transactionNumber", transactionNumber.toString());
+        throw new NoContentFoundException(AppointmentTransactionRequestLog.class, "transactionNumber", transactionNumber);
     };
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
@@ -463,5 +514,17 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         throw new NoContentFoundException(AppointmentTransactionDetail.class, "appointmentId", appointmentId.toString());
     };
 
+    private void validateAppointmentDate(Date appointmentDate, String appointmentTime) {
 
+        Date requestedAppointmentDate = parseAppointmentTime(appointmentDate, appointmentTime);
+
+        Date currentDate = new Date();
+
+        boolean hasAppointmentDatePassed = requestedAppointmentDate.before(currentDate);
+
+        if (hasAppointmentDatePassed) {
+            log.error(INVALID_APPOINTMENT_DATE_TIME);
+            throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+        }
+    }
 }

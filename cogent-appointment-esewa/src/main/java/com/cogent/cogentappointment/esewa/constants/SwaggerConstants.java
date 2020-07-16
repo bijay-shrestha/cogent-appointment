@@ -3,9 +3,24 @@ package com.cogent.cogentappointment.esewa.constants;
 public class SwaggerConstants {
     public static String BASE_PACKAGE = "com.cogent.cogentappointment.esewa.resource";
 
-    public static String PATH_REGEX = "/api.*";
+    public interface SwaggerVersionConstant {
+        String VERSION_1 = "v1";
+        String VERSION_2 = "v2";
+
+        String PATH_REGEX_V1 = "/api/v1.*";
+        String PATH_REGEX_V2 = "/api/v2.*";
+    }
 
     //A
+    public interface AddressConstant {
+        String BASE_API_VALUE = "This resource is used to fetch address details ";
+        String FETCH_ZONE_LIST = "Fetch Zones for dropdown";
+        String FETCH_PROVINCE_LIST = "Fetch Province for dropdown";
+        String FETCH_DISTRICT_LIST_BY_ZONE_ID = "Fetch District for dropdown by zone id ";
+        String FETCH_DISTRICT_LIST_BY_PROVINCE_ID = "Fetch District for dropdown by province id ";
+        String FETCH_STREET_LIST_BY_DISTRICT_ID = "Fetch Street for dropdown by district id ";
+        String FETCH_MUNICIPALITY_LIST_BY_DISTRICT_ID = "Fetch Municipality for dropdown by district id ";
+    }
 
 
     public interface AppointmentConstant {
@@ -23,6 +38,20 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
                 " If 'Y', then it is successful appointment, else it is failed appointment";
         String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
+    }
+
+    public interface AppointmentHospitalDepartmentConstant {
+        String BASE_API_VALUE = "This is Appointment Hospital Department Resource";
+        String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
+                " for specific hospital department";
+        String CHECK_APPOINTMENT_AVAILABILITY_ROOM_WISE = "Check available time schedules in requested date" +
+                " for specific hospital department and room";
+        String FETCH_AVAILABLE_HOSPITAL_DEPARTMENT_DATES = "Fetch available hospital department appointment dates";
+    }
+
+    public interface AppointmentServiceTypeConstant {
+        String BASE_API_VALUE = "This is Appointment Service Type Resource.";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Service Type details for dropdown";
     }
 
     public static final String[] AUTH_WHITELIST = {
@@ -81,6 +110,15 @@ public class SwaggerConstants {
     public interface HospitalConstant {
         String BASE_API_VALUE = "This is Hospital Resource";
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";
+        String FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE = "Fetch assigned appointment service type of hospital";
+    }
+
+    public interface HospitalDepartmentConstant {
+        String BASE_HOSPITAL_DEPARTMENT_API_VALUE = "This is Hospital Department Resource";
+        String FETCH_ACTIVE_MIN_HOSPITAL_DEPARTMENT_INFO = "Fetch minimal active hospital department" +
+                " details (id and name) for dropdown by hospital id";
+        String FETCH_COMBINED_HOSPITAL_DEPARTMENT_INFO = "Fetch combined hospital department" +
+                " details (id and name) and billing mode info by hospital id";
     }
 
     //I
@@ -117,6 +155,10 @@ public class SwaggerConstants {
     //Q
 
     //R
+    public interface RefundStatusConstant {
+        String BASE_API_VALUE = "This is Refund Status Resource";
+        String FETCH_REFUND_DETAILS_TO_APPROVE = "Fetch Appointment Refund Details To Approve(change status to A) ";
+    }
 
     //S
 
@@ -125,8 +167,10 @@ public class SwaggerConstants {
     public interface TestConstant {
         String BASE_API_VALUE = "This is Test Resource";
         String TEST_OPERATION = "This is Test Operation";
-    }
+        String JWT_TOKEN_ENCODE_OPERATION = "This is used to generate token that is suppose to be sent by eSewa";
+        String JWT_TOKEN_DECODE_OPERATION = "This is used to decode token";
 
+    }
 
 
     //U

@@ -14,11 +14,6 @@ import java.util.Optional;
 @Repository
 public interface AppointmentFollowUpRequestLogRepository extends JpaRepository<AppointmentFollowUpRequestLog, Long> {
 
-    @Query("SELECT a.followUpRequestedCount FROM AppointmentFollowUpRequestLog a WHERE" +
-            " a.appointmentFollowUpTracker.id =:appointmentFollowUpTrackerId ")
-    Optional<Integer> fetchRequestCountByFollowUpTrackerId(@Param("appointmentFollowUpTrackerId")
-                                                                   Long appointmentFollowUpTrackerId);
-
     @Query("SELECT a FROM AppointmentFollowUpRequestLog a WHERE" +
             " a.appointmentFollowUpTracker.id =:appointmentFollowUpTrackerId ")
     Optional<AppointmentFollowUpRequestLog> fetchByFollowUpTrackerId(@Param("appointmentFollowUpTrackerId")

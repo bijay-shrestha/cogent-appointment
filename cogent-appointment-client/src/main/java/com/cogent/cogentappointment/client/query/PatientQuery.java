@@ -71,47 +71,6 @@ public class PatientQuery {
                     " AND p.mobileNumber=:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth";
 
-    /*FOR SELF*/
-    public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
-            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS +
-                    " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id"
-                    + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
-
-    /*FOR OTHERS*/
-    public static final String QUERY_TO_FETCH_CHILD_PATIENT_IDS =
-            " SELECT " +
-                    " pm.parentPatientId.id as parentPatientId," +                 //[0]
-                    " pm.childPatientId.id as childPatientId" +                   //[1]
-                    " FROM Patient p" +
-                    " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
-                    GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
-                    " AND pm.status = 'Y'";
-
-    public static String QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(String childPatientIds) {
-
-        return " SELECT" +
-                " hpi.id as hospitalPatientInfoId," +                    //[0]
-                " p.id as patientId," +                                 //[1]
-                " p.name as name," +                                    //[2]
-                " p.mobileNumber as mobileNumber," +                    //[3]
-                " p.dateOfBirth as dateOfBirth," +                       //[4]
-                " p.gender as gender," +                                //[5]
-                " hpi.address as address," +                            //[6]
-                " hpi.registrationNumber as registrationNumber," +      //[7]
-                " hpi.hospital.name as hospitalName," +                  //[8]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[9]
-                " FROM Patient p" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
-                " WHERE p.id IN (" + childPatientIds + ")";
-    }
-
-    public static String QUERY_TO_FETCH_MIN_PATIENT_DETAILS_FOR_OTHERS =
-            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS +
-                    " FROM HospitalPatientInfo hpi " +
-                    " LEFT JOIN Patient p ON p.id = hpi.patient.id" +
-                    " WHERE hpi.id =:hospitalPatientInfoId";
-
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
                     " p.id as id," +
@@ -185,13 +144,6 @@ public class PatientQuery {
                     " hpi.hospital.id = :hospitalId" +
                     " AND hpi.isRegistered='Y'";
 
-    public static final String QUERY_TO_FETCH_PATIENT =
-            " SELECT p FROM Patient p" +
-                    " WHERE " +
-                    " p.name =:name" +
-                    " AND p.mobileNumber =:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth";
-
     public static final String QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINTMENT_ID =
             " SELECT " +
                     " a.appointmentNumber as appointmentNumber," +              //[0]
@@ -207,7 +159,8 @@ public class PatientQuery {
                     " atd.appointmentAmount as appointmentAmount," +            //[10]
                     " a.appointmentModeId.name as appointmentMode," +          //[11]
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +                       //[12]
-                    " a.isFollowUp as isFollowUp" +                             //[13]
+                    " a.isFollowUp as isFollowUp," +                             //[13]
+                    " a.id as appointmentId" +                                 //[14]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -260,25 +213,6 @@ public class PatientQuery {
         return query;
     }
 
-    /*FOR OTHERS -> HOSPITAL WISE*/
-    public static String QUERY_TO_FETCH_CHILD_PATIENT_IDS(Long hospitalId) {
-
-        String query = " SELECT " +
-                " pm.parentPatientId.id as parentPatientId," +                 //[0]
-                " pm.childPatientId.id as childPatientId" +                   //[1]
-                " FROM Patient p" +
-                " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = pm.childPatientId.id" +
-                GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
-                " AND pm.status = 'Y'";
-
-        if (!Objects.isNull(hospitalId) && hospitalId != 0)
-            query += " AND hpi.hospital.id=" + hospitalId;
-
-        return query;
-    }
-
-
     public static final String QUERY_TO_FETCH_ESEWA_ID =
             " SELECT p.id as value," +                                      //[0]
                     " p.eSewaId as label" +                                 //[1]
@@ -286,5 +220,68 @@ public class PatientQuery {
                     " LEFT JOIN HospitalPatientInfo hp ON p.id = hp.patient.id " +
                     " WHERE p.eSewaId IS NOT NULL" +
                     " AND hp.hospital.id =:hospitalId";
+
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE_YEAR =
+            " FLOOR(TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))" +
+                    " AS age";
+
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE_MONTH =
+            " FLOOR(TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)" +
+                    " AS ageMonth";
+
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE_DAY =
+            " FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)" +
+                    " AS ageDay";
+
+    public static String QUERY_TO_GET_PATIENT_FOR_EXCEL(PatientSearchRequestDTO searchRequestDTO) {
+        return "SELECT" +
+                " p.name as patientName," +
+                " p.mobile_number as contact," +
+                " CASE" +
+                " WHEN hpi.registration_number IS NULL THEN '-'" +
+                " WHEN hpi.registration_number IS NOT NULL THEN hpi.registration_number END as registrationNumber," +
+                " CASE" +
+                " WHEN p.e_sewa_id IS NULL THEN '-'" +
+                " WHEN p.e_sewa_id IS NOT NULL THEN p.e_sewa_id END as esewaId," +
+                " CASE " +
+                " When hpi.status ='Y' THEN 'Active'" +
+                " When hpi.status ='N' THEN 'Inactive' END as status," +
+                " CASE" +
+                " WHEN hpi.hospital_number IS NULL THEN '-'" +
+                " WHEN hpi.hospital_number IS NOT NULL THEN hpi.hospital_number END as hospitalNumber," +
+                " h.name as client," +
+                " CASE " +
+                " When hpi.is_registered ='Y' THEN 'Registered'" +
+                " When hpi.is_registered ='N' THEN 'New' END as patientType," +
+                " p.gender as gender," +
+                QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE +
+                " FROM" +
+                " patient p" +
+                " LEFT JOIN hospital_patient_info hpi ON" +
+                " hpi.patient_id = p.id" +
+                " LEFT JOIN hospital h ON" +
+                " h.id = hpi.hospital_id " +
+                " LEFT JOIN patient_meta_info pmi ON pmi.patient_id = p.id AND pmi.status = 'Y'" +
+                GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT_FOR_EXCEL(searchRequestDTO);
+    }
+
+    private static String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT_FOR_EXCEL(PatientSearchRequestDTO searchRequestDTO) {
+
+        String whereClause = " WHERE hpi.status!='D'" +
+                " AND h.id=:hospitalId";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
+            whereClause += " AND p.e_sewa_id LIKE '%" + searchRequestDTO.getEsewaId() + "%'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            whereClause += " AND hpi.status='" + searchRequestDTO.getStatus() + "'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfoId()))
+            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfoId();
+
+        whereClause += " ORDER BY p.id DESC";
+
+        return whereClause;
+    }
 
 }

@@ -6,6 +6,8 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import io.swagger.annotations.Api;
@@ -38,7 +40,7 @@ public class AppointmentResource {
     }
 
     @PutMapping(REFUND)
-    @ApiOperation(FETCH_APPOINTMENTS_CANCEL_APPROVALS)
+    @ApiOperation(FETCH_DOCTOR_APPOINTMENTS_CANCEL_APPROVALS)
     public ResponseEntity<?> fetchRefundAppointments(@RequestBody AppointmentCancelApprovalSearchDTO searchDTO,
                                                      @RequestParam("page") int page,
                                                      @RequestParam("size") int size) {
@@ -50,20 +52,6 @@ public class AppointmentResource {
     @ApiOperation(FETCH_REFUND_APPOINTMENTS_DETAIL)
     public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(appointmentService.fetchRefundDetailsById(appointmentId));
-    }
-
-    @GetMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(APPROVE_REFUND_APPOINTMENT)
-    public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId) {
-        appointmentService.approveRefundAppointment(appointmentId);
-        return ok().build();
-    }
-
-    @PutMapping(REFUND + REJECT)
-    @ApiOperation(REJECT_REFUND_APPOINTMENT)
-    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO) {
-        appointmentService.rejectRefundAppointment(refundRejectDTO);
-        return ok().build();
     }
 
     @PutMapping(PENDING_APPROVAL)
@@ -81,10 +69,25 @@ public class AppointmentResource {
         return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
     }
 
-    @GetMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @PutMapping(REFUND + APPROVE)
+    @ApiOperation(APPROVE_REFUND_APPOINTMENT)
+    public ResponseEntity<?> approveRefundAppointment(@RequestBody IntegrationRefundRequestDTO integrationRefundRequestDTO) {
+        appointmentService.approveRefundAppointment(integrationRefundRequestDTO);
+        return ok().build();
+    }
+
+    @PutMapping(REFUND + REJECT)
+    @ApiOperation(REJECT_REFUND_APPOINTMENT)
+    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO) {
+
+        appointmentService.rejectRefundAppointment(refundRejectDTO);
+        return ok().build();
+    }
+
+    @PutMapping(APPROVE)
     @ApiOperation(APPROVE_APPOINTMENT)
-    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId) {
-        appointmentService.approveAppointment(appointmentId);
+    public ResponseEntity<?> approveAppointment(@RequestBody IntegrationBackendRequestDTO backendRequestDTO) {
+        appointmentService.approveAppointment(backendRequestDTO);
         return ok().build();
     }
 

@@ -40,5 +40,14 @@ public class PatientRequestByDTO implements Serializable {
 
     private String address;
 
+    @NotNull
     private Character isAgent;
+
+    private Long provinceId;
+
+    private Long vdcOrMunicipalityId;
+
+    private Long districtId;
+
+    private String wardNumber;
 }

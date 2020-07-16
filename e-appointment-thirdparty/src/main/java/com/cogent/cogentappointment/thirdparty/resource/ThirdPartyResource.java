@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.thirdparty.resource;
 
+
 import com.cogent.cogentappointment.persistence.model.ThirdPartyInfo;
 import com.cogent.cogentappointment.thirdparty.dto.request.CheckInRequestDTO;
 import com.cogent.cogentappointment.thirdparty.dto.response.CheckInResponseDTO;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+
 @RestController
-@RequestMapping(value="/api/v1/test")
+@RequestMapping(value = "/api/v1/test")
 @Api("This is Third Party Resource")
 public class ThirdPartyResource {
 
@@ -31,23 +33,23 @@ public class ThirdPartyResource {
 
     @GetMapping
     @ApiOperation("This is Third Party Test API")
-    public String test(){
+    public String test() {
         return "Third Party Tester is running.";
     }
 
     @PostMapping("/post-ticket")
     @ApiOperation("This is Post Ticket API")
-    public ResponseEntity<CheckInResponseDTO> postTicket(@RequestBody CheckInRequestDTO checkInRequestDTO){
-        if(checkInRequestDTO.getPatientId() == null) {
-            checkInRequestDTO.setPatientId(((Integer) ThreadLocalRandom.current().nextInt()).toString ());
+    public ResponseEntity<CheckInResponseDTO> postTicket(@RequestBody CheckInRequestDTO checkInRequestDTO) {
+        if (checkInRequestDTO.getPatientId() == null) {
+            checkInRequestDTO.setPatientId(((Integer) ThreadLocalRandom.current().nextInt()).toString());
         }
         ThirdPartyInfo thirdPartyInfo = ObjectMapperUtils.convertToEntity(modelMapper, checkInRequestDTO);
         ThirdPartyInfo saveThirdPartyInfo = thirdPartyService.saveThirdPartyData(thirdPartyInfo);
-        if(saveThirdPartyInfo != null){
+        if (saveThirdPartyInfo != null) {
             CheckInResponseDTO checkInResponseDTO = CheckInResponseDTO.builder()
                     .statusCode(200)
 //                    .responseMessage(saveThirdPartyInfo.getName() + " Data Saved Successfully")
-                    .responseData (saveThirdPartyInfo.getPatientId())
+                    .responseData(saveThirdPartyInfo.getPatientId())
                     .build();
             return new ResponseEntity<>(checkInResponseDTO, HttpStatus.CREATED);
         }

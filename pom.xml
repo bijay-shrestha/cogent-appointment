@@ -6,12 +6,21 @@
     <groupId>com.cogent</groupId>
     <artifactId>cogent-appointment</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.2.3.RELEASE</version>
+        </dependency>
+    </dependencies>
     <name>cogent-appointment</name>
     <description>Cogent Appointment System with eSewa Integration</description>
     <packaging>pom</packaging>
 
     <modules>
         <module>cogent-appointment-persistence</module>
+        <module>cogent-thirdparty-connector</module>
+        <module>cogent-appointment-commons</module>
         <module>cogent-appointment-admin</module>
         <module>cogent-appointment-client</module>
         <module>e-appointment-thirdparty</module>

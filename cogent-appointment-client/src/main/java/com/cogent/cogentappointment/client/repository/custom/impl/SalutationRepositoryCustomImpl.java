@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.query.SalutationQuery;
 import com.cogent.cogentappointment.client.repository.custom.SalutationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Salutation;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,13 @@ public class SalutationRepositoryCustomImpl implements SalutationRepositoryCusto
             error();
             throw SALUTATION_NOT_FOUND.get();
         } else return results;
+    }
+
+    @Override
+    public List<Salutation> validateSalutationCount(String ids) {
+        Query query = createQuery.apply(entityManager, SalutationQuery.QUERY_TO_VALIDATE_SALUTATION_COUNT(ids));
+
+        return query.getResultList();
     }
 
     private Supplier<NoContentFoundException> SALUTATION_NOT_FOUND = () ->

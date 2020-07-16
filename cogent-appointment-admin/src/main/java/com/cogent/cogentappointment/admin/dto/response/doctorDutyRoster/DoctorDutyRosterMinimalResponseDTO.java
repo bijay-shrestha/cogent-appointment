@@ -19,6 +19,8 @@ public class DoctorDutyRosterMinimalResponseDTO implements Serializable {
 
     private String hospitalName;
 
+    private String doctorSalutation;
+
     private String doctorName;
 
     private String fileUri;

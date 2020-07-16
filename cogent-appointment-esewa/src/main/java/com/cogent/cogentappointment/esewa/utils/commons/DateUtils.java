@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
@@ -78,6 +79,12 @@ public class DateUtils {
         return new java.sql.Date(date.getTime()).toLocalDate();
     }
 
+    public static Date convertLocalDateToDate(LocalDate requestedDate) {
+        return Date.from(requestedDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+    }
+
     public static String getDayCodeFromDate(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("EE");
         return dateFormat.format(date);
@@ -108,47 +115,22 @@ public class DateUtils {
         return nepaliDate.split(HYPHEN)[2];
     }
 
-    /*IF REQUESTED YEAR IS ODD,
-   *   IF MONTH <4
-   *       S = YEAR - 1 + START_FISCAL_DAY
-   *       E = YEAR + END_FISCAL_DAY
-   *   ELSE
-   *       S = YEAR + END_FISCAL_DAY
-   *       E = YEAR + 1 + START_FISCAL-DAY
-   * ELSE
-   *   IF MONTH <4
-   *       S = YEAR - 1 + END_FISCAL_DAY
-   *       E = YEAR + START_FISCAL_DAY
-   *   ELSE
-   *       S = YEAR + START_FISCAL_DAY
-   *       E = YEAR + 1 + END_FISCAL_DAY
-   * */
     public static String fetchStartingFiscalYear(int year, int month) {
-        if (year % 2 == 0) {
-            //selected year is even
-            return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                    ? (year - 1 + APPLICATION_ENDING_FISCAL_DAY)
-                    : (year + APPLICATION_STARTING_FISCAL_DAY);
-        } else {
-            //selected year is odd
-            return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                    ? (year - 1 + APPLICATION_STARTING_FISCAL_DAY)
-                    : (year + APPLICATION_ENDING_FISCAL_DAY);
-        }
+        if (month == APPLICATION_STARTING_FISCAL_MONTH)
+            return year + APPLICATION_STARTING_FISCAL_DAY;
+
+        boolean check = month < APPLICATION_STARTING_FISCAL_MONTH;
+
+        return check ? year - 1 + APPLICATION_STARTING_FISCAL_DAY: year + APPLICATION_STARTING_FISCAL_DAY;
     }
 
     public static String fetchEndingFiscalYear(int year, int month) {
-        if (year % 2 == 0) {
-            //selected year is even
-            return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                    ? (year + APPLICATION_STARTING_FISCAL_DAY)
-                    : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
-        } else {
-            //selected year is odd
-            return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                    ? (year + APPLICATION_ENDING_FISCAL_DAY)
-                    : (year + 1 + APPLICATION_STARTING_FISCAL_DAY);
-        }
+        if (month == APPLICATION_STARTING_FISCAL_MONTH)
+            return year + 1 + APPLICATION_ENDING_FISCAL_DAY;
+
+        boolean check = month < APPLICATION_STARTING_FISCAL_MONTH;
+
+        return check ? year + APPLICATION_ENDING_FISCAL_DAY : year + 1 + APPLICATION_ENDING_FISCAL_DAY;
     }
 
     public static String getTimeIn12HourFormat(Date date) {
@@ -250,5 +232,34 @@ public class DateUtils {
             log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
         }
+    }
+
+    public static Date getDateFromString(String date) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date changedDate;
+        try {
+            changedDate = df.parse(date);
+        } catch (ParseException ex) {
+            return null;
+        }
+        return changedDate;
+    }
+
+    public static String convertToString(Date date, String format) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        return simpleDateFormat.format(date);
+    }
+
+    public static Date addCurrentTimeToDate(Date date) {
+        Calendar calDateThen = Calendar.getInstance();
+        Calendar calTimeNow = Calendar.getInstance();
+
+        calDateThen.setTime(date);
+        calDateThen.set(Calendar.HOUR_OF_DAY, calTimeNow.get(Calendar.HOUR_OF_DAY));
+        calDateThen.set(Calendar.MINUTE, calTimeNow.get(Calendar.MINUTE));
+        calDateThen.set(Calendar.SECOND, calTimeNow.get(Calendar.SECOND));
+        date = calDateThen.getTime();
+
+        return date;
     }
 }

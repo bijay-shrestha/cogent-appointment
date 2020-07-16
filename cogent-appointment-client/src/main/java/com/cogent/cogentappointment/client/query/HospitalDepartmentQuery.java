@@ -52,7 +52,7 @@ public class HospitalDepartmentQuery {
     public static final String QUERY_TO_FETCH_AVAILABLE_ROOM_FOR_DROPDOWN =
             "SELECT" +
                     " r.id as value," +
-                    " CONCAT('Room No',' - ',r.roomNumber) AS label" +
+                    " r.roomNumber AS label" +
                     " FROM" +
                     " Room r" +
                     " WHERE" +
@@ -145,7 +145,12 @@ public class HospitalDepartmentQuery {
     public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
                     " hddi.doctor.id as value," +
-                    " hddi.doctor.name as label," +
+                    " CASE WHEN" +
+                    " (hddi.doctor.salutation is null)" +
+                    " THEN hddi.doctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',hddi.doctor.salutation, hddi.doctor.name)" +
+                    " END as label," +
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
@@ -171,7 +176,7 @@ public class HospitalDepartmentQuery {
                     " AND hdri.status='Y'" +
                     " AND hdri.hospitalDepartment.status!='D'";
 
-    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE=
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE =
             "SELECT " +
                     "  hb.id as id," +
                     "  hb.billingMode.id as billingModeId, " +

@@ -58,6 +58,12 @@ public class DoctorDutyRosterOverride extends Auditable<String> implements Seria
     @Column(name = "remarks")
     private String remarks;
 
+    @Column(name = "from_date_nepali")
+    private String fromDateInNepali;
+
+    @Column(name = "to_date_nepali")
+    private String toDateInNepali;
+
     @Override
     public String toString() {
         return "DoctorDutyRosterOverride{" +
@@ -70,6 +76,8 @@ public class DoctorDutyRosterOverride extends Auditable<String> implements Seria
                 ", doctorDutyRosterId=" + doctorDutyRosterId.getId() +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +
+                ", fromDateInNepali='" + fromDateInNepali + '\'' +
+                ", toDateInNepali='" + toDateInNepali + '\'' +
                 '}';
     }
 }

@@ -12,8 +12,8 @@ import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdmin
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.ApiInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
@@ -26,7 +26,10 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
-import com.cogent.cogentappointment.admin.service.*;
+import com.cogent.cogentappointment.admin.service.AdminFeatureService;
+import com.cogent.cogentappointment.admin.service.CompanyAdminService;
+import com.cogent.cogentappointment.admin.service.EmailService;
+import com.cogent.cogentappointment.admin.service.ProfileService;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -34,10 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import javax.validation.Validator;
 import java.util.*;
 import java.util.function.Consumer;
@@ -48,7 +49,6 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
-import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
@@ -57,7 +57,10 @@ import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.par
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 import static java.lang.reflect.Array.get;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author smriti on 2019-08-05
@@ -79,8 +82,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
-    private final MinioFileService minioFileService;
-
     private final EmailService emailService;
 
     private final ProfileService profileService;
@@ -92,9 +93,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     private final AdminFeatureService adminFeatureService;
 
     private final IntegrationRepository integrationRepository;
+
+    private final AdminFavouriteRepository adminFavouriteRepository;
+
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
-    private final AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository;
-    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
+
     private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
 
     public CompanyAdminServiceImpl(Validator validator,
@@ -103,15 +106,14 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    AdminMetaInfoRepository adminMetaInfoRepository,
                                    AdminAvatarRepository adminAvatarRepository,
                                    AdminConfirmationTokenRepository confirmationTokenRepository,
-                                   MinioFileService minioFileService, EmailService emailService,
+                                   EmailService emailService,
                                    ProfileService profileService,
                                    DashboardFeatureRepository dashboardFeatureRepository,
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                                    AdminFeatureService adminFeatureService,
                                    IntegrationRepository integrationRepository,
+                                   AdminFavouriteRepository adminFavouriteRepository,
                                    IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
-                                   AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository,
-                                   AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
                                    AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
@@ -119,27 +121,23 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
-        this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
+        this.adminFavouriteRepository = adminFavouriteRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
-        this.appointmentModeHospitalInfoRepository = appointmentModeHospitalInfoRepository;
-        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
     }
 
     @Override
-    public void save(@Valid CompanyAdminRequestDTO adminRequestDTO, MultipartFile files) {
+    public void save(CompanyAdminRequestDTO adminRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, ADMIN);
-
-        validateConstraintViolation(validator.validate(adminRequestDTO));
 
         List<Object[]> admins = adminRepository.validateDuplicityForCompanyAdmin(
                 adminRequestDTO.getEmail(),
@@ -152,9 +150,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 adminRequestDTO.getCompanyId()
         );
 
-        Admin admin = save(adminRequestDTO);
+        Admin admin = saveAdmin(adminRequestDTO);
 
-        saveAdminAvatar(admin, files);
+        saveAdminAvatar(admin, adminRequestDTO.getAvatar());
 
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
@@ -264,26 +262,24 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     @Override
-    public void updateAvatar(MultipartFile files, Long adminId) {
+    public void updateAvatar(AdminAvatarUpdateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR);
 
-        Admin admin = findById(adminId);
+        Admin admin = findById(requestDTO.getAdminId());
 
-        updateAvatar(admin, files);
+        updateAvatar(admin, requestDTO.getAvatar());
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public void update(@Valid CompanyAdminUpdateRequestDTO updateRequestDTO, MultipartFile files) {
+    public void update(CompanyAdminUpdateRequestDTO updateRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN);
-
-        validateConstraintViolation(validator.validate(updateRequestDTO));
 
         Admin admin = findById(updateRequestDTO.getId());
 
@@ -297,15 +293,16 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 updateRequestDTO.getMobileNumber(),
                 updateRequestDTO.getCompanyId());
 
-        emailIsNotUpdated(updateRequestDTO, admin, files);
+        emailIsNotUpdated(updateRequestDTO, admin);
 
-        emailIsUpdated(updateRequestDTO, admin, files);
+        emailIsUpdated(updateRequestDTO, admin);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void emailIsNotUpdated(CompanyAdminUpdateRequestDTO updateRequestDTO,
-                                   Admin admin, MultipartFile files) {
+                                   Admin admin) {
+
         if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -313,7 +310,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             updateCompanyAdmin(updateRequestDTO, updateRequestDTO.getStatus(), admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -326,7 +323,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private void emailIsUpdated(CompanyAdminUpdateRequestDTO updateRequestDTO,
-                                Admin admin, MultipartFile files) {
+                                Admin admin) {
+
         if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -340,7 +338,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             updateCompanyAdmin(updateRequestDTO, INACTIVE, admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-                updateAvatar(admin, files);
+                updateAvatar(admin, updateRequestDTO.getAvatar());
 
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
@@ -420,42 +418,35 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
-        responseDTO.setApiIntegration(getApiIntegrations());
 
+        List<IntegrationBodyAttributeResponse> responses =
+                requestBodyParametersRepository.fetchRequestBodyAttributes();
+
+        Map<String, String> map = new HashMap<>();
+
+        if (responses != null) {
+            responses.forEach(response -> {
+                map.put(response.getName(), "");
+            });
+        }
+
+        List<Long> favouriteUserMenuId = adminFavouriteRepository.
+                findUserMenuIdByAdmin(getLoggedInCompanyId()).orElse(emptyList());
+
+        responseDTO.setFavouriteUserMenuId(favouriteUserMenuId);
+        responseDTO.setApiIntegration(getApiIntegrations());
+        responseDTO.setRequestBody(map);
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
 
-    private Map<String, List<?>> getApiIntegrations() {
-
-        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList =
-                getAdminModeApiIntegration();
-
-        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOList =
-                getHospitalApiIntegration();
-
-        Map<String, List<?>> map = new HashMap();
-
-        if (featureIntegrationResponseDTOList.size() != 0 || featureIntegrationResponseDTOList != null) {
-            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTOList);
-        }
-
-        if (clientIntegrationResponseDTOList.size() != 0 || clientIntegrationResponseDTOList != null) {
-            map.put(KEY_ADMIN_INTEGRATION, featureIntegrationResponseDTOList);
-        }
-
-        return map;
-
-
-    }
-
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
 
         Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.
                 fetchAdminModeIntegrationResponseDTO().stream()
-                .collect(Collectors.groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
+                .collect(groupingBy(AdminFeatureIntegrationResponse::getAppointmentModeId));
 
         List<AdminModeFeatureIntegrationResponseDTO> adminModeFeatureIntegrationResponseDTOS = new ArrayList<>();
 
@@ -471,10 +462,14 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 Map<String, String> queryParametersResponseDTO = integrationRepository.
                         findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(),
+                        responseDTO.getRequestMethod());
 
                 FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
-                        convertToAdminApiResponseDTO(responseDTO, requestBody, requestHeaderResponseDTO, queryParametersResponseDTO);
+                        convertToAdminApiResponseDTO(responseDTO,
+                                requestBody,
+                                requestHeaderResponseDTO,
+                                queryParametersResponseDTO);
 
                 features.add(featureIntegrationResponseDTO);
 
@@ -485,10 +480,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(responseMap.getKey());
 
             adminModeFeatureIntegrationResponseDTOS.add(adminModeFeatureIntegrationResponseDTO);
-
-
         });
-
 
         return adminModeFeatureIntegrationResponseDTOS;
 
@@ -500,7 +492,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 fetchClientIntegrationResponseDTO();
 
         Map<Long, List<ClientFeatureIntegrationResponse>> integrationResponseMap = integrationResponseDTOList.stream()
-                .collect(Collectors.groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
+                .collect(groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
 
         List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS = new ArrayList<>();
 
@@ -508,7 +500,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
 
-            integrationResponseDTOList.forEach(responseDTO -> {
+            responseMap.getValue().forEach(responseDTO -> {
 
                 Map<String, String> requestHeaderResponseDTO = integrationRepository.
                         findApiRequestHeadersResponse(responseDTO.getApiIntegrationFormatId());
@@ -516,7 +508,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 Map<String, String> queryParametersResponseDTO = integrationRepository.
                         findApiQueryParametersResponse(responseDTO.getApiIntegrationFormatId());
 
-                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(),
+                        responseDTO.getRequestMethod());
 
                 FeatureIntegrationResponseDTO featureIntegrationResponseDTO = convertToClientApiResponseDTO(responseDTO,
                         requestBody,
@@ -553,7 +546,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                         .map(request -> request.getName())
                         .collect(Collectors.toList()).toArray();
             }
-
         }
 
         return requestBody;
@@ -585,9 +577,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
         }
 
+        featureIntegrationResponseDTO.setHospitalId(responseDTO.getHospitalId());
+
 
         return featureIntegrationResponseDTO;
-
     }
 
     private FeatureIntegrationResponseDTO convertToClientApiResponseDTO(ClientFeatureIntegrationResponse responseDTO,
@@ -613,7 +606,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
 
         return featureIntegrationResponseDTO;
-
     }
 
     @Override
@@ -733,7 +725,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         });
     }
 
-    private Admin save(CompanyAdminRequestDTO adminRequestDTO) {
+    private Admin saveAdmin(CompanyAdminRequestDTO adminRequestDTO) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId());
@@ -743,23 +735,17 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         return save(admin);
     }
 
-    private void saveAdminAvatar(Admin admin, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            saveAdminAvatar(convertFileToAdminAvatar(responseList.get(0), admin));
-        }
+    private void saveAdminAvatar(Admin admin, String avatar) {
+        if (!Objects.isNull(avatar))
+            saveAdminAvatar(convertFileToAdminAvatar(new AdminAvatar(), avatar, admin));
     }
 
-    private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getEmail();
+    private void updateAdminAvatar(Admin admin,
+                                   AdminAvatar adminAvatar,
+                                   String avatar) {
 
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
-    }
-
-    private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
-            setFileProperties(responseList.get(0), adminAvatar);
+        if (!Objects.isNull(avatar)) {
+            convertFileToAdminAvatar(adminAvatar, avatar, admin);
         } else adminAvatar.setStatus(INACTIVE);
 
         saveAdminAvatar(adminAvatar);
@@ -828,11 +814,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
     }
 
-    private void updateAvatar(Admin admin, MultipartFile files) {
+    private void updateAvatar(Admin admin, String avatar) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
-        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, files);
-        else updateAdminAvatar(admin, adminAvatar, files);
+        if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, avatar);
+        else updateAdminAvatar(admin, adminAvatar, avatar);
     }
 
     private void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO, Character status, Admin admin) {
@@ -906,6 +892,28 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword()))
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
+    }
+
+
+    private Map<String, List<?>> getApiIntegrations() {
+
+        List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList =
+                getAdminModeApiIntegration();
+
+        List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOList =
+                getHospitalApiIntegration();
+
+        Map<String, List<?>> map = new HashMap();
+
+        if (featureIntegrationResponseDTOList.size() != 0 || featureIntegrationResponseDTOList != null) {
+            map.put(KEY_CLIENT_INTEGRATION, clientIntegrationResponseDTOList);
+        }
+
+        if (clientIntegrationResponseDTOList.size() != 0 || clientIntegrationResponseDTOList != null) {
+            map.put(KEY_ADMIN_INTEGRATION, featureIntegrationResponseDTOList);
+        }
+
+        return map;
     }
 
 

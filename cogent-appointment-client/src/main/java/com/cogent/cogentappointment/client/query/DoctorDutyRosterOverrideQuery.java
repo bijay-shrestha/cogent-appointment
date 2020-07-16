@@ -49,20 +49,6 @@ public class DoctorDutyRosterOverrideQuery {
                     " AND d.status = 'Y'" +
                     " AND d.doctorDutyRosterId.id = :id";
 
-    public static final String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME =
-            "SELECT d.startTime as startTime," +                             //[0]
-                    " d.endTime as endTime," +                              //[1]
-                    " d.dayOffStatus as dayOffStatus," +                    //[2]
-                    " dd.rosterGapDuration as rosterGapDuration" +          //[3]
-                    " FROM DoctorDutyRosterOverride d" +
-                    " LEFT JOIN DoctorDutyRoster dd ON dd.id = d.doctorDutyRosterId.id" +
-                    " WHERE" +
-                    " d.status = 'Y'" +
-                    " AND dd.status = 'Y'" +
-                    " AND :date BETWEEN d.fromDate AND d.toDate" +
-                    " AND dd.doctorId.id = :doctorId" +
-                    " AND dd.specializationId.id = :specializationId";
-
     public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(AppointmentStatusRequestDTO requestDTO) {
 
         String SQL = "SELECT" +
@@ -104,5 +90,16 @@ public class DoctorDutyRosterOverrideQuery {
         return " SELECT d FROM DoctorDutyRosterOverride d" +
                 " WHERE d.id IN (" + overrideIds + ")";
     }
+
+    public static String QUERY_TO_GET_OVERRIDE_TIME_BY_ROSTER_ID=
+            "SELECT " +
+                    " DATE_FORMAT(hddro.start_time,'%H:%i') as startTime , " +
+                    " DATE_FORMAT(hddro.end_time ,'%H:%i') as endTime " +
+                    " FROM " +
+                    " doctor_duty_roster_override hddro " +
+                    " WHERE " +
+                    " doctor_duty_roster_id = :doctorDutyRosterId " +
+                    " AND (hddro.from_date <= :date " +
+                    " AND hddro.to_date >=:date)";
 
 }

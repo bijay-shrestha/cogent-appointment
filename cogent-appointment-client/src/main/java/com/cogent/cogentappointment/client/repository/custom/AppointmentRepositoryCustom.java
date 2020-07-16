@@ -2,29 +2,39 @@ package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentHistorySearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.count.HospitalDeptAppointmentStatusCountRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.hospitalDepartmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.CancelledHospitalDeptAppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentMinResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.esewa.history.AppointmentResponseWithStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentHospitalDepartment.AppointmentHospitalDepartmentCheckInResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentDetailsForStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.count.AppointmentCountWithStatusDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentDetailsForStatus;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus.HospitalDeptAppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.refund.HospitalDeptCancelledAppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
+import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
+import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentDoctorInfo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -39,27 +49,6 @@ import java.util.Map;
 @Repository
 @Qualifier("appointmentRepositoryCustom")
 public interface AppointmentRepositoryCustom {
-
-    /*esewa*/
-    Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
-                                     Long doctorId, Long specializationId);
-
-    String generateAppointmentNumber(String nepaliCreatedDate, Long hospitalId);
-
-    List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentHistorySearchDTO searchDTO);
-
-    Double calculateRefundAmount(Long appointmentId);
-
-    AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
-
-    List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO);
-
-    AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO);
-
-    AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO);
-
-    /*admin*/
-    List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
                                                                        Date toDate,
@@ -94,11 +83,25 @@ public interface AppointmentRepositoryCustom {
                                                                    Pageable pageable,
                                                                    Long hospitalId);
 
-    AppointmentLogResponseDTO searchAppointmentLogs(
-            AppointmentLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
+    AppointmentLogResponseDTO searchDoctorAppointmentLogs(
+            AppointmentLogSearchDTO searchRequestDTO, Pageable pageable,
+            Long hospitalId, String appointmentServiceTypeCode);
 
-    TransactionLogResponseDTO searchTransactionLogs(
-            TransactionLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
+    AppointmentLogResponseDTO searchHospitalDepartmentAppointmentLogs(
+            AppointmentLogSearchDTO searchRequestDTO, Pageable pageable,
+            Long hospitalId, String appointmentServiceTypeCode);
+
+    TransactionLogResponseDTO searchDoctorTransactionLogs(
+            TransactionLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            Long hospitalId,
+            String appointmentServiceTypeCode);
+
+    TransactionLogResponseDTO searchHospitalDepartmentTransactionLogs(
+            TransactionLogSearchDTO searchRequestDTO,
+            Pageable pageable,
+            Long hospitalId,
+            String appointmentServiceTypeCode);
 
     List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                        Long hospitalId,
@@ -108,4 +111,44 @@ public interface AppointmentRepositoryCustom {
             AppointmentQueueRequestDTO appointmentQueueRequestDTO,
             Long hospitalId,
             Pageable pageable);
+
+    Appointment fetchCancelledAppointmentDetails(RefundStatusRequestDTO requestDTO);
+
+    List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatus(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO);
+
+    List<HospitalDeptAppointmentStatusResponseDTO> fetchHospitalDeptAppointmentForAppointmentStatusRoomWise(
+            HospitalDeptAppointmentStatusRequestDTO requestDTO);
+
+    List<AppointmentHospitalDepartmentCheckInResponseDTO> searchPendingHospitalDeptAppointments(
+            AppointmentHospitalDepartmentCheckInSearchDTO searchDTO,
+            Pageable pageable,
+            Long hospitalId);
+
+    AppointmentHospitalDepartmentCheckInDetailResponseDTO fetchPendingHospitalDeptAppointmentDetail(
+            Long appointmentId, Long hospitalId);
+
+    ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO fetchAppointmentDetailForHospitalDeptCheckIn(
+            Long appointmentId, Long hospitalId);
+
+    ThirdPartyDoctorWiseAppointmentCheckInDTO fetchAppointmentDetailForDoctorWiseApptCheckIn(
+            Long appointmentId, Long hospitalId);
+
+
+    AppointmentDoctorInfo getPreviousAppointmentDoctorAndSpecialization(Long appointmentId);
+
+    HospitalDeptAppointmentDetailsForStatus fetchHospitalDeptAppointmentByApptNumber(String apptNumber);
+
+    AppointmentDetailsForStatus fetchAppointmentByApptNumber(String apptNumber,
+                                                             String appointmentServiceTypeCode);
+
+    CancelledHospitalDeptAppointmentResponseDTO fetchCancelledHospitalDeptAppointments(
+            CancelledHospitalDeptAppointmentSearchDTO searchDTO,
+            Pageable pageable);
+
+    List<AppointmentCountWithStatusDTO> getAppointmentCountWithStatus(HospitalDeptAppointmentStatusCountRequestDTO requestDTO);
+
+    Long getAppointmentFollowUpCount(HospitalDeptAppointmentStatusCountRequestDTO requestDTO);
+
+    HospitalDeptCancelledAppointmentDetailResponseDTO fetchCancelledAppointmentDetail(Long appointmentId);
 }

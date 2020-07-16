@@ -114,10 +114,11 @@ public class AppointmentTransferQuery {
                     " DATE_FORMAT(a.appointmentTime , '%h:%i %p')" +
                     " FROM" +
                     " Appointment a" +
+                    " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " WHERE" +
-                    " a.doctorId.id = :doctorId" +
+                    " adi.doctor.id = :doctorId" +
                     " AND a.hospitalId.id = :hospitalId" +
-                    " AND a.specializationId.id = :specializationId" +
+                    " AND adi.specialization.id = :specializationId" +
                     " AND a.appointmentDate = :date" +
                     " AND (a.status = 'PA'" +
                     " OR a.status = 'A')";
@@ -146,8 +147,18 @@ public class AppointmentTransferQuery {
                     "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%b %d,%Y')  as transferredFromDate, " +
                     "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%h:%i %p')  as transferredToTime, " +
                     "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%h:%i %p')  as transferredFromTime, " +
-                    "  apt.currentDoctor.name as transferredToDoctor, " +
-                    "  apt.previousDoctor.name as transferredFromDoctor, " +
+                    " CASE WHEN" +
+                    " (apt.currentDoctor.salutation is null)" +
+                    " THEN apt.currentDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.currentDoctor.salutation, apt.currentDoctor.name)" +
+                    " END as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.previousDoctor.salutation is null)" +
+                    " THEN apt.previousDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.previousDoctor.salutation, apt.previousDoctor.name)" +
+                    " END as transferredFromDoctor," +
                     "  apt.currentSpecialization.name as transferredToSpecialization, " +
                     "  apt.previousSpecialization.name as transferredFromSpecialization, " +
                     "  attd.currentAppointmentAmount  AS transferredToAmount, " +
@@ -177,12 +188,12 @@ public class AppointmentTransferQuery {
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
                 && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
-            whereClause += " And ((apt.previousAppointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+            whereClause += " And ((apt.previousAppointmentDateAndTime BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
                     + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "')";
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
                 && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
-            whereClause += " OR (apt.currentAppointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+            whereClause += " OR (apt.currentAppointmentDateAndTime BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
                     + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "'))";
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
@@ -212,58 +223,6 @@ public class AppointmentTransferQuery {
                 WHERE_CLAUSE_FOR_SEARCH(requestDTO);
     }
 
-    public static String QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(AppointmentTransferSearchRequestDTO requestDTO) {
-        return SELECT_CLAUSE_FOR_CURRENT_INFO +
-                WHERE_CLAUSE_FOR_CURRENT_INFO(requestDTO);
-    }
-
-
-    public static String SELECT_CLAUSE_FOR_CURRENT_INFO =
-            "SELECT" +
-                    " a.id as appointmentId," +
-                    " a.status as status, " +
-                    " a.appointmentNumber as appointmentNumber," +
-                    " a.appointmentDate as appointmentDate," +
-                    " DATE_FORMAT(a.appointmentTime ,'%h:%i %p')  as appointmentTime," +
-                    " d.name as doctor," +
-                    " s.name as specialization," +
-                    " atd.appointmentAmount as appointmentAmount" +
-                    " FROM" +
-                    " Appointment a" +
-                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
-                    " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
-                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
-                    " LEFT JOIN Patient p ON p.id=a.patientId.id" +
-                    " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
-                    " WHERE a.hasTransferred='Y'" +
-                    " AND a.hospitalId.id=:hospitalId";
-
-    public static String WHERE_CLAUSE_FOR_CURRENT_INFO(AppointmentTransferSearchRequestDTO requestDTO) {
-
-        String whereClause = " ";
-
-        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
-                && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
-            whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
-                    + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "')";
-
-        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
-            whereClause += " AND a.appointmentNumber='" + requestDTO.getAppointmentNumber() + "'";
-
-        if (!ObjectUtils.isEmpty(requestDTO.getPatientMetaInfoId()))
-            whereClause += " AND pmi.id=" + requestDTO.getPatientMetaInfoId();
-
-        if (!ObjectUtils.isEmpty(requestDTO.getDoctorId()))
-            whereClause += " AND a.doctorId.id=" + requestDTO.getDoctorId();
-
-        if (!ObjectUtils.isEmpty(requestDTO.getSpecializationId()))
-            whereClause += " AND a.specializationId.id=" + requestDTO.getSpecializationId();
-
-        whereClause += "ORDER BY a.id DESC";
-
-        return whereClause;
-    }
-
     public static String QUERY_TO_FETCH_APPOINTMENT_TRANSFER_DETAIL_BY_ID =
             "SELECT" +
                     " a.appointmentNumber as appointmentNumber," +
@@ -277,8 +236,18 @@ public class AppointmentTransferQuery {
                     " attd.currentAppointmentAmount  as transferredToAmount," +
                     " attd.previousAppointmentAmount  as transferredFromAmount," +
                     " apt.remarks," +
-                    " apt.previousDoctor.name as transferredFromDoctor," +
-                    " apt.currentDoctor.name as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.currentDoctor.salutation is null)" +
+                    " THEN apt.currentDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.currentDoctor.salutation, apt.currentDoctor.name)" +
+                    " END as transferredToDoctor," +
+                    " CASE WHEN" +
+                    " (apt.previousDoctor.salutation is null)" +
+                    " THEN apt.previousDoctor.name" +
+                    " ELSE" +
+                    " CONCAT_WS(' ',apt.previousDoctor.salutation, apt.previousDoctor.name)" +
+                    " END as transferredFromDoctor," +
                     " apt.previousSpecialization.name as transferredFromSpecialization," +
                     " apt.currentSpecialization.name as transferredToSpecialization," +
                     "  atd.transactionNumber as transactionNumber," +
@@ -307,10 +276,41 @@ public class AppointmentTransferQuery {
                 " apt.lastModifiedDate as lastModifiedDate";
     }
 
-    public static String QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID =
-            "SELECT a.id FROM Appointment a WHERE a.hasTransferred='Y' AND a.hospitalId.id=:hospitalId";
+    public static String QUERY_TO_GET_APPOINTMENT_ID_LIST_OF_TRANSFERRED_APPOINTMENT(
+            AppointmentTransferSearchRequestDTO requestDTO) {
 
-    public static String QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID =
+        String sql = "SELECT" +
+                " a.id" +
+                " FROM Appointment a" +
+                " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
+                " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=a.patientId.id" +
+                " WHERE a.hasTransferred='Y'" ;
+
+        if (!ObjectUtils.isEmpty(requestDTO.getHospitalId()))
+            sql += " AND a.hospitalId.id=" + requestDTO.getHospitalId();
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
+                && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
+            sql += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+                    + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "')";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
+            sql += " AND a.appointmentNumber='" + requestDTO.getAppointmentNumber() + "'";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getDoctorId()))
+            sql += " AND adi.doctor.id=" + requestDTO.getDoctorId();
+
+        if (!ObjectUtils.isEmpty(requestDTO.getSpecializationId()))
+            sql += " AND adi.specialization.id=" + requestDTO.getSpecializationId();
+
+        if (!ObjectUtils.isEmpty(requestDTO.getPatientMetaInfoId()))
+            sql += " AND pmi.id=" + requestDTO.getPatientMetaInfoId();
+
+        return sql;
+    }
+
+
+    public static String QUERY_TO_GET_LATEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID =
             "SELECT" +
                     " apt.id as appointmentTransferredId," +
                     " a.status  as status" +

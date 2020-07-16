@@ -6,8 +6,10 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationRefundRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDetailResponseDTO;
@@ -33,7 +35,7 @@ public interface AppointmentService {
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId);
 
-    void approveRefundAppointment(Long appointmentId);
+    void approveRefundAppointment(IntegrationRefundRequestDTO integrationRefundRequestDTO);
 
     void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO);
 
@@ -44,17 +46,22 @@ public interface AppointmentService {
 
     AppointmentPendingApprovalDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 
-    void approveAppointment(Long appointmentId);
+    void approveAppointment(IntegrationBackendRequestDTO integrationBackendRequestDTO);
 
     void rejectAppointment(AppointmentRejectDTO rejectDTO);
 
-    AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
+    AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
+                                                    Pageable pageable);
 
-    TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable);
+    TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO,
+                                                    Pageable pageable);
 
-    AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable);
+    AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
+                                                                   Pageable pageable);
 
-    List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
+    List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO searchRequestDTO,
+                                                       Pageable pageable);
 
-    Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
+    Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO
+                                                                                    appointmentQueueRequestDTO, Pageable pageable);
 }

@@ -30,7 +30,8 @@ public class DoctorDutyRosterQuery {
                 " ddr.fromDate as fromDate," +                                          //[4]
                 " ddr.toDate as toDate," +                                              //[5]
                 " ddr.status as status," +                                              //[6]
-                " da.fileUri as fileUri"+                                               //[7]
+                " da.fileUri as fileUri," +                                              //[7]
+                " d.salutation as doctorSalutation" +                                    //[8]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                 " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
@@ -66,8 +67,9 @@ public class DoctorDutyRosterQuery {
                     " ddr.status as status," +                                          //[8]
                     " ddr.remarks as remarks," +                                        //[9]
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +             //[10]
-                    " dv.fileUri as fileUri,"+
-                    DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() +
+                    " dv.fileUri as fileUri," +
+                    DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() + "," +
+                    " d.salutation as doctorSalutation" +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
@@ -122,7 +124,8 @@ public class DoctorDutyRosterQuery {
                 " dr.name as doctorName," +                               //[4]
                 " s.id as specializationId," +                            //[5]
                 " s.name as specializationName," +                        //[6]
-                " d.roster_gap_duration as rosterGapDuration" +           //[7]
+                " d.roster_gap_duration as rosterGapDuration," +           //[7]
+                " dr.salutation as doctorSalutation"+                      //[8]
                 " FROM doctor_duty_roster d" +
                 " LEFT JOIN doctor_week_days_duty_roster dw ON d.id = dw.doctor_duty_roster_id" +
                 " LEFT JOIN week_days w ON w.id = dw.week_days_id" +
@@ -172,5 +175,25 @@ public class DoctorDutyRosterQuery {
                 " ddr.lastModifiedBy as lastModifiedBy," +
                 " ddr.lastModifiedDate as lastModifiedDate";
     }
+
+    public static String QUERY_TO_FETCH_ROSTER_DETAILS =
+
+            "SELECT" +
+                    " d.id as rosterId," +
+                    " d.rosterGapDuration as rosterGapDuration," +
+                    " DATE_FORMAT(dw.startTime,'%H:%i') as startTime," +
+                    " DATE_FORMAT(dw.endTime ,'%H:%i') as endTime," +
+                    " dw.dayOffStatus as dayOffStatus," +
+                    " d.hasOverrideDutyRoster as hasRosterOverRide" +
+                    " FROM DoctorDutyRoster d" +
+                    " LEFT JOIN DoctorWeekDaysDutyRoster dw ON d.id = dw.doctorDutyRosterId.id" +
+                    " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +
+                    " WHERE d.status = 'Y'" +
+                    " AND d.toDate >=:date" +
+                    " AND d.fromDate <=:date " +
+                    " AND d.doctorId.id = :doctorId" +
+                    " AND d.specializationId.id = :specializationId" +
+                    " AND w.name =DATE_FORMAT(:date,'%W') "+
+                    " GROUP BY d.id";
 
 }

@@ -12,6 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class AppointmentPendingApprovalSearchDTO implements Serializable {
+
     private Long hospitalId;
 
     private Date fromDate;

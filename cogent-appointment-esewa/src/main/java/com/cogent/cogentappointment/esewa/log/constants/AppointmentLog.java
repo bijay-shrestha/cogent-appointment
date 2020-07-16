@@ -6,6 +6,8 @@ package com.cogent.cogentappointment.esewa.log.constants;
 public class AppointmentLog {
     public final static String APPOINTMENT = "APPOINTMENT";
 
+    public final static String APPOINTMENT_REFUND_DETAIL = "APPOINTMENT REFUND DETAIL";
+
     public static String CHECK_AVAILABILITY_PROCESS_STARTED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS STARTED ::::";
     public static String CHECK_AVAILABILITY_PROCESS_COMPLETED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS COMPLETED IN :::: {} ms";
 
@@ -16,6 +18,10 @@ public class AppointmentLog {
     public static String RESCHEDULE_PROCESS_COMPLETED = ":::: RESCHEDULE APPOINTMENT PROCESS COMPLETED IN :::: {} ms";
 
     public static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
+
+    public final static String APPOINTMENT_DOCTOR_INFO = "APPOINTMENT DOCTOR INFO";
+
+    public final static String APPOINTMENT_HOSPITAL_DEPARTMENT_INFO = "APPOINTMENT HOSPITAL DEPARTMENT INFO";
 
 
 }

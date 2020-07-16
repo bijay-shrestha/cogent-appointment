@@ -52,6 +52,7 @@ public class DoctorDutyRosterOverrideUtils {
         doctorDutyRosterOverride.setDayOffStatus(updateRequestDTO.getDayOffStatus());
         doctorDutyRosterOverride.setStatus(updateRequestDTO.getStatus());
         doctorDutyRosterOverride.setRemarks(updateRequestDTO.getRemarks());
+
         return doctorDutyRosterOverride;
     }
 

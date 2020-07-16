@@ -4,40 +4,62 @@ package com.cogent.cogentappointment.client.log.constants;
  * @author smriti on 2019-10-24
  */
 public class AppointmentLog {
+
     public final static String APPOINTMENT = "APPOINTMENT";
 
-    public static String CHECK_AVAILABILITY_PROCESS_STARTED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS STARTED ::::";
-    public static String CHECK_AVAILABILITY_PROCESS_COMPLETED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS COMPLETED IN :::: {} ms";
+    public final static String APPOINTMENT_REFUND_DETAIL = "APPOINTMENT REFUND DETAIL";
 
-    public static String CANCELLING_PROCESS_STARTED = ":::: CANCELLING APPOINTMENT PROCESS STARTED ::::";
-    public static String CANCELLING_PROCESS_COMPLETED = ":::: CANCELLING APPOINTMENT PROCESS COMPLETED IN :::: {} ms";
+    public final static String CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENT = "CANCELLED HOSPITAL DEPARTMENT APPOINTMENT";
 
-    public static String RESCHEDULE_PROCESS_STARTED = ":::: RESCHEDULE APPOINTMENT PROCESS STARTED ::::";
-    public static String RESCHEDULE_PROCESS_COMPLETED = ":::: RESCHEDULE APPOINTMENT PROCESS COMPLETED IN :::: {} ms";
+    public final static String APPOINTMENT_TRANSACTION_DETAIL = "APPOINTMENT TRANSACTION DETAIL";
 
-    public static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";
-    public static String APPROVE_PROCESS_COMPLETED = ":::: APPROVING {} COMPLETED IN {} ms ::::";
+    public final static String CHECK_AVAILABILITY_PROCESS_STARTED = ":::: CHECKING APPOINTMENT AVAILABILITY " +
+            "PROCESS STARTED ::::";
+    public final static String CHECK_AVAILABILITY_PROCESS_COMPLETED = ":::: CHECKING APPOINTMENT AVAILABILITY" +
+            " PROCESS COMPLETED IN :::: {} ms";
 
-    public static String REJECT_PROCESS_STARTED = ":::: REJECTING {} STARTED ::::";
-    public static String REJECT_PROCESS_COMPLETED = ":::: REJECTING {} COMPLETED IN {} ms ::::";
+    public final static String CANCELLING_PROCESS_STARTED = ":::: CANCELLING APPOINTMENT PROCESS STARTED ::::";
+    public final static String CANCELLING_PROCESS_COMPLETED = ":::: CANCELLING APPOINTMENT PROCESS " +
+            "COMPLETED IN :::: {} ms";
 
-    public static String APPOINTMENT_CANCEL_APPROVAL = "APPOINTMENT CANCEL APPROVALS";
+    public final static String RESCHEDULE_PROCESS_STARTED = ":::: RESCHEDULE APPOINTMENT PROCESS STARTED ::::";
+    public final static String RESCHEDULE_PROCESS_COMPLETED = ":::: RESCHEDULE APPOINTMENT PROCESS " +
+            "COMPLETED IN :::: {} ms";
 
-    public static String APPOINTMENT_LOG = "APPOINTMENT LOG";
+    public final static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";
+    public final static String APPROVE_PROCESS_COMPLETED = ":::: APPROVING {} COMPLETED IN {} ms ::::";
+
+    public final static String REJECT_PROCESS_STARTED = ":::: REJECTING {} STARTED ::::";
+    public final static String REJECT_PROCESS_COMPLETED = ":::: REJECTING {} COMPLETED IN {} ms ::::";
+
+    public final static String APPOINTMENT_CANCEL_APPROVAL = "APPOINTMENT CANCEL APPROVALS";
+
+    public final static String APPOINTMENT_LOG = "APPOINTMENT LOG";
 
     public final static String TRANSACTION_LOG = "TRANSACTION LOG";
 
-    public static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
+    public final static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
 
-    public static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";
+    public final static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";
 
-    public static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
+    public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
 
-    public static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
+    public final static String HOSPITAL_DEPARTMENT_APPOINTMENT_STATUS = "HOSPITAL DEPARTMENT APPOINTMENT STATUS";
 
-    public static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
+    public final static String HOSPITAL_DEPARTMENT_APPOINTMENT_STATUS_COUNT = "HOSPITAL DEPARTMENT APPOINTMENT STATUS" +
+            " COUNT";
 
-    public static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
+    public final static String HOSPITAL_DEPARTMENT_APPOINTMENT_STATUS_ROOM_WISE = "HOSPITAL DEPARTMENT APPOINTMENT " +
+            "STATUS ROOM-WISE";
+
+    public final static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
+
+    public final static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
+
+    public final static String APPOINTMENT_DOCTOR_INFO = "APPOINTMENT DOCTOR INFO";
+
+    public final static String APPOINTMENT_HOSPITAL_DEPARTMENT_INFO = "APPOINTMENT HOSPITAL DEPARTMENT INFO";
+
 
 
 }

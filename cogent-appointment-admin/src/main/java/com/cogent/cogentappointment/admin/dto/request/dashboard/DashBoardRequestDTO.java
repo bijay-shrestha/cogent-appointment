@@ -21,4 +21,6 @@ public class DashBoardRequestDTO implements Serializable {
     private Date toDate;
 
     private Long hospitalId;
+
+    private String appointmentServiceTypeCode;
 }

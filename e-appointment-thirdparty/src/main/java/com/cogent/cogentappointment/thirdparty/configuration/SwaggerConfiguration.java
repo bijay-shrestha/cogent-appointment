@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.thirdparty.configuration;
 
-import com.cogent.cogentappointment.thirdparty.constants.SwaggerConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ParameterBuilder;
@@ -23,15 +22,15 @@ public class SwaggerConfiguration {
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage(SwaggerConstants.BASE_PACKAGE))
-                .paths(PathSelectors.regex(SwaggerConstants.PATH_REGEX))
+                .apis(RequestHandlerSelectors.basePackage("com.cogent.cogentappointment.thirdparty.resource"))
+                .paths(PathSelectors.regex("/api.*"))
                 .build()
                 .apiInfo(metaData())
                 .globalOperationParameters(
-                        Collections.singletonList(new ParameterBuilder ()
+                        Collections.singletonList(new ParameterBuilder()
                                 .name("Authorization")
                                 .description("HMAC Authentication Code")
-                                .modelRef(new ModelRef ("string"))
+                                .modelRef(new ModelRef("string"))
                                 .parameterType("header")
                                 .required(false)
                                 .build()));

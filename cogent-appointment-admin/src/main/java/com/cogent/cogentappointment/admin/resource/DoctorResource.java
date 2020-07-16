@@ -6,17 +6,14 @@ import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequest
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorShiftRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.DoctorService;
-import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DoctorConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
@@ -44,21 +41,17 @@ public class DoctorResource {
         this.doctorService = doctorService;
     }
 
-    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@RequestPart(value = "avatar", required = false) MultipartFile avatar,
-                                  @RequestParam("request") String request) throws IOException {
-        DoctorRequestDTO requestDTO = ObjectMapperUtils.map(request, DoctorRequestDTO.class);
-        doctorService.save(requestDTO, avatar);
+    public ResponseEntity<?> save(@Valid @RequestBody DoctorRequestDTO requestDTO) {
+        doctorService.save(requestDTO);
         return created(create(API_V1 + BASE_DOCTOR)).build();
     }
 
-    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@RequestPart(value = "avatar", required = false) MultipartFile avatar,
-                                    @RequestParam("request") String request) throws IOException {
-        DoctorUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, DoctorUpdateRequestDTO.class);
-        doctorService.update(updateRequestDTO, avatar);
+    public ResponseEntity<?> update(@Valid @RequestBody DoctorUpdateRequestDTO updateRequestDTO) {
+        doctorService.update(updateRequestDTO);
         return ok().build();
     }
 

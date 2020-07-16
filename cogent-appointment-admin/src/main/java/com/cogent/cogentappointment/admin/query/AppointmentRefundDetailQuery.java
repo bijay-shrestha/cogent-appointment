@@ -186,6 +186,7 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                     " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = adi.doctor.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON atd.appointment.id =a.id" +

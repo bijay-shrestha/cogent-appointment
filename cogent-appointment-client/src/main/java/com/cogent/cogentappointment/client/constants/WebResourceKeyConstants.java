@@ -46,14 +46,7 @@ public class WebResourceKeyConstants {
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
-        String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
-        String FETCH_AVAILABLE_TIMESLOTS = "/availableTimeSlots";
-        String FETCH_CURRENT_AVAILABLE_TIMESLOTS = "/availableTimeSlots/current";
-        String PENDING_APPOINTMENT = "/pending-appointment";
-        String CANCEL = "/cancel";
-        String RESCHEDULE = "/reschedule";
         String FOLLOW_UP = "/follow-up";
-        String HISTORY = "/history";
         String PENDING_APPROVAL = "/pending-approval";
         String REFUND = "/refund";
         String APPROVE = "/approve";
@@ -152,17 +145,6 @@ public class WebResourceKeyConstants {
 
     public interface ExcelReportConstants {
         String BASE_EXCEL_REPORT = "/excel-report";
-    }
-
-    public interface EsewaConstants {
-        String BASE_ESEWA = "/esewa";
-        String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";
-        String AVAILABLE_APPOINTMENT_DATES_AND_TIME = "/availableAppointmentDatesAndTime";
-        String DOCTOR_AVAILABLE_DATES = "/doctorAvailableDates";
-        String SPECIALIZATION_AVAILABLE_DATES = "/specializationAvailableDates";
-        String DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES = "/doctorWithSpecializationAvailableDates";
-        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/availableDoctorsWithSpecialization";
-
     }
 
     //F

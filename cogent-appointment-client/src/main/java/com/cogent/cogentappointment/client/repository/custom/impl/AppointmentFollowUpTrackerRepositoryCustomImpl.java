@@ -17,7 +17,8 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.PATIENT_ID;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
-import static com.cogent.cogentappointment.client.query.AppointmentFollowUpTrackerQuery.*;
+import static com.cogent.cogentappointment.client.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER;
+import static com.cogent.cogentappointment.client.query.AppointmentFollowUpTrackerQuery.QUERY_TO_UPDATE_APPOINTMENT_FOLLOW_UP_TRACKER;
 
 /**
  * @author smriti on 18/11/2019
@@ -29,25 +30,6 @@ public class AppointmentFollowUpTrackerRepositoryCustomImpl implements Appointme
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Override
-    public AppointmentFollowUpTracker fetchAppointmentFollowUpTracker(Long patientId,
-                                                                      Long doctorId,
-                                                                      Long specializationId,
-                                                                      Long hospitalId) {
-        try {
-            return entityManager.createQuery(
-                    QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER, AppointmentFollowUpTracker.class)
-                    .setParameter(PATIENT_ID, patientId)
-                    .setParameter(DOCTOR_ID, doctorId)
-                    .setParameter(SPECIALIZATION_ID, specializationId)
-                    .setParameter(HOSPITAL_ID, hospitalId)
-                    .getSingleResult();
-
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
 
     @Override
     public AppointmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId) {

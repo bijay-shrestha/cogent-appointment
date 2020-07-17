@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.Refun
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
-import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
@@ -22,12 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
-import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.changeAppointmentRefundDetailStatus;
-import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.changeAppointmentStatus;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 

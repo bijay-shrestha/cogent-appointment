@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
+import com.cogent.cogentappointment.client.property.EmailProperties;
 import com.cogent.cogentappointment.client.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.client.service.EmailService;
 import com.cogent.cogentappointment.client.utils.commons.FileResourceUtils;
@@ -55,12 +56,16 @@ public class EmailServiceImpl implements EmailService {
 
     private final Configuration configuration;
 
+    private final EmailProperties emailProperties;
+
     public EmailServiceImpl(EmailToSendRepository emailToSendRepository,
                             @Qualifier("getMailSender") JavaMailSender javaMailSender,
-                            Configuration configuration) {
+                            Configuration configuration,
+                            EmailProperties emailProperties) {
         this.emailToSendRepository = emailToSendRepository;
         this.javaMailSender = javaMailSender;
         this.configuration = configuration;
+        this.emailProperties = emailProperties;
     }
 
     @Override
@@ -132,6 +137,7 @@ public class EmailServiceImpl implements EmailService {
 
             helper.setText(html, true);
             helper.addInline(LOGO_FILE_NAME, new FileSystemResource(new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
+            helper.setFrom(emailProperties.getUsername());
 
             javaMailSender.send(message);
 

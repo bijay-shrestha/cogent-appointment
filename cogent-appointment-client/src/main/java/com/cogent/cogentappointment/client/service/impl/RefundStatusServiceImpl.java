@@ -79,15 +79,19 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     }
 
     @Override
-    public HospitalDepartmentRefundStatusResponseDTO searchHospitalDeaprtmentRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+    public HospitalDepartmentRefundStatusResponseDTO searchHospitalDepartmentRefundAppointments(
+            RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REFUND_STATUS);
 
+        HospitalDepartmentRefundStatusResponseDTO response=refundDetailRepository
+                .searchHospitalDepartmentRefundAppointments(requestDTO,pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
-        return null;
+        return response;
     }
 
     @Override

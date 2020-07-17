@@ -14,7 +14,7 @@ public interface RefundStatusService {
 
     RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable);
 
-    HospitalDepartmentRefundStatusResponseDTO searchHospitalDeaprtmentRefundAppointments(
+    HospitalDepartmentRefundStatusResponseDTO searchHospitalDepartmentRefundAppointments(
             RefundStatusSearchRequestDTO requestDTO, Pageable pageable);
 
     void checkRefundStatus(RefundStatusRequestDTO requestDTO);

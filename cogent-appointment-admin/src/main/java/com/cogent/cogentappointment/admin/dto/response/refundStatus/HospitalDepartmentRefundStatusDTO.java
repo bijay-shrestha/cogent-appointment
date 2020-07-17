@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.refundStatus;
+package com.cogent.cogentappointment.admin.dto.response.refundStatus;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;

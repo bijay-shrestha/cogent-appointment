@@ -93,6 +93,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
     @Override
     public HospitalDepartmentRefundStatusResponseDTO searchHospitalDepartmentRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+
         HospitalDepartmentRefundStatusResponseDTO refundStatusResponseDTO = new HospitalDepartmentRefundStatusResponseDTO();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_REFUND_APPOINTMENTS(requestDTO))

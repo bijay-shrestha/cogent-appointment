@@ -50,7 +50,7 @@ public class RefundStatusResource {
                                                      @RequestParam("page") int page,
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(refundStatusService.searchHospitalDeaprtmentRefundAppointments(searchDTO, pageable));
+        return ok().body(refundStatusService.searchHospitalDepartmentRefundAppointments(searchDTO, pageable));
     }
 
     @PutMapping(CHECK)

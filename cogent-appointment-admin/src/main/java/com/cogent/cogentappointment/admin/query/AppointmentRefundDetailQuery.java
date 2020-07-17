@@ -88,6 +88,9 @@ public class AppointmentRefundDetailQuery {
         if (!Objects.isNull(searchDTO.getDoctorId()))
             whereClause += " AND adi.doctor.id=" + searchDTO.getDoctorId();
 
+        if (!Objects.isNull(searchDTO.getHospitalDepartmentId()))
+            whereClause += " AND ahdi.hospitalDepartment.id=" + searchDTO.getHospitalDepartmentId();
+
         if (!Objects.isNull(searchDTO.getSpecializationId()))
             whereClause += " AND adi.specialization.id=" + searchDTO.getSpecializationId();
 
@@ -95,6 +98,42 @@ public class AppointmentRefundDetailQuery {
             whereClause += " AND hpi.isRegistered='" + searchDTO.getPatientType() + "'";
 
         return whereClause + " ORDER BY a.appointmentDate DESC";
+    }
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_REFUND_APPOINTMENTS(RefundStatusSearchRequestDTO searchDTO) {
+        return "SELECT" +
+                " a.id  as appointmentId," +
+                " a.appointmentDate as appointmentDate," +
+                " a.appointmentNumber as appointmentNumber," +
+                " DATE_FORMAT(a.appointmentTime , '%h:%i %p') as appointmentTime," +
+                " CASE WHEN (hpi.registrationNumber IS NULL) THEN 'N/A'" +
+                " ELSE hpi.registrationNumber END as registrationNumber," +
+                " atd.transactionNumber as transactionNumber," +
+                " DATE_FORMAT(ard.cancelledDate ,'%M %d, %Y') as cancelledDate," +
+                " DATE_FORMAT(ard.cancelledDate ,'%h:%i %p') as cancelledTime," +
+                " ard.refundAmount as refundAmount," +
+                " hpi.isRegistered as isRegistered," +
+                " ard.status," +
+                " a.patientId.name as patientName," +
+                " a.patientId.gender as gender," +
+                " a.patientId.mobileNumber as mobileNumber," +
+                " a.patientId.eSewaId as eSewaId," +
+                " a.appointmentModeId.name as appointmentMode," +
+                "  a.appointmentModeId.id as appointmentModeId," +
+                " ard.status as refundStatus," +
+                " ard.remarks as remarks," +
+                " ahdi.hospitalDepartment.name as hospitalDepartmentName," +
+                QUERY_TO_CALCULATE_PATIENT_AGE +
+                " FROM" +
+                " AppointmentRefundDetail ard" +
+                " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
+                " INNER JOIN AppointmentHospitalDepartmentInfo ahdi ON adi.appointment.id=a.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
+                " WHERE" +
+                " a.status IN ('C','RE')" +
+                " AND ard.status IN ('PA','A','R')" +
+                GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
     public static Function<RefundStatusSearchRequestDTO,String> QUERY_TO_GET_TOTAL_REFUND_AMOUNT= searchDTO -> {
@@ -106,6 +145,22 @@ public class AppointmentRefundDetailQuery {
                 " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                 " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON da.doctorId.id = adi.doctor.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
+                " WHERE" +
+                " a.status IN ('C','RE')" +
+                " AND ard.status IN ('PA','A','R')" +
+                GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
+    };
+
+    public static Function<RefundStatusSearchRequestDTO, String> QUERY_TO_GET_TOTAL_HOSPITAL_DEPARTMENT__REFUND_AMOUNT = searchDTO -> {
+        return "SELECT" +
+                " COALESCE(SUM(ard.refundAmount),0) as totalRefundAmount" +
+                " FROM" +
+                " AppointmentRefundDetail ard" +
+                " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
+                " INNER JOIN AppointmentHospitalDepartmentInfo ahdi ON adi.appointment.id=a.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +

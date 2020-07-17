@@ -21,6 +21,7 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.RefundStatusConstants.BASE_REFUND_STATUS;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.RefundStatusConstants.CHECK;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.RoomConstants.HOSPITAL_DEPARTMENT_WISE;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -44,6 +45,15 @@ public class RefundStatusResource {
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(refundStatusService.searchRefundAppointments(searchDTO, pageable));
+    }
+
+    @PutMapping(HOSPITAL_DEPARTMENT_WISE + SEARCH)
+    @ApiOperation(FETCH_APPOINTMENT_REFUND_DETAIL_LIST)
+    public ResponseEntity<?> fetchHospitalDepartmentRefundAppointments(@RequestBody RefundStatusSearchRequestDTO searchDTO,
+                                                                       @RequestParam("page") int page,
+                                                                       @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(refundStatusService.searchHospitalDepartmentRefundAppointments(searchDTO, pageable));
     }
 
     @PutMapping(CHECK)

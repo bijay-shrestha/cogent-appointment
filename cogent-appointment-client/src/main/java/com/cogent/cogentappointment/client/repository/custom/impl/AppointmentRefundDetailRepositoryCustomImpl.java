@@ -16,20 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.TRANSACTION_NUMBER;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -80,13 +76,12 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
         List<RefundStatusDTO> response = transformQueryToResultList(query, RefundStatusDTO.class);
 
-        if (ObjectUtils.isEmpty(response)) {
+        if (response.size() == 0 || response.size() < 0) {
             log.error(CONTENT_NOT_FOUND, APPOINTMENT_REFUND_DETAIL);
             throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
         }
 
         Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT.apply(requestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         refundStatusResponseDTO.setRefundAppointments(response);

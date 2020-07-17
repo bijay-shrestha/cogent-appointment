@@ -35,8 +35,6 @@ public interface DoctorRepositoryCustom {
 
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id, Long hospitalId);
 
-    List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId);
-
     Double fetchDoctorAppointmentFollowUpCharge(Long doctorId, Long hospitalId);
 
     Double fetchDoctorAppointmentCharge(Long doctorId, Long hospitalId);

@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpRequestLogConstant.APPOINTMENT_FOLLOW_UP_REQUEST_LOG;
 import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpRequestLogUtils.parseToAppointmentFollowUpRequestLog;
 import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpRequestLogUtils.updateAppointmentFollowUpRequestLog;
@@ -28,7 +29,8 @@ public class AppointmentFollowUpRequestLogServiceImpl implements AppointmentFoll
 
     private final AppointmentFollowUpRequestLogRepository appointmentFollowUpRequestLogRepository;
 
-    public AppointmentFollowUpRequestLogServiceImpl(AppointmentFollowUpRequestLogRepository appointmentFollowUpRequestLogRepository) {
+    public AppointmentFollowUpRequestLogServiceImpl(
+            AppointmentFollowUpRequestLogRepository appointmentFollowUpRequestLogRepository) {
         this.appointmentFollowUpRequestLogRepository = appointmentFollowUpRequestLogRepository;
     }
 
@@ -44,23 +46,6 @@ public class AppointmentFollowUpRequestLogServiceImpl implements AppointmentFoll
         save(appointmentFollowUpRequestLog);
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_REQUEST_LOG, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public Integer fetchRequestCountByFollowUpTrackerId(Long appointmentFollowUpTrackerId) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_REQUEST_LOG);
-
-        Integer requestCount = appointmentFollowUpRequestLogRepository.fetchRequestCountByFollowUpTrackerId
-                (appointmentFollowUpTrackerId)
-                .orElseThrow(() ->
-                        APPOINTMENT_FOLLOW_REQUEST_LOG_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentFollowUpTrackerId));
-
-        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_REQUEST_LOG, getDifferenceBetweenTwoTime(startTime));
-
-        return requestCount;
     }
 
     @Override

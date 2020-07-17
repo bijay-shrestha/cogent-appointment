@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.Refun
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
-import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
@@ -13,6 +12,7 @@ import com.cogent.cogentappointment.client.repository.AppointmentTransactionDeta
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.client.service.RefundStatusService;
+import com.cogent.cogentappointment.commons.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;

@@ -134,20 +134,23 @@ public class AppointmentRefundDetailQuery {
         return whereClause + " ORDER BY a.appointmentDate DESC";
     }
 
-    public static Function<RefundStatusSearchRequestDTO,String> QUERY_TO_GET_TOTAL_REFUND_AMOUNT = searchDTO -> {
-        String sql="SELECT" +
+    public static Function<RefundStatusSearchRequestDTO,String> QUERY_TO_GET_TOTAL_REFUND_AMOUNT= searchDTO -> {
+           return  "SELECT" +
                 " COALESCE(SUM(ard.refundAmount),0) as totalRefundAmount" +
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
-                " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
+                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
+                " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
+                " LEFT JOIN DoctorAvatar da ON da.doctorId.id = adi.doctor.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE" +
-                " a.status IN ('C','RE') " +
+                " a.status IN ('C','RE')" +
+                " AND ard.status IN ('PA','A','R')" +
                 " AND a.hospitalId.id=:hospitalId" +
-                " AND hast.appointmentServiceType.code=:appointmentServiceTypeCode" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
-
-        return sql;
     };
 
     public static final String QUERY_TO_CALCULATE_PATIENT_AGE =

@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.*;
-import com.cogent.cogentappointment.client.dto.response.patient.*;
-import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientMinDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -13,33 +15,6 @@ import java.util.List;
  */
 public interface PatientService {
 
-    /*esewa*/
-    Patient saveSelfPatient(PatientRequestByDTO requestDTO);
-
-    Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo);
-
-    Patient fetchPatient(PatientRequestForDTO patientRequestForDTO);
-
-    Patient fetchPatientById(Long id);
-
-    PatientDetailResponseDTOWithStatus searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
-
-    PatientDetailResponseDTOWithStatus searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO);
-
-    /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
-    PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                          Pageable pageable);
-
-    PatientResponseDTOForOthersWithStatus searchForOthersHospitalWise(PatientMinSearchRequestDTO searchRequestDTO,
-                                                                      Pageable pageable);
-
-    PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
-
-    void updateOtherPatientDetails(PatientUpdateDTOForOthers requestDTO);
-
-    void deleteOtherPatient(PatientDeleteRequestDTOForOthers requestDTO);
-
-    /*admin*/
     PatientResponseDTO fetchDetailsById(Long id);
 
     List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,

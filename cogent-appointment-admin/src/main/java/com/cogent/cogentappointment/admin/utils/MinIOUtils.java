@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * @author rupak ON 2020/07/17-12:19 PM
  */
+@Component
 public class MinIOUtils {
 
     private static MinIOProperties minIOProperties;

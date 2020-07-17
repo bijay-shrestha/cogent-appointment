@@ -419,7 +419,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
 
-         fileUrlCheckPoint(responseDTO.getFileUri());
+        responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
 
         List<IntegrationBodyAttributeResponse> responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributes();

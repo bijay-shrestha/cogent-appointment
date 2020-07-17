@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountReq
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentAppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
@@ -29,4 +30,6 @@ public interface AppointmentRefundDetailRepositoryCustom {
     AppointmentRefundDetail fetchAppointmentRefundDetail(RefundStatusRequestDTO requestDTO);
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId);
+
+    HospitalDepartmentAppointmentRefundDetailResponseDTO fetchHospitalDepartmentRefundDetailsById(Long appointmentId);
 }

@@ -5,10 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountReq
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRefundDetailRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Appointment;
@@ -143,6 +140,19 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
         try {
             return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw APPOINTMENT_DETAILS_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    @Override
+    public HospitalDepartmentAppointmentRefundDetailResponseDTO fetchHospitalDepartmentRefundDetailsById
+            (Long appointmentId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_HOSPITAL_DEPARTMENT_REFUNDED_DETAIL_BY_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+        try {
+            return transformQueryToSingleResult(query, HospitalDepartmentAppointmentRefundDetailResponseDTO.class);
         } catch (NoResultException e) {
             throw APPOINTMENT_DETAILS_NOT_FOUND.apply(appointmentId);
         }

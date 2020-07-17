@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.refundStatus.HospitalDepartmentAppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -125,11 +126,6 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
     }
 
-//    private void approveRefundAppointment(RefundStatusRequestDTO requestDTO) throws IOException {
-//
-//        requestDTO.setFeatureCode("REF_APPROVAL");
-//        appointmentService.approveRefundAppointment(requestDTO.getIntegrationRefundRequestDTO());
-//    }
 
     @Override
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
@@ -144,56 +140,19 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         return refundAppointments;
     }
 
-    /* Requests esewa api to check the cancelled appointment's status in their side
-    * if Response returns COMPLETED our db should maintain 'A' status in Refund table
-     * and 'RE' in Appointment table*/
-//    private ThirdPartyResponse checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO,
-//                                                      Appointment appointment,
-//                                                      IntegrationRefundRequestDTO refundRequestDTO) throws IOException {
-//
-//        IntegrationBackendRequestDTO backendRequestDTO = IntegrationBackendRequestDTO.builder()
-//                .integrationChannelCode(refundRequestDTO.getIntegrationChannelCode())
-//                .featureCode(refundRequestDTO.getFeatureCode())
-//                .appointmentId(refundRequestDTO.getAppointmentId())
-//                .build();
-//
-//        EsewaPaymentStatus esewaPayementStatus = parseToEsewaPaymentStatus(requestDTO);
-//
-//        String generatedEsewaHmac = getSignatureForEsewa.apply(esewaPayementStatus.getEsewa_id(),
-//                esewaPayementStatus.getProduct_code());
-//
-//        BackendIntegrationApiInfo integrationApiInfo = integrationCheckpointService.
-//                getAppointmentModeApiIntegration(backendRequestDTO,
-//                        generatedEsewaHmac);
-//
-//
-////        Map<String, Object> esewaRefundRequestDTO = RequestBodyUtils.getDynamicEsewaRequestBodyLog(
-////                integrationApiInfo.getRequestBody());
-//
-////        parseApiUri(integrationApiInfo.getApiUri(), requestDTO.getTransactionNumber());
-//
-//
-//        ResponseEntity<?> response = thirdPartyConnectorService.callEsewaRefundStatusService(integrationApiInfo,
-//                esewaPayementStatus);
-//
-//        ThirdPartyResponse thirdPartyResponse = null;
-//        try {
-//            thirdPartyResponse = map(response.getBody().toString(),
-//                    ThirdPartyResponse.class);
-//        } catch (IOException e)
-//
-//        {
-//            e.printStackTrace();
-//            throw new OperationUnsuccessfulException("ThirdParty API response is null");
-//        }
-//
-//        if (thirdPartyResponse.getCode() != null) {
-////            validateThirdPartyException(thirdPartyResponse);
-//        }
-//
-//
-//        return thirdPartyResponse;
-//    }
+    @Override
+    public HospitalDepartmentAppointmentRefundDetailResponseDTO fetchHospitalDepartmentRefundDetailsById(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REFUND_STATUS);
+
+        HospitalDepartmentAppointmentRefundDetailResponseDTO response=refundDetailRepository
+                .fetchHospitalDepartmentRefundDetailsById(appointmentId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+
+        return response;
+    }
 
     private AppointmentTransactionDetail fetchAppointmentTransactionDetail(Long appointmentId) {
         return appointmentTransactionDetailRepository.fetchByAppointmentId(appointmentId)

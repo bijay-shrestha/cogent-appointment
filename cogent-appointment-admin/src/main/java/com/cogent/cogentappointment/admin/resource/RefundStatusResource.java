@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.dto.request.integration.IntegrationBackendRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.service.RefundStatusService;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.RefundStatusConstant.*;
@@ -67,6 +65,13 @@ public class RefundStatusResource {
     @ApiOperation(FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL)
     public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(refundStatusService.fetchRefundDetailsById(appointmentId));
+    }
+
+
+    @GetMapping(HOSPITAL_DEPARTMENT_WISE + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL)
+    public ResponseEntity<?> fetchHospitalDepartmentRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(refundStatusService.fetchHospitalDepartmentRefundDetailsById(appointmentId));
     }
 
 }

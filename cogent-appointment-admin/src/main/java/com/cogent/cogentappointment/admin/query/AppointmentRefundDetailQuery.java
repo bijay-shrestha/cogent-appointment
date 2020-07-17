@@ -256,4 +256,49 @@ public class AppointmentRefundDetailQuery {
                     " AND ard.status IN ('PA','A','R')" +
                     " GROUP BY a.id";
 
+    public static String QUERY_TO_GET_HOSPITAL_DEPARTMENT_REFUNDED_DETAIL_BY_ID =
+            "SELECT" +
+                    " a.id as appointmentId,"+
+                    " a.appointmentModeId.id as appointmentModeId,"+
+                    " a.appointmentDate as appointmentDate," +
+                    " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
+                    " a.appointmentNumber as appointmentNumber," +
+                    " h.name as hospitalName," +
+                    " a.patientId.name as patientName," +
+                    " CASE WHEN" +
+                    " (hpi.registrationNumber IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " hpi.registrationNumber" +
+                    " END as registrationNumber," +
+                    " a.patientId.gender as gender," +
+                    " CASE WHEN" +
+                    " (a.patientId.eSewaId IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " a.patientId.eSewaId" +
+                    " END as eSewaId," +
+                    " a.patientId.mobileNumber as mobileNumber," +
+                    " atd.transactionNumber as transactionNumber," +
+                    " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
+                    " ard.refundAmount as refundAmount," +
+                    " atd.appointmentAmount as appointmentCharge," +
+                    " a.appointmentModeId.name as appointmentMode," +
+                    " hpi.isRegistered as isRegistered," +
+                    " a.hospitalId.name as hospitalName," +
+                    " a.hospitalId.id as hospitalId," +
+                    " ard.remarks as remarks," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    " ahdi.hospitalDepartment.name as hospitalDepartmentName," +
+                    " FROM" +
+                    " AppointmentRefundDetail ard" +
+                    " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                    " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " INNER JOIN AppointmentHospitalDepartmentInfo ahdi ON adi.appointment.id=a.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON atd.appointment.id =a.id" +
+                    " WHERE a.id=:appointmentId" +
+                    " AND ard.status IN ('PA','A','R')" +
+                    " GROUP BY a.id";
 }

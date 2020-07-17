@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentAppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -21,9 +22,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.APPOINTMENT_HAS_BEEN_REJECTED;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
@@ -130,6 +134,21 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         return refundAppointments;
     }
+
+    @Override
+    public HospitalDepartmentAppointmentRefundDetailResponseDTO fetchHospitalDepartmentRefundDetailsById(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REFUND_STATUS);
+
+        HospitalDepartmentAppointmentRefundDetailResponseDTO response=refundDetailRepository
+                .fetchHospitalDepartmentRefundDetailsById(appointmentId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+
+        return response;
+    }
+
 
     /* Requests esewa api to check the cancelled appointment's status in their side
     * if Response returns COMPLETED our db should maintain 'A' status in Refund table

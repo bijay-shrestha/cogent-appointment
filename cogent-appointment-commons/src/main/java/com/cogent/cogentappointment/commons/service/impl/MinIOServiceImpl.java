@@ -78,7 +78,7 @@ public class MinIOServiceImpl implements MinIOService {
 
             log.info("MinIO Error {}::", url);
 
-            return fileUrlCheckPoint(url);
+            return url;
 
         } catch (MinioException e) {
             System.out.println("Error occurred: " + e);
@@ -126,12 +126,11 @@ public class MinIOServiceImpl implements MinIOService {
 
     private String fileUrlCheckPoint(String url) {
 
-        if (url.contains("/public")) {
-            url = minIOProperties.getCDN_URL() + url.split("/public")[1];
+        if (url.contains("public")) {
+            url = minIOProperties.getCDN_URL() + url.split("public")[1];
         }
 
         return url;
-
 
     }
 

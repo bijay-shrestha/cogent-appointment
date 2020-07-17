@@ -446,8 +446,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private String fileUrlCheckPoint(String url) {
 
-        if (url.contains("/public")) {
-            url = "https://cdn.eappointmenents.net" + url.split("/public")[1];
+        if (url.contains("public")) {
+            url = "https://cdn.eappointments.net" + url.split("public")[1];
         }
 
         return url;

@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.QualificationService;
 import com.cogent.cogentappointment.admin.service.SpecializationService;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
+import com.cogent.cogentappointment.admin.utils.MinIOUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -260,6 +261,11 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SEARCHING_PROCESS_STARTED, DOCTOR);
 
         List<DoctorMinimalResponseDTO> responseDTOS = doctorRepository.search(searchRequestDTO, pageable);
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(MinIOUtils.fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
 
         log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

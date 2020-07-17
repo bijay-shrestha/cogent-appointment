@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminDropdownDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -15,6 +12,7 @@ import com.cogent.cogentappointment.admin.service.AdminFeatureService;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.service.EmailService;
 import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.admin.utils.MinIOUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +42,7 @@ import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToUpdateAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.admin.utils.MinIOUtils.fileUrlCheckPoint;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.lang.reflect.Array.get;
@@ -217,7 +216,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateAvatar(AdminAvatarUpdateRequestDTO updateRequestDTO) {
+    public AdminAvatarUpdateResponse updateAvatar(AdminAvatarUpdateRequestDTO updateRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR);
@@ -227,6 +226,11 @@ public class AdminServiceImpl implements AdminService {
         updateAvatar(admin, updateRequestDTO.getAvatar());
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR, getDifferenceBetweenTwoTime(startTime));
+
+        AdminAvatarUpdateResponse adminAvatarUpdateResponse=new AdminAvatarUpdateResponse();
+        adminAvatarUpdateResponse.setAvatar(fileUrlCheckPoint(updateRequestDTO.getAvatar()));
+
+       return adminAvatarUpdateResponse;
     }
 
     @Override

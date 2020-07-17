@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.QualificationService;
 import com.cogent.cogentappointment.admin.service.SpecializationService;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
-import com.cogent.cogentappointment.commons.utils.MinIOUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -293,6 +292,9 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
         DoctorDetailResponseDTO responseDTO = doctorRepository.fetchDetailsById(id);
+            if(responseDTO.getFileUri()!=null) {
+                responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
+            }
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

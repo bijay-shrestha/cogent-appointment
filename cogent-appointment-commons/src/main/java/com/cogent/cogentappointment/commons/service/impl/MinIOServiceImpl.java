@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
+
 /**
  * @author rupak ON 2020/06/28-12:47 PM
  */
@@ -122,16 +124,6 @@ public class MinIOServiceImpl implements MinIOService {
         }
 
         return null;
-    }
-
-    private String fileUrlCheckPoint(String url) {
-
-        if (url.contains("public")) {
-            url = minIOProperties.getCDN_URL() + url.split("public")[1];
-        }
-
-        return url;
-
     }
 
 //    private MinioClient createMinioClient() throws IOException, InvalidKeyException, InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, InvalidBucketNameException, ErrorResponseException, RegionConflictException {

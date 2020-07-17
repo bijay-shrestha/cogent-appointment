@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -76,9 +75,10 @@ public class MinIOServiceImpl implements MinIOService {
                     fileRequestDTO.getFileName(),
                     Integer.parseInt(minIOProperties.getEXPIRY_TIME()));
 
+
             log.info("MinIO Error {}::", url);
 
-            return url;
+            return fileUrlCheckPoint(url);
 
         } catch (MinioException e) {
             System.out.println("Error occurred: " + e);
@@ -109,7 +109,7 @@ public class MinIOServiceImpl implements MinIOService {
 
             log.info("MinIO Error {}::", objectUrl);
 
-            return objectUrl;
+            return fileUrlCheckPoint(objectUrl);
 
         } catch (MinioException e) {
             System.out.println("Error occurred: " + e);
@@ -122,6 +122,17 @@ public class MinIOServiceImpl implements MinIOService {
         }
 
         return null;
+    }
+
+    private String fileUrlCheckPoint(String url) {
+
+        if (url.contains("/public")) {
+            url = minIOProperties.getCDN_URL() + url.split("/public")[1];
+        }
+
+        return url;
+
+
     }
 
 //    private MinioClient createMinioClient() throws IOException, InvalidKeyException, InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, InvalidBucketNameException, ErrorResponseException, RegionConflictException {

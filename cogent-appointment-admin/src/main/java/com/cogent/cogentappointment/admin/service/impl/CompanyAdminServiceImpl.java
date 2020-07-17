@@ -419,6 +419,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
 
+         fileUrlCheckPoint(responseDTO.getFileUri());
+
         List<IntegrationBodyAttributeResponse> responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributes();
 
@@ -440,6 +442,17 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    private String fileUrlCheckPoint(String url) {
+
+        if (url.contains("/public")) {
+            url = "https://cdn.eappointmenents.net" + url.split("/public")[1];
+        }
+
+        return url;
+
+
     }
 
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {

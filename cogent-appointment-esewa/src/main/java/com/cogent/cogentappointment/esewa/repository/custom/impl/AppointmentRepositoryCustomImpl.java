@@ -18,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -105,6 +102,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(FROM_DATE, startingFiscalYear)
                 .setParameter(TO_DATE, endingFiscalYear)
                 .setParameter(HOSPITAL_ID, hospitalId);
+
+        entityManager.lock(query, LockModeType.PESSIMISTIC_READ);
 
         return AppointmentUtils.generateAppointmentNumber(query.getResultList(),
                 startingFiscalYear, endingFiscalYear, hospitalCode);

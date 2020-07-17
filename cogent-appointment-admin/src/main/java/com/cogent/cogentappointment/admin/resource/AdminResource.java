@@ -78,7 +78,7 @@ public class AdminResource {
     @ApiOperation(UPDATE_AVATAR_OPERATION)
     public ResponseEntity<?> updateAvatar(@Valid @RequestBody AdminAvatarUpdateRequestDTO updateRequestDTO) {
         AdminAvatarUpdateResponse updateResponse=adminService.updateAvatar(updateRequestDTO);
-        return ok().body(updateRequestDTO);
+        return ok().body(updateResponse);
     }
 
     @PutMapping

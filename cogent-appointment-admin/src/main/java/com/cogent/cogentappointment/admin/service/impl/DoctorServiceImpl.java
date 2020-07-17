@@ -11,7 +11,7 @@ import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.QualificationService;
 import com.cogent.cogentappointment.admin.service.SpecializationService;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
-import com.cogent.cogentappointment.admin.utils.MinIOUtils;
+import com.cogent.cogentappointment.commons.utils.MinIOUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;

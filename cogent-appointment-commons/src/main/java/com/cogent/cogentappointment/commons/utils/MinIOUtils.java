@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.utils;
+package com.cogent.cogentappointment.commons.utils;
 
 import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import org.springframework.stereotype.Component;
@@ -11,14 +11,16 @@ public class MinIOUtils {
 
     private static MinIOProperties minIOProperties;
 
+    private static String ACCESS_KEY="public;";
+
     public MinIOUtils(MinIOProperties minIOProperties) {
         this.minIOProperties = minIOProperties;
     }
 
     public static String fileUrlCheckPoint(String url) {
 
-        if (url.contains("public")) {
-            url = minIOProperties.getCDN_URL() + url.split("public")[1];
+        if (url.contains(ACCESS_KEY)) {
+            url = minIOProperties.getCDN_URL() + url.split(ACCESS_KEY)[1];
         }
 
         return url;

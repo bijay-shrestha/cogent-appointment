@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -22,14 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.APPOINTMENT_HAS_BEEN_REJECTED;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.DOCTOR_REFUND_STATUS;
+import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.HOSPITAL_DEPARTMENT_REFUND_STATUS;
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
-import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.changeAppointmentRefundDetailStatus;
-import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.changeAppointmentStatus;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -69,13 +69,25 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, REFUND_STATUS);
+        log.info(SEARCHING_PROCESS_STARTED, DOCTOR_REFUND_STATUS);
 
         RefundStatusResponseDTO response = refundDetailRepository.searchRefundAppointments(requestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return response;
+    }
+
+    @Override
+    public HospitalDepartmentRefundStatusResponseDTO searchHospitalDeaprtmentRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REFUND_STATUS);
+
+
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+
+        return null;
     }
 
     @Override
@@ -106,11 +118,11 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, REFUND_STATUS);
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_REFUND_STATUS);
 
         AppointmentRefundDetailResponseDTO refundAppointments = refundDetailRepository.fetchRefundDetailsById(appointmentId);
 
-        log.info(FETCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return refundAppointments;
     }

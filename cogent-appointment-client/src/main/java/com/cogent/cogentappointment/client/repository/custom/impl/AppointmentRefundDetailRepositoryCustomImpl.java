@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountReq
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -26,6 +27,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.TRANSACTION_NUMBER;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
@@ -83,13 +85,19 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
             throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
         }
 
-        Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT)
+        Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT.apply(requestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         refundStatusResponseDTO.setRefundAppointments(response);
         refundStatusResponseDTO.setTotalRefundAmount((Double) getTotalRefundAmount.getSingleResult());
 
         return refundStatusResponseDTO;
+    }
+
+    @Override
+    public HospitalDepartmentRefundStatusResponseDTO searchHospitalDepartmentRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+        return null;
     }
 
     @Override

@@ -45,10 +45,4 @@ public class PatientRequestForDTO implements Serializable {
     private Long districtId;
 
     private String wardNumber;
-
-    /*
-  *This is created for eSewa's convenience, hence not used in our side.
-  * 2020-07-17
-  * */
-    private String eSewaId;
 }

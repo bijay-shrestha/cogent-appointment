@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -75,7 +76,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
         List<RefundStatusDTO> response = transformQueryToResultList(query, RefundStatusDTO.class);
 
-        if (Objects.isNull(response)) {
+        if (ObjectUtils.isEmpty(response)) {
             log.error(CONTENT_NOT_FOUND, APPOINTMENT_REFUND_DETAIL);
             throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
         }

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Setter
 public class CompanySearchRequestDTO implements Serializable {
 
-    private String name;
+    private Long companyId;
 
     private String companyCode;
 

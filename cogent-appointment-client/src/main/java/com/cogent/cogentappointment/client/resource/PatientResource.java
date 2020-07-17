@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.patient.*;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,10 +13,8 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.BASE_PATIENT;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.ESEWA_ID;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.getPageable;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -33,63 +32,10 @@ public class PatientResource {
         this.patientService = patientService;
     }
 
-//    /*WITHOUT HOSPITAL WISE*/
-//    @PutMapping(SEARCH + SELF)
-//    @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
-//    public ResponseEntity<?> searchForSelf(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO) {
-//        return ok(patientService.searchForSelf(searchRequestDTO));
-//    }
-
-    /*HOSPITAL WISE*/
-    @PutMapping(SEARCH + SELF)
-    @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
-    public ResponseEntity<?> searchForSelf(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO) {
-        return ok(patientService.searchForSelfHospitalWise(searchRequestDTO));
-    }
-
-//    @PutMapping(SEARCH + OTHERS)
-//    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
-//    public ResponseEntity<?> search(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO,
-//                                    @RequestParam("page") int page,
-//                                    @RequestParam("size") int size) {
-//        return ok(patientService.searchForOthers(searchRequestDTO, getPageable(page, size)));
-//    }
-
-    /*HOSPITAL WISE*/
-    @PutMapping(SEARCH + OTHERS)
-    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
-    public ResponseEntity<?> search(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO,
-                                    @RequestParam("page") int page,
-                                    @RequestParam("size") int size) {
-        return ok(patientService.searchForOthersHospitalWise(searchRequestDTO, getPageable(page, size)));
-    }
-
-    @GetMapping(DETAIL + OTHERS + HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DETAILS_OF_OTHERS)
-    public ResponseEntity<?> fetchMinPatientDetailsOfOthers(@PathVariable("hospitalPatientInfoId")
-                                                                    Long hospitalPatientInfoId) {
-        return ok(patientService.fetchMinPatientDetailsOfOthers(hospitalPatientInfoId));
-    }
-
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DETAILS_BY_ID)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(patientService.fetchDetailsById(id));
-    }
-
-    @PutMapping(UPDATE + OTHERS)
-    @ApiOperation(UPDATE_PATIENT_INFO_OPERATION)
-    public ResponseEntity<?> updateOtherPatientDetails(@Valid @RequestBody PatientUpdateDTOForOthers updateRequestDTO) {
-        patientService.updateOtherPatientDetails(updateRequestDTO);
-        return ok().build();
-    }
-
-    @PutMapping(DELETE + OTHERS)
-    @ApiOperation(DELETE_PATIENT_INFO_OPERATION)
-    public ResponseEntity<?> deleteOtherPatientDetails(@Valid @RequestBody
-                                                               PatientDeleteRequestDTOForOthers requestDTOForOthers) {
-        patientService.deleteOtherPatient(requestDTOForOthers);
-        return ok().build();
     }
 
     /*admin*/

@@ -301,50 +301,6 @@ public class DoctorQuery {
                     " AND h.id=:hospitalId "+
                     " ORDER BY label ASC";
 
-    public static final String QUERY_TO_FETCH_MIN_DOCTOR_INFO =
-            " SELECT" +
-                    " d.id as doctorId," +                                              //[0]
-                    " d.name as doctorName," +                                          //[1]
-                    " CASE WHEN" +
-                    " (da.status IS NULL" +
-                    " OR da.status = 'N')" +
-                    " THEN NULL" +
-                    " ELSE" +
-                    " da.file_uri" +
-                    " END as fileUri," +                                                //[2]
-                    " s.id as specializationId," +                                      //[3]
-                    " s.name as specializationName," +                                  //[4]
-                    " tbl1.qualificationAlias as qualificationAlias," +                 //[5]
-                    " d.nmc_number as nmcNumber" +                                     //[6]
-                    " FROM" +
-                    " doctor d" +
-                    " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
-                    " LEFT JOIN doctor_specialization ds ON d.id = ds.doctor_id" +
-                    " LEFT JOIN specialization s ON s.id = ds.specialization_id" +
-                    " LEFT JOIN(" +
-                    " SELECT" +
-                    " GROUP_CONCAT(qa.name) as qualificationAlias," +
-                    " dq.doctor_id as doctorId" +
-                    " FROM" +
-                    " doctor_qualification dq" +
-                    " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
-                    " LEFT JOIN qualification_alias qa ON qa.id = q.qualification_alias" +
-                    " WHERE" +
-                    " qa.status = 'Y'" +
-                    " AND q.status = 'Y'" +
-                    " AND dq.status = 'Y'" +
-                    " GROUP BY" +
-                    " dq.doctor_id" +
-                    " )tbl1 ON tbl1.doctorId = d.id" +
-                    " LEFT JOIN hospital h ON h.id = d.hospital_id" +
-                    " WHERE" +
-                    " d.status = 'Y'" +
-                    " AND ds.status = 'Y'" +
-                    " AND s.status = 'Y'" +
-                    " AND h.status = 'Y'" +
-                    " AND h.id =:hospitalId" +
-                    " ORDER BY d.name";
-
     public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE =
             " SELECT da.appointmentFollowUpCharge" +
                     " FROM DoctorAppointmentCharge da " +

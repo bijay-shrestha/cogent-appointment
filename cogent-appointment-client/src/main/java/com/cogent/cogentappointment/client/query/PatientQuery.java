@@ -71,47 +71,6 @@ public class PatientQuery {
                     " AND p.mobileNumber=:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth";
 
-    /*FOR SELF*/
-    public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
-            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS +
-                    " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id"
-                    + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
-
-    /*FOR OTHERS*/
-    public static final String QUERY_TO_FETCH_CHILD_PATIENT_IDS =
-            " SELECT " +
-                    " pm.parentPatientId.id as parentPatientId," +                 //[0]
-                    " pm.childPatientId.id as childPatientId" +                   //[1]
-                    " FROM Patient p" +
-                    " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
-                    GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
-                    " AND pm.status = 'Y'";
-
-    public static String QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(String childPatientIds) {
-
-        return " SELECT" +
-                " hpi.id as hospitalPatientInfoId," +                    //[0]
-                " p.id as patientId," +                                 //[1]
-                " p.name as name," +                                    //[2]
-                " p.mobileNumber as mobileNumber," +                    //[3]
-                " p.dateOfBirth as dateOfBirth," +                       //[4]
-                " p.gender as gender," +                                //[5]
-                " hpi.address as address," +                            //[6]
-                " hpi.registrationNumber as registrationNumber," +      //[7]
-                " hpi.hospital.name as hospitalName," +                  //[8]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[9]
-                " FROM Patient p" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
-                " WHERE p.id IN (" + childPatientIds + ")";
-    }
-
-    public static String QUERY_TO_FETCH_MIN_PATIENT_DETAILS_FOR_OTHERS =
-            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS +
-                    " FROM HospitalPatientInfo hpi " +
-                    " LEFT JOIN Patient p ON p.id = hpi.patient.id" +
-                    " WHERE hpi.id =:hospitalPatientInfoId";
-
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
                     " p.id as id," +
@@ -185,13 +144,6 @@ public class PatientQuery {
                     " hpi.hospital.id = :hospitalId" +
                     " AND hpi.isRegistered='Y'";
 
-    public static final String QUERY_TO_FETCH_PATIENT =
-            " SELECT p FROM Patient p" +
-                    " WHERE " +
-                    " p.name =:name" +
-                    " AND p.mobileNumber =:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth";
-
     public static final String QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINTMENT_ID =
             " SELECT " +
                     " a.appointmentNumber as appointmentNumber," +              //[0]
@@ -257,24 +209,6 @@ public class PatientQuery {
 
         if (!Objects.isNull(hospitalId) && hospitalId != 0)
             query += " AND hpi.hospital.id =" + hospitalId;
-
-        return query;
-    }
-
-    /*FOR OTHERS -> HOSPITAL WISE*/
-    public static String QUERY_TO_FETCH_CHILD_PATIENT_IDS(Long hospitalId) {
-
-        String query = " SELECT " +
-                " pm.parentPatientId.id as parentPatientId," +                 //[0]
-                " pm.childPatientId.id as childPatientId" +                   //[1]
-                " FROM Patient p" +
-                " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = pm.childPatientId.id" +
-                GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
-                " AND pm.status = 'Y'";
-
-        if (!Objects.isNull(hospitalId) && hospitalId != 0)
-            query += " AND hpi.hospital.id=" + hospitalId;
 
         return query;
     }

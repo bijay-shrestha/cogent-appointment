@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountReq
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
@@ -92,7 +93,31 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
     @Override
     public HospitalDepartmentRefundStatusResponseDTO searchHospitalDepartmentRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
-        return null;
+        HospitalDepartmentRefundStatusResponseDTO refundStatusResponseDTO = new HospitalDepartmentRefundStatusResponseDTO();
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_REFUND_APPOINTMENTS(requestDTO))
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        refundStatusResponseDTO.setTotalItems(query.getResultList().size());
+
+        addPagination.accept(pageable, query);
+
+        List<HospitalDepartmentRefundStatusDTO> response = transformQueryToResultList(query,
+                HospitalDepartmentRefundStatusDTO.class);
+
+        if (response.size() == 0 || response.size() < 0) {
+            log.error(CONTENT_NOT_FOUND, APPOINTMENT_REFUND_DETAIL);
+            throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
+        }
+
+        Query getTotalRefundAmount = createQuery.apply(entityManager,
+                QUERY_TO_GET_TOTAL_HOSPITAL_DEPARTMENT__REFUND_AMOUNT.apply(requestDTO))
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        refundStatusResponseDTO.setRefundAppointments(response);
+        refundStatusResponseDTO.setTotalRefundAmount((Double) getTotalRefundAmount.getSingleResult());
+
+        return refundStatusResponseDTO;
     }
 
     @Override

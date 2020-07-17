@@ -509,13 +509,15 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment,
                         refundAppointmentDetail,
                         response);
-                break;
+
+                throw new BadRequestException(response, response);
 
             default:
                 defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment,
                         refundAppointmentDetail,
                         response);
-                break;
+
+                throw new BadRequestException(response, response);
 
         }
     }

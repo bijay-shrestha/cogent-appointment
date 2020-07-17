@@ -67,7 +67,6 @@ public class RefundStatusResource {
         return ok().body(refundStatusService.fetchRefundDetailsById(appointmentId));
     }
 
-
     @GetMapping(HOSPITAL_DEPARTMENT_WISE + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL)
     public ResponseEntity<?> fetchHospitalDepartmentRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {

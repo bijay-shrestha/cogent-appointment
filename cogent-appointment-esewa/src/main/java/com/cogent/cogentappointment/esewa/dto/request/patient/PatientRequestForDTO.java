@@ -47,7 +47,7 @@ public class PatientRequestForDTO implements Serializable {
     private String wardNumber;
 
     /*
-  *This is created for eSewa's convience, hence not used in our side.
+  *This is created for eSewa's convenience, hence not used in our side.
   * 2020-07-17
   * */
     private String eSewaId;

@@ -329,6 +329,7 @@ public class AppointmentUtils {
                                                                    AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(remarks);
+        refundDetail.setRefundedDate(new Date());
 
         return refundDetail;
     }

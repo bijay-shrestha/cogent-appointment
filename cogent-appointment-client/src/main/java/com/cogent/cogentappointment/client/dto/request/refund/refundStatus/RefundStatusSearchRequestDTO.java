@@ -39,4 +39,6 @@ public class RefundStatusSearchRequestDTO implements Serializable{
     private String status;
 
     private Long hospitalDepartmentId;
+
+    private Long hospitalDepartmentRoomInfoId;
 }

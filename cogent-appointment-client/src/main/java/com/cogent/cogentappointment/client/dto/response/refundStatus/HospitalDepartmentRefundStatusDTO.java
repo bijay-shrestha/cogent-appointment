@@ -55,4 +55,6 @@ public class HospitalDepartmentRefundStatusDTO implements Serializable {
     private String refundStatus;
 
     private String remarks;
+
+    private String roomNumber;
 }

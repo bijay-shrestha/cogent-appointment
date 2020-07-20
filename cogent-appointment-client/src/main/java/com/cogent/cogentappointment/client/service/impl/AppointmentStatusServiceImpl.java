@@ -47,7 +47,6 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.mergeOverrideAndActualHospitalDeptDutyRoster;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.mergeOverrideAndActualHospitalDeptDutyRosterForCount;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti ON 16/12/2019
@@ -111,12 +110,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         Long hospitalId = getLoggedInHospitalId();
 
         List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus = fetchDoctorStatus(requestDTO, hospitalId);
-
-        doctorDutyRosterStatus.forEach(response -> {
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
 
         List<AppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO, hospitalId);
 

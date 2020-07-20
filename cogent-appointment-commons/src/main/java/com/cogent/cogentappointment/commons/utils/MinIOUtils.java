@@ -11,7 +11,7 @@ public class MinIOUtils {
 
     private static MinIOProperties minIOProperties;
 
-    private static String ACCESS_KEY="public";
+    private static String ACCESS_KEY = "public";
 
     public MinIOUtils(MinIOProperties minIOProperties) {
         this.minIOProperties = minIOProperties;
@@ -24,7 +24,5 @@ public class MinIOUtils {
         }
 
         return url;
-
     }
-
 }

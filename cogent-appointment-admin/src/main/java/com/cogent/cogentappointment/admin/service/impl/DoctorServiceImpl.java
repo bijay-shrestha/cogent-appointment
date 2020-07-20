@@ -309,6 +309,10 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id);
 
+        if(responseDTO.getFileUri()!=null) {
+            responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
+        }
+
         List<DoctorSalutationResponseDTO> salutationResponseDTOList = doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
         responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
 
@@ -341,6 +345,12 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchDoctorBySpecializationId(specializationId);
 
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -355,6 +365,12 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchDoctorByHospitalId(hospitalId);
 
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -368,6 +384,11 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchMinDoctorByHospitalId(hospitalId);
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.client.dto.response.appointmentStatus.departmentAppointmentStatus;
 
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class HospitalDeptAndDoctorDTO implements Serializable {
 
     private Long hospitalDepartmentId;

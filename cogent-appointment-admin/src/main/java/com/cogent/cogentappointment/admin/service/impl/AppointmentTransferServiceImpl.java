@@ -42,6 +42,7 @@ import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.utils.AppointmentTransferUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -321,6 +322,16 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 getApptTransferredList(requestDTO,
                         pageable);
 
+        appointmentTransferLogDTOS.getResponse().forEach(response -> {
+            if(response.getTransferredFromFileUri()!=null){
+                response.setTransferredFromFileUri(fileUrlCheckPoint(response.getTransferredFromFileUri()));
+            }
+
+            if(response.getTransferredToFileUri()!=null){
+                response.setTransferredToFileUri(fileUrlCheckPoint(response.getTransferredToFileUri()));
+            }
+        });
+
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
 
@@ -334,6 +345,14 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
         AppointmentTransferPreviewResponseDTO response = appointmentTransferRepository.fetchAppointmentTransferDetailById(appointmentTransferId);
+
+            if(response.getTransferredFromFileUri()!=null){
+                response.setTransferredFromFileUri(fileUrlCheckPoint(response.getTransferredFromFileUri()));
+            }
+
+            if(response.getTransferredToFileUri()!=null){
+                response.setTransferredToFileUri(fileUrlCheckPoint(response.getTransferredToFileUri()));
+            }
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));

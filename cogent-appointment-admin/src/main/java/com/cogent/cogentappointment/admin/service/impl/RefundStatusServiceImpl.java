@@ -31,6 +31,7 @@ import static com.cogent.cogentappointment.admin.log.constants.AppointmentTransa
 import static com.cogent.cogentappointment.admin.log.constants.RefundStatusLog.REFUND_STATUS;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
@@ -121,6 +122,10 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         log.info(FETCHING_PROCESS_STARTED, REFUND_STATUS);
 
         AppointmentRefundDetailResponseDTO refundAppointments = refundDetailRepository.fetchRefundDetailsById(appointmentId);
+
+        if (refundAppointments.getFileUri() != null) {
+            refundAppointments.setFileUri(fileUrlCheckPoint(refundAppointments.getFileUri()));
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 

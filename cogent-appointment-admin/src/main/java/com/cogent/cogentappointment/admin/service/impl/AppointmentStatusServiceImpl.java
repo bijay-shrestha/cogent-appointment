@@ -115,7 +115,9 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 doctorRepository.fetchDoctorAvatarInfo(requestDTO.getHospitalId(), requestDTO.getDoctorId());
 
         doctorDutyRosterStatus.forEach(response -> {
-            response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
         });
 
         AppointmentStatusDTO appointmentStatusDTO = parseToAppointmentStatusDTO(doctorDutyRosterStatus, doctorInfo);

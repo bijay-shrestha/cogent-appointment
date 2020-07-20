@@ -163,6 +163,15 @@ public class AdminServiceImpl implements AdminService {
 
         List<AdminMinimalResponseDTO> responseDTOS = adminRepository.search(searchRequestDTO, pageable);
 
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+
+        });
+
+
+
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;

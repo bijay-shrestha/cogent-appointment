@@ -273,6 +273,14 @@ public class HospitalServiceImpl implements HospitalService {
 
         HospitalResponseDTO responseDTO = hospitalRepository.fetchDetailsById(hospitalId);
 
+        if (responseDTO.getHospitalLogo() != null) {
+            responseDTO.setHospitalLogo(fileUrlCheckPoint(responseDTO.getHospitalLogo()));
+        }
+
+        if (responseDTO.getHospitalBanner() != null) {
+            responseDTO.setHospitalBanner(fileUrlCheckPoint(responseDTO.getHospitalBanner()));
+        }
+
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;

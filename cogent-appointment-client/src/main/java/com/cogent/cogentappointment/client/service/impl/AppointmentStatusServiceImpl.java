@@ -113,7 +113,9 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus = fetchDoctorStatus(requestDTO, hospitalId);
 
         doctorDutyRosterStatus.forEach(response -> {
-            response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
         });
 
         List<AppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO, hospitalId);

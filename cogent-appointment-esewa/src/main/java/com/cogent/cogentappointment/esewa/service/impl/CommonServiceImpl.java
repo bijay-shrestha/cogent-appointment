@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.log.constants.CommonLog.DOCTOR_SPECIALIZATION_INFO;
@@ -54,14 +55,20 @@ public class CommonServiceImpl implements CommonService {
 
         List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(hospitalId);
 
-        doctorInfo.forEach(doctor -> {
-
-            if (!isEmpty(doctor.getFileUri()) && !Objects.isNull(doctor.getFileUri())) {
-                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
-                fileRequestDTO.setFileName(doctor.getFileUri());
-                doctor.setFileUri(minIOService.getPresignedObjectURL(fileRequestDTO));
+        doctorInfo.forEach(doctor->{
+            if (!isEmpty(doctor.getFileUri())){
+                doctor.setFileUri(fileUrlCheckPoint(doctor.getFileUri()));
             }
         });
+
+//        doctorInfo.forEach(doctor -> {
+//
+//            if (!isEmpty(doctor.getFileUri()) && !Objects.isNull(doctor.getFileUri())) {
+//                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
+//                fileRequestDTO.setFileName(doctor.getFileUri());
+//                doctor.setFileUri(minIOService.getPresignedObjectURL(fileRequestDTO));
+//            }
+//        });
 
         List<DropDownResponseDTO> specializationInfo =
                 specializationRepository.fetchSpecializationByHospitalId(hospitalId);

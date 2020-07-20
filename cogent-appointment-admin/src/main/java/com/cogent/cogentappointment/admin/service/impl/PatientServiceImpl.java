@@ -31,6 +31,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.admin.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti ON 16/01/2020

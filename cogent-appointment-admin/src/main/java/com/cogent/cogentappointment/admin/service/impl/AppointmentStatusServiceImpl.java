@@ -45,6 +45,7 @@ import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.mer
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.mergeOverrideAndActualHospitalDeptDutyRoster;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.mergeOverrideAndActualHospitalDeptDutyRosterForCount;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti ON 16/12/2019
@@ -113,6 +114,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         List<DoctorDropdownDTO> doctorInfo =
                 doctorRepository.fetchDoctorAvatarInfo(requestDTO.getHospitalId(), requestDTO.getDoctorId());
 
+        doctorDutyRosterStatus.forEach(response -> {
+            response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+        });
+
         AppointmentStatusDTO appointmentStatusDTO = parseToAppointmentStatusDTO(doctorDutyRosterStatus, doctorInfo);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_STATUS, getDifferenceBetweenTwoTime(startTime));
@@ -132,6 +137,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                         parseToDoctorTimeSlotResponseDTOS(appointmentDetailsForStatus),
                         rosterDetailsForStatus,
                         appointmentDetailsForStatus);
+
+        doctorDutyRosterStatus.forEach(response -> {
+            response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+        });
 
         List<DoctorDropdownDTO> doctorInfo =
                 doctorRepository.fetchDoctorAvatarInfo(appointmentDetailsForStatus.getHospitalId(),

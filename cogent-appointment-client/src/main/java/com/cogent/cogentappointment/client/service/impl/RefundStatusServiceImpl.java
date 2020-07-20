@@ -29,6 +29,7 @@ import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.A
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
@@ -70,6 +71,12 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         RefundStatusResponseDTO response = refundDetailRepository.searchRefundAppointments(requestDTO, pageable);
 
+        response.getRefundAppointments().forEach(res->{
+            if(res.getFileUri()!=null) {
+                res.setFileUri(fileUrlCheckPoint(res.getFileUri()));
+            }
+        });
+
         log.info(SEARCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return response;
@@ -106,6 +113,11 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         log.info(FETCHING_PROCESS_STARTED, REFUND_STATUS);
 
         AppointmentRefundDetailResponseDTO refundAppointments = refundDetailRepository.fetchRefundDetailsById(appointmentId);
+
+            if(refundAppointments.getFileUri()!=null) {
+                refundAppointments.setFileUri(fileUrlCheckPoint(refundAppointments.getFileUri()));
+            }
+
 
         log.info(FETCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 

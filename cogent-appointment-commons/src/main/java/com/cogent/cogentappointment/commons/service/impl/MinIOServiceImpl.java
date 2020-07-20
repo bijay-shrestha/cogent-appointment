@@ -9,10 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author rupak ON 2020/06/28-12:47 PM
@@ -76,6 +77,7 @@ public class MinIOServiceImpl implements MinIOService {
                     fileRequestDTO.getFileName(),
                     Integer.parseInt(minIOProperties.getEXPIRY_TIME()));
 
+
             log.info("MinIO Error {}::", url);
 
             return url;
@@ -109,7 +111,7 @@ public class MinIOServiceImpl implements MinIOService {
 
             log.info("MinIO Error {}::", objectUrl);
 
-            return objectUrl;
+            return fileUrlCheckPoint(objectUrl);
 
         } catch (MinioException e) {
             System.out.println("Error occurred: " + e);

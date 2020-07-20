@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminAvatarUpdateResponse;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -76,8 +77,8 @@ public class AdminResource {
     @PutMapping(AVATAR)
     @ApiOperation(UPDATE_AVATAR_OPERATION)
     public ResponseEntity<?> updateAvatar(@Valid @RequestBody AdminAvatarUpdateRequestDTO updateRequestDTO) {
-        adminService.updateAvatar(updateRequestDTO);
-        return ok().build();
+        AdminAvatarUpdateResponse updateResponse=adminService.updateAvatar(updateRequestDTO);
+        return ok().body(updateResponse);
     }
 
     @PutMapping

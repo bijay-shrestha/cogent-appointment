@@ -22,18 +22,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.APPOINTMENT_HAS_BEEN_REJECTED;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
-import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.DOCTOR_REFUND_STATUS;
-import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.HOSPITAL_DEPARTMENT_REFUND_STATUS;
-import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
+import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -90,8 +85,8 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REFUND_STATUS);
 
-        HospitalDepartmentRefundStatusResponseDTO response=refundDetailRepository
-                .searchHospitalDepartmentRefundAppointments(requestDTO,pageable);
+        HospitalDepartmentRefundStatusResponseDTO response = refundDetailRepository
+                .searchHospitalDepartmentRefundAppointments(requestDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
@@ -106,7 +101,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         AppointmentRefundDetail appointmentRefundDetail = getAppointmentRefundDetail(requestDTO);
 
-        if(appointmentRefundDetail.getStatus().equals(REJECTED)){
+        if (appointmentRefundDetail.getStatus().equals(REJECTED)) {
             throw new BadRequestException(APPOINTMENT_HAS_BEEN_REJECTED);
         }
 
@@ -141,31 +136,12 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REFUND_STATUS);
 
-        HospitalDepartmentAppointmentRefundDetailResponseDTO response=refundDetailRepository
+        HospitalDepartmentAppointmentRefundDetailResponseDTO response = refundDetailRepository
                 .fetchHospitalDepartmentRefundDetailsById(appointmentId);
 
         log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return response;
-    }
-
-
-    /* Requests esewa api to check the cancelled appointment's status in their side
-    * if Response returns COMPLETED our db should maintain 'A' status in Refund table
-     * and 'RE' in Appointment table*/
-    private String checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO) {
-
-//        EsewaPaymentStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
-//
-//        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
-
-//        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-//                postRequest(ESEWA_API_PAYMENT_STATUS,
-//                        request, EsewaResponseDTO.class);
-
-//        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
-
-        return null;
     }
 
     private AppointmentRefundDetail getAppointmentRefundDetail(RefundStatusRequestDTO requestDTO) {
@@ -181,14 +157,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
                 .orElseThrow(() -> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
-
-    private void saveAppointment(Appointment appointment) {
-        appointmentRepository.save(appointment);
-    }
-
-    private void saveAppointmentRefundDetails(AppointmentRefundDetail appointmentRefundDetail) {
-        refundDetailRepository.save(appointmentRefundDetail);
-    }    private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+    private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
         throw new NoContentFoundException(AppointmentTransactionDetail.class, "appointmentId", appointmentId.toString());
     };

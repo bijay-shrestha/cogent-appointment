@@ -59,4 +59,6 @@ public class HospitalDepartmentAppointmentRefundDetailResponseDTO implements Ser
     private String remarks;
 
     private Character isRegistered;
+
+    private  String roomNumber;
 }

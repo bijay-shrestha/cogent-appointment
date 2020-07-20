@@ -36,6 +36,7 @@ import static com.cogent.cogentappointment.client.utils.SalutationUtils.parseToD
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti on 2019-09-29
@@ -272,6 +273,12 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorMinimalResponseDTO> responseDTOS =
                 doctorRepository.search(searchRequestDTO, getLoggedInHospitalId(), pageable);
 
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
         log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -310,6 +317,10 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
         DoctorDetailResponseDTO responseDTO = doctorRepository.fetchDetailsById(id, getLoggedInHospitalId());
+
+            if(responseDTO.getFileUri()!=null) {
+                responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
+            }
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

@@ -21,6 +21,7 @@ import static com.cogent.cogentappointment.client.utils.HospitalUtils.parseToHos
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti ON 12/01/2020
@@ -58,6 +59,15 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
+
+        responseDTO.forEach(response->{
+            if(response.getHospitalBanner()!=null) {
+                response.setHospitalBanner(fileUrlCheckPoint(response.getHospitalBanner()));
+            }
+            if(response.getHospitalLogo()!=null) {
+                response.setHospitalLogo(fileUrlCheckPoint(response.getHospitalLogo()));
+            }
+        });
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

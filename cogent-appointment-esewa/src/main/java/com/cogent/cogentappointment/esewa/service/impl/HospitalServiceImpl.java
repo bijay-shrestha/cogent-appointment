@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL_APPOINTMENT_SERVICE_TYPE;
@@ -66,19 +67,15 @@ public class HospitalServiceImpl implements HospitalService {
 
         List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
 
-        responseDTO.forEach((HospitalMinResponseDTO hospital) -> {
-
+        responseDTO.forEach(hospital->{
             if (!isEmpty(hospital.getHospitalLogo()) && !Objects.isNull(hospital.getHospitalLogo())) {
-                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
-                fileRequestDTO.setFileName(hospital.getHospitalLogo());
-                hospital.setHospitalLogo(minIOService.getPresignedObjectURL(fileRequestDTO));
+                hospital.setHospitalLogo(fileUrlCheckPoint(hospital.getHospitalLogo()));
             }
 
             if (!isEmpty(hospital.getHospitalBanner()) && !Objects.isNull(hospital.getHospitalBanner())) {
-                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
-                fileRequestDTO.setFileName(hospital.getHospitalBanner());
-                hospital.setHospitalBanner(minIOService.getPresignedObjectURL(fileRequestDTO));
+             hospital.setHospitalBanner(fileUrlCheckPoint(hospital.getHospitalBanner()));
             }
+
         });
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));

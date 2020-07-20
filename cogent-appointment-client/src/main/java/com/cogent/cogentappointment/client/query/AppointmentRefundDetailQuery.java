@@ -81,7 +81,7 @@ public class AppointmentRefundDetailQuery {
                 " a.patientId.mobileNumber as mobileNumber," +
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
-                "  a.appointmentModeId.id as appointmentModeId," +
+                " a.appointmentModeId.id as appointmentModeId," +
                 " ard.status as refundStatus," +
                 " ard.remarks as remarks," +
                 " ahdi.hospitalDepartment.name as hospitalDepartmentName," +
@@ -89,7 +89,8 @@ public class AppointmentRefundDetailQuery {
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
-                " INNER JOIN AppointmentHospitalDepartmentInfo ahdi ON adi.appointment.id=a.id" +
+                " LEFT JOIN AppointmentHospitalDepartmentInfo ahdi ON ahdi.appointment.id=a.id" +
+                " LEFT JOIN HospitalDepartment hd ON ahdi.hospitalDepartment.id=hd.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -162,7 +163,7 @@ public class AppointmentRefundDetailQuery {
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
-                " INNER JOIN AppointmentHospitalDepartmentInfo ahdi ON adi.appointment.id=a.id" +
+                " INNER JOIN AppointmentHospitalDepartmentInfo ahdi ON ahdi.appointment.id=a.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -289,16 +290,17 @@ public class AppointmentRefundDetailQuery {
                     " a.hospitalId.id as hospitalId," +
                     " ard.remarks as remarks," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " ahdi.hospitalDepartment.name as hospitalDepartmentName," +
+                    " ahdi.hospitalDepartment.name as hospitalDepartmentName" +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
                     " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " INNER JOIN AppointmentHospitalDepartmentInfo ahdi ON adi.appointment.id=a.id" +
+                    " LEFT JOIN AppointmentHospitalDepartmentInfo ahdi ON ahdi.appointment.id=a.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON atd.appointment.id =a.id" +
                     " WHERE a.id=:appointmentId" +
+                    " AND a.status IN ('C','RE')" +
                     " AND ard.status IN ('PA','A','R')" +
                     " GROUP BY a.id";
 

@@ -96,8 +96,6 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_REFUND_APPOINTMENTS(requestDTO))
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
-        refundStatusResponseDTO.setTotalItems(query.getResultList().size());
-
         addPagination.accept(pageable, query);
 
         List<HospitalDepartmentRefundStatusDTO> response = transformQueryToResultList(query,
@@ -114,6 +112,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
         refundStatusResponseDTO.setRefundAppointments(response);
         refundStatusResponseDTO.setTotalRefundAmount((Double) getTotalRefundAmount.getSingleResult());
+        refundStatusResponseDTO.setTotalItems(query.getResultList().size());
 
         return refundStatusResponseDTO;
     }

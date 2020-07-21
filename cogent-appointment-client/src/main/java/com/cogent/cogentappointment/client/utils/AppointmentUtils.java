@@ -131,7 +131,7 @@ public class AppointmentUtils {
                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientMobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
-                            .doctorAvatar(result[DOCTOR_AVATAR_INDEX].toString())
+                            .fileUri(result[DOCTOR_AVATAR_INDEX].toString())
                             .build();
 
             appointmentQueueByTimeDTOS.add(appointmentQueueByTimeDTO);

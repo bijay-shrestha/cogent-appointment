@@ -74,7 +74,7 @@ public class DoctorDutyRosterQuery {
                     " d.salutation as doctorSalutation" +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                     " WHERE ddr.status !='D'" +
                     " AND ddr.id = :id" +

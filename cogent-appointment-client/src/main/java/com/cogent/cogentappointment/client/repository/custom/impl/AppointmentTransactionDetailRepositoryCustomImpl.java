@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.client.dto.response.dashboard.HospitalDepart
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransactionDetailRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,12 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     @PersistenceContext
     EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public AppointmentTransactionDetailRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId, String appointmentServiceTypeCode) {
@@ -212,11 +219,14 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable) {
+    public List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                         Pageable pagable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REVENUE(doctorRevenueRequestDTO))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_CALCULATE_DOCTOR_REVENUE(doctorRevenueRequestDTO))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId())
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
 
@@ -237,13 +247,16 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable) {
+    public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                            Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(doctorRevenueRequestDTO))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_CALCULATE_DOCTOR_CANCELLED_REVENUE(doctorRevenueRequestDTO))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId())
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
-        addPagination.accept(pagable, query);
+        addPagination.accept(pageable, query);
 
         List<DoctorRevenueDTO> revenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
 
@@ -251,12 +264,16 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueDTO> calculateRefundedRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REFUNDED_REVENUE(doctorRevenueRequestDTO))
-                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId())
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
+    public List<DoctorRevenueDTO> calculateRefundedRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                           Pageable pageable) {
 
-        addPagination.accept(pagable, query);
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_CALCULATE_DOCTOR_REFUNDED_REVENUE(doctorRevenueRequestDTO))
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId())
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
+
+        addPagination.accept(pageable, query);
 
         List<DoctorRevenueDTO> revenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
 

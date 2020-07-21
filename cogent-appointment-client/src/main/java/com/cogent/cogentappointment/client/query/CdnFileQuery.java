@@ -3,7 +3,7 @@ package com.cogent.cogentappointment.client.query;
 /**
  * @author smriti ON 2020/07/21-1:21 PM
  */
-public class CdnFileQuery {
+class CdnFileQuery {
 
     static String QUERY_TO_FETCH_DOCTOR_AVATAR =
             " CASE" +

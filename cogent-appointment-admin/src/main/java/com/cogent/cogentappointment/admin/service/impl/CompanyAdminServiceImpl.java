@@ -195,11 +195,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         List<CompanyAdminMinimalResponseDTO> responseDTOS = adminRepository.searchCompanyAdmin(searchRequestDTO,
                 pageable);
-        responseDTOS.forEach(response->{
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
 
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -213,10 +208,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, ADMIN);
 
         CompanyAdminDetailResponseDTO responseDTO = adminRepository.fetchCompanyAdminDetailsById(id);
-            if(responseDTO.getFileUri()!=null) {
-                responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
-            }
-
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -428,10 +419,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
-
-        if(responseDTO.getFileUri()!=null) {
-            responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
-        }
 
         List<IntegrationBodyAttributeResponse> responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributes();

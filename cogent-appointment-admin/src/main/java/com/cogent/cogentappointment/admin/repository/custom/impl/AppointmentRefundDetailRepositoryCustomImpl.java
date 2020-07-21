@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.dto.response.refundStatus.RefundStatus
 import com.cogent.cogentappointment.admin.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRefundDetailRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,12 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
     @PersistenceContext
     EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public AppointmentRefundDetailRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
 
     @Override
     public Double getTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO) {
@@ -64,7 +71,8 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
     public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
         RefundStatusResponseDTO refundStatusResponseDTO = new RefundStatusResponseDTO();
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(requestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(requestDTO))
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
 
         Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT.apply(requestDTO));
 

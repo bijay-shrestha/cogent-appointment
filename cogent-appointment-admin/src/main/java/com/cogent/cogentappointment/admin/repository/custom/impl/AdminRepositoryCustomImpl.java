@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.admin.dto.response.dashboard.DashboardFeatur
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.DashBoardQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -42,7 +42,6 @@ import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_NO
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH_MAC_ADDRESS_INFO;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
-import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.QUERY_TO_FETCH_ADMIN_BY_EMAIL;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -57,6 +56,12 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public AdminRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public Object[] validateAdminCount(Long hospitalId) {
@@ -122,7 +127,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @Override
     public List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO))
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -218,7 +224,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     @Override
     public CompanyAdminLoggedInInfoResponseDTO fetchLoggedInCompanyAdminInfo(CompanyAdminInfoRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_ADMIN_INFO)
-                .setParameter(EMAIL, requestDTO.getEmail());
+                .setParameter(EMAIL, requestDTO.getEmail())
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
 
         try {
             return transformQueryToSingleResult(query, CompanyAdminLoggedInInfoResponseDTO.class);
@@ -266,7 +273,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<Object[]> results = query.getResultList();
 
@@ -278,7 +286,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     private CompanyAdminDetailResponseDTO fetchCompanyAdminDetailResponseDTO(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_ADMIN_DETAIL)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
 
         List<Object[]> results = query.getResultList();
 

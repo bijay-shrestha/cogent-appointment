@@ -6,6 +6,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
+
 /**
  * @author smriti on 26/11/2019
  */
@@ -31,7 +33,7 @@ public class DoctorDutyRosterQuery {
                 " ddr.toDate as toDate," +                                              //[5]
                 " ddr.status as status," +                                              //[6]
                 " h.name as hospitalName," +                                            //[7]
-                " da.fileUri as fileUri," +                                               //[8]
+                QUERY_TO_FETCH_DOCTOR_AVATAR +                                          //[8]
                 " d.salutation as doctorSalutation" +                                    //[9]
                 " FROM DoctorDutyRoster ddr" +                                          //[10]
                 " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
@@ -73,12 +75,12 @@ public class DoctorDutyRosterQuery {
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[10]
                     " h.name as hospitalName," +                                        //[11]
                     " h.id as hospitalId," +                                              //[12]
-                    " dv.fileUri as fileUri," +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() + "," +
                     " d.salutation as doctorSalutation" +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                     " LEFT JOIN Hospital h ON ddr.hospitalId.id = h.id" +
                     " WHERE ddr.status !='D'" +
@@ -185,7 +187,7 @@ public class DoctorDutyRosterQuery {
                     " AND d.fromDate <=:date " +
                     " AND d.doctorId.id = :doctorId" +
                     " AND d.specializationId.id = :specializationId" +
-                    " AND w.name =DATE_FORMAT(:date,'%W') "+
+                    " AND w.name =DATE_FORMAT(:date,'%W') " +
                     " GROUP BY d.id";
 
 }

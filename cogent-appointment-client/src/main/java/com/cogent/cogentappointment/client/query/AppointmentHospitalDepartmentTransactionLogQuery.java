@@ -106,6 +106,9 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
         if (!Objects.isNull(searchRequestDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id = " + searchRequestDTO.getHospitalDepartmentId();
 
+        if (!Objects.isNull(searchRequestDTO.getHospitalDepartmentRoomInfoId()))
+            whereClause += " AND hr.id = " + searchRequestDTO.getHospitalDepartmentRoomInfoId();
+
         whereClause += " ORDER BY a.appointmentDate DESC ";
 
         return whereClause;
@@ -213,6 +216,7 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
                     " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                    " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ahd.hospitalDepartmentRoomInfo.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
@@ -230,6 +234,7 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
                     " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                    " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ahd.hospitalDepartmentRoomInfo.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
@@ -249,6 +254,7 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
                     " LEFT JOIN HospitalAppointmentServiceType apst ON apst.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                    " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ahd.hospitalDepartmentRoomInfo.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +

@@ -1016,10 +1016,10 @@ public class AppointmentQuery {
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
-                " CASE " +
-                " WHEN ahd.hospitalDepartmentRoomInfo.id IS NULL " +
-                " THEN 'N/A'" +
-                " ELSE r.roomNumber END as roomNumber," +
+                " Case" +
+                " WHEN ahd.hospitalDepartmentRoomInfo IS NOT NULL THEN hdri.room.roomNumber" +
+                " WHEN ahd.hospitalDepartmentRoomInfo IS NULL THEN 'N/A'" +
+                " END as roomNumber," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +

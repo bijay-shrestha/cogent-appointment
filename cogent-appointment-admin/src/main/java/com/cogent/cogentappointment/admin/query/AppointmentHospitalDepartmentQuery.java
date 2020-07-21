@@ -375,6 +375,9 @@ public class AppointmentHospitalDepartmentQuery {
         if (!Objects.isNull(appointmentLogSearchDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id = " + appointmentLogSearchDTO.getHospitalDepartmentId();
 
+        if (!Objects.isNull(appointmentLogSearchDTO.getHospitalDepartmentRoomInfoId()))
+            whereClause += " AND hr.id = " + appointmentLogSearchDTO.getHospitalDepartmentRoomInfoId();
+
         whereClause += " ORDER BY a.appointmentDate DESC ";
 
         return whereClause;
@@ -450,6 +453,9 @@ public class AppointmentHospitalDepartmentQuery {
 
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id = " + appointmentRescheduleLogSearchDTO.getHospitalDepartmentId();
+
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getHospitalDepartmentRoomInfoId()))
+            whereClause += " AND hr.id = " + appointmentRescheduleLogSearchDTO.getHospitalDepartmentRoomInfoId();
 
         whereClause += " ORDER BY arl.rescheduleDate";
 

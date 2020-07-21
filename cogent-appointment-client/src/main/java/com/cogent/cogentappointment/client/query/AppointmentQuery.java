@@ -72,8 +72,8 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                            //[14]
                             " arl.remarks as remarks," +                                               //[15]
                             " a.isFollowUp as isFollowUp," +                                           //[16]
-                            QUERY_TO_FETCH_DOCTOR_AVATAR +
-                            " hpi.isRegistered as isRegistered" +                                        //[18]
+                            " hpi.isRegistered as isRegistered," +                                     //[17]
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +                                             //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
@@ -263,7 +263,7 @@ public class AppointmentQuery {
                             " a.appointmentModeId.name as appointmentMode," +                          //[9]
                             " atd.appointmentAmount as appointmentAmount," +                           //[10]
                             " atd.transactionNumber as transactionNumber," +                          //[11]
-                            QUERY_TO_FETCH_DOCTOR_AVATAR +                                             //[12]
+                            QUERY_TO_FETCH_DOCTOR_AVATAR + "," +                                      //[12]
                             " a.isFollowUp as followUp," +                                              //[13]
                             " hpi.hospitalNumber as hospitalNumber," +                                  //[14]
                             " p.id as patientId," +                                                     //[15]
@@ -500,7 +500,7 @@ public class AppointmentQuery {
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +                                                //[16]
                     " a.appointmentModeId.name as appointmentMode," +                          //[17]
-                    QUERY_TO_FETCH_DOCTOR_AVATAR +                                               //[18]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR + "," +                                      //[18]
                     " d.id as doctorId," +                                                      //[20]
                     " sp.id as specializationId," +                                             //[21]
                     " a.isFollowUp as followUp," +                                               //[22]

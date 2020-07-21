@@ -34,11 +34,11 @@ import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepart
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.HospitalDeptCancelledAppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.BadRequestException;
@@ -110,6 +110,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public AppointmentRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     /*USED WHILE SAVING DOCTOR DUTY ROSTER TO VALIDATE IF APPOINTMENT EXISTS*/
     @Override
@@ -395,8 +401,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO =
                 new AppointmentPendingApprovalResponseDTO();
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
+                .setParameter("cdnUrl",minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 

@@ -51,12 +51,4 @@ public class AgeTest {
             return year + 1 + APPLICATION_ENDING_FISCAL_DAY;
         }
     }
-
-    class ThreadOne extends Thread {
-
-    }
-
-
-
-
 }

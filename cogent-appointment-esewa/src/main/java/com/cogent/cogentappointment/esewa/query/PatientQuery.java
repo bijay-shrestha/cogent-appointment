@@ -101,7 +101,8 @@ public class PatientQuery {
                 " COALESCE(pr.value, '') as province," +                  //[10]
                 " COALESCE(d.value, '') as district," +                  //[11]
                 " COALESCE(vm.value, '') as vdcOrMunicipality," +        //[12]
-                " COALESCE(hpi.wardNumber, '') as wardNumber" +          //[13]
+                " COALESCE(hpi.wardNumber, '') as wardNumber," +          //[13]
+                " hpi.hasAddress as hasAddress" +                          //[14]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
                 " LEFT JOIN Address pr ON pr.id = hpi.province.id" +

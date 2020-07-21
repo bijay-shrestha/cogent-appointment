@@ -36,8 +36,7 @@ public class DoctorQuery {
                 " d.salutation as doctorSalutation," +
                 " h.name as hospitalName," +
                 " CASE" +
-                " WHEN" +
-                 " (da.status is null OR da.status = 'N')" +
+                " WHEN" + " (da.status is null OR da.status = 'N')" +
                 " THEN null" +
                 " WHEN" +
                 " da.file_uri LIKE 'public%'" +

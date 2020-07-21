@@ -107,18 +107,31 @@ public class HospitalQuery {
                     " h.address as address," +                                  //[3]
                     " h.panNumber as panNumber," +                             //[4]
                     " h.remarks as remarks," +                                 //[5]
-                    " CASE WHEN" +
-                    " (hl.status IS NULL OR hl.status = 'N')" +
+
+                    " CASE" +
+                    " WHEN" +
+                    " (hl.status is null OR hl.status = 'N')" +
                     " THEN null" +
+                    " WHEN" +
+                    " hl.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.fileUri, 'public', -1))" +
                     " ELSE" +
                     " hl.fileUri" +
-                    " END as hospitalLogo," +                                   //[6]
-                    " CASE WHEN" +
-                    " (hb.status IS NULL OR hb.status = 'N')" +
+                    " END as hospitalLogo,"+                                              //[6]
+
+                    " CASE" +
+                    " WHEN" +
+                    " (hb.status is null OR hb.status = 'N')" +
                     " THEN null" +
+                    " WHEN" +
+                    " hb.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(hb.fileUri, 'public', -1))" +
                     " ELSE" +
                     " hb.fileUri" +
-                    " END as hospitalBanner," +                                 //[7]
+                    " END as hospitalBanner,"+                                            //[7]
+
                     " h.esewaMerchantCode as esewaMerchantCode," +                                //[8]
                     " h.refundPercentage as refundPercentage," +               //[9]
                     " h.numberOfAdmins as numberOfAdmins," +                  //[10]

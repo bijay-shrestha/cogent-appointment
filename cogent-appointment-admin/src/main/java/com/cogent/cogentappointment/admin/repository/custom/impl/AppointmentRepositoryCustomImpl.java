@@ -403,7 +403,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS(searchRequestDTO))
                 .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
-                .setParameter("cdnUrl",minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 

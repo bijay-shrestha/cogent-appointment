@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
@@ -207,17 +208,7 @@ public class AppointmentQuery {
                 " a.appointmentModeId.name as appointmentMode," +                           //[9]
                 " atd.appointmentAmount as appointmentAmount," +                            //[10]
                 " atd.transactionNumber as transactionNumber," +                            //[11]
-                " CASE" +
-                " WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " WHEN" +
-                " da.fileUri LIKE 'public%'" +
-                " THEN" +
-                " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.fileUri, 'public', -1))" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," + //[12]
+                QUERY_TO_FETCH_DOCTOR_AVATAR+
                 " hpi.hospitalNumber as hospitalNumber," +                                  //[13]
                 " p.id as patientId," +                                                     //[14]
                 " p.gender as gender," +                                                    //[15]

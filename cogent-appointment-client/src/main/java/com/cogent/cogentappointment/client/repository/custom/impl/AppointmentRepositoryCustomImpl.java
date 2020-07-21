@@ -38,6 +38,7 @@ import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRe
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.BadRequestException;
@@ -112,6 +113,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public AppointmentRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     /*USED WHILE SAVING DOCTOR DUTY ROSTER TO VALIDATE IF APPOINTMENT EXISTS*/
     @Override
@@ -238,7 +245,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_REFUNDED_DETAIL_BY_ID)
-                .setParameter(APPOINTMENT_ID, appointmentId);
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
         try {
             return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -257,7 +265,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -278,7 +287,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public AppointmentPendingApprovalDetailResponseDTO fetchDetailsByAppointmentId(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVAL_DETAIL_BY_ID)
-                .setParameter(APPOINTMENT_ID, appointmentId);
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
+
         try {
             return transformQueryToSingleResult(query, AppointmentPendingApprovalDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -315,7 +326,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_LOGS.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         System.out.println(query);
 
@@ -375,7 +387,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TRANSACTION_LOGS.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -456,7 +469,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                         .apply(appointmentQueueRequestDTO))
                         .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
                         .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
-                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
+                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType())
+                        .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
             case DEPARTMENT_CONSULTATION_CODE:
                 return createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_QUEUE
@@ -770,7 +784,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                             Long hospitalId) {
 
         return createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENTS_CANCEL_APPROVALS(searchDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
     }
 
     private Double calculateTotalRefundAmount(AppointmentCancelApprovalSearchDTO searchDTO,
@@ -1463,7 +1478,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 

@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
@@ -71,7 +72,7 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                            //[14]
                             " arl.remarks as remarks," +                                               //[15]
                             " a.isFollowUp as isFollowUp," +                                           //[16]
-                            " da.fileUri as fileUri," +                                                  //[17]
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +
                             " hpi.isRegistered as isRegistered" +                                        //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
@@ -176,7 +177,7 @@ public class AppointmentQuery {
                 " a.appointmentModeId.name as appointmentMode, " +
                 " hpi.isRegistered as isRegistered," +
                 QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                " da.fileUri as fileUri" +
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -262,12 +263,7 @@ public class AppointmentQuery {
                             " a.appointmentModeId.name as appointmentMode," +                          //[9]
                             " atd.appointmentAmount as appointmentAmount," +                           //[10]
                             " atd.transactionNumber as transactionNumber," +                          //[11]
-                            " CASE WHEN" +
-                            " (da.status is null OR da.status = 'N')" +
-                            " THEN null" +
-                            " ELSE" +
-                            " da.fileUri" +
-                            " END as fileUri," +                                                        //[12]
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +                                             //[12]
                             " a.isFollowUp as followUp," +                                              //[13]
                             " hpi.hospitalNumber as hospitalNumber," +                                  //[14]
                             " p.id as patientId," +                                                     //[15]
@@ -368,12 +364,7 @@ public class AppointmentQuery {
                             " ELSE" +
                             " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
                             " END AS revenueAmount," +
-                            " CASE WHEN" +
-                            " (da.status is null OR da.status = 'N')" +
-                            " THEN null" +
-                            " ELSE" +
-                            " da.fileUri" +
-                            " END as fileUri," +                                                        //[21]
+                            QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                             QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[22]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
@@ -509,12 +500,7 @@ public class AppointmentQuery {
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +                                                //[16]
                     " a.appointmentModeId.name as appointmentMode," +                          //[17]
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri," +                                                        //[18]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +                                               //[18]
                     " d.id as doctorId," +                                                      //[20]
                     " sp.id as specializationId," +                                             //[21]
                     " a.isFollowUp as followUp," +                                               //[22]
@@ -570,7 +556,7 @@ public class AppointmentQuery {
                     " a.appointmentModeId.name as appointmentMode," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " dv.fileUri as fileUri" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -579,7 +565,7 @@ public class AppointmentQuery {
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Doctor d ON d.id=ad.doctor.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON s.id=ad.specialization.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " WHERE ard.appointmentId.id=:appointmentId" +
@@ -846,7 +832,7 @@ public class AppointmentQuery {
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
-                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id"+
+                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
                     " AND a.status!='RE'" +

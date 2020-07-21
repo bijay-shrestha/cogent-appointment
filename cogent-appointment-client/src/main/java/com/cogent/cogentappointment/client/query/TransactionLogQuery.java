@@ -6,6 +6,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDateInString;
@@ -55,7 +56,7 @@ public class TransactionLogQuery {
                     " ELSE" +
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +
                     " END AS revenueAmount," +
-                    " da.fileUri as fileUri," +                                                        //[19]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                     " DATE_FORMAT(atd.transactionDate, '%h:%i %p') as transactionTime," +              //[20]
                     QUERY_TO_CALCULATE_PATIENT_AGE +                                                   //[21]
                     " FROM Appointment a" +

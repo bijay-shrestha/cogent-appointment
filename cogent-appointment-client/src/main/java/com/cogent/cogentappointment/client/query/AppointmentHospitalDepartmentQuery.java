@@ -396,9 +396,11 @@ public class AppointmentHospitalDepartmentQuery {
                             " a.isFollowUp as isFollowUp," +                                            //[14]
                             " hd.name as hospitalDepartmentName," +                                     //[15]
                             " hb.billingMode.name as billingModeName," +                                //[16]
-                            " case when hr.id is null then null" +
-                            " when hr.id is not null then r.roomNumber" +
-                            " end as roomNumber" +                                                      //[17]
+                            " CASE" +
+                            " WHEN ahd.hospitalDepartmentRoomInfo IS NOT NULL THEN hr.room.roomNumber" +
+                            " WHEN ahd.hospitalDepartmentRoomInfo IS NULL THEN 'N/A'" +
+                            " END as roomNumber," +                                                    //[17]
+                            " hpi.isRegistered as isRegistered" +
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
@@ -409,7 +411,6 @@ public class AppointmentHospitalDepartmentQuery {
                             " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
                             " LEFT JOIN HospitalBillingModeInfo hb ON hb.id = ahd.hospitalDepartmentBillingModeInfo.id" +
                             " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ahd.hospitalDepartmentRoomInfo.id" +
-                            " LEFT JOIN Room r ON r.id = hr.room.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                             GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(appointmentRescheduleLogSearchDTO);
@@ -463,6 +464,7 @@ public class AppointmentHospitalDepartmentQuery {
                         " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                         " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                         " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                        " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ahd.hospitalDepartmentRoomInfo.id" +
                         " LEFT JOIN Patient p ON p.id=a.patientId" +
                         " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                         " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

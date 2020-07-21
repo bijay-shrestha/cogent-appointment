@@ -48,7 +48,6 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDif
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
-import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 
 /**
  * @author smriti on 2019-10-22
@@ -186,6 +185,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<AppointmentQueueDTO> appointmentQueue = appointmentRepository.fetchAppointmentQueueLog(
                 appointmentQueueRequestDTO, getLoggedInHospitalId(), pageable);
+
+        appointmentQueue.forEach(response -> {
+            if (response.getDoctorAvatar() != null) {
+                response.setDoctorAvatar(fileUrlCheckPoint(response.getDoctorAvatar()));
+            }
+        });
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
 

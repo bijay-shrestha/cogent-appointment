@@ -399,6 +399,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<AppointmentQueueDTO> responseDTOS =
                 appointmentRepository.fetchAppointmentQueueLog(appointmentQueueRequestDTO, pageable);
 
+
+        responseDTOS.forEach(response -> {
+            if (response.getDoctorAvatar() != null) {
+                response.setDoctorAvatar(fileUrlCheckPoint(response.getDoctorAvatar()));
+            }
+        });
+
+
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;

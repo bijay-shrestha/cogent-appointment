@@ -75,7 +75,7 @@ public class AppointmentQuery {
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
                 QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                " da.fileUri as fileUri" +
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -208,7 +208,7 @@ public class AppointmentQuery {
                 " a.appointmentModeId.name as appointmentMode," +                           //[9]
                 " atd.appointmentAmount as appointmentAmount," +                            //[10]
                 " atd.transactionNumber as transactionNumber," +                            //[11]
-                QUERY_TO_FETCH_DOCTOR_AVATAR+
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " hpi.hospitalNumber as hospitalNumber," +                                  //[13]
                 " p.id as patientId," +                                                     //[14]
                 " p.gender as gender," +                                                    //[15]
@@ -311,7 +311,7 @@ public class AppointmentQuery {
                             " ELSE" +
                             " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
                             " END AS revenueAmount," +
-                            " da.fileUri as fileUri," +
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +
                             QUERY_TO_CALCULATE_PATIENT_AGE +
                             " FROM Appointment a" +
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
@@ -396,7 +396,7 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                            //[15]
                             " arl.remarks as remarks," +                                                 //[16]
                             " a.isFollowUp as isFollowUp," +                                             //[17]
-                            " da.fileUri as fileUri" +                                                   //[18]
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +                                                  //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
@@ -484,12 +484,17 @@ public class AppointmentQuery {
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
                             " s.name as specializationName," +
-                            " CASE WHEN" +
-                            " (dv.status is null OR dv.status = 'N')" +
+                            " CASE" +
+                            " WHEN" +
+                            " (da.status is null OR da.status = 'N')" +
                             " THEN null" +
+                            " WHEN" +
+                            " da.fileUri LIKE 'public%'" +
+                            " THEN" +
+                            " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.fileUri, 'public', -1))" +
                             " ELSE" +
-                            " dv.fileUri" +
-                            " END as doctorAvatar" +
+                            " da.fileUri" +
+                            " END as doctorAvatar," +
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
@@ -572,7 +577,7 @@ public class AppointmentQuery {
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +                                                //[16]
                     " a.appointmentModeId.name as appointmentMode," +                           //[17]
-                    " da.fileUri as fileUri," +                                                 //[18]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +                                                //[18]
                     " d.id as doctorId," +                                                      //[19]
                     " sp.id as specializationId," +                                             //[20]
                     " a.isFollowUp as followUp," +                                              //[21]
@@ -626,7 +631,7 @@ public class AppointmentQuery {
                     " h.esewaMerchantCode as esewaMerchantCode," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " dv.fileUri as fileUri" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +

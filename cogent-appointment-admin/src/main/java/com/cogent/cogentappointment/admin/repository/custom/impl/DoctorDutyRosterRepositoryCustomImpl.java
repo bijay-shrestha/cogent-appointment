@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +49,12 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public DoctorDutyRosterRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
     @Override
     public Long validateDoctorDutyRosterCount(Long doctorId,
                                               Long specializationId,
@@ -69,7 +76,8 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_DOCTOR_DUTY_ROSTER(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate())
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 

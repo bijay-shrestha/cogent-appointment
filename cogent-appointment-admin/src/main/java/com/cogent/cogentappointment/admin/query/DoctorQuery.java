@@ -35,9 +35,14 @@ public class DoctorQuery {
                 " tbl1.specialization_name as specializationName," +
                 " d.salutation as doctorSalutation," +
                 " h.name as hospitalName," +
-                " CASE WHEN" +
+                " CASE" +
+                " WHEN" +
                 " (da.status is null OR da.status = 'N')" +
                 " THEN null" +
+                " WHEN" +
+                " da.file_uri LIKE 'public%'" +
+                " THEN" +
+                " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.file_uri, 'public', -1))" +
                 " ELSE" +
                 " da.file_uri" +
                 " END as fileUri" +
@@ -105,18 +110,13 @@ public class DoctorQuery {
     public static final String QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN =
             " SELECT" +
                     " d.id as value," +                                     //[0]
+                    CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " CASE WHEN" +
                     " (d.salutation is null)" +
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as label," +
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +                                    //[2]
+                    " END as label," +                             //[2]
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
@@ -146,7 +146,17 @@ public class DoctorQuery {
     private static String QUERY_TO_FETCH_DOCTOR_AVATAR =
             " SELECT" +
                     " da.doctor_id as doctorId," +
+                    " CASE" +
+                    " WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " da.file_uri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.file_uri, 'public', -1))" +
+                    " ELSE" +
                     " da.file_uri" +
+                    " END as fileUri," +
                     " FROM doctor_avatar da" +
                     " WHERE da.status = 'Y'";
 
@@ -156,7 +166,17 @@ public class DoctorQuery {
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
                     " tbl1.specialization_name as specializationName," +                //[12]
                     " tbl2.qualification_name as qualificationName," +                   //[13]
-                    " tbl3.file_uri as fileUri," +                                       //[14]
+                    " CASE" +
+                    " WHEN" +
+                    " (tbl3.status is null OR tbl3.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " tbl3.file_uri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(tbl3.file_uri, 'public', -1))" +
+                    " ELSE" +
+                    " tbl3.file_uri" +
+                    " END as fileUri," +                                                   //[14]
                     DOCTOR_AUDITABLE_QUERY() + "," +
                     " d.salutation as doctorSalutation" +
                     " FROM doctor d" +
@@ -217,7 +237,17 @@ public class DoctorQuery {
                     " tbl2.doctor_qualification_id as doctorQualificationId," +             //[16]
                     " tbl2.qualification_id as qualificationId," +                          //[17]
                     " tbl2.qualification_name as qualificationName," +                      //[18]
-                    " tbl3.file_uri as fileUri" +                                            //[19]
+                    " CASE" +
+                    " WHEN" +
+                    " (tbl3.status is null OR tbl3.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " tbl3.file_uri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(tbl3.file_uri, 'public', -1))" +
+                    " ELSE" +
+                    " tbl3.file_uri" +
+                    " END as fileUri" +                                                      //[19]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -239,18 +269,13 @@ public class DoctorQuery {
     public static String QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID =
             "SELECT" +
                     " d.id as value," +                                      //[0]
+                    CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " CASE WHEN" +
                     " (d.salutation is null)" +
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as label," +                                  //[1]
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +                                     //[2]
+                    " END as label" +                                  //[2]
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Doctor d ON d.id = cs.doctorId" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
@@ -262,18 +287,13 @@ public class DoctorQuery {
     public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
                     " d.id as value," +                          //[0]
+                    CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR +  //[1]
                     " CASE WHEN" +
                     " (d.salutation is null)" +
                     " THEN d.name" +
                     " ELSE" +
-                    " CONCAT_WS(' ',d.salutation, d.name)" +       //[1]
+                    " CONCAT_WS(' ',d.salutation, d.name)" +       //[2]
                     " END as label," +
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +                                    //[2]
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
@@ -286,18 +306,13 @@ public class DoctorQuery {
     public static final String QUERY_TO_FETCH_MIN_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
                     " d.id as value," +                                     //[0]
+                    CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR+
                     " CASE WHEN" +
                     " (d.salutation is null)" +
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as label," +                                  //[1]
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +                                    //[2]
+                    " END as label" +                                  //[2]
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
@@ -308,13 +323,8 @@ public class DoctorQuery {
 
     public static String QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(Long doctorId) {
         String sql = " SELECT" +
-                " d.id as value," +                                     //[0]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri" +                                    //[1]
+                CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR+
+                " d.id as value" +                                     //[0]
                 " FROM" +
                 " Doctor d" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +

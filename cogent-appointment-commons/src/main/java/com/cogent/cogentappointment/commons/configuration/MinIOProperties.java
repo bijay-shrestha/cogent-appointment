@@ -20,6 +20,9 @@ public class MinIOProperties implements Serializable {
     @Value("${spring.minio.url}")
     private String URL;
 
+    @Value("${cdn-url}")
+    private String CDN_URL;
+
     @Value("${spring.minio.bucket}")
     private String BUCKET_NAME;
 

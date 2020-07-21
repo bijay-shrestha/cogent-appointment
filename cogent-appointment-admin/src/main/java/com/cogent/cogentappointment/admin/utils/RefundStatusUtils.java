@@ -30,7 +30,6 @@ public class RefundStatusUtils {
 
     public static BiFunction<AppointmentRefundDetail, String, AppointmentRefundDetail> changeAppointmentRefundDetailStatus
             = (refundDetail, remarks) -> {
-        refundDetail.setRefundedDate(new Date());
         refundDetail.setStatus(APPROVED);
         refundDetail.setRemarks(remarks);
 
@@ -43,12 +42,4 @@ public class RefundStatusUtils {
 
         return refundDetail;
     };
-
-    public static EsewaPaymentStatus parseToEsewaPaymentStatus(RefundStatusRequestDTO requestDTO) {
-        return EsewaPaymentStatus.builder()
-                .esewa_id("9841409090")
-                .product_code("testBir")
-                .transaction_code("5VP")
-                .build();
-    }
 }

@@ -12,6 +12,10 @@ public class ErrorMessageConstants {
 
     public static  final  String APPOINTMENT_MODE_NOT_VALID="APPOINTMENT MODE NOT VALID";
 
+    public static  final  String APPOINTMENT_HAS_BEEN_REJECTED="Appointment Has Been Rejected." +
+            " Please Contact System Administrator.";
+
+    public static final String PLEASE_CONTACT_ESEWA="The request cannot be processed. Please contact eSewa";
 
     public interface AdminServiceMessages {
 

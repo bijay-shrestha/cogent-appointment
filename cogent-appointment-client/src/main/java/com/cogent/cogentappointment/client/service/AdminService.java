@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.client.service;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.*;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -31,7 +28,7 @@ public interface AdminService {
 
     void resetPassword(AdminResetPasswordRequestDTO resetPasswordRequestDTO);
 
-    void updateAvatar(AdminAvatarUpdateRequestDTO requestDTO);
+    AdminAvatarUpdateResponse updateAvatar(AdminAvatarUpdateRequestDTO requestDTO);
 
     void update(AdminUpdateRequestDTO updateRequestDTO);
 

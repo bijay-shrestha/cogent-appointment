@@ -14,6 +14,7 @@ import com.cogent.cogentappointment.admin.service.RefundStatusService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
+import com.cogent.cogentthirdpartyconnector.exception.BadRequestException;
 import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +24,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.APPOINTMENT_HAS_BEEN_REJECTED;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentTransactionDetailLog.APPOINTMENT_TRANSACTION_DETAIL;
 import static com.cogent.cogentappointment.admin.log.constants.RefundStatusLog.REFUND_STATUS;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
@@ -88,6 +92,10 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         AppointmentRefundDetail appointmentRefundDetail = getAppointmentRefundDetail(requestDTO);
 
+        if(appointmentRefundDetail.getStatus().equals(REJECTED)){
+            throw new BadRequestException(APPOINTMENT_HAS_BEEN_REJECTED);
+        }
+
         Appointment appointment = getAppointment(requestDTO);
 
         AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointment.getId());
@@ -114,6 +122,10 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         log.info(FETCHING_PROCESS_STARTED, REFUND_STATUS);
 
         AppointmentRefundDetailResponseDTO refundAppointments = refundDetailRepository.fetchRefundDetailsById(appointmentId);
+
+        if (refundAppointments.getFileUri() != null) {
+            refundAppointments.setFileUri(fileUrlCheckPoint(refundAppointments.getFileUri()));
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 

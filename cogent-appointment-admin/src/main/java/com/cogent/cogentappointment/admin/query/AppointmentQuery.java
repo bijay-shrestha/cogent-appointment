@@ -183,56 +183,61 @@ public class AppointmentQuery {
         return SQL;
     }
 
-    public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPROVALS =
-            (searchRequestDTO) ->
-                    "SELECT" +
-                            " a.id as appointmentId," +                                                  //[0]
-                            " a.appointmentDate as appointmentDate," +                                   //[1]
-                            " a.appointmentNumber as appointmentNumber," +                               //[2]
-                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
-                            " CASE WHEN" +
-                            " (hpi.registrationNumber IS NULL)" +
-                            " THEN 'N/A'" +
-                            " ELSE" +
-                            " hpi.registrationNumber" +
-                            " END as registrationNumber," +                                               //[4]
-                            " p.name as patientName," +                                                  //[5]
-                            " p.mobileNumber as mobileNumber," +                                        //[6]
-                            " sp.name as specializationName," +                                         //[7]
-                            " CASE WHEN" +
-                            " (d.salutation is null)" +
-                            " THEN d.name" +
-                            " ELSE" +
-                            " CONCAT_WS(' ',d.salutation, d.name)" +
-                            " END as doctorName," +                                                     //[8]
-                            " a.appointmentModeId.name as appointmentMode," +                           //[9]
-                            " atd.appointmentAmount as appointmentAmount," +                            //[10]
-                            " atd.transactionNumber as transactionNumber," +                            //[11]
-                            " CASE WHEN" +
-                            " (da.status is null OR da.status = 'N')" +
-                            " THEN null" +
-                            " ELSE" +
-                            " da.fileUri" +
-                            " END as fileUri," +                                                        //[12]
-                            " hpi.hospitalNumber as hospitalNumber," +                                  //[13]
-                            " p.id as patientId," +                                                     //[14]
-                            " p.gender as gender," +                                                    //[15]
-                            " hpi.address as address," +                                                //[16]
-                            " hpi.isRegistered as isRegistered," +                                      //[17]
-                            " h.name as hospitalName," +                                                //[18]
-                            QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[19]
-                            " FROM Appointment a" +
-                            " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
-                            " LEFT JOIN Patient p ON p.id = a.patientId.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                            " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
-                            " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
-                            " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
-                            " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
-                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
-                            GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
+    public static String QUERY_TO_FETCH_PENDING_APPROVALS(AppointmentPendingApprovalSearchDTO searchRequestDTO) {
+        return " SELECT" +
+                " a.id as appointmentId," +                                                  //[0]
+                " a.appointmentDate as appointmentDate," +                                   //[1]
+                " a.appointmentNumber as appointmentNumber," +                               //[2]
+                " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
+                " CASE WHEN" +
+                " (hpi.registrationNumber IS NULL)" +
+                " THEN 'N/A'" +
+                " ELSE" +
+                " hpi.registrationNumber" +
+                " END as registrationNumber," +                                               //[4]
+                " p.name as patientName," +                                                  //[5]
+                " p.mobileNumber as mobileNumber," +                                        //[6]
+                " sp.name as specializationName," +                                         //[7]
+                " CASE WHEN" +
+                " (d.salutation is null)" +
+                " THEN d.name" +
+                " ELSE" +
+                " CONCAT_WS(' ',d.salutation, d.name)" +
+                " END as doctorName," +                                                     //[8]
+                " a.appointmentModeId.name as appointmentMode," +                           //[9]
+                " atd.appointmentAmount as appointmentAmount," +                            //[10]
+                " atd.transactionNumber as transactionNumber," +                            //[11]
+                " CASE" +
+                " WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " WHEN" +
+                " da.fileUri LIKE 'public%'" +
+                " THEN" +
+                " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.fileUri, 'public', -1))" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri," + //[12]
+                " hpi.hospitalNumber as hospitalNumber," +                                  //[13]
+                " p.id as patientId," +                                                     //[14]
+                " p.gender as gender," +                                                    //[15]
+                " hpi.address as address," +                                                //[16]
+                " hpi.isRegistered as isRegistered," +                                      //[17]
+                " h.name as hospitalName," +                                                //[18]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[19]
+                " FROM Appointment a" +
+                " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
+                " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
+                " LEFT JOIN Specialization sp ON sp.id = ad.specialization.id" +
+                " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
+                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                " LEFT JOIN HospitalAppointmentServiceType has ON has.id = a.hospitalAppointmentServiceType.id" +
+                GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
+    }
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
             AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
@@ -985,7 +990,7 @@ public class AppointmentQuery {
                     " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
-                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id"+
+                    " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " WHERE " +
                     " a.appointmentNumber=:appointmentNumber" +
                     " AND a.status!='RE'" +

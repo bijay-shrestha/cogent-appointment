@@ -12,12 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -29,6 +31,7 @@ import static com.cogent.cogentappointment.admin.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti on 2019-09-29
@@ -76,10 +79,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorMinimalResponseDTO> results = transformNativeQueryToResultList(
                 query, DoctorMinimalResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        } else {
+
+        else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -91,10 +94,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override
@@ -115,10 +118,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override
@@ -128,10 +131,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override
@@ -141,10 +144,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override
@@ -164,24 +167,29 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(doctorId))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
+        List<DoctorDropdownDTO> doctorAvatars = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (doctorAvatars.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        } else return results;
+
+        else {
+
+            doctorAvatars.forEach(doctorAvatar -> {
+                if (!Objects.isNull(doctorAvatar.getFileUri()) && !ObjectUtils.isEmpty(doctorAvatar.getFileUri()))
+                    doctorAvatar.setFileUri(fileUrlCheckPoint(doctorAvatar.getFileUri()));
+            });
+
+            return doctorAvatars;
+        }
     }
 
-
-    private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
-            new NoContentFoundException(Doctor.class);
+    private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, DOCTOR);
+        throw new NoContentFoundException(Doctor.class);
+    };
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (doctorId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, doctorId);
         throw new NoContentFoundException(Doctor.class, "doctorId", doctorId.toString());
     };
-
-    public void error() {
-        log.error(CONTENT_NOT_FOUND, DOCTOR);
-    }
 }

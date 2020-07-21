@@ -61,18 +61,18 @@ public class CompanyQuery {
                 " hl.file_uri FROM hospital_logo hl" +
                 " WHERE hl.status = 'Y'" +
                 " )tbl ON tbl.hospitalId= h.id" +
-                GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL.apply(searchRequestDTO);
+                GET_WHERE_CLAUSE_FOR_SEARCHING_COMPANY.apply(searchRequestDTO);
     }
 
-    private static Function<CompanySearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL =
+    private static Function<CompanySearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCHING_COMPANY =
             (searchRequestDTO) -> {
                 String whereClause = " WHERE h.is_company='Y' AND h.status!='D'";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND h.status='" + searchRequestDTO.getStatus() + "'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-                    whereClause += " AND h.name LIKE '%" + searchRequestDTO.getName() + "%'";
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getCompanyId()))
+                    whereClause += " AND h.id =" + searchRequestDTO.getCompanyId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getCompanyCode()))
                     whereClause += " AND h.code LIKE '%" + searchRequestDTO.getCompanyCode() + "%'";

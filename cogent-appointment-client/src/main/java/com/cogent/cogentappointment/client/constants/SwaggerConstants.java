@@ -53,22 +53,9 @@ public class SwaggerConstants {
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
-        String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
-                " for specific doctor and specialization";
-        String CHECK_CURRENT_APPOINTMENT_AVAILABILITY = "Check current available time schedules in requested date" +
-                " for specific doctor and specialization";
-        String SAVE_OPERATION = "Save new appointment";
         String FETCH_CANCELLED_HOSPITAL_DEPARTMENT_APPOINTMENTS = "Fetch cancelled Hospital Department Appointment" +
                 " List";
         String FETCH_CANCELLED_APPOINTMENTS_DETAIL = "Fetch Cancelled Appointment Detail By appointmentId";
-        String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
-        String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
-        String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
-        String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
-        String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
-        String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
-                " If 'Y', then it is successful appointment, else it is failed appointment";
-        String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
 
         /*admin*/
         String FETCH_APPOINTMENT_CANCEL_APPROVALS = "Fetch  Appointment Cancel Approvals List";
@@ -239,23 +226,6 @@ public class SwaggerConstants {
         String DOWNLOAD_EXCEL_RESCHEDULE_LOG="Download Excel sheet of Reschedule Log";
         String DOWNLOAD_EXCEL_PATIENT_DETAILS="Download Excel sheet of Patient Details";
     }
-
-    public interface EsewaConstant {
-        String BASE_API_VALUE = "This is esewa Resource";
-        String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates and time by doctorId and" +
-                " specializationId";
-        String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId";
-        String FETCH_AVAILABLE_SPECIALIZATION_DATES = "Returns all the avaliable appointment dates by specializationId";
-        String FETCH_AVAILABLE_DATES = "Returns all the avaliable appointment dates by doctorId and specializationId";
-        String FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION = "Return message if the doctor is available on the date" +
-                " (Case V/Case VIII)";
-        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
-                "their specialization on the choosen date (Case II/Case IV)";
-        String SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
-                "their specialization on the selected date range(Case II/Case IV)";
-
-    }
-
 
     //F
     public interface ForgotPasswordConstant {

@@ -40,6 +40,7 @@ import static com.cogent.cogentappointment.admin.utils.HospitalBillingModeInfoUt
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti ON 12/01/2020
@@ -188,6 +189,13 @@ public class HospitalServiceImpl implements HospitalService {
 
         List<HospitalMinimalResponseDTO> responseDTOS = hospitalRepository.search(hospitalSearchRequestDTO, pageable);
 
+        responseDTOS.forEach(responseDTO -> {
+            if (responseDTO.getFileUri() != null) {
+                responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
+            }
+        });
+
+
         log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -264,6 +272,14 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         HospitalResponseDTO responseDTO = hospitalRepository.fetchDetailsById(hospitalId);
+
+        if (responseDTO.getHospitalLogo() != null) {
+            responseDTO.setHospitalLogo(fileUrlCheckPoint(responseDTO.getHospitalLogo()));
+        }
+
+        if (responseDTO.getHospitalBanner() != null) {
+            responseDTO.setHospitalBanner(fileUrlCheckPoint(responseDTO.getHospitalBanner()));
+        }
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

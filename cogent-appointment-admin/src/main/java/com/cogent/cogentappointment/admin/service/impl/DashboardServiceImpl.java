@@ -27,6 +27,7 @@ import static com.cogent.cogentappointment.admin.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercentage;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 
 /**
@@ -198,6 +199,14 @@ public class DashboardServiceImpl implements DashboardService {
         List<DoctorRevenueDTO> doctorRevenue =
                 appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
 
+        doctorRevenue.forEach(response -> {
+            if (response.getFileUri() != null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
+
+
         List<DoctorRevenueDTO> cancelledRevenue =
                 appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO, pageable);
 
@@ -213,6 +222,8 @@ public class DashboardServiceImpl implements DashboardService {
         List<DoctorRevenueDTO> mergedList = mergeDoctorAndCancelledRevenue(doctorRevenue, cancelledAndRefundedRevenue);
 
         DoctorRevenueResponseDTO responseDTO = parseToDoctorRevenueResponseDTO(mergedList);
+
+
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 

@@ -15,13 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -66,8 +66,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(requestDTO));
 
-        Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT)
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+        Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT.apply(requestDTO));
 
         refundStatusResponseDTO.setTotalItems(query.getResultList().size());
 
@@ -75,7 +74,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
         List<RefundStatusDTO> response = transformQueryToResultList(query, RefundStatusDTO.class);
 
-        if (Objects.isNull(response)) {
+        if (ObjectUtils.isEmpty(response)) {
             log.error(CONTENT_NOT_FOUND, APPOINTMENT_REFUND_DETAIL);
             throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
         }

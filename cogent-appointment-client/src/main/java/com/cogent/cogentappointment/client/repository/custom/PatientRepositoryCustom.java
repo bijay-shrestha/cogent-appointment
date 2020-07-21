@@ -2,9 +2,10 @@ package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.jasper.PatientDetailsJasperResponseDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.*;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientMinDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -20,23 +21,6 @@ import java.util.List;
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
 
-    /*esewa*/
-    PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
-
-    PatientDetailResponseDTO searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO);
-
-    List<PatientRelationInfoResponseDTO> fetchPatientRelationInfo(PatientMinSearchRequestDTO searchRequestDTO);
-
-    List<PatientRelationInfoResponseDTO> fetchPatientRelationInfoHospitalWise(String name,
-                                                                              String mobileNumber,
-                                                                              Date dateOfBirth,
-                                                                              Long hospitalId);
-
-    PatientResponseDTOForOthers fetchMinPatientInfoForOthers(List<PatientRelationInfoResponseDTO> patientRelationInfo,
-                                                             Pageable pageable);
-
-    PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
-
     Long validatePatientDuplicity(Long patientId, String name, String mobileNumber, Date dateOfBirth);
 
     PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId);
@@ -47,8 +31,6 @@ public interface PatientRepositoryCustom {
     Long countOverallRegisteredPatients(Long HospitalId);
 
     String fetchLatestRegistrationNumber(Long hospitalId);
-
-    Patient fetchPatient(String name, String mobileNumber, Date dateOfBirth);
 
     PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 

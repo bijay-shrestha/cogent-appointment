@@ -36,6 +36,7 @@ import static com.cogent.cogentappointment.client.utils.SalutationUtils.parseToD
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti on 2019-09-29
@@ -272,6 +273,12 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorMinimalResponseDTO> responseDTOS =
                 doctorRepository.search(searchRequestDTO, getLoggedInHospitalId(), pageable);
 
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
         log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -284,6 +291,13 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS = doctorRepository.fetchActiveMinDoctor(getLoggedInHospitalId());
+
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -298,6 +312,13 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<DoctorDropdownDTO> responseDTOS = doctorRepository.fetchMinDoctorByHospitalId(getLoggedInHospitalId());
 
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
+
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -311,6 +332,10 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorDetailResponseDTO responseDTO = doctorRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
+            if(responseDTO.getFileUri()!=null) {
+                responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
+            }
+
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
@@ -323,6 +348,10 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id, getLoggedInHospitalId());
+
+            if(responseDTO.getFileUri()!=null) {
+                responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
+            }
 
         List<DoctorSalutationResponseDTO> salutationResponseDTOList = doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
         responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
@@ -366,6 +395,12 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchDoctorBySpecializationAndHospitalId(specializationId, getLoggedInHospitalId());
 
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -379,6 +414,12 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchDoctorByHospitalId(getLoggedInHospitalId());
+
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

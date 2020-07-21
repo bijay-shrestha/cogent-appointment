@@ -39,13 +39,14 @@ import static com.cogent.cogentappointment.admin.constants.CogentAppointmentCons
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_APPOINTMENT_SERVICE_TYPE_CODE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseAppointmentRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti on 2019-10-22
@@ -103,6 +104,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentRefundResponseDTO refundAppointments =
                 appointmentRepository.fetchAppointmentCancelApprovals(searchDTO, pageable);
 
+        refundAppointments.getRefundAppointments().forEach(response -> {
+            if (response.getFileUri() != null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+        });
+
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
 
         return refundAppointments;
@@ -115,6 +122,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
 
         AppointmentRefundDetailResponseDTO refundAppointments = appointmentRepository.fetchRefundDetailsById(appointmentId);
+
+        if (refundAppointments.getFileUri() != null) {
+            refundAppointments.setFileUri(fileUrlCheckPoint(refundAppointments.getFileUri()));
+        }
+
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
 
@@ -214,6 +226,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentPendingApprovalResponseDTO responseDTOS =
                 appointmentRepository.searchPendingVisitApprovals(searchRequestDTO, pageable);
 
+        responseDTOS.getPendingAppointmentApprovals().forEach(response -> {
+            response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+        });
+
+
         log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPOINTMENT_APPROVAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -227,6 +244,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentPendingApprovalDetailResponseDTO responseDTOS =
                 appointmentRepository.fetchDetailsByAppointmentId(appointmentId);
+
+        if (responseDTOS.getFileUri() != null) {
+            responseDTOS.setFileUri(fileUrlCheckPoint(responseDTOS.getFileUri()));
+        }
 
         responseDTOS.setPatientAge(calculateAge(responseDTOS.getPatientDob()));
 
@@ -300,6 +321,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 throw new BadRequestException(String.format(INVALID_APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode));
         }
 
+        appointmentLogs.getAppointmentLogs().forEach(response -> {
+            response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+        });
+
+
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentLogs;
@@ -333,6 +359,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                         appointmentServiceTypeCode));
         }
 
+        transactionLogs.getTransactionLogs().forEach(response -> {
+            response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+        });
+
         log.info(SEARCHING_PROCESS_COMPLETED, TRANSACTION_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return transactionLogs;
@@ -349,6 +379,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentRescheduleLogResponseDTO responseDTOS =
                 appointmentRepository.fetchRescheduleAppointment(rescheduleDTO, pageable);
 
+        responseDTOS.getAppointmentRescheduleLogDTOS().forEach(response -> {
+            response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+        });
+
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -364,6 +398,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<AppointmentQueueDTO> responseDTOS =
                 appointmentRepository.fetchAppointmentQueueLog(appointmentQueueRequestDTO, pageable);
+
+
+        responseDTOS.forEach(response -> {
+            if (response.getDoctorAvatar() != null) {
+                response.setDoctorAvatar(fileUrlCheckPoint(response.getDoctorAvatar()));
+            }
+        });
+
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
 

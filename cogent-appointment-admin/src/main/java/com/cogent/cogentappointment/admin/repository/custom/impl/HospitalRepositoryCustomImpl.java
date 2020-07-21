@@ -111,6 +111,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public List<CompanyMinimalResponseDTO> searchCompany(CompanySearchRequestDTO searchRequestDTO, Pageable pageable) {
+
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY(searchRequestDTO));
 
         int totalItems = query.getResultList().size();

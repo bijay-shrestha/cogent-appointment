@@ -101,7 +101,9 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO,
                                                    Pageable pageable) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO));
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO))
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -118,9 +120,11 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public List<CompanyMinimalResponseDTO> searchCompany(CompanySearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<CompanyMinimalResponseDTO> searchCompany(CompanySearchRequestDTO searchRequestDTO,
+                                                         Pageable pageable) {
 
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY(searchRequestDTO));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY(searchRequestDTO))
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -139,7 +143,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     public HospitalResponseDTO fetchDetailsById(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
                 .setParameter(ID, id)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         Query billingModeQuery = createQuery.apply(entityManager, QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, id);
@@ -163,7 +167,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public CompanyResponseDTO fetchCompanyDetailsById(Long id) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_DETAILS)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<Object[]> results = query.getResultList();
 

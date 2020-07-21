@@ -5,7 +5,7 @@ package com.cogent.cogentappointment.admin.query;
  */
 public class CdnFileQuery {
 
-    public static String QUERY_TO_FETCH_DOCTOR_AVATAR =
+    static String QUERY_TO_FETCH_DOCTOR_AVATAR =
             " CASE" +
                     " WHEN" +
                     " (da.status is null OR da.status = 'N')" +
@@ -18,7 +18,7 @@ public class CdnFileQuery {
                     " da.fileUri" +
                     " END as fileUri,";
 
-    public static String QUERY_TO_FETCH_ADMIN_AVATAR =
+    static String QUERY_TO_FETCH_ADMIN_AVATAR =
             " CASE" +
                     " WHEN" +
                     " (av.status is null OR av.status = 'N')" +
@@ -31,7 +31,7 @@ public class CdnFileQuery {
                     " av.fileUri" +
                     " END as fileUri";
 
-    public static String QUERY_TO_FETCH_HOSPITAL_LOGO =
+    static String QUERY_TO_FETCH_HOSPITAL_LOGO =
             " CASE" +
                     " WHEN" +
                     " (hl.status is null OR hl.status = 'N')" +
@@ -43,17 +43,4 @@ public class CdnFileQuery {
                     " ELSE" +
                     " hl.fileUri" +
                     " END as hospitalLogo";
-
-    public static String QUERY_TO_COMPANY_LOGO =
-            " CASE" +
-                    " WHEN" +
-                    " (tbl.status is null OR tbl.status = 'N')" +
-                    " THEN null" +
-                    " WHEN" +
-                    " tbl.file_uri LIKE 'public%'" +
-                    " THEN" +
-                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(tbl.file_uri, 'public', -1))" +
-                    " ELSE" +
-                    " tbl.file_uri" +
-                    " END as fileUri";
 }

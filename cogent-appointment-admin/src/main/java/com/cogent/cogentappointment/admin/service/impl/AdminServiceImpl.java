@@ -163,15 +163,6 @@ public class AdminServiceImpl implements AdminService {
 
         List<AdminMinimalResponseDTO> responseDTOS = adminRepository.search(searchRequestDTO, pageable);
 
-        responseDTOS.forEach(response->{
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-
-        });
-
-
-
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -184,9 +175,6 @@ public class AdminServiceImpl implements AdminService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, ADMIN);
 
         AdminDetailResponseDTO responseDTO = adminRepository.fetchDetailsById(id);
-        if (responseDTO.getFileUri() != null) {
-            responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
-        }
 
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));

@@ -365,12 +365,6 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchDoctorByHospitalId(hospitalId);
 
-        responseDTOS.forEach(response->{
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
-
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -384,11 +378,6 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchMinDoctorByHospitalId(hospitalId);
-        responseDTOS.forEach(response->{
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

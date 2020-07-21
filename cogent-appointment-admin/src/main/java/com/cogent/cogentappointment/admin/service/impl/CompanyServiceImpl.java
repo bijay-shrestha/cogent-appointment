@@ -158,13 +158,6 @@ public class CompanyServiceImpl implements CompanyService {
 
         List<CompanyMinimalResponseDTO> responseDTOS = hospitalRepository.searchCompany(searchRequestDTO, pageable);
 
-        responseDTOS.forEach(response->{
-
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
-
         log.info(SEARCHING_PROCESS_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -190,12 +183,6 @@ public class CompanyServiceImpl implements CompanyService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, COMPANY);
 
         CompanyResponseDTO responseDTO = hospitalRepository.fetchCompanyDetailsById(companyId);
-
-            if(responseDTO.getCompanyLogo()!=null) {
-                responseDTO.setCompanyLogo(fileUrlCheckPoint(responseDTO.getCompanyLogo()));
-            }
-
-
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));
 

@@ -104,12 +104,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentRefundResponseDTO refundAppointments =
                 appointmentRepository.fetchAppointmentCancelApprovals(searchDTO, pageable);
 
-        refundAppointments.getRefundAppointments().forEach(response -> {
-            if (response.getFileUri() != null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
-
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
 
         return refundAppointments;

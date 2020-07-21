@@ -265,7 +265,6 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON atd.appointment.id =a.id" +
                     " WHERE a.id=:appointmentId" +
-                    " AND a.status IN ('C','RE')" +
                     " AND ard.status IN ('PA','A','R')" +
                     " GROUP BY a.id";
 

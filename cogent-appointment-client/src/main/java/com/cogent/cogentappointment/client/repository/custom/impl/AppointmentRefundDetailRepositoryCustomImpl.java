@@ -20,6 +20,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -150,6 +151,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_HOSPITAL_DEPARTMENT_REFUNDED_DETAIL_BY_ID)
                 .setParameter(APPOINTMENT_ID, appointmentId);
+
         try {
             return transformQueryToSingleResult(query, HospitalDepartmentAppointmentRefundDetailResponseDTO.class);
         } catch (NoResultException e) {

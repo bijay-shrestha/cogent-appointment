@@ -4,6 +4,8 @@ import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestD
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
 
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_ADMIN_AVATAR;
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_HOSPITAL_LOGO;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 
 /**
@@ -90,12 +92,7 @@ public class AdminQuery {
                     " a.gender as gender," +                                    //[6]
                     " p.name as profileName," +                                 //[7]
                     " d.name as departmentName," +                              //[8]
-                    " CASE WHEN" +
-                    " (av.status IS NULL OR av.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " av.fileUri" +
-                    " END as fileUri";                                           //[10]
+                    QUERY_TO_FETCH_ADMIN_AVATAR;                                //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
             " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND d.status != 'D'" +
@@ -166,10 +163,7 @@ public class AdminQuery {
                     " a.id as adminId," +                                                   //[0]
                     " a.email as email," +                                                 //[1]
                     " a.fullName as fullName," +
-                    " CASE " +
-                    "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
-                    "    ELSE av.fileUri" +
-                    " END as fileUri," +                                                   //[2]
+                    QUERY_TO_FETCH_ADMIN_AVATAR + "," +
                     " p.id as profileId," +                                                //[3]
                     " p.name as profileName," +                                            //[4]
                     " d.id as departmentId," +                                             //[5]
@@ -177,9 +171,7 @@ public class AdminQuery {
                     " h.name as hospitalName," +                                           //[6]
                     " p.isAllRoleAssigned as isAllRoleAssigned," +                         //[7]
                     " af.isSideBarCollapse as isSideBarCollapse," +                        //[8]
-                    " CASE " +
-                    "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
-                    "    ELSE hl.fileUri" +
+                    QUERY_TO_FETCH_HOSPITAL_LOGO +
                     " END as hospitalLogo," +                                              //[9]
                     " h.code as hospitalCode" +                                             //[10]
                     " FROM Admin a" +

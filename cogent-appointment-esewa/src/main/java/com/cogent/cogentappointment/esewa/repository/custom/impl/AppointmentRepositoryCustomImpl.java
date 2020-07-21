@@ -18,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -91,7 +88,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     /*eg. 2076-10-10 lies in between 2076-04-01 to 2077-03-31 Fiscal Year ie. 2076/2077*/
     @Override
-    public String generateAppointmentNumber(String nepaliCreatedDate,
+    public synchronized String generateAppointmentNumber(String nepaliCreatedDate,
                                             Long hospitalId,
                                             String hospitalCode) {
 

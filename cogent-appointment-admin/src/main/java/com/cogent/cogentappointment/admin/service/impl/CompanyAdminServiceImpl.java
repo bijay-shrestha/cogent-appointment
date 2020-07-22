@@ -443,17 +443,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         return responseDTO;
     }
 
-    private String fileUrlCheckPoint(String url) {
-
-        if (url.contains("public")) {
-            url = "https://cdn.eappointments.net" + url.split("public")[1];
-        }
-
-        return url;
-
-
-    }
-
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
 
         Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.

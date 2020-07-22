@@ -126,9 +126,22 @@ public class SpecializationServiceImpl implements SpecializationService {
     public List<DropDownResponseDTO> fetchActiveSpecializationForDropDown() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, SPECIALIZATION);
 
         List<DropDownResponseDTO> responseDTOS = specializationRepository.fetchActiveSpecializationForDropDown();
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchSpecializationForDropDown() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
+
+        List<DropDownResponseDTO> responseDTOS = specializationRepository.fetchSpecializationForDropDown();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -149,6 +162,20 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchActiveSpecializationByDoctorId(Long DoctorId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, SPECIALIZATION);
+
+        List<DropDownResponseDTO> responseDTOS =
+                specializationRepository.fetchActiveSpecializationByDoctorId(DoctorId);
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long DoctorId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -158,6 +185,21 @@ public class SpecializationServiceImpl implements SpecializationService {
                 specializationRepository.fetchSpecializationByDoctorId(DoctorId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveSpecializationByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, SPECIALIZATION);
+
+        List<DropDownResponseDTO> responseDTOS =
+                specializationRepository.fetchActiveSpecializationByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, SPECIALIZATION,
+                getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

@@ -144,6 +144,7 @@ public class SwaggerConstants {
     public interface CountryConstant {
         String BASE_API_VALUE = "This is Country Resource.";
         String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";
+        String FETCH_COUNTRY = "Fetch country for dropdown.";
     }
 
     public interface CommonConstant {
@@ -340,6 +341,7 @@ public class SwaggerConstants {
         String DELETE_OPERATION = "Set profile status as 'D' when deleted";
         String SEARCH_OPERATION = "Search profile according to given request parameters";
         String DETAILS_OPERATION = "Fetch profile details by its id. Group profile-menu response by parent-id";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active profile details (id and name) for dropdown";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal profile details (id and name) for dropdown";
         String FETCH_PROFILE_BY_DEPARTMENT_ID = "Fetch active profiles by department id";
     }
@@ -363,6 +365,7 @@ public class SwaggerConstants {
         String DELETE_OPERATION = "Set Qualification Alias Resource status as 'D' when deleted";
         String SEARCH_OPERATION = "Search Qualification Alias Resource according to given request parameters";
         String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
+        String FETCH_QUALIFICATION_ALIAS = "Fetch Qualification Alias like M.D.,M.B.B.S, etc";
     }
 
     //R
@@ -404,6 +407,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Specialization according to given request parameters";
         String DETAILS_OPERATION = "Fetch Specialization details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Specialization details (id and name) for dropdown";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active Specialization details (id and name) for dropdown";
         String FETCH_BY_DOCTOR_ID = "Fetch active specializations by doctor id";
         String FETCH_BY_HOSPITAL_ID = "Fetch active specializations by hospital id";
     }

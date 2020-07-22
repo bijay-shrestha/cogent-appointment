@@ -28,4 +28,6 @@ public interface AppointmentModeService {
 
     List<DropDownResponseDTO> fetchActiveMinAppointmentMode();
 
+    List<DropDownResponseDTO> fetchMinAppointmentMode();
+
 }

@@ -14,4 +14,6 @@ import java.util.List;
 public interface CountryRepositoryCustom {
     List<DropDownResponseDTO> fetchActiveCountry();
 
+    List<DropDownResponseDTO> fetchCountry();
+
 }

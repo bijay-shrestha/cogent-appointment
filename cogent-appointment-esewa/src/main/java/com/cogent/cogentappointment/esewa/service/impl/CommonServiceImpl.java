@@ -47,7 +47,7 @@ public class CommonServiceImpl implements CommonService {
         List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(hospitalId);
 
         List<DropDownResponseDTO> specializationInfo =
-                specializationRepository.fetchSpecializationByHospitalId(hospitalId);
+                specializationRepository.fetchActiveSpecializationByHospitalId(hospitalId);
 
         DoctorSpecializationResponseDTO commonInfo = DoctorSpecializationResponseDTO.builder()
                 .doctorInfo(doctorInfo)

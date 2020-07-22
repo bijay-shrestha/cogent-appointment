@@ -119,9 +119,61 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchProfilesForDropDown() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILES_FOR_DROPDOWN);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID)
                 .setParameter(ID, departmentId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchAllProfileByDepartmentId(Long departmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ALL_PROFILE_BY_DEPARTMENT_ID)
+                .setParameter(ID, departmentId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        } else return results;
+    }
+
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveProfileByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PROFILE_BY_HOSPITAL_ID)
+                .setParameter(ID, hospitalId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchProfileByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_BY_HOSPITAL_ID)
+                .setParameter(ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

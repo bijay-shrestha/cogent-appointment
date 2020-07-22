@@ -133,5 +133,14 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         throw new NoContentFoundException(String.format(NO_RECORD_FOUND, UNIT));
     };
 
+    @Override
+    public Optional<List<DropDownResponseDTO>> fetchAllDepartmentByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ALL_DEPARTMENT_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
+    }
 }
 

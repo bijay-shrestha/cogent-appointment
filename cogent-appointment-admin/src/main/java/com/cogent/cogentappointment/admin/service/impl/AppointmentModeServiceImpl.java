@@ -133,9 +133,22 @@ public class AppointmentModeServiceImpl implements AppointmentModeService {
     public List<DropDownResponseDTO> fetchActiveMinAppointmentMode() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, APPOINTMENT_MODE);
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, APPOINTMENT_MODE);
 
         List<DropDownResponseDTO> minInfo = repository.fetchActiveMinAppointmentMode();
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, APPOINTMENT_MODE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinAppointmentMode() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, APPOINTMENT_MODE);
+
+        List<DropDownResponseDTO> minInfo = repository.fetchMinAppointmentMode();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, APPOINTMENT_MODE, getDifferenceBetweenTwoTime(startTime));
 

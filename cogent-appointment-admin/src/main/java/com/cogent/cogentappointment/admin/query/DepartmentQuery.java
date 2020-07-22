@@ -112,6 +112,17 @@ public class DepartmentQuery {
                     " AND h.id=:hospitalId" +
                     " ORDER BY label ASC";
 
+    public static final String QUERY_TO_FETCH_ALL_DEPARTMENT_BY_HOSPITAL_ID =
+            "SELECT" +
+                    " d.id as value," +
+                    " CONCAT(h.alias, '-',d.name) as label" +
+                    " FROM Department d" +
+                    " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
+                    " WHERE d.status != 'D'" +
+                    " AND h.status = 'Y'" +
+                    " AND h.id=:hospitalId" +
+                    " ORDER BY label ASC";
+
     public static String DEPARTMENT_AUDITABLE_QUERY() {
         return " d.createdBy as createdBy," +
                 " d.createdDate as createdDate," +

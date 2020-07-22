@@ -73,11 +73,10 @@ public class ProfileResource {
     }
 
     @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_ACTIVE_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActiveMinProfile() {
         return ok(profileService.fetchActiveMinProfile());
     }
-
 
     @GetMapping(MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
@@ -87,7 +86,7 @@ public class ProfileResource {
 
     @GetMapping(DEPARTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PROFILE_BY_DEPARTMENT_ID)
-    public ResponseEntity<?> fetchProfileByDepartmentId(@PathVariable("departmentId") Long departmentId) {
-        return ok(profileService.fetchProfileByDepartmentId(departmentId));
+    public ResponseEntity<?> fetchActiveProfileByDepartmentId(@PathVariable("departmentId") Long departmentId) {
+        return ok(profileService.fetchActiveProfileByDepartmentId(departmentId));
     }
 }

@@ -30,5 +30,7 @@ public interface UniversityService {
 
     List<DropDownResponseDTO> fetchActiveMinUniversity();
 
+    List<DropDownResponseDTO> fetchMinUniversity();
+
     University findActiveUniversityById(Long id);
 }

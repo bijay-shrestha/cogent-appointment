@@ -165,6 +165,20 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchProfilesForDropdown() {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
+
+        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchProfilesForDropDown();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
     public Profile fetchActiveProfileById(Long id) {
         return profileRepository.findActiveProfileById(id)
                 .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(id));
@@ -177,6 +191,45 @@ public class ProfileServiceImpl implements ProfileService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
 
         List<DropDownResponseDTO> responseDTOS = profileRepository.fetchProfileByDepartmentId(departmentId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchAllProfileByDepartmentId(Long departmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
+
+        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchAllProfileByDepartmentId(departmentId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveProfileByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
+
+        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveProfileByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchProfileByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
+
+        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchProfileByHospitalId(hospitalId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 

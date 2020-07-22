@@ -40,6 +40,8 @@ public interface HospitalRepositoryCustom {
 
     List<CompanyDropdownResponseDTO> fetchActiveCompanyForDropDown();
 
+    List<CompanyDropdownResponseDTO> fetchCompanyForDropDown();
+
     HospitalResponseDTO fetchDetailsById(Long id);
 
     CompanyResponseDTO fetchCompanyDetailsById(Long id);

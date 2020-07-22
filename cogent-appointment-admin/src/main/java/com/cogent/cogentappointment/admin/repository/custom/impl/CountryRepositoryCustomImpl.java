@@ -16,6 +16,7 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.CountryLog.COUNTRY;
 import static com.cogent.cogentappointment.admin.query.CountryQuery.QUERY_TO_FETCH_ACTIVE_COUNTRY;
+import static com.cogent.cogentappointment.admin.query.CountryQuery.QUERY_TO_FETCH_COUNTRY;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -33,6 +34,18 @@ public class CountryRepositoryCustomImpl implements CountryRepositoryCustom {
     @Override
     public List<DropDownResponseDTO> fetchActiveCountry() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COUNTRY);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error();
+            throw new NoContentFoundException(Country.class);
+        } else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchCountry() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COUNTRY);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

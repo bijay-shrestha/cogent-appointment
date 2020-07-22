@@ -123,6 +123,19 @@ public class ProfileQuery {
                     " AND p.isCompanyProfile= 'N'" +
                     " ORDER BY label ASC ";
 
+    public static final String QUERY_TO_FETCH_PROFILES_FOR_DROPDOWN =
+            " SELECT" +
+                    " p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE" +
+                    " p.status !='D'" +
+                    " AND p.isCompanyProfile= 'N'" +
+                    " ORDER BY label ASC ";
+
+
     public static final String QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID =
             " SELECT p.id as value," +                                         //[0]
                     " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
@@ -132,6 +145,43 @@ public class ProfileQuery {
                     " WHERE p.status ='Y'" +
                     " AND d.status ='Y'" +
                     " AND d.id =:id" +
+                    " AND p.isCompanyProfile= 'N'" +
+                    " ORDER BY label ASC ";
+
+    public static final String QUERY_TO_FETCH_ALL_PROFILE_BY_DEPARTMENT_ID =
+            " SELECT p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE p.status !='D'" +
+                    " AND d.status ='Y'" +
+                    " AND d.id =:id" +
+                    " AND p.isCompanyProfile= 'N'" +
+                    " ORDER BY label ASC ";
+
+    public static final String QUERY_TO_FETCH_ACTIVE_PROFILE_BY_HOSPITAL_ID =
+            " SELECT p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE p.status ='Y'" +
+                    " AND d.status ='Y'" +
+                    " AND h.id =:id" +
+                    " AND p.isCompanyProfile= 'N'" +
+                    " ORDER BY label ASC ";
+
+
+    public static final String QUERY_TO_FETCH_PROFILE_BY_HOSPITAL_ID =
+            " SELECT p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE p.status !='D'" +
+                    " AND d.status ='Y'" +
+                    " AND h.id =:id" +
                     " AND p.isCompanyProfile= 'N'" +
                     " ORDER BY label ASC ";
 

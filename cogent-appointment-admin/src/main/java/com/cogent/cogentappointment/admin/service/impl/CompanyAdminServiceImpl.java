@@ -58,7 +58,6 @@ import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderBy
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 import static java.lang.reflect.Array.get;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;

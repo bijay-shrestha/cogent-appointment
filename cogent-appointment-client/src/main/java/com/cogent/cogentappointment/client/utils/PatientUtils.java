@@ -1,45 +1,20 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateDTOForOthers;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTOWithStatus;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTOForOthers;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTOForOthersWithStatus;
-import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
-import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
-import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti ON 16/01/2020
  */
 public class PatientUtils {
-
-    public static Patient parseToPatient(String name,
-                                         String mobileNumber,
-                                         Date dateOfBirth,
-                                         String eSewaId,
-                                         Gender gender) {
-        Patient patient = new Patient();
-        patient.setName(name);
-        patient.setMobileNumber(mobileNumber);
-        patient.setDateOfBirth(dateOfBirth);
-        patient.setESewaId(eSewaId);
-        patient.setGender(gender);
-        patient.setCogentId(generateRandomNumber(4));
-        return patient;
-    }
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {
@@ -119,51 +94,5 @@ public class PatientUtils {
         }
 
         return Objects.isNull(alias) ? registrationNumber : alias + "-" + registrationNumber;
-    }
-
-    public static void updateOtherPatient(PatientUpdateDTOForOthers requestDTO,
-                                          HospitalPatientInfo hospitalPatientInfo) {
-
-        hospitalPatientInfo.setEmail(requestDTO.getEmail());
-        hospitalPatientInfo.setAddress(requestDTO.getAddress());
-
-        Patient patient = hospitalPatientInfo.getPatient();
-        patient.setName(requestDTO.getName());
-        patient.setMobileNumber(requestDTO.getMobileNumber());
-        patient.setDateOfBirth(requestDTO.getDateOfBirth());
-        patient.setGender(fetchGenderByCode(requestDTO.getGender()));
-    }
-
-    public static PatientDetailResponseDTOWithStatus parseToPatientDetailResponseDTOWithStatus(
-            PatientDetailResponseDTO responseDTO) {
-
-        return PatientDetailResponseDTOWithStatus.builder()
-                .detailResponseDTO(responseDTO)
-                .responseStatus(OK)
-                .responseCode(OK.value())
-                .build();
-    }
-
-    public static PatientResponseDTOForOthersWithStatus parseToPatientMinResponseDTOForOthersWithStatus(
-            PatientResponseDTOForOthers responseDTO) {
-
-        return PatientResponseDTOForOthersWithStatus.builder()
-                .minResponseDTOForOthers(responseDTO)
-                .responseStatus(OK)
-                .responseCode(OK.value())
-                .build();
-    }
-
-    public static void parseHospitalWisePatientInfo(PatientDetailResponseDTO responseDTO,
-                                                    Object[] result) {
-
-        final int ADDRESS_INDEX = 0;
-        final int EMAIL_INDEX = 1;
-        final int REGISTRATION_NUMBER_INDEX = 2;
-
-        responseDTO.setAddress(Objects.isNull(result[ADDRESS_INDEX]) ? null : result[ADDRESS_INDEX].toString());
-        responseDTO.setEmail(Objects.isNull(result[EMAIL_INDEX]) ? null : result[EMAIL_INDEX].toString());
-        responseDTO.setRegistrationNumber(Objects.isNull(result[REGISTRATION_NUMBER_INDEX])
-                ? null : result[REGISTRATION_NUMBER_INDEX].toString());
     }
 }

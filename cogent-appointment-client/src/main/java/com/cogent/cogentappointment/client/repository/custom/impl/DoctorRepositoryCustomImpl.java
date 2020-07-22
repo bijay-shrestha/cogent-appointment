@@ -1,7 +1,10 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.*;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
@@ -11,12 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -28,6 +33,7 @@ import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR
 import static com.cogent.cogentappointment.client.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.client.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti on 2019-09-29
@@ -159,19 +165,6 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_DOCTOR_INFO)
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        List<DoctorMinResponseDTO> results = transformNativeQueryToResultList(query, DoctorMinResponseDTO.class);
-
-        if (results.isEmpty())
-            throw DOCTOR_NOT_FOUND.get();
-
-        return results;
-    }
-
-    @Override
     public Double fetchDoctorAppointmentFollowUpCharge(Long doctorId, Long hospitalId) {
         try {
             Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE)
@@ -201,11 +194,19 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(doctorId))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
+        List<DoctorDropdownDTO> doctorAvatars = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty())
+        if (doctorAvatars.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        else return results;
+
+        else {
+            doctorAvatars.forEach(doctorAvatar -> {
+                if (!Objects.isNull(doctorAvatar.getFileUri()) && !ObjectUtils.isEmpty(doctorAvatar.getFileUri()))
+                    doctorAvatar.setFileUri(fileUrlCheckPoint(doctorAvatar.getFileUri()));
+            });
+
+            return doctorAvatars;
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () -> {

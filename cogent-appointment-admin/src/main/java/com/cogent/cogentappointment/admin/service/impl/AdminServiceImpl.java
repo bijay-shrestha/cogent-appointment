@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminDropdownDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -46,6 +43,7 @@ import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.par
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 import static java.lang.reflect.Array.get;
 
 /**
@@ -165,6 +163,15 @@ public class AdminServiceImpl implements AdminService {
 
         List<AdminMinimalResponseDTO> responseDTOS = adminRepository.search(searchRequestDTO, pageable);
 
+        responseDTOS.forEach(response->{
+            if(response.getFileUri()!=null) {
+                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
+            }
+
+        });
+
+
+
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -177,6 +184,10 @@ public class AdminServiceImpl implements AdminService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, ADMIN);
 
         AdminDetailResponseDTO responseDTO = adminRepository.fetchDetailsById(id);
+        if (responseDTO.getFileUri() != null) {
+            responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
+        }
+
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -217,7 +228,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateAvatar(AdminAvatarUpdateRequestDTO updateRequestDTO) {
+    public AdminAvatarUpdateResponse updateAvatar(AdminAvatarUpdateRequestDTO updateRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR);
@@ -227,6 +238,11 @@ public class AdminServiceImpl implements AdminService {
         updateAvatar(admin, updateRequestDTO.getAvatar());
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR, getDifferenceBetweenTwoTime(startTime));
+
+        AdminAvatarUpdateResponse adminAvatarUpdateResponse = new AdminAvatarUpdateResponse();
+        adminAvatarUpdateResponse.setAvatar(fileUrlCheckPoint(updateRequestDTO.getAvatar()));
+
+        return adminAvatarUpdateResponse;
     }
 
     @Override

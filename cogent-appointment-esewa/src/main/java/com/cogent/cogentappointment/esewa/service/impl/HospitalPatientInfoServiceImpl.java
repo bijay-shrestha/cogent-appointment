@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_ADDRESS_INFO;
+import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.HOSPITAL_PATIENT_INFO;
@@ -45,18 +46,24 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
         this.addressRepository = addressRepository;
     }
 
+    /*PATIENT INFORMATION IS SAVED IRRESPECTIVE OF APPOINTMENT SERVICE TYPE
+    *
+    * SO, IF PATIENT TAKES AN APPOINTMENT DOCTOR WISE, hasAddress = 'N'
+    * IF THE SAME PATIENT TAKES AN APPOINTMENT DEPARTMENT WISE, THEN UPDATE AS
+    * hasAddress = 'Y' AND OTHER ADDRESS DETAILS
+    */
     @Override
     public void saveHospitalPatientInfoForSelf(Hospital hospital, Patient patient,
-                                               PatientRequestByDTO patientRequestByDTO,
-                                               Character hasAddress) {
+                                               PatientRequestByDTO patientRequestByDTO, Character hasAddress) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, HOSPITAL_PATIENT_INFO);
 
-        Long hospitalPatientInfoCount = fetchHospitalPatientInfoCount(patient.getId(), hospital.getId());
+        HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfo(patient.getId(), hospital.getId());
 
-        if (hospitalPatientInfoCount.intValue() <= 0)
+        if (Objects.isNull(hospitalPatientInfo)) {
+
             saveHospitalPatientInfo(hospital, patient,
                     patientRequestByDTO.getEmail(),
                     patientRequestByDTO.getAddress(),
@@ -66,12 +73,24 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
                     patientRequestByDTO.getDistrictId(),
                     patientRequestByDTO.getWardNumber()
             );
+        } else {
+
+            if (hospitalPatientInfo.getHasAddress().equals(NO) && hasAddress.equals(YES)) {
+                hospitalPatientInfo.setHasAddress(hasAddress);
+                savePatientAddressInfo(patientRequestByDTO.getProvinceId(),
+                        patientRequestByDTO.getVdcOrMunicipalityId(),
+                        patientRequestByDTO.getDistrictId(),
+                        patientRequestByDTO.getWardNumber(),
+                        hospitalPatientInfo);
+            }
+        }
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_PATIENT_INFO, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public void saveHospitalPatientInfoForOthers(Hospital hospital, Patient patient,
+    public void saveHospitalPatientInfoForOthers(Hospital hospital,
+                                                 Patient patient,
                                                  PatientRequestForDTO patientRequestForDTO,
                                                  Character hasAddress) {
 
@@ -81,7 +100,8 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
 
         HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfo(patient.getId(), hospital.getId());
 
-        if (Objects.isNull(hospitalPatientInfo))
+        if (Objects.isNull(hospitalPatientInfo)) {
+
             saveHospitalPatientInfo(
                     hospital, patient,
                     patientRequestForDTO.getEmail(),
@@ -91,12 +111,24 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
                     patientRequestForDTO.getVdcOrMunicipalityId(),
                     patientRequestForDTO.getDistrictId(),
                     patientRequestForDTO.getWardNumber());
+        } else {
 
-        else
             updateHospitalPatientInfo(
                     patientRequestForDTO.getEmail(),
                     patientRequestForDTO.getAddress(), hospitalPatientInfo
             );
+
+            if (hospitalPatientInfo.getHasAddress().equals(NO) && hasAddress.equals(YES)) {
+
+                hospitalPatientInfo.setHasAddress(hasAddress);
+
+                savePatientAddressInfo(patientRequestForDTO.getProvinceId(),
+                        patientRequestForDTO.getVdcOrMunicipalityId(),
+                        patientRequestForDTO.getDistrictId(),
+                        patientRequestForDTO.getWardNumber(),
+                        hospitalPatientInfo);
+            }
+        }
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_PATIENT_INFO, getDifferenceBetweenTwoTime(startTime));
     }
@@ -112,21 +144,10 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
         HospitalPatientInfo hospitalPatientInfo = parseHospitalPatientInfo
                 (hospital, patient, email, address, hasAddress);
 
-        if (hasAddress.equals(YES)) {
-            validateAddressInfo(provinceId, districtId, vdcOrMunicipalityId, wardNumber);
-
-            Address province = fetchAddress(provinceId);
-            Address vdcOrMunicipality = fetchAddress(vdcOrMunicipalityId);
-            Address district = fetchAddress(districtId);
-
-            parsePatientAddressDetails(province, vdcOrMunicipality, district, wardNumber, hospitalPatientInfo);
-        }
+        if (hasAddress.equals(YES))
+            savePatientAddressInfo(provinceId, vdcOrMunicipalityId, districtId, wardNumber, hospitalPatientInfo);
 
         hospitalPatientInfoRepository.save(hospitalPatientInfo);
-    }
-
-    private Long fetchHospitalPatientInfoCount(Long patientId, Long hospitalId) {
-        return hospitalPatientInfoRepository.fetchHospitalPatientInfoCount(patientId, hospitalId);
     }
 
     private HospitalPatientInfo fetchHospitalPatientInfo(Long patientId, Long hospitalId) {
@@ -152,5 +173,20 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
         if (Objects.isNull(provinceId) || Objects.isNull(districtId)
                 || Objects.isNull(vdcOrMunicipalityId) || ObjectUtils.isEmpty(wardNumber))
             throw new BadRequestException(INVALID_ADDRESS_INFO);
+    }
+
+    private void savePatientAddressInfo(Long provinceId,
+                                        Long vdcOrMunicipalityId,
+                                        Long districtId,
+                                        String wardNumber,
+                                        HospitalPatientInfo hospitalPatientInfo) {
+
+        validateAddressInfo(provinceId, districtId, vdcOrMunicipalityId, wardNumber);
+
+        Address province = fetchAddress(provinceId);
+        Address vdcOrMunicipality = fetchAddress(vdcOrMunicipalityId);
+        Address district = fetchAddress(districtId);
+
+        parsePatientAddressDetails(province, vdcOrMunicipality, district, wardNumber, hospitalPatientInfo);
     }
 }

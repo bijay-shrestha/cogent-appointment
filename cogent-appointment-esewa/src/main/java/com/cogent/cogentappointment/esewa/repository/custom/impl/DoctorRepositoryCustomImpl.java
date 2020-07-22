@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.esewa.dto.response.doctor.DoctorMinResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.DoctorRepositoryCustom;
@@ -14,8 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.DOCTOR_ID;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.esewa.query.DoctorQuery.*;
@@ -32,11 +32,17 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public DoctorRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_DOCTOR_INFO)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorMinResponseDTO> results = transformNativeQueryToResultList(query, DoctorMinResponseDTO.class);
 

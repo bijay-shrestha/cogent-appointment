@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
 
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalAppointmentServiceTypeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalFollowUpResponseDTO;
@@ -21,6 +22,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.CDN_URL;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -40,16 +42,19 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public HospitalRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
     @Override
     public List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
 
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_HOSPITAL(searchRequestDTO));
-
-        System.out.println("hospital query-------->"+ QUERY_TO_FETCH_MIN_HOSPITAL(searchRequestDTO));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_HOSPITAL(searchRequestDTO))
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<HospitalMinResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinResponseDTO.class);
-
-        System.out.println("hospital data-------->"+results);
 
         if (results.isEmpty()) {
             log.error(CONTENT_NOT_FOUND, HOSPITAL);

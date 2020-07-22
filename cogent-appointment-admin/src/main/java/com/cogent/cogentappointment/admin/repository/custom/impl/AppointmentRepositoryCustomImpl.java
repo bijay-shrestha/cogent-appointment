@@ -34,11 +34,11 @@ import com.cogent.cogentappointment.admin.dto.response.appointmentHospitalDepart
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.CancelledHospitalDeptAppointmentResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.refund.HospitalDeptCancelledAppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyDoctorWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.dto.request.thirdparty.ThirdPartyHospitalDepartmentWiseAppointmentCheckInDTO;
 import com.cogent.cogentappointment.commons.exception.BadRequestException;
@@ -111,6 +111,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public AppointmentRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
     /*USED WHILE SAVING DOCTOR DUTY ROSTER TO VALIDATE IF APPOINTMENT EXISTS*/
     @Override
     public List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
@@ -168,7 +174,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_REFUNDED_DETAIL_BY_ID)
-                .setParameter(APPOINTMENT_ID, appointmentId);
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
         try {
             return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -395,8 +402,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO =
                 new AppointmentPendingApprovalResponseDTO();
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS(searchRequestDTO))
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, DOCTOR_CONSULTATION_CODE)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -418,7 +426,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public AppointmentPendingApprovalDetailResponseDTO fetchDetailsByAppointmentId(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVAL_DETAIL_BY_ID)
-                .setParameter(APPOINTMENT_ID, appointmentId);
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
         try {
             return transformQueryToSingleResult(query, AppointmentPendingApprovalDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -433,7 +442,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_DOCTOR_APPOINTMENT_LOGS.apply(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -731,7 +741,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private Query getQueryToFetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO) {
-        return createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_CANCEL_APPROVALS(searchDTO));
+        return createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_CANCEL_APPROVALS(searchDTO))
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
     }
 
     private Double calculateTotalRefundAmount(AppointmentCancelApprovalSearchDTO searchDTO) {
@@ -1360,7 +1371,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             String appointmentServiceTypeCode) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 

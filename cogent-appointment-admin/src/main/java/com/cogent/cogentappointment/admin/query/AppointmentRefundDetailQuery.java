@@ -6,6 +6,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -26,8 +27,7 @@ public class AppointmentRefundDetailQuery {
                 " DATE_FORMAT(ard.cancelledDate ,'%h:%i %p') as cancelledTime," +
                 " ard.refundAmount as refundAmount," +
                 " hpi.isRegistered as isRegistered," +
-                " CASE WHEN (da.fileUri IS NULL) THEN 'N/A'" +
-                " ELSE da.fileUri END as fileUri," +
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " ard.status," +
                 " a.patientId.name as patientName," +
                 " a.patientId.gender as gender," +
@@ -45,11 +45,12 @@ public class AppointmentRefundDetailQuery {
                 " ard.status as refundStatus," +
                 " ard.remarks as remarks," +
                 " a.hospitalId.name as hospitalName," +
+                QUERY_TO_FETCH_DOCTOR_AVATAR+
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
-                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                 " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                 " LEFT JOIN DoctorAvatar da ON da.doctorId.id = adi.doctor.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
@@ -57,7 +58,7 @@ public class AppointmentRefundDetailQuery {
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE" +
                 " a.status IN ('C','RE')" +
-                " AND ard.status IN ('PA','A','R')"+
+                " AND ard.status IN ('PA','A','R')" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
@@ -146,8 +147,8 @@ public class AppointmentRefundDetailQuery {
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
-    public static Function<RefundStatusSearchRequestDTO,String> QUERY_TO_GET_TOTAL_REFUND_AMOUNT= searchDTO -> {
-        return  "SELECT" +
+    public static Function<RefundStatusSearchRequestDTO, String> QUERY_TO_GET_TOTAL_REFUND_AMOUNT = searchDTO -> {
+        return "SELECT" +
                 " COALESCE(SUM(ard.refundAmount),0) as totalRefundAmount" +
                 " FROM" +
                 " AppointmentRefundDetail ard" +
@@ -209,8 +210,8 @@ public class AppointmentRefundDetailQuery {
 
     public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
             "SELECT" +
-                    " a.id as appointmentId,"+
-                    " a.appointmentModeId.id as appointmentModeId,"+
+                    " a.id as appointmentId," +
+                    " a.appointmentModeId.id as appointmentModeId," +
                     " a.appointmentDate as appointmentDate," +
                     " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
                     " a.appointmentNumber as appointmentNumber," +
@@ -246,20 +247,13 @@ public class AppointmentRefundDetailQuery {
                     " a.hospitalId.name as hospitalName," +
                     " a.hospitalId.id as hospitalId," +
                     " ard.remarks as remarks," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " CASE WHEN" +
-                    " (dv.status IS NULL" +
-                    " OR dv.status = 'N')" +
-                    " THEN NULL" +
-                    " ELSE" +
-                    " dv.fileUri" +
-                    " END as fileUri" +
+                    QUERY_TO_CALCULATE_PATIENT_AGE+
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
                     " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id"+
+                    " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
                     " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = adi.doctor.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +

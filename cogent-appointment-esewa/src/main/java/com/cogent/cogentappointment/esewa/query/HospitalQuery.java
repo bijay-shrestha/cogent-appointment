@@ -14,19 +14,29 @@ public class HospitalQuery {
                 " h.id as hospitalId," +                                   //[0]
                 " h.name as name," +                                       //[1]
                 " h.address as address," +                                 //[2]
-                " h.esewa_merchant_code as merchantCode," +                               //[3]
-                " CASE WHEN" +
-                " (hl.status IS NULL OR hl.status = 'N')" +
+                " h.esewa_merchant_code as merchantCode," +                //[3]
+                " tbl1.contactNumber," +                                   //[4]
+                " CASE" +
+                " WHEN" +
+                " (hl.status is null OR hl.status = 'N')" +
                 " THEN null" +
+                " WHEN" +
+                " hl.file_uri LIKE 'public%'" +
+                " THEN" +
+                " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.file_uri, 'public', -1))" +
                 " ELSE" +
-                " hl.file_uri" +
-                " END as hospitalLogo," +                                  //[4]
-                " tbl1.contactNumber," +                                   //[5]
-                " CASE WHEN" +
-                " (hb.status IS NULL OR hb.status = 'N')" +
+                " hl.file_uri"+
+                " END as hospitalLogo," +                                  //[5]
+                " CASE" +
+                " WHEN" +
+                " (hb.status is null OR hb.status = 'N')" +
                 " THEN null" +
+                " WHEN" +
+                " hb.file_uri LIKE 'public%'" +
+                " THEN" +
+                " CONCAT(:cdnUrl,SUBSTRING_INDEX(hb.file_uri, 'public', -1))" +
                 " ELSE" +
-                " hb.file_uri" +
+                " hb.file_uri"+
                 " END as hospitalBanner" +                                  //[6]
                 " FROM" +
                 " hospital h" +

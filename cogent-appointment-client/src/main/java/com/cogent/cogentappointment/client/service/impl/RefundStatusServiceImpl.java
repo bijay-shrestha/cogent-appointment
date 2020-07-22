@@ -47,24 +47,21 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private final AppointmentRepository appointmentRepository;
 
-    private final AppointmentService appointmentService;
-
     private final IntegrationCheckPointService integrationCheckPointService;
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
                                    AppointmentRepository appointmentRepository,
-                                   AppointmentService appointmentService,
                                    IntegrationCheckPointService integrationCheckPointService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
         this.appointmentRepository = appointmentRepository;
-        this.appointmentService = appointmentService;
         this.integrationCheckPointService = integrationCheckPointService;
     }
 
     @Override
-    public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+    public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO,
+                                                            Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -107,7 +104,8 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         Appointment appointment = getAppointment(requestDTO);
 
-        AppointmentTransactionDetail appointmentTransactionDetail = fetchAppointmentTransactionDetail(appointment.getId());
+        AppointmentTransactionDetail appointmentTransactionDetail =
+                fetchAppointmentTransactionDetail(appointment.getId());
 
         integrationCheckPointService.apiIntegrationCheckpointForRefundStatus(appointment,
                 appointmentRefundDetail,
@@ -123,7 +121,8 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REFUND_STATUS);
 
-        AppointmentRefundDetailResponseDTO refundAppointments = refundDetailRepository.fetchRefundDetailsById(appointmentId);
+        AppointmentRefundDetailResponseDTO refundAppointments =
+                refundDetailRepository.fetchRefundDetailsById(appointmentId);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 

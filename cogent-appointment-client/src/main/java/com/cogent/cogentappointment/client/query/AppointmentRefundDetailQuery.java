@@ -6,6 +6,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -26,8 +27,7 @@ public class AppointmentRefundDetailQuery {
                 " DATE_FORMAT(ard.cancelledDate ,'%h:%i %p') as cancelledTime," +
                 " ard.refundAmount as refundAmount," +
                 " hpi.isRegistered as isRegistered," +
-                " CASE WHEN (da.fileUri IS NULL) THEN 'N/A'" +
-                " ELSE da.fileUri END as fileUri," +
+                QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                 " ard.status," +
                 " a.patientId.name as patientName," +
                 " a.patientId.gender as gender," +
@@ -246,13 +246,7 @@ public class AppointmentRefundDetailQuery {
                     " hpi.isRegistered as isRegistered," +
                     " ard.remarks as remarks," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " CASE WHEN" +
-                    " (dv.status IS NULL" +
-                    " OR dv.status = 'N')" +
-                    " THEN NULL" +
-                    " ELSE" +
-                    " dv.fileUri" +
-                    " END as fileUri" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -260,7 +254,7 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = adi.doctor.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = adi.doctor.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON atd.appointment.id =a.id" +
                     " WHERE a.id=:appointmentId" +

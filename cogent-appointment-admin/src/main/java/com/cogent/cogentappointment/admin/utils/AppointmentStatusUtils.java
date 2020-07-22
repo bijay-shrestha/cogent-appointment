@@ -334,8 +334,6 @@ public class AppointmentStatusUtils {
         responseDTO.setWeekDayName(convertDateToLocalDate(
                 appointmentDetailsForStatus.getAppointmentDate()).getDayOfWeek().toString());
 
-        responseDTOS.add(responseDTO);
-
         return responseDTOS;
     }
 

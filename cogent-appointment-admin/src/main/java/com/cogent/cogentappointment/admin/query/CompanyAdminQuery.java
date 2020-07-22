@@ -5,6 +5,9 @@ import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_ADMIN_AVATAR;
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_HOSPITAL_LOGO;
+
 /**
  * @author smriti on 2019-08-05
  */
@@ -78,12 +81,7 @@ public class CompanyAdminQuery {
                     " a.gender as gender," +                                    //[7]
                     " p.name as profileName," +
                     " h.name as companyName," +                                //[8]
-                    " CASE WHEN" +
-                    " (av.status IS NULL OR av.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " av.fileUri" +
-                    " END as fileUri";                                         //[9]
+                    QUERY_TO_FETCH_ADMIN_AVATAR;                               //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
             " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND h.isCompany='Y'";
@@ -155,9 +153,7 @@ public class CompanyAdminQuery {
                     " a.id as adminId," +                                                   //[0]
                     " a.email as email," +                                                  //[1]
                     " a.fullName as fullName," +                                            //[2]
-                    " CASE " +
-                    " WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
-                    " ELSE av.fileUri END as fileUri," +                                //[2]
+                    QUERY_TO_FETCH_ADMIN_AVATAR + "," +                              //[2]
                     " p.id as profileId," +                                                 //[3]
                     " p.name as profileName," +                                             //[4]
                     " h.id as hospitalId," +                                                //[5]
@@ -165,10 +161,7 @@ public class CompanyAdminQuery {
                     " h.isCompany as isCompany," +                                          //[7]
                     " p.isAllRoleAssigned as isAllRoleAssigned," +                          //[8]
                     " af.isSideBarCollapse as isSideBarCollapse," +                         //[9]
-                    " CASE " +
-                    "    WHEN (hl.status = 'N' OR hl.status IS NULL) THEN null" +
-                    "    ELSE hl.fileUri" +
-                    " END as hospitalLogo," +                                              //[10]
+                    QUERY_TO_FETCH_HOSPITAL_LOGO + "," +                                    //[10]
                     " h.code as companyCode" +                                              //[11]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +

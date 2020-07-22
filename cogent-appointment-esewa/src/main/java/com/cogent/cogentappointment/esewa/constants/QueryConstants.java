@@ -25,6 +25,8 @@ public class QueryConstants {
     public static final String CODE = "code";
     public static final String COMPANY_CODE = "companyCode";
 
+    public static final String CDN_URL = "cdnUrl";
+
 
     //D
 

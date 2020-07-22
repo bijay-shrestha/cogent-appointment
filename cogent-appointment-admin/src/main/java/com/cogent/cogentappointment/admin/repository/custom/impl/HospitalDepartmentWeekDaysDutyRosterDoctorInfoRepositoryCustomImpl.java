@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -46,7 +45,6 @@ public class HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepositoryCustomImpl
                 .setParameter(WEEK_DAY_NAME,hospitalDeptAndWeekdaysDTO.getWeekDay());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
-
 
             return HospitalDeptAndDoctorDTO.builder()
                     .doctorInfo(results)

@@ -218,7 +218,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
-        AppointmentRefundDetailResponseDTO refundAppointments = appointmentRepository.fetchRefundDetailsById(appointmentId);
+        AppointmentRefundDetailResponseDTO refundAppointments =
+                appointmentRepository.fetchRefundDetailsById(appointmentId);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -291,6 +292,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
+
 
     @Override
     public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(

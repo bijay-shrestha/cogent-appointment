@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.DOCTOR_REVENUE_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.DYNAMIC_DASHBOARD_FEATURE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
@@ -198,6 +198,7 @@ public class DashboardServiceImpl implements DashboardService {
         List<DoctorRevenueDTO> doctorRevenue =
                 appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
 
+
         List<DoctorRevenueDTO> cancelledRevenue =
                 appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO, pageable);
 
@@ -213,6 +214,8 @@ public class DashboardServiceImpl implements DashboardService {
         List<DoctorRevenueDTO> mergedList = mergeDoctorAndCancelledRevenue(doctorRevenue, cancelledAndRefundedRevenue);
 
         DoctorRevenueResponseDTO responseDTO = parseToDoctorRevenueResponseDTO(mergedList);
+
+
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 

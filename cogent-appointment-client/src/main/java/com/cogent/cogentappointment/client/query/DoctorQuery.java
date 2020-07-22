@@ -6,6 +6,9 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE;
+
 /**
  * @author smriti on 2019-09-29
  */
@@ -34,13 +37,8 @@ public class DoctorQuery {
         return " SELECT" +
                 SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                 " tbl1.specialization_name as specializationName," +
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.file_uri" +
-                " END as fileUri," +
-                " d.salutation as doctorSalutation"+
+                " d.salutation as doctorSalutation," +
+                QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE +
                 " FROM doctor d" +
                 " LEFT JOIN doctor_avatar da ON da.doctor_id = d.id" +
                 " RIGHT JOIN" +
@@ -107,12 +105,7 @@ public class DoctorQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as label," +                                     //[1]
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +                                    //[2]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
@@ -139,25 +132,19 @@ public class DoctorQuery {
                     " dac.appointment_charge as appointmentCharge," +                     //[9]
                     " dac.appointment_follow_up_charge as appointmentFollowUpCharge";     //[10]
 
-    private static String QUERY_TO_FETCH_DOCTOR_AVATAR =
-            " SELECT" +
-                    " da.doctor_id as doctorId," +
-                    " da.file_uri" +
-                    " FROM doctor_avatar da" +
-                    " WHERE da.status = 'Y'";
-
     public static final String QUERY_TO_FETCH_DOCTOR_DETAILS =
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
                     " tbl1.specialization_name as specializationName," +                 //[11]
                     " tbl2.qualification_name as qualificationName," +                   //[12]
-                    " tbl3.file_uri as fileUri," +                                        //[13]
-                    DOCTOR_AUDITABLE_QUERY() +","+
-                    " d.salutation as doctorSalutation"+
+                    " d.salutation as doctorSalutation," +
+                    DOCTOR_AUDITABLE_QUERY() + "," +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE +
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
+                    " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
                     " RIGHT JOIN" +
                     " (" +
                     QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(null) +
@@ -166,10 +153,6 @@ public class DoctorQuery {
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL +
                     " )tbl2 ON tbl2.doctor_id = d.id" +
-                    " LEFT JOIN" +
-                    " (" +
-                    QUERY_TO_FETCH_DOCTOR_AVATAR +
-                    " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
                     " AND d.id = :id" +
                     " AND d.hospital_id=:hospitalId";
@@ -211,10 +194,11 @@ public class DoctorQuery {
                     " tbl2.doctor_qualification_id as doctorQualificationId," +             //[14]
                     " tbl2.qualification_id as qualificationId," +                          //[15]
                     " tbl2.qualification_name as qualificationName," +                      //[16]
-                    " tbl3.file_uri as fileUri" +                                            //[17]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE +
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
+                    " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
                     " RIGHT JOIN" +
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_SPECIALIZATION_FOR_UPDATE +
@@ -223,10 +207,6 @@ public class DoctorQuery {
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_UPDATE +
                     " )tbl2 ON tbl2.doctor_id = d.id" +
-                    " LEFT JOIN" +
-                    " (" +
-                    QUERY_TO_FETCH_DOCTOR_AVATAR +
-                    " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
                     " AND d.id = :id" +
                     " AND d.hospital_id=:hospitalId";
@@ -240,12 +220,7 @@ public class DoctorQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as label," +                                    //[1]
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +                                     //[2]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Doctor d ON d.id = cs.doctorId" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
@@ -264,18 +239,13 @@ public class DoctorQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as label," +                                //[1]
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +                                    //[2]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status ='Y'" +
-                    " AND h.id=:hospitalId "+
+                    " AND h.id=:hospitalId " +
                     " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
@@ -287,18 +257,13 @@ public class DoctorQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as label," +                                  //[1]
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +                                    //[2]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status !='D'" +
-                    " AND h.id=:hospitalId "+
+                    " AND h.id=:hospitalId " +
                     " ORDER BY label ASC";
 
     public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE =
@@ -318,12 +283,7 @@ public class DoctorQuery {
     public static String QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(Long doctorId) {
         String sql = " SELECT" +
                 " d.id as value," +                                     //[0]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri" +                                    //[1]
+                QUERY_TO_FETCH_DOCTOR_AVATAR +                           //[1]
                 " FROM" +
                 " Doctor d" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
@@ -336,7 +296,7 @@ public class DoctorQuery {
         return sql;
     }
 
-    public static String DOCTOR_AUDITABLE_QUERY() {
+    private static String DOCTOR_AUDITABLE_QUERY() {
         return " d.created_by as createdBy," +
                 " d.created_date as createdDate," +
                 " d.last_modified_by as lastModifiedBy," +

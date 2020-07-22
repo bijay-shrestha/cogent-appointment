@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.admin.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
-import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;

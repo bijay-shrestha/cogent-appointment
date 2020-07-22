@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
 import com.cogent.cogentappointment.commons.service.MinIOService;
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalAppointmentServiceTypeResponseDTO;
@@ -66,32 +65,6 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
-
-        responseDTO.forEach(hospital->{
-            if (!isEmpty(hospital.getHospitalLogo()) && !Objects.isNull(hospital.getHospitalLogo())) {
-                hospital.setHospitalLogo(fileUrlCheckPoint(hospital.getHospitalLogo()));
-            }
-
-            if (!isEmpty(hospital.getHospitalBanner()) && !Objects.isNull(hospital.getHospitalBanner())) {
-             hospital.setHospitalBanner(fileUrlCheckPoint(hospital.getHospitalBanner()));
-            }
-
-        });
-
-//        responseDTO.forEach((HospitalMinResponseDTO hospital) -> {
-//
-//            if (!isEmpty(hospital.getHospitalLogo()) && !Objects.isNull(hospital.getHospitalLogo())) {
-//                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
-//                fileRequestDTO.setFileName(hospital.getHospitalLogo());
-//                hospital.setHospitalLogo(minIOService.getPresignedObjectURL(fileRequestDTO));
-//            }
-//
-//            if (!isEmpty(hospital.getHospitalBanner()) && !Objects.isNull(hospital.getHospitalBanner())) {
-//                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
-//                fileRequestDTO.setFileName(hospital.getHospitalBanner());
-//                hospital.setHospitalBanner(minIOService.getPresignedObjectURL(fileRequestDTO));
-//            }
-//        });
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

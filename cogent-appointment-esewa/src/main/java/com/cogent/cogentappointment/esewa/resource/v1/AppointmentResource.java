@@ -15,6 +15,8 @@ import com.cogent.cogentappointment.esewa.service.AppointmentService;
 import com.cogent.cogentappointment.esewa.service.EsewaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -104,8 +106,11 @@ public class AppointmentResource {
 
     @PutMapping(SEARCH)
     @ApiOperation(SEARCH_APPOINTMENT)
-    public ResponseEntity<?> searchAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
-        return ok(appointmentService.searchAppointments(searchDTO));
+    public ResponseEntity<?> searchAppointments(@RequestBody AppointmentSearchDTO searchDTO,
+                                                @RequestParam("page") int page,
+                                                @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(appointmentService.searchAppointments(searchDTO, pageable));
     }
 
     @GetMapping(CANCEL + APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE)

@@ -8,7 +8,7 @@ public class AddressQuery {
     public static String QUERY_TO_GET_LIST_OF_ZONES =
             "SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.displayName as label" +             //[1]
+                    " a.value as label" +             //[1]
                     " FROM " +
                     " Address a" +
                     " WHERE" +
@@ -19,7 +19,7 @@ public class AddressQuery {
     public static String QUERY_TO_GET_LIST_OF_PROVINCE =
             "SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.displayName as label" +             //[1]
+                    " a.value as label" +             //[1]
                     " FROM " +
                     " Address a" +
                     " WHERE" +
@@ -30,7 +30,7 @@ public class AddressQuery {
     public static String QUERY_TO_GET_LIST_OF_DISTRICT_BY_ZONE_ID =
             "SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.displayName as label" +                   //[1]
+                    " a.value as label" +                   //[1]
                     " FROM " +
                     " Address a" +
                     " WHERE" +
@@ -41,7 +41,7 @@ public class AddressQuery {
     public static String QUERY_TO_GET_LIST_OF_DISTRICT_BY_PROVINCE_ID =
             "SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.displayName as label" +                   //[1]
+                    " a.value as label" +                   //[1]
                     " FROM " +
                     " Address a" +
                     " WHERE" +

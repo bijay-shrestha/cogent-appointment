@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
@@ -73,8 +74,8 @@ public class AppointmentQuery {
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
-                QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                " da.fileUri as fileUri" +
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
+                QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -207,17 +208,7 @@ public class AppointmentQuery {
                 " a.appointmentModeId.name as appointmentMode," +                           //[9]
                 " atd.appointmentAmount as appointmentAmount," +                            //[10]
                 " atd.transactionNumber as transactionNumber," +                            //[11]
-                " CASE" +
-                " WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " WHEN" +
-                " da.fileUri LIKE 'public%'" +
-                " THEN" +
-                " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.fileUri, 'public', -1))" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," + //[12]
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " hpi.hospitalNumber as hospitalNumber," +                                  //[13]
                 " p.id as patientId," +                                                     //[14]
                 " p.gender as gender," +                                                    //[15]
@@ -320,7 +311,7 @@ public class AppointmentQuery {
                             " ELSE" +
                             " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
                             " END AS revenueAmount," +
-                            " da.fileUri as fileUri," +
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +
                             QUERY_TO_CALCULATE_PATIENT_AGE +
                             " FROM Appointment a" +
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
@@ -404,8 +395,8 @@ public class AppointmentQuery {
                             " atd.transactionNumber as transactionNumber," +                            //[14]
                             " atd.appointmentAmount as appointmentAmount," +                            //[15]
                             " arl.remarks as remarks," +                                                 //[16]
-                            " a.isFollowUp as isFollowUp," +                                             //[17]
-                            " da.fileUri as fileUri" +                                                   //[18]
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +                                               //[17]
+                            " a.isFollowUp as isFollowUp" +                                              //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
@@ -493,12 +484,17 @@ public class AppointmentQuery {
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
                             " s.name as specializationName," +
-                            " CASE WHEN" +
-                            " (dv.status is null OR dv.status = 'N')" +
+                            " CASE" +
+                            " WHEN" +
+                            " (da.status is null OR da.status = 'N')" +
                             " THEN null" +
+                            " WHEN" +
+                            " da.fileUri LIKE 'public%'" +
+                            " THEN" +
+                            " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.fileUri, 'public', -1))" +
                             " ELSE" +
-                            " dv.fileUri" +
-                            " END as doctorAvatar" +
+                            " da.fileUri" +
+                            " END as doctorAvatar," +
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
@@ -581,7 +577,7 @@ public class AppointmentQuery {
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +                                                //[16]
                     " a.appointmentModeId.name as appointmentMode," +                           //[17]
-                    " da.fileUri as fileUri," +                                                 //[18]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +                                                //[18]
                     " d.id as doctorId," +                                                      //[19]
                     " sp.id as specializationId," +                                             //[20]
                     " a.isFollowUp as followUp," +                                              //[21]
@@ -634,8 +630,9 @@ public class AppointmentQuery {
                     " a.appointmentModeId.name as appointmentMode," +
                     " h.esewaMerchantCode as esewaMerchantCode," +
                     " hpi.isRegistered as isRegistered," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " dv.fileUri as fileUri" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
+
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -644,7 +641,7 @@ public class AppointmentQuery {
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " WHERE ard.appointmentId.id=:appointmentId" +

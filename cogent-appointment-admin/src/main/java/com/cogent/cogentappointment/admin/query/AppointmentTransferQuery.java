@@ -167,8 +167,25 @@ public class AppointmentTransferQuery {
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
                     "  hpi.isRegistered as  patientType," +
-                    "  pda.fileUri as transferredFromFileUri," +
-                    "  cda.fileUri as transferredToFileUri," +
+
+                    " CASE" +
+                    " WHEN" +
+                    " pda.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(pda.fileUri, 'public', -1))" +
+                    " ELSE" +
+                    " pda.fileUri" +
+                    " END as transferredFromFileUri," +
+
+                    " CASE" +
+                    " WHEN" +
+                    " cda.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(cda.fileUri, 'public', -1))" +
+                    " ELSE" +
+                    " cda.fileUri" +
+                    " END as transferredToFileUri," +
+
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +
@@ -253,8 +270,25 @@ public class AppointmentTransferQuery {
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
                     "  hpi.isRegistered as patientType," +
-                    "  pda.fileUri as transferredFromFileUri," +
-                    "  cda.fileUri as transferredToFileUri," +
+
+                    " CASE" +
+                    " WHEN" +
+                    " pda.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(pda.fileUri, 'public', -1))" +
+                    " ELSE" +
+                    " pda.fileUri" +
+                    " END as transferredFromFileUri," +
+
+                    " CASE" +
+                    " WHEN" +
+                    " cda.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(cda.fileUri, 'public', -1))" +
+                    " ELSE" +
+                    " cda.fileUri" +
+                    " END as transferredToFileUri," +
+
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     APPOINTMENT_TRANSFER_AUDITABLE_QUERY() +
                     " FROM" +
@@ -284,7 +318,7 @@ public class AppointmentTransferQuery {
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=a.patientId.id" +
-                " WHERE a.hasTransferred='Y'" ;
+                " WHERE a.hasTransferred='Y'";
 
         if (!ObjectUtils.isEmpty(requestDTO.getHospitalId()))
             sql += " AND a.hospitalId.id=" + requestDTO.getHospitalId();

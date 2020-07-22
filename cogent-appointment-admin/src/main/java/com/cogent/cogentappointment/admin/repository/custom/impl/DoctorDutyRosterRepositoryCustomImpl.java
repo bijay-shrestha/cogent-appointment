@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,6 @@ import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti on 26/11/2019
@@ -47,6 +47,12 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public DoctorDutyRosterRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public Long validateDoctorDutyRosterCount(Long doctorId,
@@ -69,7 +75,8 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_DOCTOR_DUTY_ROSTER(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate())
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -92,10 +99,6 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
         DoctorDutyRosterResponseDTO doctorDutyRosterResponseDTO =
                 fetchDoctorDutyRosterDetails(doctorDutyRosterId);
-
-        if (doctorDutyRosterResponseDTO.getFileUri() != null) {
-            doctorDutyRosterResponseDTO.setFileUri(fileUrlCheckPoint(doctorDutyRosterResponseDTO.getFileUri()));
-        }
 
         List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysDutyRosterResponseDTO =
                 fetchDoctorWeekDaysDutyRosterResponseDTO(doctorDutyRosterId);
@@ -180,7 +183,8 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS)
-                .setParameter(ID, doctorDutyRosterId);
+                .setParameter(ID, doctorDutyRosterId)
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
         try {
             return transformQueryToSingleResult(query, DoctorDutyRosterResponseDTO.class);
         } catch (NoResultException e) {

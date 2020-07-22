@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.client.dto.response.dashboard.DashboardFeatu
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.query.DashBoardQuery;
 import com.cogent.cogentappointment.client.repository.custom.AdminRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,12 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public AdminRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public Object[] validateAdminCount(Long hospitalId) {
@@ -96,8 +103,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     public List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO,
                                                 Long hospitalId,
                                                 Pageable pageable) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -141,7 +150,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO)
                 .setParameter(EMAIL, requestDTO.getEmail())
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
@@ -189,7 +199,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
                 .setParameter(ID, id)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<Object[]> results = query.getResultList();
 

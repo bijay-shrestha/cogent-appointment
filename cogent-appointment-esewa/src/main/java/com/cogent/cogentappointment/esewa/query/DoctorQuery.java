@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.esewa.query;
 
+import static com.cogent.cogentappointment.esewa.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE;
+
 /**
  * @author smriti on 2019-09-29
  */
@@ -14,13 +16,7 @@ public class DoctorQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +                                            //[1]
-                    " CASE WHEN" +
-                    " (da.status IS NULL" +
-                    " OR da.status = 'N')" +
-                    " THEN NULL" +
-                    " ELSE" +
-                    " da.file_uri" +
-                    " END as fileUri," +                                                //[2]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE + "," +
                     " s.id as specializationId," +                                      //[3]
                     " s.name as specializationName," +                                  //[4]
                     " tbl1.qualificationAlias as qualificationAlias," +                 //[5]

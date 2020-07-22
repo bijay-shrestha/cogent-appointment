@@ -5,6 +5,8 @@ import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_ADMIN_AVATAR;
+
 /**
  * @author smriti on 2019-08-05
  */
@@ -86,12 +88,7 @@ public class AdminQuery {
                     " a.gender as gender," +                                    //[6]
                     " CONCAT(h.alias, '-', p.name) as profileName," +           //[7]
                     " h.name as hospitalName," +                                //[8]
-                    " CASE WHEN" +
-                    " (av.status IS NULL OR av.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " av.fileUri" +
-                    " END as fileUri";                                           //[9]
+                    QUERY_TO_FETCH_ADMIN_AVATAR;                              //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
             " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND d.status != 'D'";
@@ -132,7 +129,7 @@ public class AdminQuery {
                     " d.id as departmentId," +                                      //[13]
                     " d.name as departmentName," +                                  //[14]
                     " h.alias as hospitalAlias," +
-                    ADMIN_AUDITABLE_QUERY() +//[15]
+                    ADMIN_AUDITABLE_QUERY() +                                       //[15]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +

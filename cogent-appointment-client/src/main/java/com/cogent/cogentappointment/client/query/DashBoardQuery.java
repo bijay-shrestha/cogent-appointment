@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.HospitalDepartm
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -230,19 +231,14 @@ public class DashBoardQuery {
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
                             " s.name as specializationName," +
-                            " CASE WHEN" +
-                            " (dv.status is null OR dv.status = 'N')" +
-                            " THEN null" +
-                            " ELSE" +
-                            " dv.fileUri" +
-                            " END as doctorAvatar" +
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                             " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
                             " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id = d.id" +
-                            " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                            " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                             " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(searchDTO);
@@ -297,12 +293,7 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                                           //[1]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," +                                                             //[2]
+                QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                 " s.id as specializationId," +                                                   //[3]
                 " s.name as specializationName," +                                               //[4]
                 " COUNT(a.id) as successfulAppointments," +                                      //[5]
@@ -320,7 +311,6 @@ public class DashBoardQuery {
                 " AND a.isFollowUp='N'" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
-
 
     public static String QUERY_TO_GET_FOLLOW_UP =
             "SELECT" +
@@ -510,12 +500,7 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                          //[1]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," +                                            //[2]
+                QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                 " s.id as specializationId," +                                  //[3]
                 " s.name as specializationName," +                              //[4]
                 " COUNT(a.id) as cancelledAppointments," +                      //[5]
@@ -537,6 +522,7 @@ public class DashBoardQuery {
                 " a.status IN ('C')" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
+
     public static String QUERY_TO_CALCULATE_DOCTOR_REFUNDED_REVENUE(DoctorRevenueRequestDTO requestDTO) {
 
         return "SELECT" +
@@ -547,12 +533,7 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                          //[1]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," +                                            //[2]
+                QUERY_TO_FETCH_DOCTOR_AVATAR + "," +                               //[2]
                 " s.id as specializationId," +                                  //[3]
                 " s.name as specializationName," +                              //[4]
                 " COUNT(a.id) as cancelledAppointments," +                      //[5]

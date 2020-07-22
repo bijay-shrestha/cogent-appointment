@@ -263,10 +263,12 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private HospitalDeptAppointmentStatusDTO searchByAppointmentNumber(String appointmentNumber) {
 
-        HospitalDeptAppointmentDetailsForStatus hospitalDeptAppointmentDetailsForStatus = fetchHospitalDeptAppointmentByApptNumber(appointmentNumber);
+        HospitalDeptAppointmentDetailsForStatus hospitalDeptAppointmentDetailsForStatus =
+                fetchHospitalDeptAppointmentByApptNumber(appointmentNumber);
 
-        RosterDetailsForStatus rosterDetailsForStatus = deptDutyRosterRepository
-                .fetchHospitalDepartmentDutyRosterDetailsByDeptId(hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentId(),
+        RosterDetailsForStatus rosterDetailsForStatus =
+                deptDutyRosterRepository.fetchHospitalDepartmentDutyRosterDetailsByDeptId(
+                        hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentId(),
                         hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentRoomInfoId(),
                         hospitalDeptAppointmentDetailsForStatus.getAppointmentDate());
 
@@ -325,8 +327,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         deptAndWeekdaysDTOS.forEach(hospitalDeptAndWeekdaysDTO -> {
             HospitalDeptAndDoctorDTO hospitalDeptAndDoctorDTO = hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
                     .fetchHospitalDeptAndDoctorInfo(hospitalDeptAndWeekdaysDTO);
-
-
 
             hospitalDeptAndDoctorDTOS.add(hospitalDeptAndDoctorDTO);
         });

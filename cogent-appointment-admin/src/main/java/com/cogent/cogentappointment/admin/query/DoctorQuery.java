@@ -254,18 +254,19 @@ public class DoctorQuery {
                     " tbl2.qualification_name as qualificationName," +                      //[18]
                     " CASE" +
                     " WHEN" +
-                    " (tbl3.status is null OR tbl3.status = 'N')" +
+                    " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
                     " WHEN" +
-                    " tbl3.file_uri LIKE 'public%'" +
+                    " da.file_uri LIKE 'public%'" +
                     " THEN" +
-                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(tbl3.file_uri, 'public', -1))" +
+                    " CONCAT(:cdnUrl, SUBSTRING_INDEX(da.file_uri, 'public', -1))" +
                     " ELSE" +
-                    " tbl3.file_uri" +
-                    " END as fileUri" +                                                      //[19]
+                    " da.file_uri" +
+                    " END as fileUri" +                                                     //[19]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
+                    " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
                     " RIGHT JOIN" +
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_SPECIALIZATION_FOR_UPDATE +
@@ -274,10 +275,6 @@ public class DoctorQuery {
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_UPDATE +
                     " )tbl2 ON tbl2.doctor_id = d.id" +
-                    " LEFT JOIN" +
-                    " (" +
-                    QUERY_TO_FETCH_DOCTOR_AVATAR +
-                    " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
                     " AND d.id = :id";
 

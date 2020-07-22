@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-import com.cogent.cogentappointment.commons.service.MinIOService;
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.common.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.doctor.DoctorMinResponseDTO;
@@ -28,16 +27,12 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 public class CommonServiceImpl implements CommonService {
 
-    private final MinIOService minIOService;
-
     private final DoctorRepository doctorRepository;
 
     private final SpecializationRepository specializationRepository;
 
-    public CommonServiceImpl(MinIOService minIOService,
-                             DoctorRepository doctorRepository,
+    public CommonServiceImpl(DoctorRepository doctorRepository,
                              SpecializationRepository specializationRepository) {
-        this.minIOService = minIOService;
         this.doctorRepository = doctorRepository;
         this.specializationRepository = specializationRepository;
     }

@@ -58,21 +58,25 @@ public class HospitalQuery {
 
     public static String QUERY_TO_SEARCH_HOSPITAL(HospitalSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
-                " h.id as id," +                                //[0]
-                " h.name as name," +                            //[1]
-                " h.status as status," +                        //[2]
-                " h.address as address," +                      //[3]
-                " tbl.file_uri as fileUri," +                  //[4]
-                " h.esewa_merchant_code as esewaMerchantCode" +                     //[5]
+                " h.id as id," +                                    //[0]
+                " h.name as name," +                                //[1]
+                " h.status as status," +                            //[2]
+                " h.address as address," +                          //[3]
+                " h.esewa_merchant_code as esewaMerchantCode," +   //[4]
+                " CASE" +
+                " WHEN" +
+                " (hl.status is null OR hl.status = 'N')" +
+                " THEN null" +
+                " WHEN" +
+                " hl.file_uri LIKE 'public%'" +
+                " THEN" +
+                " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.file_uri, 'public', -1))" +
+                " ELSE" +
+                " hl.file_uri" +
+                " END as fileUri" +                             //[5]
                 " FROM" +
                 " hospital h" +
-                " LEFT JOIN" +
-                " (" +
-                " SELECT" +
-                " hl.hospital_id as hospitalId," +
-                " hl.file_uri FROM hospital_logo hl" +
-                " WHERE hl.status = 'Y'" +
-                " )tbl ON tbl.hospitalId= h.id" +
+                " LEFT JOIN hospital_logo hl ON h.id = hl.hospital_id" +
                 " LEFT JOIN hospital_billing_mode_info hb ON hb.hospital_id=h.id AND hb.status!='D'" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL.apply(searchRequestDTO);
     }
@@ -107,7 +111,6 @@ public class HospitalQuery {
                     " h.address as address," +                                  //[3]
                     " h.panNumber as panNumber," +                             //[4]
                     " h.remarks as remarks," +                                 //[5]
-
                     " CASE" +
                     " WHEN" +
                     " (hl.status is null OR hl.status = 'N')" +
@@ -118,8 +121,7 @@ public class HospitalQuery {
                     " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.fileUri, 'public', -1))" +
                     " ELSE" +
                     " hl.fileUri" +
-                    " END as hospitalLogo,"+                                              //[6]
-
+                    " END as hospitalLogo," +                                              //[6]
                     " CASE" +
                     " WHEN" +
                     " (hb.status is null OR hb.status = 'N')" +
@@ -130,9 +132,8 @@ public class HospitalQuery {
                     " CONCAT(:cdnUrl,SUBSTRING_INDEX(hb.fileUri, 'public', -1))" +
                     " ELSE" +
                     " hb.fileUri" +
-                    " END as hospitalBanner,"+                                            //[7]
-
-                    " h.esewaMerchantCode as esewaMerchantCode," +                                //[8]
+                    " END as hospitalBanner," +                                            //[7]
+                    " h.esewaMerchantCode as esewaMerchantCode," +                        //[8]
                     " h.refundPercentage as refundPercentage," +               //[9]
                     " h.numberOfAdmins as numberOfAdmins," +                  //[10]
                     " h.numberOfFollowUps as numberOfFollowUps," +            //[11]
@@ -178,7 +179,7 @@ public class HospitalQuery {
             " SELECT " +
                     " ast.name as name," +                          //[0]
                     " ast.code as code," +                          //[1]
-                    " has.isPrimary as isPrimary"+                  //[2]
+                    " has.isPrimary as isPrimary" +                  //[2]
                     " FROM Hospital h " +
                     " LEFT JOIN HospitalAppointmentServiceType has ON h.id = has.hospital.id" +
                     " LEFT JOIN AppointmentServiceType ast ON ast.id = has.appointmentServiceType.id" +

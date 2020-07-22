@@ -40,7 +40,6 @@ import static com.cogent.cogentappointment.admin.utils.HospitalBillingModeInfoUt
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti ON 12/01/2020

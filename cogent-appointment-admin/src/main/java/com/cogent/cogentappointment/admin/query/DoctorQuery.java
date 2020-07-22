@@ -305,7 +305,7 @@ public class DoctorQuery {
     public static final String QUERY_TO_FETCH_MIN_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
                     " d.id as value," +                                     //[0]
-                    CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR+
+                    CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " CASE WHEN" +
                     " (d.salutation is null)" +
                     " THEN d.name" +
@@ -322,7 +322,7 @@ public class DoctorQuery {
 
     public static String QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(Long doctorId) {
         String sql = " SELECT" +
-                CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR+
+                CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " d.id as value" +                                     //[0]
                 " FROM" +
                 " Doctor d" +

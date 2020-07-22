@@ -26,7 +26,6 @@ import static com.cogent.cogentappointment.client.utils.commons.DateConverterUti
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculatePercentage;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -205,12 +204,6 @@ public class DashboardServiceImpl implements DashboardService {
 
         List<DoctorRevenueDTO> doctorRevenue =
                 appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pagable);
-
-        doctorRevenue.forEach(response -> {
-            if (response.getFileUri() != null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
 
         List<DoctorRevenueDTO> cancelledRevenue =
                 appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO, pagable);

@@ -1,9 +1,9 @@
-package com.cogent.cogentappointment.admin.query;
+package com.cogent.cogentappointment.client.query;
 
 /**
- * @author rupak ON 2020/07/21-1:21 PM
+ * @author smriti ON 2020/07/21-1:21 PM
  */
-public class CdnFileQuery {
+class CdnFileQuery {
 
     static String QUERY_TO_FETCH_DOCTOR_AVATAR =
             " CASE" +
@@ -16,7 +16,20 @@ public class CdnFileQuery {
                     " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.fileUri, 'public', -1))" +
                     " ELSE" +
                     " da.fileUri" +
-                    " END as fileUri,";
+                    " END as fileUri";
+
+    static String QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE =
+            " CASE" +
+                    " WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " da.file_uri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl, SUBSTRING_INDEX(da.file_uri, 'public', -1))" +
+                    " ELSE" +
+                    " da.file_uri" +
+                    " END as fileUri";
 
     static String QUERY_TO_FETCH_ADMIN_AVATAR =
             " CASE" +
@@ -41,6 +54,5 @@ public class CdnFileQuery {
                     " THEN" +
                     " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.fileUri, 'public', -1))" +
                     " ELSE" +
-                    " hl.fileUri" +
-                    " END as hospitalLogo";
+                    " hl.fileUri";
 }

@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
+
 /**
  * @author smriti on 05/06/20
  */
@@ -10,12 +12,7 @@ public class HospitalDepartmentDoctorInfoQuery {
             " SELECT" +
                     " hd.id as value," +                                    //[0]
                     " d.name as label," +                                   //[1]
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END AS fileUri" +                                        //[2]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM HospitalDepartment h" +
                     " LEFT JOIN HospitalDepartmentDoctorInfo hd ON h.id = hd.hospitalDepartment.id" +
                     " LEFT JOIN Doctor d ON d.id = hd.doctor.id" +

@@ -99,7 +99,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     @Override
     public List<DoctorDropdownDTO> fetchDoctorForDropdown() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -113,7 +113,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public DoctorDetailResponseDTO fetchDetailsById(Long doctorId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS)
                 .setParameter(ID, doctorId)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
         try {
             return transformNativeQueryToSingleResult(query, DoctorDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -125,7 +125,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID)
                 .setParameter(ID, specializationId)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -139,7 +139,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -153,7 +153,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public List<DoctorDropdownDTO> fetchMinDoctorByHospitalId(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_DOCTOR_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -167,7 +167,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS_FOR_UPDATE)
                 .setParameter(ID, doctorId)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<Object[]> results = query.getResultList();
 
@@ -180,7 +180,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(doctorId))
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> doctorAvatars = transformQueryToResultList(query, DoctorDropdownDTO.class);
 

@@ -13,6 +13,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.avai
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransferRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransfer;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
@@ -52,8 +53,15 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public AppointmentTransferRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
     @Override
-    public List<DoctorDatesResponseDTO> getDutyRosterByDoctorIdAndSpecializationId(Long doctorId, Long specializationId) {
+    public List<DoctorDatesResponseDTO> getDutyRosterByDoctorIdAndSpecializationId(Long doctorId,
+                                                                                   Long specializationId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DATES_BY_DOCTOR_ID_AND_SPECIALIZATION_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId);
@@ -121,7 +129,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId)
                 .setParameter(DATE, date)
-                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         List<String> response = query.getResultList();
 
@@ -158,10 +166,11 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
         AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO = new AppointmentTransferLogResponseDTO();
 
-        Long hospitalId=getLoggedInHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO))
-                .setParameter(HOSPITAL_ID,hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -172,7 +181,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
         Query queryToGetTransferredAppointmentId = createQuery.apply(entityManager,
                 QUERY_TO_GET_APPOINTMENT_ID_LIST_OF_TRANSFERRED_APPOINTMENT(requestDTO))
-                .setParameter(HOSPITAL_ID,hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<Long> appointmentIds = queryToGetTransferredAppointmentId.getResultList();
 
@@ -205,7 +214,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     @Override
     public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long appointmentTransferId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_TRANSFER_DETAIL_BY_ID)
-                .setParameter(APPOINTMENT_TRANSFER_ID, appointmentTransferId);
+                .setParameter(APPOINTMENT_TRANSFER_ID, appointmentTransferId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         AppointmentTransferPreviewResponseDTO response = transformQueryToSingleResult(
                 query, AppointmentTransferPreviewResponseDTO.class);

@@ -165,14 +165,15 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " tbl1.specialization_name as specializationName," +                //[12]
-                    " tbl2.qualification_name as qualificationName," +                   //[13]
-                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE+","+                                                 //[14]
+                    " tbl1.specialization_name as specializationName," +                 //[11]
+                    " tbl2.qualification_name as qualificationName," +                   //[12]
+                    " d.salutation as doctorSalutation," +
                     DOCTOR_AUDITABLE_QUERY() + "," +
-                    " d.salutation as doctorSalutation" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE +
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
+                    " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
                     " RIGHT JOIN" +
                     " (" +
                     QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(null) +
@@ -181,12 +182,35 @@ public class DoctorQuery {
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL +
                     " )tbl2 ON tbl2.doctor_id = d.id" +
-                    " LEFT JOIN" +
-                    " (" +
-                    QUERY_TO_FETCH_DOCTOR_AVATAR +
-                    " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
                     " AND d.id = :id";
+
+
+//            " SELECT" +
+//                    SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
+//                    SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
+//                    " tbl1.specialization_name as specializationName," +                //[12]
+//                    " tbl2.qualification_name as qualificationName," +                   //[13]
+//                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE+","+                                                 //[14]
+//                    DOCTOR_AUDITABLE_QUERY() + "," +
+//                    " d.salutation as doctorSalutation" +
+//                    " FROM doctor d" +
+//                    " LEFT JOIN hospital h ON h.id = d.hospital_id" +
+//                    " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
+//                    " RIGHT JOIN" +
+//                    " (" +
+//                    QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(null) +
+//                    " )tbl1 ON tbl1.doctor_id = d.id" +
+//                    " RIGHT JOIN" +
+//                    " (" +
+//                    QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL +
+//                    " )tbl2 ON tbl2.doctor_id = d.id" +
+//                    " LEFT JOIN" +
+//                    " (" +
+//                    QUERY_TO_FETCH_DOCTOR_AVATAR +
+//                    " )tbl3 ON tbl3.doctorId= d.id" +
+//                    " WHERE d.status != 'D'" +
+//                    " AND d.id = :id";
 
     /*UPDATE MODAL*/
     private static final String QUERY_TO_FETCH_DOCTOR_SPECIALIZATION_FOR_UPDATE =

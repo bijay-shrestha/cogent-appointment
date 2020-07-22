@@ -74,8 +74,8 @@ public class AppointmentQuery {
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
-                QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                 QUERY_TO_FETCH_DOCTOR_AVATAR +
+                QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -395,8 +395,8 @@ public class AppointmentQuery {
                             " atd.transactionNumber as transactionNumber," +                            //[14]
                             " atd.appointmentAmount as appointmentAmount," +                            //[15]
                             " arl.remarks as remarks," +                                                 //[16]
-                            " a.isFollowUp as isFollowUp," +                                             //[17]
-                            QUERY_TO_FETCH_DOCTOR_AVATAR +                                                  //[18]
+                            QUERY_TO_FETCH_DOCTOR_AVATAR +                                               //[17]
+                            " a.isFollowUp as isFollowUp" +                                              //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
@@ -630,8 +630,9 @@ public class AppointmentQuery {
                     " a.appointmentModeId.name as appointmentMode," +
                     " h.esewaMerchantCode as esewaMerchantCode," +
                     " hpi.isRegistered as isRegistered," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
+
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -640,7 +641,7 @@ public class AppointmentQuery {
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Doctor d ON d.id = ad.doctor.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON s.id = ad.specialization.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " WHERE ard.appointmentId.id=:appointmentId" +

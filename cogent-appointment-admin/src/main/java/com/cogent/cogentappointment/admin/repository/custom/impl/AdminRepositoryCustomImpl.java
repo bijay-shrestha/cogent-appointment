@@ -194,7 +194,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     @Override
     public List<CompanyAdminMinimalResponseDTO> searchCompanyAdmin(CompanyAdminSearchRequestDTO searchRequestDTO,
                                                                    Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY_ADMIN(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY_ADMIN(searchRequestDTO))
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 

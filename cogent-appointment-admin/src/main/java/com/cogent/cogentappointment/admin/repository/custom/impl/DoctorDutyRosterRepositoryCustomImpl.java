@@ -184,7 +184,8 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS)
-                .setParameter(ID, doctorDutyRosterId);
+                .setParameter(ID, doctorDutyRosterId)
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
         try {
             return transformQueryToSingleResult(query, DoctorDutyRosterResponseDTO.class);
         } catch (NoResultException e) {

@@ -308,7 +308,7 @@ public class DoctorQuery {
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +       //[2]
-                    " END as label," +
+                    " END as label" +
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +

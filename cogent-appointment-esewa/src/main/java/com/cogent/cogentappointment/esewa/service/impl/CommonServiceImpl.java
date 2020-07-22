@@ -55,12 +55,6 @@ public class CommonServiceImpl implements CommonService {
 
         List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(hospitalId);
 
-        doctorInfo.forEach(doctor->{
-            if (!isEmpty(doctor.getFileUri())){
-                doctor.setFileUri(fileUrlCheckPoint(doctor.getFileUri()));
-            }
-        });
-
 //        doctorInfo.forEach(doctor -> {
 //
 //            if (!isEmpty(doctor.getFileUri()) && !Objects.isNull(doctor.getFileUri())) {

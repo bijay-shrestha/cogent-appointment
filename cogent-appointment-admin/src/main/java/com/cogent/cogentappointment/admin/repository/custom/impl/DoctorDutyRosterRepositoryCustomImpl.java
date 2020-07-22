@@ -101,10 +101,6 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         DoctorDutyRosterResponseDTO doctorDutyRosterResponseDTO =
                 fetchDoctorDutyRosterDetails(doctorDutyRosterId);
 
-        if (doctorDutyRosterResponseDTO.getFileUri() != null) {
-            doctorDutyRosterResponseDTO.setFileUri(fileUrlCheckPoint(doctorDutyRosterResponseDTO.getFileUri()));
-        }
-
         List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysDutyRosterResponseDTO =
                 fetchDoctorWeekDaysDutyRosterResponseDTO(doctorDutyRosterId);
 

@@ -322,16 +322,6 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 getApptTransferredList(requestDTO,
                         pageable);
 
-        appointmentTransferLogDTOS.getResponse().forEach(response -> {
-            if(response.getTransferredFromFileUri()!=null){
-                response.setTransferredFromFileUri(fileUrlCheckPoint(response.getTransferredFromFileUri()));
-            }
-
-            if(response.getTransferredToFileUri()!=null){
-                response.setTransferredToFileUri(fileUrlCheckPoint(response.getTransferredToFileUri()));
-            }
-        });
-
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
 

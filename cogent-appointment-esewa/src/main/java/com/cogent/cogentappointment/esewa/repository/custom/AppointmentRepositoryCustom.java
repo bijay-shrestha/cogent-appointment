@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.esewa.dto.response.appointment.history.Appoi
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentMinResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentResponseWithStatusDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -31,10 +32,12 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO);
 
-    AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO);
+    AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO,
+                                                               Pageable pageable);
 
     AppointmentResponseWithStatusDTO searchAppointmentsForOthers(
-            AppointmentSearchDTO searchDTO);
+            AppointmentSearchDTO searchDTO,
+            Pageable pageable);
 
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 

@@ -13,6 +13,7 @@ import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.e
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -60,6 +61,12 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public HospitalDeptDutyRosterRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public Character fetchRoomStatusIfExists(Long hospitalDepartmentId, Date fromDate, Date toDate) {
@@ -172,16 +179,16 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     public List<HospitalDeptDutyRosterStatusResponseDTO> fetchHospitalDeptDutyRosterStatus
             (HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
-        List<HospitalDeptDutyRosterStatusResponseDTO> responseDTOS=new ArrayList<>();
+        List<HospitalDeptDutyRosterStatusResponseDTO> responseDTOS = new ArrayList<>();
 
         List<Object[]> resultsWithRoom = queryToGetRosterWithRoom(requestDTO).getResultList();
 
-        List<Object[]> resultWithoutRoom= queryToGetRosterWithoutRoom(requestDTO).getResultList();
+        List<Object[]> resultWithoutRoom = queryToGetRosterWithoutRoom(requestDTO).getResultList();
 
         responseDTOS.addAll(parseQueryResultToHospitalDeptDutyRosterStatusResponseDTOS(
                 resultsWithRoom, requestDTO.getFromDate(), requestDTO.getToDate()));
 
-        List<HospitalDeptDutyRosterStatusResponseDTO> list=responseDTOS.stream()
+        List<HospitalDeptDutyRosterStatusResponseDTO> list = responseDTOS.stream()
                 .filter(distinctByKeys(HospitalDeptDutyRosterStatusResponseDTO::getDate,
                         HospitalDeptDutyRosterStatusResponseDTO::getHospitalDepartmentId)).collect(Collectors.toList());
 
@@ -197,7 +204,7 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
                 QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_ROOM_WISE(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
@@ -219,8 +226,8 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(DATE, utilDateToSqlDate(date));
 
-        if(!Objects.isNull(hospitalDepartmentRoomInfoId)){
-            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID,hospitalDepartmentRoomInfoId);
+        if (!Objects.isNull(hospitalDepartmentRoomInfoId)) {
+            query.setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId);
         }
 
         try {
@@ -239,7 +246,7 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_ROSTER_DETAILS_FOR_STATUS_COUNT(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
@@ -254,13 +261,13 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         return rosterDetailsDTO;
     }
 
-    private Query queryToGetRosterWithRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){
+    private Query queryToGetRosterWithRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         Query query = createNativeQuery.apply(entityManager,
                 QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_WITH_ROOM(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
             query.setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
@@ -269,13 +276,13 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     }
 
-    private Query queryToGetRosterWithoutRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO){
+    private Query queryToGetRosterWithoutRoom(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
         Query query = createNativeQuery.apply(entityManager,
                 QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS_WITHOUT_ROOM(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
 
         if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
@@ -362,13 +369,13 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
             Long hospitalDepartmentWeekDaysDutyRosterId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO)
-                .setParameter(ID, hospitalDepartmentWeekDaysDutyRosterId);
+                .setParameter(ID, hospitalDepartmentWeekDaysDutyRosterId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO.class);
     }
 
-    private static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors)
-    {
+    private static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors) {
         final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
 
         return t ->

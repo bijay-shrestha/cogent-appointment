@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalDepartmentDoctorInfoRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDoctorInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.CDN_URL;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_DEPARTMENT_ID;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -37,12 +39,19 @@ public class HospitalDepartmentDoctorInfoRepositoryCustomImpl implements Hospita
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public HospitalDepartmentDoctorInfoRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
     @Override
     public List<DoctorDropdownDTO> fetchAssignedHospitalDepartmentDoctor
             (Long hospitalDepartmentId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ASSIGNED_HOSPITAL_DEPARTMENT_DOCTOR)
-                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> doctors =
                 transformQueryToResultList(query, DoctorDropdownDTO.class);

@@ -206,12 +206,6 @@ public class AdminServiceImpl implements AdminService {
         List<AdminMinimalResponseDTO> responseDTOS =
                 adminRepository.search(searchRequestDTO, getLoggedInHospitalId(), pageable);
 
-        responseDTOS.forEach(response->{
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
-
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -224,10 +218,6 @@ public class AdminServiceImpl implements AdminService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, ADMIN);
 
         AdminDetailResponseDTO responseDTO = adminRepository.fetchDetailsById(id, getLoggedInHospitalId());
-
-            if(responseDTO.getFileUri()!=null) {
-                responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
-            }
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -292,12 +282,12 @@ public class AdminServiceImpl implements AdminService {
 
         updateAvatar(admin, requestDTO.getAvatar());
 
-        AdminAvatarUpdateResponse adminAvatarUpdateResponse=new AdminAvatarUpdateResponse();
+        AdminAvatarUpdateResponse adminAvatarUpdateResponse = new AdminAvatarUpdateResponse();
         adminAvatarUpdateResponse.setAvatar(fileUrlCheckPoint(requestDTO.getAvatar()));
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR, getDifferenceBetweenTwoTime(startTime));
 
-        return  adminAvatarUpdateResponse;
+        return adminAvatarUpdateResponse;
     }
 
     @Override
@@ -449,9 +439,6 @@ public class AdminServiceImpl implements AdminService {
 
         AdminLoggedInInfoResponseDTO responseDTO =
                 adminRepository.fetchLoggedInAdminInfo(requestDTO, hospitalId);
-        if(responseDTO.getFileUri()!=null) {
-            responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
-        }
 
         List<IntegrationBodyAttributeResponse> responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributes();

@@ -11,7 +11,7 @@ import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.Hospi
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDepartmentRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.Department;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +46,12 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
 
     @PersistenceContext
     EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public HospitalDepartmentRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public List<Object[]> validateDuplicity(HospitalDepartmentRequestDTO requestDTO, Long hospitalId) {
@@ -118,11 +124,11 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();
         }
 
-            response.setHospitalDepartmentList(minimalResponseDTOS);
+        response.setHospitalDepartmentList(minimalResponseDTOS);
 
-            response.setTotalItems(totalItems);
+        response.setTotalItems(totalItems);
 
-            return response;
+        return response;
     }
 
     @Override
@@ -133,7 +139,8 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         Query doctorListQuery = createQuery.apply(entityManager, QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID)
-                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         Query roomListQuery = createQuery.apply(entityManager, QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
@@ -141,7 +148,6 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         Query billingModeWithChargeQuery = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
-
 
         try {
             HospitalDepartmentResponseDTO responseDTO = transformQueryToSingleResult(query,
@@ -161,7 +167,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         }
     }
 
-//    Hospital Department = Department in frontend
+    //    Hospital Department = Department in frontend
     private Supplier<NoContentFoundException> HOSPITAL_DEPARTMENT_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT);
         throw new NoContentFoundException("No Department(s) Found");

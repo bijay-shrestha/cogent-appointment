@@ -13,6 +13,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.avail
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransferRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransfer;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,12 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public AppointmentTransferRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
 
     @Override
@@ -158,9 +165,10 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     @Override
     public AppointmentTransferLogResponseDTO getApptTransferredList(AppointmentTransferSearchRequestDTO requestDTO,
                                                                     Pageable pageable) {
-        AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO=new AppointmentTransferLogResponseDTO();
+        AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO = new AppointmentTransferLogResponseDTO();
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO))
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -203,7 +211,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     @Override
     public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long appointmentTransferId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_TRANSFER_DETAIL_BY_ID)
-                .setParameter(APPOINTMENT_TRANSFER_ID, appointmentTransferId);
+                .setParameter(APPOINTMENT_TRANSFER_ID, appointmentTransferId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         AppointmentTransferPreviewResponseDTO response = transformQueryToSingleResult(
                 query, AppointmentTransferPreviewResponseDTO.class);

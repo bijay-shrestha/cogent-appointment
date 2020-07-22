@@ -21,25 +21,29 @@ import java.util.List;
 @Qualifier("appointmentTransactionDetailRepositoryCustom")
 public interface AppointmentTransactionDetailRepositoryCustom {
 
-    Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId,String appointmentServiceTypeCode);
+    Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId, String appointmentServiceTypeCode);
 
     AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(String toDate, String fromDate, Long hospitalId,
-                                                                           String appointmentServiceTypeCode );
+                                                                           String appointmentServiceTypeCode);
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO,
                                             Long hospitalId, Character filter);
 
-    List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,Pageable pagable);
+    List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                  Pageable pagable);
 
-    List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,Pageable pagable);
+    List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                     Pageable pagable);
 
     List<DoctorRevenueDTO> calculateRefundedRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
                                                     Pageable pagable);
 
-    List<HospitalDepartmentRevenueDTO> calculateHospitalDepartmentRevenue(HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
-                                                                          Pageable pageable);
+    List<HospitalDepartmentRevenueDTO> calculateHospitalDepartmentRevenue(
+            HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
+            Pageable pageable);
 
-    List<HospitalDepartmentRevenueDTO> calculateCancelledHospitalDepartmentRevenue(HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
-                                                                                   Pageable pageable);
+    List<HospitalDepartmentRevenueDTO> calculateCancelledHospitalDepartmentRevenue(
+            HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
+            Pageable pageable);
 
 }

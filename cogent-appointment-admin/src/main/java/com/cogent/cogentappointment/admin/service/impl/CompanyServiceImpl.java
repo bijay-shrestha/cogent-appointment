@@ -45,7 +45,6 @@ import static com.cogent.cogentappointment.admin.utils.HospitalUtils.convertFile
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 @Service
 @Transactional
@@ -158,13 +157,6 @@ public class CompanyServiceImpl implements CompanyService {
 
         List<CompanyMinimalResponseDTO> responseDTOS = hospitalRepository.searchCompany(searchRequestDTO, pageable);
 
-        responseDTOS.forEach(response->{
-
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
-
         log.info(SEARCHING_PROCESS_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
@@ -190,12 +182,6 @@ public class CompanyServiceImpl implements CompanyService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, COMPANY);
 
         CompanyResponseDTO responseDTO = hospitalRepository.fetchCompanyDetailsById(companyId);
-
-            if(responseDTO.getCompanyLogo()!=null) {
-                responseDTO.setCompanyLogo(fileUrlCheckPoint(responseDTO.getCompanyLogo()));
-            }
-
-
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));
 

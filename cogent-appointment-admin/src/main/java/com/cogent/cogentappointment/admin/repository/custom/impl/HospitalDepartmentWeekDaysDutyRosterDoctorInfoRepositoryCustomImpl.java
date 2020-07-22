@@ -23,7 +23,6 @@ import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.admin.query.HospitalDepartmentWeekDaysDutyRosterDoctorInfoQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_AND_DOCTOR_LIST;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti on 07/06/20
@@ -46,12 +45,6 @@ public class HospitalDepartmentWeekDaysDutyRosterDoctorInfoRepositoryCustomImpl
                 .setParameter(WEEK_DAY_NAME,hospitalDeptAndWeekdaysDTO.getWeekDay());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
-
-        results.forEach(response -> {
-            if (response.getFileUri() != null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
 
             return HospitalDeptAndDoctorDTO.builder()
                     .doctorInfo(results)

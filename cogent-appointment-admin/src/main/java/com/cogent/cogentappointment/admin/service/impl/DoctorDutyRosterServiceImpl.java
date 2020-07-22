@@ -36,7 +36,6 @@ import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterL
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 
 /**
@@ -267,13 +266,6 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         List<DoctorDutyRosterMinimalResponseDTO> responseDTOS =
                 doctorDutyRosterRepository.search(searchRequestDTO, pageable);
-
-        responseDTOS.forEach(response->{
-            if(response.getFileUri()!=null){
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-
-        });
 
         log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 

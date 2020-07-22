@@ -5,6 +5,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
+
 /**
  * @author Sauravi Thapa ON 5/20/20
  */
@@ -151,12 +153,7 @@ public class HospitalDepartmentQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',hddi.doctor.salutation, hddi.doctor.name)" +
                     " END as label," +
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " HospitalDepartmentDoctorInfo hddi" +
                     " LEFT JOIN DoctorAvatar da ON da.doctorId=hddi.doctor.id" +

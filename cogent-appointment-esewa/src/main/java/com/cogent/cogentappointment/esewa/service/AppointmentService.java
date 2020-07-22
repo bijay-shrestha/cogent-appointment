@@ -16,6 +16,7 @@ import com.cogent.cogentappointment.esewa.dto.response.appointment.history.Appoi
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentMinResponseWithStatusDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentResponseWithStatusDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.save.AppointmentSuccessResponseDTO;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author smriti on 2019-10-22
@@ -40,7 +41,8 @@ public interface AppointmentService {
 
     AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO);
 
-    AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO);
+    AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO,
+                                                        Pageable pageable);
 
     StatusResponseDTO cancelRegistration(Long appointmentReservationId);
 

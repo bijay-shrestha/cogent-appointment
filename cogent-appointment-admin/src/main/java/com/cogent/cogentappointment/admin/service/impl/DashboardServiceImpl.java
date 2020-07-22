@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.DOCTOR_REVENUE_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.HOSPITAL_DEPARTMENT_REVENUE_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.DYNAMIC_DASHBOARD_FEATURE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
@@ -27,7 +27,6 @@ import static com.cogent.cogentappointment.admin.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercentage;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 
 /**
@@ -198,13 +197,6 @@ public class DashboardServiceImpl implements DashboardService {
 
         List<DoctorRevenueDTO> doctorRevenue =
                 appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
-
-        doctorRevenue.forEach(response -> {
-            if (response.getFileUri() != null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
-
 
 
         List<DoctorRevenueDTO> cancelledRevenue =

@@ -50,17 +50,21 @@ public class CompanyQuery {
                 " h.name as name," +                            //[1]
                 " h.status as status," +                        //[2]
                 " h.address as address," +                      //[3]
-                " tbl.file_uri as fileUri," +                  //[4]
-                " h.code as companyCode" +                     //[5]
+                " h.code as companyCode," +                     //[4]
+                " CASE" +
+                " WHEN" +
+                " (hl.status is null OR hl.status = 'N')" +
+                " THEN null" +
+                " WHEN" +
+                " hl.file_uri LIKE 'public%'" +
+                " THEN" +
+                " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.file_uri, 'public', -1))" +
+                " ELSE" +
+                " hl.file_uri" +
+                " END as fileUri" +                             //[5]
                 " FROM" +
                 " hospital h" +
-                " LEFT JOIN" +
-                " (" +
-                " SELECT" +
-                " hl.hospital_id as hospitalId," +
-                " hl.file_uri FROM hospital_logo hl" +
-                " WHERE hl.status = 'Y'" +
-                " )tbl ON tbl.hospitalId= h.id" +
+                " LEFT JOIN hospital_logo hl ON h.id = hl.hospital_id" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_COMPANY.apply(searchRequestDTO);
     }
 
@@ -90,12 +94,17 @@ public class CompanyQuery {
                     " h.address as address," +                                  //[3]
                     " h.pan_number as panNumber," +                             //[4]
                     " h.remarks as remarks," +                                  //[5]
-                    " CASE WHEN" +
-                    " (hl.status IS NULL OR hl.status = 'N')" +
+                    " CASE" +
+                    " WHEN" +
+                    " (hl.status is null OR hl.status = 'N')" +
                     " THEN null" +
+                    " WHEN" +
+                    " hl.file_uri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.file_uri, 'public', -1))" +
                     " ELSE" +
                     " hl.file_uri" +
-                    " END as companyLogo," +                                //[6]
+                    " END as companyLogo," +                                      //[6]
                     " h.code as companyCode," +                                //[7]
                     " tbl1.contact_details as contact_details," +               //[8]
                     " h.is_company as isCompany," +                             //[9]

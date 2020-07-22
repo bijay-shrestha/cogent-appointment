@@ -24,7 +24,7 @@ public class AppointmentQueueDTO implements Serializable {
 
     private String patientMobileNumber;
 
-    private String doctorAvatar;
+    private String fileUri;
 
     private String hospitalDepartmentName;
 

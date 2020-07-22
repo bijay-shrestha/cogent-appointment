@@ -58,7 +58,6 @@ import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderBy
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 import static java.lang.reflect.Array.get;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;
@@ -195,11 +194,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         List<CompanyAdminMinimalResponseDTO> responseDTOS = adminRepository.searchCompanyAdmin(searchRequestDTO,
                 pageable);
-        responseDTOS.forEach(response->{
-            if(response.getFileUri()!=null) {
-                response.setFileUri(fileUrlCheckPoint(response.getFileUri()));
-            }
-        });
 
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -213,10 +207,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, ADMIN);
 
         CompanyAdminDetailResponseDTO responseDTO = adminRepository.fetchCompanyAdminDetailsById(id);
-            if(responseDTO.getFileUri()!=null) {
-                responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
-            }
-
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -429,10 +419,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
 
-        if(responseDTO.getFileUri()!=null) {
-            responseDTO.setFileUri(fileUrlCheckPoint(responseDTO.getFileUri()));
-        }
-
         List<IntegrationBodyAttributeResponse> responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributes();
 
@@ -454,17 +440,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
-    }
-
-    private String fileUrlCheckPoint(String url) {
-
-        if (url.contains("public")) {
-            url = "https://cdn.eappointments.net" + url.split("public")[1];
-        }
-
-        return url;
-
-
     }
 
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {

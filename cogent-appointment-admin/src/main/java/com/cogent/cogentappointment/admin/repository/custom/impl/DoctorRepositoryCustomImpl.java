@@ -13,14 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -32,7 +30,6 @@ import static com.cogent.cogentappointment.admin.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
-import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 
 /**
  * @author smriti on 2019-09-29
@@ -188,11 +185,6 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
             throw DOCTOR_NOT_FOUND.get();
 
         else {
-
-            doctorAvatars.forEach(doctorAvatar -> {
-                if (!Objects.isNull(doctorAvatar.getFileUri()) && !ObjectUtils.isEmpty(doctorAvatar.getFileUri()))
-                    doctorAvatar.setFileUri(fileUrlCheckPoint(doctorAvatar.getFileUri()));
-            });
 
             return doctorAvatars;
         }

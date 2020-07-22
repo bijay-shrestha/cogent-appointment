@@ -16,6 +16,8 @@ import com.cogent.cogentappointment.esewa.service.AppointmentService;
 import com.cogent.cogentappointment.esewa.service.EsewaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +68,7 @@ public class AppointmentResource {
 
     @PutMapping(FETCH_CURRENT_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_CURRENT_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> fetchCurrentAvailableTimeSlots() throws IOException{
+    public ResponseEntity<?> fetchCurrentAvailableTimeSlots() throws IOException {
 
         AppointmentCheckAvailabilityRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentCheckAvailabilityRequestDTO.class);
@@ -78,7 +80,7 @@ public class AppointmentResource {
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> saveAppointmentForSelf() throws IOException {
 
-        AppointmentRequestDTOForSelf requestDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentRequestDTOForSelf requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentRequestDTOForSelf.class);
 
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
@@ -94,7 +96,7 @@ public class AppointmentResource {
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> saveAppointmentForOthers() throws IOException {
 
-        AppointmentRequestDTOForOthers requestDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentRequestDTOForOthers requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentRequestDTOForOthers.class);
 
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForOthers(requestDTO));
@@ -104,7 +106,7 @@ public class AppointmentResource {
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
     public ResponseEntity<?> fetchPendingAppointments() throws IOException {
 
-        AppointmentHistorySearchDTO searchDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentHistorySearchDTO searchDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentHistorySearchDTO.class);
 
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
@@ -114,7 +116,7 @@ public class AppointmentResource {
     @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
     public ResponseEntity<?> cancelAppointment() throws IOException {
 
-        AppointmentCancelRequestDTO cancelRequestDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentCancelRequestDTO cancelRequestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentCancelRequestDTO.class);
 
         return ok(appointmentService.cancelAppointment(cancelRequestDTO));
@@ -124,7 +126,7 @@ public class AppointmentResource {
     @ApiOperation(RESCHEDULE_OPERATION)
     public ResponseEntity<?> rescheduleAppointment() throws IOException {
 
-        AppointmentRescheduleRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentRescheduleRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentRescheduleRequestDTO.class);
 
         return ok(appointmentService.rescheduleAppointment(requestDTO));
@@ -139,7 +141,7 @@ public class AppointmentResource {
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
     public ResponseEntity<?> fetchAppointmentHistory() throws IOException {
 
-        AppointmentHistorySearchDTO searchDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentHistorySearchDTO searchDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentHistorySearchDTO.class);
 
         return ok(appointmentService.fetchAppointmentHistory(searchDTO));
@@ -147,12 +149,13 @@ public class AppointmentResource {
 
     @PutMapping(SEARCH)
     @ApiOperation(SEARCH_APPOINTMENT)
-    public ResponseEntity<?> searchAppointments() throws IOException {
+    public ResponseEntity<?> searchAppointments(@RequestParam("page") int page,
+                                                @RequestParam("size") int size) throws IOException {
 
-        AppointmentSearchDTO searchDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentSearchDTO searchDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentSearchDTO.class);
-
-        return ok(appointmentService.searchAppointments(searchDTO));
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(appointmentService.searchAppointments(searchDTO, pageable));
     }
 
     @GetMapping(CANCEL + APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE)
@@ -165,7 +168,7 @@ public class AppointmentResource {
     @ApiOperation(FETCH_APPOINTMENT_TRANSACTION_STATUS)
     public ResponseEntity<?> fetchAppointmentTransactionStatus() throws IOException {
 
-        AppointmentTransactionStatusRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentTransactionStatusRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentTransactionStatusRequestDTO.class);
 
         return ok(appointmentService.fetchAppointmentTransactionStatus(requestDTO));
@@ -175,7 +178,7 @@ public class AppointmentResource {
     @ApiOperation(FETCH_AVAILABLE_APPOINTMENT_DATES)
     public ResponseEntity<?> fetchAvailableDatesAndTime() throws IOException {
 
-        AppointmentDatesRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentDatesRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentDatesRequestDTO.class);
 
         return ok(esewaService.fetchAvailableDatesAndTime(requestDTO));
@@ -185,7 +188,7 @@ public class AppointmentResource {
     @ApiOperation(FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION)
     public ResponseEntity<?> fetchDoctorAvailableStatus() throws IOException {
 
-        AppointmentDetailRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentDetailRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentDetailRequestDTO.class);
 
         return ok(esewaService.fetchDoctorAvailableStatus(requestDTO));
@@ -207,7 +210,7 @@ public class AppointmentResource {
     @ApiOperation(FETCH_AVAILABLE_DATES)
     public ResponseEntity<?> fetchAvailableDates() throws IOException {
 
-        AppointmentDatesRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
+        AppointmentDatesRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
                 AppointmentDatesRequestDTO.class);
 
         return ok(esewaService.fetchAvailableDates(requestDTO));
@@ -224,7 +227,7 @@ public class AppointmentResource {
     @ApiOperation(SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
     public ResponseEntity<?> fetchAvailableDoctorWithSpecialization() throws IOException {
 
-        AvailableDoctorRequestDTO requestDTO= convertValue(dataWrapperRequest.getData(),
+        AvailableDoctorRequestDTO requestDTO = convertValue(dataWrapperRequest.getData(),
                 AvailableDoctorRequestDTO.class);
 
         return ok(esewaService.fetchAvailableDoctorWithSpecialization(requestDTO));

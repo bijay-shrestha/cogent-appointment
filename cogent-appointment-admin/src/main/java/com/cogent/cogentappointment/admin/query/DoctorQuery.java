@@ -6,6 +6,8 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE;
+
 /**
  * @author smriti on 2019-09-29
  */
@@ -165,17 +167,7 @@ public class DoctorQuery {
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
                     " tbl1.specialization_name as specializationName," +                //[12]
                     " tbl2.qualification_name as qualificationName," +                   //[13]
-                    " CASE" +
-                    " WHEN" +
-                    " (tbl3.status is null OR tbl3.status = 'N')" +
-                    " THEN null" +
-                    " WHEN" +
-                    " tbl3.file_uri LIKE 'public%'" +
-                    " THEN" +
-                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(tbl3.file_uri, 'public', -1))" +
-                    " ELSE" +
-                    " tbl3.file_uri" +
-                    " END as fileUri," +                                                   //[14]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE+","+                                                 //[14]
                     DOCTOR_AUDITABLE_QUERY() + "," +
                     " d.salutation as doctorSalutation" +
                     " FROM doctor d" +

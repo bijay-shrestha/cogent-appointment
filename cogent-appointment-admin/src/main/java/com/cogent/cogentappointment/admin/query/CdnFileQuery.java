@@ -18,6 +18,19 @@ public class CdnFileQuery {
                     " da.fileUri" +
                     " END as fileUri,";
 
+    static String QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE =
+            " CASE" +
+                    " WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " da.file_uri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl, SUBSTRING_INDEX(da.file_uri, 'public', -1))" +
+                    " ELSE" +
+                    " da.file_uri" +
+                    " END as fileUri";
+
     static String QUERY_TO_FETCH_ADMIN_AVATAR =
             " CASE" +
                     " WHEN" +

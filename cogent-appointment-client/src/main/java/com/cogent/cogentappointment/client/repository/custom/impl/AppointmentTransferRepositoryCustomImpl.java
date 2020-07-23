@@ -217,10 +217,13 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(APPOINTMENT_TRANSFER_ID, appointmentTransferId)
                 .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
-        AppointmentTransferPreviewResponseDTO response = transformQueryToSingleResult(
-                query, AppointmentTransferPreviewResponseDTO.class);
 
-        return response;
+        try{
+            return transformQueryToSingleResult(
+                    query, AppointmentTransferPreviewResponseDTO.class);
+        }catch (NoResultException e){
+            throw APPOINTMENT_TRANSFERE_NOT_FOUND.get();
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {

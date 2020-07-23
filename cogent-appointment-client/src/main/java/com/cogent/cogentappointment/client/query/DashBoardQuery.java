@@ -231,6 +231,7 @@ public class DashBoardQuery {
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
                             " s.name as specializationName," +
+                            " d.status as isDoctorActive," +
                             QUERY_TO_FETCH_DOCTOR_AVATAR +
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +

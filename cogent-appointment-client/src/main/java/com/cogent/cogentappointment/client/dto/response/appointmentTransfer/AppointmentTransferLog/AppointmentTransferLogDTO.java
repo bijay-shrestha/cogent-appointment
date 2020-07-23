@@ -40,4 +40,6 @@ public class AppointmentTransferLogDTO implements Serializable{
 
     private String transferredToFileUri,transferredFromFileUri;
 
+   private Character isTransferredFromDoctorActive,isTransferredToDoctorActive;
+
 }

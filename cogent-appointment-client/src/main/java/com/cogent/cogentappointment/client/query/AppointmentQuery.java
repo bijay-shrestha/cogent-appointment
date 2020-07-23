@@ -67,7 +67,8 @@ public class AppointmentQuery {
                             " THEN d.name" +
                             " ELSE" +
                             " CONCAT_WS(' ',d.salutation, d.name)" +
-                            " END as doctorName," +                                                     //[12]
+                            " END as doctorName," +
+                            " d.status as isDoctorActive," +                                                     //[12]
                             " atd.transactionNumber as transactionNumber," +                            //[13]
                             " atd.appointmentAmount as appointmentAmount," +                            //[14]
                             " arl.remarks as remarks," +                                               //[15]
@@ -344,7 +345,8 @@ public class AppointmentQuery {
                             " THEN d.name" +
                             " ELSE" +
                             " CONCAT_WS(' ',d.salutation, d.name)" +
-                            " END as doctorName," +                                                //[13]
+                            " END as doctorName," +
+                            " d.status as isDoctorActive," +                                                //[13]
                             " a.status as status," +                                               //[14]
                             " CASE WHEN" +
                             " a.status = 'RE'" +

@@ -272,7 +272,8 @@ public class AppointmentQuery {
                             " p.gender as gender," +                                                    //[16]
                             " hpi.address as address," +                                                //[17]
                             " hpi.isRegistered as isRegistered," +                                      //[18]
-                            " h.name as hospitalName," +                                                //[19]
+                            " h.name as hospitalName," +
+                            " d.status as isDoctorActive," +                                                //[19]
                             QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[20]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
@@ -507,7 +508,8 @@ public class AppointmentQuery {
                     " d.id as doctorId," +                                                      //[20]
                     " sp.id as specializationId," +                                             //[21]
                     " a.isFollowUp as followUp," +                                               //[22]
-                    " hpi.hospitalNumber as hospitalNumber" +
+                    " hpi.hospitalNumber as hospitalNumber," +
+                    " d.status as isDoctorActive" +
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON p.id = a.patientId" +

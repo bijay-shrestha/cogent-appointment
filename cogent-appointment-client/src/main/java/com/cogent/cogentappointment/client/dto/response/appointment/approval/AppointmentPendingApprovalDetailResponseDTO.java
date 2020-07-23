@@ -53,6 +53,8 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String doctorSalutation;
 
+    private Character isDoctorActive;
+
     private String fileUri;
 
     private String specializationName;

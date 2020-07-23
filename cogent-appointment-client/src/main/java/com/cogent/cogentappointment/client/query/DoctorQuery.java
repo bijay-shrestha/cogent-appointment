@@ -104,7 +104,8 @@ public class DoctorQuery {
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as label," +                                     //[1]
+                    " END as label," +
+                    " d.status as isDoctorActive," +                                     //[1]
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " Doctor d" +
@@ -256,7 +257,8 @@ public class DoctorQuery {
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as label," +                                  //[1]
+                    " END as label," +
+                    " d.status as isDoctorActive," +                                  //[1]
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " Doctor d" +

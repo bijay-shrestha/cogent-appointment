@@ -294,6 +294,7 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                                           //[1]
+                " d.status as isDoctorActive,"+                                                  //[2]
                 QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                 " s.id as specializationId," +                                                   //[3]
                 " s.name as specializationName," +                                               //[4]
@@ -501,6 +502,7 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                          //[1]
+                " d.status as isDoctorActive,"+                                  //[2]
                 QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                 " s.id as specializationId," +                                  //[3]
                 " s.name as specializationName," +                              //[4]
@@ -534,10 +536,11 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                          //[1]
-                QUERY_TO_FETCH_DOCTOR_AVATAR + "," +                               //[2]
-                " s.id as specializationId," +                                  //[3]
-                " s.name as specializationName," +                              //[4]
-                " COUNT(a.id) as cancelledAppointments," +                      //[5]
+                " d.status as isDoctorActive,"+                                  //[2]
+                QUERY_TO_FETCH_DOCTOR_AVATAR + "," +                               //[3]
+                " s.id as specializationId," +                                  //[4]
+                " s.name as specializationName," +                              //[5]
+                " COUNT(a.id) as cancelledAppointments," +                      //[6]
                 " COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 )  as cancelledRevenue" +
                 " FROM Appointment a" +
                 " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +

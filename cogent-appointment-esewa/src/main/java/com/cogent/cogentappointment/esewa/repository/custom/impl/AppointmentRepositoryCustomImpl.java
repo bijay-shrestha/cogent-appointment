@@ -206,6 +206,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(MOBILE_NUMBER, searchDTO.getMobileNumber())
                 .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchDTO.getDateOfBirth()));
 
+        int totalItems = query.getResultList().size();
+
         addPagination.accept(pageable, query);
 
         List<AppointmentResponseDTO> appointmentHistory =
@@ -214,7 +216,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
-        return parseToAppointmentHistory(appointmentHistory);
+        return parseToAppointmentHistory(appointmentHistory, totalItems);
     }
 
     @Override
@@ -238,6 +240,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
 
+        int totalItems = query.getResultList().size();
+
         addPagination.accept(pageable, query);
 
         List<AppointmentResponseDTO> appointmentHistory =
@@ -246,7 +250,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
-        return parseToAppointmentHistory(appointmentHistory);
+        return parseToAppointmentHistory(appointmentHistory, totalItems);
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

@@ -169,6 +169,7 @@ public class AppointmentQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +
+                " d.status as isDoctorActive," +
                 " s.name as specializationName," +
                 " atd.transactionNumber as transactionNumber," +
                 " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y') as cancelledDate," +
@@ -550,6 +551,7 @@ public class AppointmentQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +
+                    " d.status as isDoctorActive," +
                     " s.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +

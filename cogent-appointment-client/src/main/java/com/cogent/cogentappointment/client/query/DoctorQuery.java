@@ -220,7 +220,8 @@ public class DoctorQuery {
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as label," +                                    //[1]
+                    " END as label," +
+                    " d.status as isDoctorActive," +
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Doctor d ON d.id = cs.doctorId" +
@@ -238,8 +239,9 @@ public class DoctorQuery {
                     " (d.salutation is null)" +
                     " THEN d.name" +
                     " ELSE" +
-                    " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as label," +                                //[1]
+                    " CONCAT_WS(' ',d.salutation, d.name)" +               //[1]
+                    " END as label," +
+                    " d.status as isDoctorActive," +
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM" +
                     " Doctor d" +
@@ -284,7 +286,8 @@ public class DoctorQuery {
 
     public static String QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(Long doctorId) {
         String sql = " SELECT" +
-                " d.id as value," +                                     //[0]
+                " d.id as value," +                                       //[0]
+                " d.status as isDoctorActive," +
                 QUERY_TO_FETCH_DOCTOR_AVATAR +                           //[1]
                 " FROM" +
                 " Doctor d" +

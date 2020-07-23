@@ -8,14 +8,12 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
-import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.IntegrationCheckPointService;
 import com.cogent.cogentappointment.admin.service.RefundStatusService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentthirdpartyconnector.exception.BadRequestException;
-import com.cogent.cogentthirdpartyconnector.service.ThirdPartyConnectorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,23 +45,15 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private final AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
 
-    private final AppointmentService appointmentService;
-
-    private final ThirdPartyConnectorService thirdPartyConnectorService;
-
     private final IntegrationCheckPointService integrationCheckpointService;
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentRepository appointmentRepository,
                                    AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
-                                   AppointmentService appointmentService,
-                                   ThirdPartyConnectorService thirdPartyConnectorService,
                                    IntegrationCheckPointService integrationCheckpointService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
-        this.appointmentService = appointmentService;
-        this.thirdPartyConnectorService = thirdPartyConnectorService;
         this.integrationCheckpointService = integrationCheckpointService;
     }
 
@@ -91,7 +81,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         AppointmentRefundDetail appointmentRefundDetail = getAppointmentRefundDetail(requestDTO);
 
-        if(appointmentRefundDetail.getStatus().equals(REJECTED)){
+        if (appointmentRefundDetail.getStatus().equals(REJECTED)) {
             throw new BadRequestException(APPOINTMENT_HAS_BEEN_REJECTED);
         }
 
@@ -107,12 +97,6 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
     }
-
-//    private void approveRefundAppointment(RefundStatusRequestDTO requestDTO) throws IOException {
-//
-//        requestDTO.setFeatureCode("REF_APPROVAL");
-//        appointmentService.approveRefundAppointment(requestDTO.getIntegrationRefundRequestDTO());
-//    }
 
     @Override
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
@@ -189,15 +173,6 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private Appointment getAppointment(RefundStatusRequestDTO requestDTO) {
         return appointmentRepository.fetchCancelledAppointmentDetails(requestDTO);
-    }
-
-
-    private void saveAppointment(Appointment appointment) {
-        appointmentRepository.save(appointment);
-    }
-
-    private void saveAppointmentRefundDetails(AppointmentRefundDetail appointmentRefundDetail) {
-        refundDetailRepository.save(appointmentRefundDetail);
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {

@@ -45,7 +45,7 @@ public class AppointmentRefundDetailQuery {
                 " ard.status as refundStatus," +
                 " ard.remarks as remarks," +
                 " a.hospitalId.name as hospitalName," +
-                QUERY_TO_FETCH_DOCTOR_AVATAR+
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM" +
                 " AppointmentRefundDetail ard" +
@@ -180,7 +180,8 @@ public class AppointmentRefundDetailQuery {
                     " a.hospitalId.name as hospitalName," +
                     " a.hospitalId.id as hospitalId," +
                     " ard.remarks as remarks," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE+
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
@@ -188,7 +189,7 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                     " INNER JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                     " LEFT JOIN Doctor d ON d.id = adi.doctor.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = adi.doctor.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = adi.doctor.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON atd.appointment.id =a.id" +
                     " WHERE a.id=:appointmentId" +

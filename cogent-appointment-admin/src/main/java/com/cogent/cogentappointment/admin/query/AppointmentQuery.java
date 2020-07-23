@@ -486,15 +486,15 @@ public class AppointmentQuery {
                             " s.name as specializationName," +
                             " CASE" +
                             " WHEN" +
-                            " (da.status is null OR da.status = 'N')" +
+                            " (dv.status is null OR dv.status = 'N')" +
                             " THEN null" +
                             " WHEN" +
-                            " da.fileUri LIKE 'public%'" +
+                            " dv.fileUri LIKE 'public%'" +
                             " THEN" +
-                            " CONCAT(:cdnUrl,SUBSTRING_INDEX(da.fileUri, 'public', -1))" +
+                            " CONCAT(:cdnUrl,SUBSTRING_INDEX(dv.fileUri, 'public', -1))" +
                             " ELSE" +
-                            " da.fileUri" +
-                            " END as doctorAvatar," +
+                            " dv.fileUri" +
+                            " END as doctorAvatar" +
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                             " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +

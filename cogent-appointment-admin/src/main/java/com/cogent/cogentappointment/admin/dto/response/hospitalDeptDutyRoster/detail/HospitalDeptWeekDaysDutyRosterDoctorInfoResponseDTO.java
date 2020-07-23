@@ -23,5 +23,7 @@ public class HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO implements Seri
     //doctorName
     private String label;
 
+    private Character isDoctorActive;
+
     private String fileUri;
 }

@@ -99,7 +99,7 @@ public class AppointmentHospitalDepartmentTransactionLogQuery {
             whereClause += " AND h.id = " + searchRequestDTO.getHospitalId();
 
         if (!Objects.isNull(searchRequestDTO.getPatientMetaInfoId()))
-            whereClause += " AND pmi.id = " + searchRequestDTO.getPatientMetaInfoId();
+            whereClause += " AND pi.id = " + searchRequestDTO.getPatientMetaInfoId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + searchRequestDTO.getPatientType() + "'";

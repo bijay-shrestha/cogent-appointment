@@ -39,6 +39,7 @@ public class TransactionLogQuery {
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +                                                      //[14]
                     " a.status as status," +                                                     //[15]
+                    " d.status as isDoctorActive,"+
                     " CASE WHEN" +
                     " a.status = 'RE'" +
                     " THEN " +

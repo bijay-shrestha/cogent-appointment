@@ -167,7 +167,6 @@ public class AppointmentTransferQuery {
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
                     "  hpi.isRegistered as  patientType," +
-
                     " CASE" +
                     " WHEN" +
                     " pda.fileUri LIKE 'public%'" +
@@ -176,7 +175,6 @@ public class AppointmentTransferQuery {
                     " ELSE" +
                     " pda.fileUri" +
                     " END as transferredFromFileUri," +
-
                     " CASE" +
                     " WHEN" +
                     " cda.fileUri LIKE 'public%'" +
@@ -185,7 +183,8 @@ public class AppointmentTransferQuery {
                     " ELSE" +
                     " cda.fileUri" +
                     " END as transferredToFileUri," +
-
+                    " apt.previousDoctor.status as isTransferredFromDoctorActive,"+
+                    " apt.currentDoctor.status as isTransferredToDoctorActive,"+
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +
@@ -270,7 +269,6 @@ public class AppointmentTransferQuery {
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
                     "  hpi.isRegistered as patientType," +
-
                     " CASE" +
                     " WHEN" +
                     " pda.fileUri LIKE 'public%'" +
@@ -279,7 +277,6 @@ public class AppointmentTransferQuery {
                     " ELSE" +
                     " pda.fileUri" +
                     " END as transferredFromFileUri," +
-
                     " CASE" +
                     " WHEN" +
                     " cda.fileUri LIKE 'public%'" +
@@ -288,7 +285,6 @@ public class AppointmentTransferQuery {
                     " ELSE" +
                     " cda.fileUri" +
                     " END as transferredToFileUri," +
-
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     APPOINTMENT_TRANSFER_AUDITABLE_QUERY() +
                     " FROM" +

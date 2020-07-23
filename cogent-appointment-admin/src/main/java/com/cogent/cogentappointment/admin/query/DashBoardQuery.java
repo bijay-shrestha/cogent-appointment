@@ -303,7 +303,8 @@ public class DashBoardQuery {
                 " s.id as specializationId," +                                                   //[3]
                 " s.name as specializationName," +                                               //[4]
                 " COUNT(a.id) as successfulAppointments," +                                      //[5]
-                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
+                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue," +                     //[6]
+                " d.status as isDoctorActive"+
                 " FROM Appointment a" +
                 " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +

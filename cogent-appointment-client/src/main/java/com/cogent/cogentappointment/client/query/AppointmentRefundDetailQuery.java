@@ -38,6 +38,7 @@ public class AppointmentRefundDetailQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +
+                " d.status as isDoctorActive," +
                 " adi.specialization.name as specializationName," +
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
@@ -237,6 +238,7 @@ public class AppointmentRefundDetailQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +
+                    " d.status as isDoctorActive," +
                     " adi.specialization.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +

@@ -44,6 +44,5 @@ public class AppointmentSearchDTO implements Serializable {
     @Status
     private Character isSelf;
 
-    //    @NotNull
     private String appointmentServiceTypeCode;
 }

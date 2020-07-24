@@ -13,6 +13,7 @@ import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.ex
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,6 @@ import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterQue
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptWeekDaysDutyRosterDoctorInfoQuery.QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDayNames;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -60,6 +60,12 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public HospitalDeptDutyRosterRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public Character fetchRoomStatusIfExists(Long hospitalDepartmentId, Date fromDate, Date toDate) {
@@ -369,7 +375,8 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
             Long hospitalDepartmentWeekDaysDutyRosterId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEK_DAYS_DOCTOR_INFO)
-                .setParameter(ID, hospitalDepartmentWeekDaysDutyRosterId);
+                .setParameter(ID, hospitalDepartmentWeekDaysDutyRosterId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterDoctorInfoResponseDTO.class);
     }

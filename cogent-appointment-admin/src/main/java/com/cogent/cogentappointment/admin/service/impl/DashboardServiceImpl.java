@@ -198,7 +198,6 @@ public class DashboardServiceImpl implements DashboardService {
         List<DoctorRevenueDTO> doctorRevenue =
                 appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
 
-
         List<DoctorRevenueDTO> cancelledRevenue =
                 appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO, pageable);
 
@@ -214,8 +213,6 @@ public class DashboardServiceImpl implements DashboardService {
         List<DoctorRevenueDTO> mergedList = mergeDoctorAndCancelledRevenue(doctorRevenue, cancelledAndRefundedRevenue);
 
         DoctorRevenueResponseDTO responseDTO = parseToDoctorRevenueResponseDTO(mergedList);
-
-
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 

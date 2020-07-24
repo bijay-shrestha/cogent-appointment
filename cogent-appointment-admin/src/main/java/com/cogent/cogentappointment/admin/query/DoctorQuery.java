@@ -6,6 +6,8 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE;
+
 /**
  * @author smriti on 2019-09-29
  */
@@ -163,24 +165,15 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " tbl1.specialization_name as specializationName," +                //[12]
-                    " tbl2.qualification_name as qualificationName," +                   //[13]
-                    " CASE" +
-                    " WHEN" +
-                    " (tbl3.status is null OR tbl3.status = 'N')" +
-                    " THEN null" +
-                    " WHEN" +
-                    " tbl3.file_uri LIKE 'public%'" +
-                    " THEN" +
-                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(tbl3.file_uri, 'public', -1))" +
-                    " ELSE" +
-                    " tbl3.file_uri" +
-                    " END as fileUri," +                                                   //[14]
+                    " tbl1.specialization_name as specializationName," +                 //[11]
+                    " tbl2.qualification_name as qualificationName," +                   //[12]
+                    " d.salutation as doctorSalutation," +
                     DOCTOR_AUDITABLE_QUERY() + "," +
-                    " d.salutation as doctorSalutation" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE +
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
+                    " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
                     " RIGHT JOIN" +
                     " (" +
                     QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(null) +
@@ -189,12 +182,35 @@ public class DoctorQuery {
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL +
                     " )tbl2 ON tbl2.doctor_id = d.id" +
-                    " LEFT JOIN" +
-                    " (" +
-                    QUERY_TO_FETCH_DOCTOR_AVATAR +
-                    " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
                     " AND d.id = :id";
+
+
+//            " SELECT" +
+//                    SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
+//                    SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
+//                    " tbl1.specialization_name as specializationName," +                //[12]
+//                    " tbl2.qualification_name as qualificationName," +                   //[13]
+//                    QUERY_TO_FETCH_DOCTOR_AVATAR_NATIVE+","+                                                 //[14]
+//                    DOCTOR_AUDITABLE_QUERY() + "," +
+//                    " d.salutation as doctorSalutation" +
+//                    " FROM doctor d" +
+//                    " LEFT JOIN hospital h ON h.id = d.hospital_id" +
+//                    " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
+//                    " RIGHT JOIN" +
+//                    " (" +
+//                    QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(null) +
+//                    " )tbl1 ON tbl1.doctor_id = d.id" +
+//                    " RIGHT JOIN" +
+//                    " (" +
+//                    QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL +
+//                    " )tbl2 ON tbl2.doctor_id = d.id" +
+//                    " LEFT JOIN" +
+//                    " (" +
+//                    QUERY_TO_FETCH_DOCTOR_AVATAR +
+//                    " )tbl3 ON tbl3.doctorId= d.id" +
+//                    " WHERE d.status != 'D'" +
+//                    " AND d.id = :id";
 
     /*UPDATE MODAL*/
     private static final String QUERY_TO_FETCH_DOCTOR_SPECIALIZATION_FOR_UPDATE =
@@ -238,18 +254,19 @@ public class DoctorQuery {
                     " tbl2.qualification_name as qualificationName," +                      //[18]
                     " CASE" +
                     " WHEN" +
-                    " (tbl3.status is null OR tbl3.status = 'N')" +
+                    " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
                     " WHEN" +
-                    " tbl3.file_uri LIKE 'public%'" +
+                    " da.file_uri LIKE 'public%'" +
                     " THEN" +
-                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(tbl3.file_uri, 'public', -1))" +
+                    " CONCAT(:cdnUrl, SUBSTRING_INDEX(da.file_uri, 'public', -1))" +
                     " ELSE" +
-                    " tbl3.file_uri" +
-                    " END as fileUri" +                                                      //[19]
+                    " da.file_uri" +
+                    " END as fileUri" +                                                     //[19]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
+                    " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
                     " RIGHT JOIN" +
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_SPECIALIZATION_FOR_UPDATE +
@@ -258,10 +275,6 @@ public class DoctorQuery {
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_UPDATE +
                     " )tbl2 ON tbl2.doctor_id = d.id" +
-                    " LEFT JOIN" +
-                    " (" +
-                    QUERY_TO_FETCH_DOCTOR_AVATAR +
-                    " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
                     " AND d.id = :id";
 
@@ -292,7 +305,7 @@ public class DoctorQuery {
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +       //[2]
-                    " END as label," +
+                    " END as label" +
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +

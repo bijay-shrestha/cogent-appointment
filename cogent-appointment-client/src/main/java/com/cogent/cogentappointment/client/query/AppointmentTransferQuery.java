@@ -184,6 +184,8 @@ public class AppointmentTransferQuery {
                     " ELSE" +
                     " cda.fileUri" +
                     " END as transferredToFileUri," +
+                    " apt.previousDoctor.status as isTransferredFromDoctorActive,"+
+                    " apt.currentDoctor.status as isTransferredToDoctorActive,"+
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +
@@ -289,6 +291,8 @@ public class AppointmentTransferQuery {
                     " cda.fileUri" +
                     " END as transferredToFileUri," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    " apt.previousDoctor.status as isTransferredFromDoctorActive,"+
+                    " apt.currentDoctor.status as isTransferredToDoctorActive,"+
                     APPOINTMENT_TRANSFER_AUDITABLE_QUERY() +
                     " FROM" +
                     " AppointmentTransfer apt" +
@@ -300,7 +304,8 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN DoctorAvatar pda ON pda.doctorId.id=apt.previousDoctor.id " +
                     " LEFT JOIN DoctorAvatar cda ON cda.doctorId.id=apt.currentDoctor.id " +
-                    " WHERE apt.id=:appointmentTransferId";
+                    " WHERE apt.id=:appointmentTransferId" +
+                    " GROUP BY a.id";
 
     public static String APPOINTMENT_TRANSFER_AUDITABLE_QUERY() {
         return " apt.createdBy as createdBy," +

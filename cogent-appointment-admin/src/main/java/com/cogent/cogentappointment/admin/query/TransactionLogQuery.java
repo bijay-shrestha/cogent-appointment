@@ -6,6 +6,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDateInString;
@@ -38,6 +39,7 @@ public class TransactionLogQuery {
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +                                                      //[14]
                     " a.status as status," +                                                     //[15]
+                    " d.status as isDoctorActive,"+
                     " CASE WHEN" +
                     " a.status = 'RE'" +
                     " THEN " +
@@ -57,8 +59,8 @@ public class TransactionLogQuery {
                     " ELSE" +
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +
                     " END AS revenueAmount," +                                                      //[22]
-                    " da.fileUri as fileUri," +                                                     //[23]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +                                                //[24]
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                                                //[23]
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +

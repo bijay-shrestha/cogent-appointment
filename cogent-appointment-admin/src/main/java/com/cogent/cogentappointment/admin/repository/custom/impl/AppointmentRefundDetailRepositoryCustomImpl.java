@@ -139,7 +139,9 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
     @Override
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_REFUNDED_DETAIL_BY_ID)
-                .setParameter(APPOINTMENT_ID, appointmentId);
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
+
         try {
             return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
         } catch (NoResultException e) {

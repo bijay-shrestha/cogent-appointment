@@ -18,6 +18,8 @@ public class AppointmentResponseWithStatusDTO implements Serializable {
 
     private List<AppointmentResponseDTO> appointments;
 
+    private int totalItems;
+
     private int responseCode;
 
     private HttpStatus responseStatus;

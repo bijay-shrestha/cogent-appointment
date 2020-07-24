@@ -175,7 +175,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_REFUNDED_DETAIL_BY_ID)
                 .setParameter(APPOINTMENT_ID, appointmentId)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
         try {
             return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -274,13 +274,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 return createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_QUEUE
                         .apply(appointmentQueueRequestDTO))
                         .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
-                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
+                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType())
+                        .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
             case DEPARTMENT_CONSULTATION_CODE:
                 return createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_QUEUE
                         .apply(appointmentQueueRequestDTO))
                         .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
-                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
+                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType())
+                        .setParameter(CDN_URL, minIOProperties.getCDN_URL());
+
 
             default:
                 throw new NoContentFoundException(NO_SERVICE_TYPE_FOUND);
@@ -292,7 +295,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             AppointmentQueueRequestDTO appointmentQueueRequestDTO,
             Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
-                .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
+                .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -427,7 +431,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public AppointmentPendingApprovalDetailResponseDTO fetchDetailsByAppointmentId(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVAL_DETAIL_BY_ID)
                 .setParameter(APPOINTMENT_ID, appointmentId)
-                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
         try {
             return transformQueryToSingleResult(query, AppointmentPendingApprovalDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -498,7 +502,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                             String appointmentServiceTypeCode) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TRANSACTION_LOGS.apply(searchRequestDTO))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode);
+                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentServiceTypeCode)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 

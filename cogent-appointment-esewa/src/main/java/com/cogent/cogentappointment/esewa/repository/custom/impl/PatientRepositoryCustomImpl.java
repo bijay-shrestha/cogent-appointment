@@ -157,19 +157,17 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     private List<PatientMinResponseDTOForOthers> fetchPatientInfo(Pageable pageable,
                                                                   String childPatientIds) {
 
-
         Query query = entityManager.createQuery(QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(childPatientIds));
-
-        List<PatientMinResponseDTOForOthers> patientMinInfo =
-                transformQueryToResultList(query, PatientMinResponseDTOForOthers.class);
 
         Integer totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
+        List<PatientMinResponseDTOForOthers> patientMinInfo =
+                transformQueryToResultList(query, PatientMinResponseDTOForOthers.class);
+
         if (patientMinInfo.isEmpty())
             PATIENT_NOT_FOUND.get();
-
 
         patientMinInfo.get(0).setTotalItems(totalItems);
         return patientMinInfo;

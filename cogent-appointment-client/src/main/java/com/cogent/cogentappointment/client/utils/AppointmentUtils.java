@@ -102,15 +102,12 @@ public class AppointmentUtils {
         return appointmentStatusResponseDTOS;
     }
 
-    public static Map<String, List<AppointmentQueueDTO>> parseQueryResultToAppointmentQueueForTodayByTimeResponse(List<Object[]> results) {
-
-        List<AppointmentQueueSearchByTimeDTO> appointmentQueueSearchByTimeDTOS = new ArrayList<>();
+    public static Map<String, List<AppointmentQueueDTO>> parseQueryResultToAppointmentQueueForTodayByTimeResponse
+            (List<Object[]> results) {
 
         AppointmentQueueDTO appointmentQueueSearchDTO = new AppointmentQueueDTO();
 
         List<AppointmentQueueDTO> appointmentQueueByTimeDTOS = new ArrayList<>();
-
-        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
 
         results.forEach(result -> {
             final int APPOINTMENT_TIME_INDEX = 0;
@@ -118,6 +115,7 @@ public class AppointmentUtils {
             final int SPECIALIZATION_NAME_INDEX = 2;
             final int PATIENT_NAME_INDEX = 3;
             final int PATIENT_MOBILE_NUMBER_INDEX = 4;
+            final int IS_DOCTOR_ACTIVE_INDEX = 4;
             final int DOCTOR_AVATAR_INDEX = 5;
 
             AppointmentTimeDTO appointmentTimeDTO = AppointmentTimeDTO.builder()
@@ -131,6 +129,7 @@ public class AppointmentUtils {
                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientMobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
+                            .isDoctorActive(result[IS_DOCTOR_ACTIVE_INDEX].toString().charAt(0))
                             .fileUri(result[DOCTOR_AVATAR_INDEX].toString())
                             .build();
 

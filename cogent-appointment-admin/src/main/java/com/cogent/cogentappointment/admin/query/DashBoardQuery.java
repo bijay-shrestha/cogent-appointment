@@ -6,6 +6,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -259,7 +260,7 @@ public class DashBoardQuery {
             whereClause += " AND a.hospitalId=" + hospitalId;
 
         if (!Objects.isNull(appointmentServiceTypCode) && !ObjectUtils.isEmpty(appointmentServiceTypCode))
-            whereClause += " AND hast.appointmentServiceType.code='" + appointmentServiceTypCode +"'";
+            whereClause += " AND hast.appointmentServiceType.code='" + appointmentServiceTypCode + "'";
 
         return whereClause;
     }
@@ -298,16 +299,12 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                                           //[1]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," +                                                             //[2]
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " s.id as specializationId," +                                                   //[3]
                 " s.name as specializationName," +                                               //[4]
                 " COUNT(a.id) as successfulAppointments," +                                      //[5]
-                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
+                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue," +                     //[6]
+                " d.status as isDoctorActive"+
                 " FROM Appointment a" +
                 " LEFT JOIN HospitalAppointmentServiceType hast ON hast.id=a.hospitalAppointmentServiceType.id " +
                 " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
@@ -487,12 +484,7 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                          //[1]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," +                                            //[2]
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " s.id as specializationId," +                                  //[3]
                 " s.name as specializationName," +                              //[4]
                 " COUNT(a.id) as cancelledAppointments," +                      //[5]
@@ -523,12 +515,7 @@ public class DashBoardQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +                                          //[1]
-                " CASE WHEN" +
-                " (da.status is null OR da.status = 'N')" +
-                " THEN null" +
-                " ELSE" +
-                " da.fileUri" +
-                " END as fileUri," +                                            //[2]
+                QUERY_TO_FETCH_DOCTOR_AVATAR +
                 " s.id as specializationId," +                                  //[3]
                 " s.name as specializationName," +                              //[4]
                 " COUNT(a.id) as cancelledAppointments," +                      //[5]

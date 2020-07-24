@@ -175,6 +175,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @Override
     public List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(doctorId))
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(CDN_URL, minIOProperties.getCDN_URL());
@@ -184,10 +185,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         if (doctorAvatars.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
 
-        else {
-
-            return doctorAvatars;
-        }
+        else return doctorAvatars;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () -> {

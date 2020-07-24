@@ -17,7 +17,8 @@ public class HospitalDeptWeekDaysDutyRosterDoctorInfoQuery {
                     " THEN d.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
-                    " END as label" +                                                                  //[3]
+                    " END as label," +                                                                  //[3]
+                    " d.status as isDoctorActive"+
                     " FROM HospitalDepartmentWeekDaysDutyRosterDoctorInfo h" +
                     " LEFT JOIN HospitalDepartmentDoctorInfo hd ON hd.id = h.hospitalDepartmentDoctorInfo.id" +
                     " LEFT JOIN Doctor d ON d.id = hd.doctor.id" +

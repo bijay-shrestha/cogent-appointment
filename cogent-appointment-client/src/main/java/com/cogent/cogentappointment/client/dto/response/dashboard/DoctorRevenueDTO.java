@@ -15,6 +15,8 @@ public class DoctorRevenueDTO implements Serializable {
 
     private String doctorName;
 
+    private Character isDoctorActive;
+
     private String doctorSalutation;
 
     private Long specializationId;

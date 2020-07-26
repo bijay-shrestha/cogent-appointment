@@ -51,6 +51,8 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private String fileUri;
 
+    private Character isDoctorActive;
+
     private String specializationName;
 
     private String appointmentMode;

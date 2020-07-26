@@ -32,7 +32,8 @@ public class DoctorDutyRosterQuery {
                 " ddr.fromDate as fromDate," +                                          //[4]
                 " ddr.toDate as toDate," +                                              //[5]
                 " ddr.status as status," +                                              //[6]
-                " d.salutation as doctorSalutation," +                                  //[7]
+                " d.salutation as doctorSalutation," +
+                " d.status as isDoctorActive," +                                  //[7]
                 QUERY_TO_FETCH_DOCTOR_AVATAR +                                          //[8]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
@@ -71,7 +72,8 @@ public class DoctorDutyRosterQuery {
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +             //[10]
                     QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                     DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() + "," +
-                    " d.salutation as doctorSalutation" +
+                    " d.salutation as doctorSalutation," +
+                    " d.status as isDoctorActive" +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +

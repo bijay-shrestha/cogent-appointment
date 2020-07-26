@@ -9,13 +9,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author Sauravi Thapa ON 5/25/20
+ * @author smriti ON 07/02/2020
  */
 @Getter
 @Setter
-public class RefundStatusDTO implements Serializable {
-
-    private Long appointmentId;
+public class HospitalDepartmentAppointmentRefundDetailResponseDTO implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")
     private Date appointmentDate;
@@ -23,6 +21,14 @@ public class RefundStatusDTO implements Serializable {
     private String appointmentTime;
 
     private String appointmentNumber;
+
+    private Long appointmentId;
+
+    private Long appointmentModeId;
+
+    private Long hospitalId;
+
+    private String hospitalName;
 
     private String patientName;
 
@@ -32,11 +38,7 @@ public class RefundStatusDTO implements Serializable {
 
     private String age;
 
-    private String doctorName;
-
-    private String fileUri;
-
-    private String specializationName;
+    private String hospitalDepartmentName;
 
     private String eSewaId;
 
@@ -44,21 +46,19 @@ public class RefundStatusDTO implements Serializable {
 
     private String cancelledDate;
 
-    private String cancelledTime;
-
     private Double refundAmount;
 
     private String mobileNumber;
 
+    private Double appointmentCharge;
+
     private String appointmentMode;
 
-    private Long appointmentModeId;
-
-    private Character isRegistered;
-
-    private String refundStatus;
+    private String esewaMerchantCode;
 
     private String remarks;
 
-    private Character isDoctorActive;
+    private Character isRegistered;
+
+    private String roomNumber;
 }

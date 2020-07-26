@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class RefundStatusDTO implements Serializable {
+public class HospitalDepartmentRefundStatusDTO implements Serializable {
 
     private Long appointmentId;
 
@@ -32,11 +32,7 @@ public class RefundStatusDTO implements Serializable {
 
     private String age;
 
-    private String doctorName;
-
-    private String fileUri;
-
-    private String specializationName;
+    private String hospitalDepartmentName;
 
     private String eSewaId;
 
@@ -60,5 +56,5 @@ public class RefundStatusDTO implements Serializable {
 
     private String remarks;
 
-    private Character isDoctorActive;
+    private String roomNumber;
 }

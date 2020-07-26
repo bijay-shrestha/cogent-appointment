@@ -38,4 +38,6 @@ public class AppointmentRescheduleLogSearchDTO implements Serializable{
     private String appointmentServiceTypeCode;
 
     private Long hospitalDepartmentId;
+
+    private Long hospitalDepartmentRoomInfoId;
 }

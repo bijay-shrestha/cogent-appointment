@@ -3,6 +3,8 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentAppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
@@ -26,7 +28,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
-import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
+import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -63,11 +65,27 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, REFUND_STATUS);
+        log.info(SEARCHING_PROCESS_STARTED, DOCTOR_REFUND_STATUS);
 
         RefundStatusResponseDTO response = refundDetailRepository.searchRefundAppointments(requestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+
+        return response;
+    }
+
+    @Override
+    public HospitalDepartmentRefundStatusResponseDTO searchHospitalDepartmentRefundAppointments(
+            RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REFUND_STATUS);
+
+        HospitalDepartmentRefundStatusResponseDTO response = refundDetailRepository
+                .searchHospitalDepartmentRefundAppointments(requestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return response;
     }
@@ -101,32 +119,28 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, REFUND_STATUS);
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_REFUND_STATUS);
 
         AppointmentRefundDetailResponseDTO refundAppointments =
                 refundDetailRepository.fetchRefundDetailsById(appointmentId);
 
-        log.info(FETCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return refundAppointments;
     }
 
-    /* Requests esewa api to check the cancelled appointment's status in their side
-    * if Response returns COMPLETED our db should maintain 'A' status in Refund table
-     * and 'RE' in Appointment table*/
-    private String checkEsewaRefundStatus(RefundStatusRequestDTO requestDTO) {
+    @Override
+    public HospitalDepartmentAppointmentRefundDetailResponseDTO fetchHospitalDepartmentRefundDetailsById(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-//        EsewaPaymentStatus esewaPayementStatus = parseToEsewaPayementStatus(requestDTO);
-//
-//        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REFUND_STATUS);
 
-//        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-//                postRequest(ESEWA_API_PAYMENT_STATUS,
-//                        request, EsewaResponseDTO.class);
+        HospitalDepartmentAppointmentRefundDetailResponseDTO response = refundDetailRepository
+                .fetchHospitalDepartmentRefundDetailsById(appointmentId);
 
-//        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 
-        return null;
+        return response;
     }
 
     private AppointmentRefundDetail getAppointmentRefundDetail(RefundStatusRequestDTO requestDTO) {

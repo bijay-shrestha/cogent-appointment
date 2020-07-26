@@ -43,4 +43,6 @@ public class AppointmentLogSearchDTO implements Serializable {
 
     private Long hospitalDepartmentId;
 
+    private Long hospitalDepartmentRoomInfoId;
+
 }

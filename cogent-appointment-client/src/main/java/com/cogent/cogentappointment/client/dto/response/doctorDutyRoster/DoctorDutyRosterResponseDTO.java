@@ -25,6 +25,8 @@ public class DoctorDutyRosterResponseDTO extends AuditableResponseDTO implements
 
     private String doctorSalutation;
 
+    private Character isDoctorActive;
+
     private String fileUri;
 
     private Long specializationId;

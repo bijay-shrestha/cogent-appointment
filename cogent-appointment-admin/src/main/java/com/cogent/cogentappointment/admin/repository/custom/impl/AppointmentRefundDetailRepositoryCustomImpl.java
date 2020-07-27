@@ -125,7 +125,6 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
         try {
             AppointmentRefundDetail refundDetail = entityManager.createQuery(QUERY_TO_GET_APPOINTMENT_REFUND_DETAILS,
                     AppointmentRefundDetail.class)
-                    .setParameter(ESEWA_ID, requestDTO.getEsewaId())
                     .setParameter(TRANSACTION_NUMBER, requestDTO.getTransactionNumber())
                     .getSingleResult();
 

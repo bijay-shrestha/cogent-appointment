@@ -205,8 +205,7 @@ public class AppointmentRefundDetailQuery {
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id " +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id " +
-                    " WHERE atd.transactionNumber=:transactionNumber" +
-                    " AND a.patientId.eSewaId =:esewaId";
+                    " WHERE atd.transactionNumber=:transactionNumber";
 
     public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
             "SELECT" +

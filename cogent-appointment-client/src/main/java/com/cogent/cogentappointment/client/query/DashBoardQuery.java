@@ -473,7 +473,6 @@ public class DashBoardQuery {
                 " CASE" +
                 " WHEN ard.status='PA'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
                 " WHEN ard.status='R'THEN COALESCE(SUM(atd.appointmentAmount ),0)" +
-                " WHEN ard.status='A'THEN (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 )) " +
                 " END as cancelledRevenue," +
                 " CASE " +
                 " WHEN ad.hospitalDepartmentRoomInfo.id IS NULL " +
@@ -488,7 +487,31 @@ public class DashBoardQuery {
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
                 " WHERE" +
-                " a.status IN ('RE','C')" +
+                " a.status IN ('C')" +
+                GET_WHERE_CLAUSE_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(requestDTO);
+    }
+
+    public static String QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REFUNDED_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
+
+        return "SELECT" +
+                " hd.id as hospitalDepartmentId," +
+                " hd.name as hospitalDepartmentName," +
+                " COUNT(a.id) as cancelledAppointments," +
+                " COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0 ) as cancelledRevenue," +
+                " CASE " +
+                " WHEN ad.hospitalDepartmentRoomInfo.id IS NULL " +
+                " THEN 'N/A'" +
+                " ELSE r.roomNumber END as roomNumber" +
+                " FROM Appointment a" +
+                " LEFT JOIN AppointmentHospitalDepartmentInfo ad ON a.id = ad.appointment.id" +
+                " LEFT JOIN HospitalDepartment hd On hd.id=ad.hospitalDepartment.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.hospitalDepartment.id = hd.id" +
+                " LEFT JOIN Room r ON r.id = hdri.room.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                " LEFT JOIN Hospital h ON h.id=hd.hospital.id" +
+                " WHERE" +
+                " a.status IN ('RE')" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(requestDTO);
     }
 

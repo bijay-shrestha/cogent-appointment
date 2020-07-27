@@ -46,4 +46,8 @@ public interface AppointmentTransactionDetailRepositoryCustom {
             HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
             Pageable pageable);
 
+    List<HospitalDepartmentRevenueDTO> calculateRefundedHospitalDepartmentRevenue(
+            HospitalDepartmentRevenueRequestDTO revenueRequestDTO,
+            Pageable pageable);
+
 }

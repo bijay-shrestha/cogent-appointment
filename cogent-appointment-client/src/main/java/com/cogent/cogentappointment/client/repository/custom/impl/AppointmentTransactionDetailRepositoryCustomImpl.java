@@ -325,6 +325,21 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         return revenueDTOList;
     }
 
+    @Override
+    public List<HospitalDepartmentRevenueDTO> calculateRefundedHospitalDepartmentRevenue(
+            HospitalDepartmentRevenueRequestDTO requestDTO, Pageable pageable) {
+        Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REFUNDED_REVENUE(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        addPagination.accept(pageable, cancelled);
+
+        List<HospitalDepartmentRevenueDTO> revenueDTOList = transformQueryToResultList(cancelled, HospitalDepartmentRevenueDTO.class);
+
+        return revenueDTOList;
+    }
+
 
     private String getQueryByFilter(Character filter) {
         Map<Character, String> queriesWithFilterAsKey = new HashMap<>();

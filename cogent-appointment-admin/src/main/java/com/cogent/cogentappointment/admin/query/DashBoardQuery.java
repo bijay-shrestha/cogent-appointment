@@ -424,7 +424,7 @@ public class DashBoardQuery {
         if (requestDTO.getHospitalDepartmentId() != 0 && !Objects.isNull(requestDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id=" + requestDTO.getHospitalDepartmentId();
 
-        whereClause += " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
+        whereClause += " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate" +
                 " GROUP BY hd.id ";
 
         return whereClause;
@@ -444,7 +444,7 @@ public class DashBoardQuery {
                     " (a.status !='RE' OR a.status !='C')" +
                     " AND a.isFollowUp='Y'" +
                     " AND ad.hospitalDepartment.id=:hospitalDepartmentId" +
-                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+                    " AND DATE_FORMAT(atd.transactionDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate";
 
     public static String QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REVENUE(HospitalDepartmentRevenueRequestDTO requestDTO) {
 

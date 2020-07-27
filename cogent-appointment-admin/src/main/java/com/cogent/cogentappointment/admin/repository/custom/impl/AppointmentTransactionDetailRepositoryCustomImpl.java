@@ -277,8 +277,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
             HospitalDepartmentRevenueRequestDTO requestDTO, Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPARTMENT_REVENUE(requestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(requestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         addPagination.accept(pageable, query);
@@ -288,8 +288,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
         revenueDTOList.forEach(revenueDTO -> {
             Query queryToGetFollowUp = createQuery.apply(entityManager, QUERY_TO_GET_HOSPITAL_DEPARTMENT_FOLLOW_UP)
-                    .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                    .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                    .setParameter(FROM_DATE, utilDateToSqlDateInString(requestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDateInString(requestDTO.getToDate()))
                     .setParameter(HOSPITAL_DEPARTMENT_ID, revenueDTO.getHospitalDepartmentId());
 
             FollowUpResponse followUpResponse = transformQueryToSingleResult(queryToGetFollowUp,
@@ -306,8 +306,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     public List<HospitalDepartmentRevenueDTO> calculateCancelledHospitalDepartmentRevenue(
             HospitalDepartmentRevenueRequestDTO requestDTO, Pageable pageable) {
         Query cancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_HOSPITAL_DEPT_COMPANY_REVENUE(requestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(FROM_DATE, utilDateToSqlDateInString(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDateInString(requestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         addPagination.accept(pageable, cancelled);

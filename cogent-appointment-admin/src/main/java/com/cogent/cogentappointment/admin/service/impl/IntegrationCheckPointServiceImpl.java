@@ -586,6 +586,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         .integrationChannelCode("BACK")
                         .appointmentId(appointment.getId())
                         .appointmentModeId(appointment.getAppointmentModeId().getId())
+                        .hospitalId(appointment.getHospitalId().getId())
                         .build();
 
                 apiIntegrationCheckpointForRefundAppointment(appointment,

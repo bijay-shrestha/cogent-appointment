@@ -67,7 +67,8 @@ public class AppointmentQuery {
                             " THEN d.name" +
                             " ELSE" +
                             " CONCAT_WS(' ',d.salutation, d.name)" +
-                            " END as doctorName," +                                                     //[12]
+                            " END as doctorName," +
+                            " d.status as isDoctorActive," +                                                     //[12]
                             " atd.transactionNumber as transactionNumber," +                            //[13]
                             " atd.appointmentAmount as appointmentAmount," +                            //[14]
                             " arl.remarks as remarks," +                                               //[15]
@@ -168,6 +169,7 @@ public class AppointmentQuery {
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
                 " END as doctorName," +
+                " d.status as isDoctorActive," +
                 " s.name as specializationName," +
                 " atd.transactionNumber as transactionNumber," +
                 " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y') as cancelledDate," +
@@ -270,7 +272,8 @@ public class AppointmentQuery {
                             " p.gender as gender," +                                                    //[16]
                             " hpi.address as address," +                                                //[17]
                             " hpi.isRegistered as isRegistered," +                                      //[18]
-                            " h.name as hospitalName," +                                                //[19]
+                            " h.name as hospitalName," +
+                            " d.status as isDoctorActive," +                                                //[19]
                             QUERY_TO_CALCULATE_PATIENT_AGE +                                            //[20]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
@@ -344,7 +347,8 @@ public class AppointmentQuery {
                             " THEN d.name" +
                             " ELSE" +
                             " CONCAT_WS(' ',d.salutation, d.name)" +
-                            " END as doctorName," +                                                //[13]
+                            " END as doctorName," +
+                            " d.status as isDoctorActive," +                                                //[13]
                             " a.status as status," +                                               //[14]
                             " CASE WHEN" +
                             " a.status = 'RE'" +
@@ -504,7 +508,8 @@ public class AppointmentQuery {
                     " d.id as doctorId," +                                                      //[20]
                     " sp.id as specializationId," +                                             //[21]
                     " a.isFollowUp as followUp," +                                               //[22]
-                    " hpi.hospitalNumber as hospitalNumber" +
+                    " hpi.hospitalNumber as hospitalNumber," +
+                    " d.status as isDoctorActive" +
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentDoctorInfo ad ON a.id = ad.appointment.id" +
                     " LEFT JOIN Patient p ON p.id = a.patientId" +
@@ -548,6 +553,7 @@ public class AppointmentQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +
+                    " d.status as isDoctorActive," +
                     " s.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
                     " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
@@ -863,10 +869,10 @@ public class AppointmentQuery {
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
-                " CASE " +
-                " WHEN ahd.hospitalDepartmentRoomInfo.id IS NULL " +
-                " THEN 'N/A'" +
-                " ELSE r.roomNumber END as roomNumber," +
+                " Case" +
+                " WHEN ahd.hospitalDepartmentRoomInfo IS NOT NULL THEN hdri.room.roomNumber" +
+                " WHEN ahd.hospitalDepartmentRoomInfo IS NULL THEN 'N/A'" +
+                " END as roomNumber," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +

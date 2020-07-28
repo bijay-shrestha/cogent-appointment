@@ -281,8 +281,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 return createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_APPOINTMENT_QUEUE
                         .apply(appointmentQueueRequestDTO))
                         .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()))
-                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType())
-                        .setParameter(CDN_URL, minIOProperties.getCDN_URL());
+                        .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, appointmentQueueRequestDTO.getAppointmentServiceType());
 
 
             default:

@@ -91,7 +91,6 @@ public class Appointment extends Auditable<String> implements Serializable {
 
     /* PA = PENDING APPROVAL
        A= VISITED AND APPROVED (CHECKED -IN)
-       R= REJECTED BY HOSPITAL
        C = CANCELLED BUT NOT REFUNDED
        RE = CANCELLED AND REFUNDED
     */

@@ -204,7 +204,8 @@ public class AppointmentQuery {
                 " THEN d.name" +
                 " ELSE" +
                 " CONCAT_WS(' ',d.salutation, d.name)" +
-                " END as doctorName," +                                                     //[8]
+                " END as doctorName," +
+                " d.status as isDoctorActive,"+                                             //[8]
                 " a.appointmentModeId.name as appointmentMode," +                           //[9]
                 " atd.appointmentAmount as appointmentAmount," +                            //[10]
                 " atd.transactionNumber as transactionNumber," +                            //[11]
@@ -286,6 +287,7 @@ public class AppointmentQuery {
                             " sp.name as specializationName," +                             //[11]
                             " atd.transactionNumber as transactionNumber," +                //[12]
                             " atd.appointmentAmount as appointmentAmount," +                //[13]
+                            " d.status as isDoctorActive,"+
                             " CASE WHEN" +
                             " (d.salutation is null)" +
                             " THEN d.name" +
@@ -386,6 +388,7 @@ public class AppointmentQuery {
                             " p.gender as patientGender," +                                             //[10]
                             " p.mobileNumber as mobileNumber," +                                         //[11]
                             " sp.name as specializationName," +                                         //[12]
+                            " d.status as isDoctorActive,"+
                             " CASE WHEN" +
                             " (d.salutation is null)" +
                             " THEN d.name" +
@@ -475,6 +478,7 @@ public class AppointmentQuery {
             (appointmentQueueSearchDTO) ->
                     "SELECT" +
                             " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
+                            " d.status as isDoctorActive,"+
                             " CASE WHEN" +
                             " (d.salutation is null)" +
                             " THEN d.name" +
@@ -622,6 +626,7 @@ public class AppointmentQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +
+                    " d.status as isDoctorActive,"+
                     " s.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
                     " ard.refundAmount as refundAmount," +
@@ -1018,10 +1023,10 @@ public class AppointmentQuery {
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " hpi.isRegistered as isRegistered," +
-                " CASE " +
-                " WHEN ahd.hospitalDepartmentRoomInfo.id IS NULL " +
-                " THEN 'N/A'" +
-                " ELSE r.roomNumber END as roomNumber," +
+                " Case" +
+                " WHEN ahd.hospitalDepartmentRoomInfo IS NOT NULL THEN hdri.room.roomNumber" +
+                " WHEN ahd.hospitalDepartmentRoomInfo IS NULL THEN 'N/A'" +
+                " END as roomNumber," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +

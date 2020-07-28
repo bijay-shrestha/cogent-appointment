@@ -227,16 +227,25 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_REVENUE);
 
+        List<HospitalDepartmentRevenueDTO> cancelledAndRefundedRevenue=new ArrayList<>();
+
         List<HospitalDepartmentRevenueDTO> hospitalDeptRevenue =
                 appointmentTransactionDetailRepository.calculateHospitalDepartmentRevenue(revenueRequestDTO, pageable);
 
         List<HospitalDepartmentRevenueDTO> cancelledRevenue =
                 appointmentTransactionDetailRepository.calculateCancelledHospitalDepartmentRevenue(revenueRequestDTO, pageable);
 
+        List<HospitalDepartmentRevenueDTO> refundedRevenue =
+                appointmentTransactionDetailRepository.calculateRefundedHospitalDepartmentRevenue(revenueRequestDTO, pageable);
+
         validateHospitalDepartmentRevenue(hospitalDeptRevenue, cancelledRevenue);
 
+        cancelledAndRefundedRevenue.addAll(cancelledRevenue);
+
+        cancelledAndRefundedRevenue.addAll(refundedRevenue);
+
         List<HospitalDepartmentRevenueDTO> mergedList = mergeHospitalDepartmentAndCancelledRevenue
-                (hospitalDeptRevenue, cancelledRevenue);
+                (hospitalDeptRevenue, cancelledAndRefundedRevenue);
 
         HospitalDepartmentRevenueResponseDTO responseDTO = parseToHospitalDeptRevenueResponseDTO(mergedList);
 

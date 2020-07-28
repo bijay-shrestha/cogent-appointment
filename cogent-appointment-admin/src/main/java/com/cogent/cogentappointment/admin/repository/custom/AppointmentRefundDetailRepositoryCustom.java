@@ -4,6 +4,8 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequ
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.refundStatus.HospitalDepartmentAppointmentRefundDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.refundStatus.HospitalDepartmentRefundStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +25,12 @@ public interface AppointmentRefundDetailRepositoryCustom {
 
     RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable);
 
+    HospitalDepartmentRefundStatusResponseDTO searchHospitalDepartmentRefundAppointments
+            (RefundStatusSearchRequestDTO requestDTO, Pageable pageable);
+
     AppointmentRefundDetail fetchAppointmentRefundDetail(RefundStatusRequestDTO requestDTO);
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId);
+
+    HospitalDepartmentAppointmentRefundDetailResponseDTO fetchHospitalDepartmentRefundDetailsById(Long appointmentId);
 }

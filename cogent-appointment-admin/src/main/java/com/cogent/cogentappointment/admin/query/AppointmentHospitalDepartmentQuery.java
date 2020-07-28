@@ -364,7 +364,7 @@ public class AppointmentHospitalDepartmentQuery {
             whereClause += " AND h.id = " + appointmentLogSearchDTO.getHospitalId();
 
         if (!Objects.isNull(appointmentLogSearchDTO.getPatientMetaInfoId()))
-            whereClause += " AND pmi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
+            whereClause += " AND pi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
 
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
@@ -374,6 +374,9 @@ public class AppointmentHospitalDepartmentQuery {
 
         if (!Objects.isNull(appointmentLogSearchDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id = " + appointmentLogSearchDTO.getHospitalDepartmentId();
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getHospitalDepartmentRoomInfoId()))
+            whereClause += " AND hr.id = " + appointmentLogSearchDTO.getHospitalDepartmentRoomInfoId();
 
         whereClause += " ORDER BY a.appointmentDate DESC ";
 
@@ -451,6 +454,9 @@ public class AppointmentHospitalDepartmentQuery {
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id = " + appointmentRescheduleLogSearchDTO.getHospitalDepartmentId();
 
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getHospitalDepartmentRoomInfoId()))
+            whereClause += " AND hr.id = " + appointmentRescheduleLogSearchDTO.getHospitalDepartmentRoomInfoId();
+
         whereClause += " ORDER BY arl.rescheduleDate";
 
         return whereClause;
@@ -465,6 +471,7 @@ public class AppointmentHospitalDepartmentQuery {
                         " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                         " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                         " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                        " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ahd.hospitalDepartmentRoomInfo.id" +
                         " LEFT JOIN Patient p ON p.id=a.patientId" +
                         " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                         " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

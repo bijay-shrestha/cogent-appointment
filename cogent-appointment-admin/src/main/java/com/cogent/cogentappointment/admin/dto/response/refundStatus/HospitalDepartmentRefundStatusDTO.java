@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.refundStatus;
+package com.cogent.cogentappointment.admin.dto.response.refundStatus;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class RefundStatusDTO implements Serializable {
+public class HospitalDepartmentRefundStatusDTO implements Serializable {
 
     private Long appointmentId;
 
@@ -32,11 +32,9 @@ public class RefundStatusDTO implements Serializable {
 
     private String age;
 
-    private String doctorName;
+    private String hospitalDepartmentName;
 
-    private String fileUri;
-
-    private String specializationName;
+    private String hospitalName;
 
     private String eSewaId;
 
@@ -60,5 +58,5 @@ public class RefundStatusDTO implements Serializable {
 
     private String remarks;
 
-    private Character isDoctorActive;
+    private  String roomNumber;
 }

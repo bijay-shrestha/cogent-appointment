@@ -53,4 +53,6 @@ public class AppointmentRefundDTO implements Serializable {
     private String appointmentMode;
 
     private Character isRegistered;
+
+    private Character isDoctorActive;
 }

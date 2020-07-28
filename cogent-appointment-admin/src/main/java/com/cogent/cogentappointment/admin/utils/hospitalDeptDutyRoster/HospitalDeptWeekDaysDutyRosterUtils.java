@@ -6,6 +6,10 @@ import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRost
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentWeekDaysDutyRoster;
 import com.cogent.cogentappointment.persistence.model.WeekDays;
 
+import java.util.List;
+
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+
 /**
  * @author smriti on 20/05/20
  */
@@ -22,7 +26,13 @@ public class HospitalDeptWeekDaysDutyRosterUtils {
         weekDaysDutyRoster.setDayOffStatus(requestDTO.getDayOffStatus());
         weekDaysDutyRoster.setHospitalDepartmentDutyRoster(hospitalDepartmentDutyRoster);
         weekDaysDutyRoster.setWeekDays(weekDays);
+        weekDaysDutyRoster.setIsDoctorAvailable(isDoctorAvailable(requestDTO.getHospitalDepartmentDoctorInfoIds()));
+
         return weekDaysDutyRoster;
+    }
+
+    public static Character isDoctorAvailable(List<Long> doctorIdList) {
+        return doctorIdList.size() > 0 ? YES : NO;
     }
 
     public static HospitalDepartmentWeekDaysDutyRoster parseUpdatedWeekDaysDetails(

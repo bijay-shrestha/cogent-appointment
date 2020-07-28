@@ -34,6 +34,9 @@ public class HospitalDepartment extends Auditable<String> implements Serializabl
     @Column(name = "name")
     private String name;
 
+    @Column(name = "department_name_in_nepali")
+    private String departmentNameInNepali;
+
     @Column(name = "status")
     private Character status;
 

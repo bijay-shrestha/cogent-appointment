@@ -35,10 +35,31 @@ public class NameAndCodeValidationUtils {
         });
     }
 
+    public static void validateNepaliNameDuplicity(List<Object[]> objects,
+                                         String requestedNepaliName,
+                                         String className) {
+        final int NEPALI_NAME = 2;
+
+        objects.forEach(object -> {
+
+            boolean isNameExists = requestedNepaliName.equalsIgnoreCase((String) get(object, NEPALI_NAME));
+
+            validateNepaliName(isNameExists, requestedNepaliName, className);
+
+        });
+    }
+
     private static void validateName(boolean isNameExists, String name, String className) {
         if (isNameExists)
             throw new DataDuplicationException(
                     String.format(ErrorMessageConstants.NAME_DUPLICATION_MESSAGE, className, name),
+                    "name", name);
+    }
+
+    private static void validateNepaliName(boolean isNameExists, String name, String className) {
+        if (isNameExists)
+            throw new DataDuplicationException(
+                    String.format(ErrorMessageConstants.NEPALI_NAME_DUPLICATION_MESSAGE, className, name),
                     "name", name);
     }
 

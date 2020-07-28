@@ -226,7 +226,14 @@ public class AppointmentHospitalDepartmentQuery {
                     " d.value as district," +                                                   //[16]
                     " vm.value as vdcOrMunicipality," +                                         //[17]
                     " hpi.wardNumber as wardNumber," +                                          //[18]
-                    " hpi.address AS address," +                                                //[19]
+                    " CASE WHEN" +
+                    " hpi.hasAddress  = 'Y'" +
+                    " THEN" +
+                    " CONCAT_WS(', ',COALESCE(pr.value, ' ')," +
+                    " COALESCE(d.value,','),COALESCE(vm.value,','),COALESCE(hpi.wardNumber,''))" +
+                    " ELSE" +
+                    " hpi.address" +
+                    " end as address," +                                                        //[19]
                     QUERY_TO_CALCULATE_PATIENT_AGE_YEAR + "," +                                 //[20]
                     QUERY_TO_CALCULATE_PATIENT_AGE_MONTH + "," +                                //[21]
                     QUERY_TO_CALCULATE_PATIENT_AGE_DAY + "," +                                  //[22]

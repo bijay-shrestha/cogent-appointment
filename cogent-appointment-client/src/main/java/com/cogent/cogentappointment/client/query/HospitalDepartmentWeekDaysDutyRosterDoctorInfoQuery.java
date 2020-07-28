@@ -11,6 +11,7 @@ public class HospitalDepartmentWeekDaysDutyRosterDoctorInfoQuery {
             "SELECT " +
                     " DISTINCT hddi.id as value," +
                     " d.name as label," +
+                    " d.status as isDoctorActive," +
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM HospitalDepartmentWeekDaysDutyRosterDoctorInfo hdwddrdi " +
                     " LEFT JOIN HospitalDepartmentWeekDaysDutyRoster hdwddr ON" +
@@ -22,6 +23,7 @@ public class HospitalDepartmentWeekDaysDutyRosterDoctorInfoQuery {
                     " LEFT JOIN HospitalDepartment hd ON hd.id=hddi.hospitalDepartment.id " +
                     " WHERE hd.id=:hospitalDepartmentId" +
                     " AND wd.name =:weekDayName" +
-                    " AND hdwddrdi.status='Y'";
+                    " AND hdwddrdi.status='Y'" +
+                    " AND hdwddr.isDoctorAvailable='Y'";
 
 }

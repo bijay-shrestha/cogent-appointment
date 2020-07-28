@@ -26,7 +26,8 @@ public class NameAndCodeValidationUtils {
 
             if (isNameExists && isCodeExists)
                 throw new DataDuplicationException(
-                        String.format(ErrorMessageConstants.NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName, requestedCode),
+                        String.format(ErrorMessageConstants.NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName,
+                                requestedCode),
                         "name", requestedName, "code", requestedCode
                 );
 

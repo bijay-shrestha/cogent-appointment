@@ -132,7 +132,6 @@ public class AppointmentHospitalDepartmentQuery {
                             " hpi.registrationNumber" +
                             " END as registrationNumber," +                                             //[10]
                             " hpi.hospitalNumber as hospitalNumber," +                                  //[11]
-                            " hpi.address as address," +                                                //[12]
                             " hd.name as hospitalDepartmentName," +                                     //[13]
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
@@ -217,7 +216,6 @@ public class AppointmentHospitalDepartmentQuery {
                     " hpi.registrationNumber" +
                     " END as registrationNumber," +                                             //[10]
                     " hpi.hospitalNumber as hospitalNumber," +                                  //[11]
-                    " hpi.address as address," +                                                //[12]
                     " hd.name as hospitalDepartmentName," +                                     //[13]
                     " case when hr.id is null then null" +
                     " when hr.id is not null then r.roomNumber" +
@@ -327,9 +325,9 @@ public class AppointmentHospitalDepartmentQuery {
                             " THEN" +
                             " atd.appointmentAmount" +
                             " ELSE" +
-                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
-                            " END AS revenueAmount," +
-                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                                //[19]
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +
+                            " END AS revenueAmount," +                                                           //[18]
+                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                              //[19]
                             " hd.name as hospitalDepartmentName," +                                             //[20]
                             " hb.billingMode.name as billingModeName," +                                        //[21]
                             " case when hr.id is null then null" +

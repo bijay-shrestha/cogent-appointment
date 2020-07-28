@@ -189,6 +189,7 @@ public class ErrorMessageConstants {
 
     //N
     public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s'";
+    public static final String NEPALI_NAME_DUPLICATION_MESSAGE = "%s already exists with nepali name '%s'";
     public static final String NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and mobile number '%s'";
 

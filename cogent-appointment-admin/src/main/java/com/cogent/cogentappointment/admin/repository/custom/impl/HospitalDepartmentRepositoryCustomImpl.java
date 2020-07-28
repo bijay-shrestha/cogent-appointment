@@ -57,6 +57,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getCode())
+                .setParameter(NEPALI_NAME,requestDTO.getDepartmentNameInNepali())
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();
@@ -68,6 +69,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
                 .setParameter(ID, requestDTO.getId())
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getCode())
+                .setParameter(NEPALI_NAME,requestDTO.getDepartmentNameInNepali())
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();

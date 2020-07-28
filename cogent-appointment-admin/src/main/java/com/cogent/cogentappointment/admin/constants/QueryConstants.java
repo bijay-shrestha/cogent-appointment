@@ -87,6 +87,7 @@ public class QueryConstants {
 
     //N
     public static final String NAME = "name";
+    public static final String NEPALI_NAME = "nepaliName";
 
     //O
 

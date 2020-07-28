@@ -30,29 +30,4 @@ class CdnFileQuery {
                     " ELSE" +
                     " da.file_uri" +
                     " END as fileUri";
-
-    static String QUERY_TO_FETCH_ADMIN_AVATAR =
-            " CASE" +
-                    " WHEN" +
-                    " (av.status is null OR av.status = 'N')" +
-                    " THEN null" +
-                    " WHEN" +
-                    " av.fileUri LIKE 'public%'" +
-                    " THEN" +
-                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(av.fileUri, 'public', -1))" +
-                    " ELSE" +
-                    " av.fileUri" +
-                    " END as fileUri";
-
-    static String QUERY_TO_FETCH_HOSPITAL_LOGO =
-            " CASE" +
-                    " WHEN" +
-                    " (hl.status is null OR hl.status = 'N')" +
-                    " THEN null" +
-                    " WHEN" +
-                    " hl.fileUri LIKE 'public%'" +
-                    " THEN" +
-                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.fileUri, 'public', -1))" +
-                    " ELSE" +
-                    " hl.fileUri";
 }

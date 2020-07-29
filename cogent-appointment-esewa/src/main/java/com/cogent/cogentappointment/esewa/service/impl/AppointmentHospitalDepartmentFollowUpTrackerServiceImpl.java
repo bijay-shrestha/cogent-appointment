@@ -6,11 +6,11 @@ import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalFollowUp
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.AppointmentHospitalDepartmentFollowUpTrackerRepository;
 import com.cogent.cogentappointment.esewa.repository.HospitalDepartmentBillingModeInfoRepository;
-import com.cogent.cogentappointment.esewa.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.esewa.repository.HospitalRepository;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentFollowUpTrackerService;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentReservationLogService;
+import com.cogent.cogentappointment.esewa.service.HospitalPatientInfoService;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.Hospital;
@@ -53,7 +53,7 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
 
     private final Validator validator;
 
-    private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
+    private final HospitalPatientInfoService hospitalPatientInfoService;
 
     public AppointmentHospitalDepartmentFollowUpTrackerServiceImpl(
             AppointmentHospitalDepartmentFollowUpTrackerRepository appointmentHospitalDepartmentFollowUpTrackerRepository,
@@ -62,14 +62,14 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
             AppointmentHospitalDepartmentReservationLogService appointmentHospitalDepartmentReservationLogService,
             AppointmentHospitalDepartmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
             Validator validator,
-            HospitalPatientInfoRepository hospitalPatientInfoRepository) {
+            HospitalPatientInfoService hospitalPatientInfoService) {
         this.appointmentHospitalDepartmentFollowUpTrackerRepository = appointmentHospitalDepartmentFollowUpTrackerRepository;
         this.hospitalRepository = hospitalRepository;
         this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
         this.appointmentHospitalDepartmentReservationLogService = appointmentHospitalDepartmentReservationLogService;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.validator = validator;
-        this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
+        this.hospitalPatientInfoService = hospitalPatientInfoService;
     }
 
     @Override
@@ -211,21 +211,12 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
             Long savedAppointmentReservationId,
             Double hospitalRefundPercentage) {
 
-        Double appointmentCharge;
-
-        if (Objects.isNull(requestDTO.getPatientId())) {
-            appointmentCharge = fetchNewPatientAppointmentCharge(requestDTO);
-        } else {
-
-            Character patientRegisteredStatus = hospitalPatientInfoRepository.fetchPatientRegisteredStatus(
-                    requestDTO.getPatientId(),
-                    requestDTO.getHospitalId()
-            );
-
-            appointmentCharge = (patientRegisteredStatus.equals(YES))
-                    ? fetchRegisteredPatientAppointmentCharge(requestDTO)
-                    : fetchNewPatientAppointmentCharge(requestDTO);
-        }
+        Double appointmentCharge = hospitalPatientInfoService.fetchPatientAppointmentCharge(
+                requestDTO.getPatientId(),
+                requestDTO.getHospitalId(),
+                requestDTO.getHospitalDepartmentId(),
+                requestDTO.getHospitalDepartmentBillingModeId()
+        );
 
         return parseAppointmentHospitalDeptFollowUpResponseDTO(
                 NO, appointmentCharge, null, savedAppointmentReservationId, hospitalRefundPercentage
@@ -259,16 +250,5 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
                 .orElseThrow(() -> new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString()));
     }
 
-    private Double fetchNewPatientAppointmentCharge(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
-        return hospitalDepartmentBillingModeInfoRepository.fetchNewPatientAppointmentCharge(
-                requestDTO.getHospitalDepartmentBillingModeId(),
-                requestDTO.getHospitalDepartmentId());
-    }
-
-    private Double fetchRegisteredPatientAppointmentCharge(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
-        return hospitalDepartmentBillingModeInfoRepository.fetchNewPatientAppointmentCharge(
-                requestDTO.getHospitalDepartmentBillingModeId(),
-                requestDTO.getHospitalDepartmentId());
-    }
 
 }

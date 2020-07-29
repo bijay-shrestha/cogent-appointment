@@ -91,7 +91,7 @@ public class ProfileResource {
         return ok(profileService.fetchProfileByDepartmentId(departmentId));
     }
 
-    @GetMapping(MIN + DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @GetMapping(DepartmentConstants.DEPARTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PROFILE_BY_DEPARTMENT_ID)
     public ResponseEntity<?> fetchProfilesForDropdown(@PathVariable("departmentId") Long departmentId) {
         return ok(profileService.fetchAllProfileByDepartmentId(departmentId));

@@ -65,7 +65,7 @@ public class QualificationAliasResource {
         return ok().body(qualificationAliasService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(ACTIVE + MIN)
+    @GetMapping
     @ApiOperation(FETCH_ACTIVE_QUALIFICATION_ALIAS)
     public ResponseEntity<?> fetchActiveQualificationAlias() {
         return ok(qualificationAliasService.fetchActiveQualificationAlias());

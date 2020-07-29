@@ -29,6 +29,9 @@ public class CommonLogConstant {
     public static String FETCHING_DETAIL_PROCESS_STARTED = ":::: FETCHING DETAIL {} PROCESS STARTED ::::";
     public static String FETCHING_DETAIL_PROCESS_COMPLETED = ":::: FETCHING DETAIL {} PROCESS COMPLETED IN :::: {} ms";
 
+    public static String FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN = ":::: FETCHING {} FOR DROPDOWN STARTED ::::";
+    public static String FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED = ":::: FETCHING {} FOR DROPDOWN COMPLETED IN :::: {} ms";
+
     public static String FETCHING_PROCESS_STARTED = ":::: FETCHING {} PROCESS STARTED ::::";
     public static String FETCHING_PROCESS_COMPLETED = ":::: FETCHING {} PROCESS COMPLETED IN :::: {} ms";
 

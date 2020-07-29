@@ -13,5 +13,5 @@ import java.util.List;
 @Qualifier("specializationRepositoryCustom")
 public interface SpecializationRepositoryCustom {
 
-    List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId);
+    List<DropDownResponseDTO> fetchActiveSpecializationByHospitalId(Long hospitalId);
 }

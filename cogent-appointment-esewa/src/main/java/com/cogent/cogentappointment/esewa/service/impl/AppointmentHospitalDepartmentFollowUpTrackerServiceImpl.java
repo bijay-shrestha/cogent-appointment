@@ -98,8 +98,7 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
 
             /*THIS IS NORMAL APPOINTMENT AND APPOINTMENT CHARGE = HOSPITAL DEPARTMENT APPOINTMENT CHARGE*/
             responseDTO = parseHospitalDeptAppointmentCharge(
-                    requestDTO.getHospitalDepartmentBillingModeId(),
-                    requestDTO.getHospitalDepartmentId(),
+                    requestDTO,
                     savedAppointmentReservationId,
                     hospitalRefundPercentage
             );
@@ -156,8 +155,8 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
         if (appointmentFollowUpTracker.getRemainingNumberOfFollowUps() <= 0)
             /*NORMAL APPOINTMENT*/
             return parseHospitalDeptAppointmentCharge(
-                    requestDTO.getHospitalDepartmentBillingModeId(),
-                    requestDTO.getHospitalDepartmentId(), savedAppointmentReservationId,
+                    requestDTO,
+                    savedAppointmentReservationId,
                     hospitalRefundPercentage
             );
 
@@ -187,28 +186,40 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
             else
                  /*NORMAL APPOINTMENT*/
                 return parseHospitalDeptAppointmentCharge(
-                        requestDTO.getHospitalDepartmentBillingModeId(),
-                        requestDTO.getHospitalDepartmentId(), savedAppointmentReservationId,
+                        requestDTO,
+                        savedAppointmentReservationId,
                         hospitalRefundPercentage
                 );
 
         } else {
              /*NORMAL APPOINTMENT*/
             return parseHospitalDeptAppointmentCharge(
-                    requestDTO.getHospitalDepartmentBillingModeId(),
-                    requestDTO.getHospitalDepartmentId(), savedAppointmentReservationId,
+                    requestDTO,
+                    savedAppointmentReservationId,
                     hospitalRefundPercentage
             );
         }
     }
 
     private AppointmentHospitalDeptFollowUpResponseDTO parseHospitalDeptAppointmentCharge(
-            Long hospitalDepartmentBillingModeId, Long hospitalDepartmentId,
+            AppointmentHospitalDeptFollowUpRequestDTO requestDTO,
             Long savedAppointmentReservationId,
             Double hospitalRefundPercentage) {
 
-        Double appointmentCharge = hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentCharge(
-                hospitalDepartmentBillingModeId, hospitalDepartmentId);
+        Double appointmentCharge = 0D;
+
+        if (Objects.isNull(requestDTO.getPatientId())) {
+            appointmentCharge = hospitalDepartmentBillingModeInfoRepository.fetchNewPatientAppointmentCharge(
+                    requestDTO.getHospitalDepartmentBillingModeId(),
+                    requestDTO.getHospitalDepartmentId());
+        } else {
+
+
+
+            appointmentCharge = hospitalDepartmentBillingModeInfoRepository.fetchNewPatientAppointmentCharge(
+                    requestDTO.getHospitalDepartmentBillingModeId(),
+                    requestDTO.getHospitalDepartmentId());
+        }
 
         return parseAppointmentHospitalDeptFollowUpResponseDTO(
                 NO, appointmentCharge, null, savedAppointmentReservationId, hospitalRefundPercentage

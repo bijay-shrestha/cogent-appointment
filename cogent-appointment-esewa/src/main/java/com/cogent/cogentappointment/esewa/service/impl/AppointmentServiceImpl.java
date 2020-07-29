@@ -1283,7 +1283,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId,
                                                       Long hospitalDepartmentId) {
 
-        return hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentCharge(
+        return hospitalDepartmentBillingModeInfoRepository.fetchNewPatientAppointmentCharge(
                 hospitalDepartmentBillingModeId, hospitalDepartmentId);
     }
 

@@ -28,18 +28,26 @@ public class HospitalDepartmentBillingModeInfoQuery {
                     " WHERE" +
                     " hb.status='Y'" +
                     " AND hb.hospitalDepartment.status = 'Y'" +
-                    " AND hb.hospitalDepartment.id =:hospitalDepartmentId"+
+                    " AND hb.hospitalDepartment.id =:hospitalDepartmentId" +
                     " ORDER BY billingModeName ASC";
 
-    public static final String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE=
+    public static final String QUERY_TO_FETCH_NEW_PATIENT_APPOINTMENT_CHARGE =
             " SELECT" +
-                    " hb.appointmentCharge as appointmentCharge" +                      //[0]
+                    " hb.newPatientAppointmentCharge as appointmentCharge" +             //[0]
                     " FROM HospitalDepartmentBillingModeInfo hb " +
                     " WHERE" +
                     " hb.id=:hospitalDepartmentBillingModeId " +
                     " AND hb.hospitalDepartment.id =:hospitalDepartmentId ";
 
-    public static final String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOLLOW_UP_CHARGE=
+    public static final String QUERY_TO_FETCH_REGISTERED_PATIENT_APPOINTMENT_CHARGE =
+            " SELECT" +
+                    " hb.registeredPatientAppointmentCharge as appointmentCharge" +             //[0]
+                    " FROM HospitalDepartmentBillingModeInfo hb " +
+                    " WHERE" +
+                    " hb.id=:hospitalDepartmentBillingModeId " +
+                    " AND hb.hospitalDepartment.id =:hospitalDepartmentId ";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_FOLLOW_UP_CHARGE =
             " SELECT" +
                     " hb.appointmentFollowUpCharge as appointmentCharge" +               //[0]
                     " FROM HospitalDepartmentBillingModeInfo hb " +

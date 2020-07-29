@@ -44,4 +44,16 @@ public class HospitalDeptWeekDaysDutyRosterUtils {
         weekDaysDutyRoster.setDayOffStatus(updateRequestDTO.getDayOffStatus());
         return weekDaysDutyRoster;
     }
+
+    public static Character isDoctorAvailable(HospitalDepartmentWeekDaysDutyRoster weekDaysDutyRoster,
+                                              HospitalDeptWeekDaysDutyRosterUpdateRequestDTO requestDTO) {
+
+        if (weekDaysDutyRoster.getIsDoctorAvailable().equals(NO) && requestDTO.getWeekDaysDoctorInfo().size() > 0) {
+            return YES;
+        } else if (requestDTO.getDeleteAllDoctors().equals(YES)) {
+            return NO;
+        } else {
+            return weekDaysDutyRoster.getIsDoctorAvailable();
+        }
+    }
 }

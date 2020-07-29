@@ -36,6 +36,8 @@ public class HospitalDeptWeekDaysDutyRosterUpdateRequestDTO implements Serializa
 
     private String weekDaysName;
 
+    private Character deleteAllDoctors;
+
     private List<HospitalDeptWeekDaysDutyRosterDoctorInfoUpdateRequestDTO> weekDaysDoctorInfo;
 
 }

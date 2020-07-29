@@ -16,4 +16,11 @@ public class HospitalPatientInfoQuery {
                     " WHERE" +
                     " h.patient.id=:patientId " +
                     " AND h.hospital.id =:hospitalId";
+
+    public static final String QUERY_TO_FETCH_PATIENT_REGISTERED_STATUS =
+            " SELECT h.isRegistered" +
+                    " FROM HospitalPatientInfo h" +
+                    " WHERE" +
+                    " h.patient.id=:patientId " +
+                    " AND h.hospital.id =:hospitalId";
 }

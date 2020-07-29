@@ -14,4 +14,6 @@ public interface HospitalPatientInfoRepositoryCustom {
     Long fetchHospitalPatientInfoCount(Long patientId, Long hospitalId);
 
     HospitalPatientInfo fetchHospitalPatientInfo(Long patientId, Long hospitalId);
+
+    Character fetchPatientRegisteredStatus(Long patientId, Long hospitalId);
 }

@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * @author Sauravi Thapa ON 5/19/20
- *
+ * <p>
  * CONNECTED TABLE :
  * 1. HospitalDepartmentBillingModeInfo
  * 2. HospitalDepartmentRoomInfo
@@ -58,8 +58,10 @@ public class HospitalDepartment extends Auditable<String> implements Serializabl
         return "HospitalDepartment{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", departmentNameInNepali='" + departmentNameInNepali + '\'' +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +
+                ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 ", hospital=" + hospital.getName() +
                 '}';

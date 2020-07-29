@@ -17,6 +17,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.PATIENT_ID;
+import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.query.HospitalPatientInfoQuery.QUERY_TO_FETCH_HOSPITAL_PATIENT_INFO;
 import static com.cogent.cogentappointment.esewa.query.HospitalPatientInfoQuery.QUERY_TO_FETCH_HOSPITAL_PATIENT_INFO_COUNT;
 import static com.cogent.cogentappointment.esewa.query.HospitalPatientInfoQuery.QUERY_TO_FETCH_PATIENT_REGISTERED_STATUS;
@@ -63,13 +64,7 @@ public class HospitalPatientInfoRepositoryCustomImpl implements HospitalPatientI
         try {
             return (Character) query.getSingleResult();
         } catch (NoResultException ex) {
-            throw PATIENT_NOT_FOUND.apply(patientId);
+            return NO;
         }
     }
-
-    private Function<Long, NoContentFoundException> PATIENT_NOT_FOUND = (patientId) -> {
-        log.error("Patient not found");
-        throw new NoContentFoundException(Patient.class, "patientId", patientId.toString());
-
-    };
 }

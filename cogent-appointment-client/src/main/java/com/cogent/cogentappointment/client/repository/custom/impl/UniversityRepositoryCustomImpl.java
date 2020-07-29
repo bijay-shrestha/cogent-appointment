@@ -97,6 +97,16 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
         else return results;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchMinUniversity() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_UNIVERSITY);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw UNIVERSITY_NOT_FOUND.get();
+        else return results;
+    }
+
     private Supplier<NoContentFoundException> UNIVERSITY_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, UNIVERSITY);
         throw new NoContentFoundException(University.class);

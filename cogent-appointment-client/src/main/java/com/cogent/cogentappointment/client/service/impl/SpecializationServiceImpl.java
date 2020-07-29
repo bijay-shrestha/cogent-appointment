@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.log.constants.SpecializationLog;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationRequestDTO;
@@ -8,7 +7,6 @@ import com.cogent.cogentappointment.client.dto.request.specialization.Specializa
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.specialization.SpecializationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.specialization.SpecializationResponseDTO;
-import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.HospitalRepository;
 import com.cogent.cogentappointment.client.repository.SpecializationRepository;
@@ -23,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.NAME_DUPLICATION_ERROR;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.client.log.constants.SpecializationLog.SPECIALIZATION;
@@ -148,6 +144,21 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchMinSpecialization() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
+
+        List<DropDownResponseDTO> responseDTOS =
+                specializationRepository.fetchMinSpecialization(getLoggedInHospitalId());
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
     public SpecializationResponseDTO fetchDetailsById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -177,19 +188,21 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchSpecializationByHospitalId() {
+    public List<DropDownResponseDTO> fetchActiveSpecializationByHospitalId() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
         List<DropDownResponseDTO> responseDTOS =
-                specializationRepository.fetchSpecializationByHospitalId(getLoggedInHospitalId());
+                specializationRepository.fetchActiveSpecializationByHospitalId(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
                 getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
+
+
 
     @Override
     public Specialization fetchActiveSpecializationByIdAndHospitalId(Long specializationId,

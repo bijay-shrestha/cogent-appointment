@@ -75,6 +75,12 @@ public class SpecializationResource {
         return ok(specializationService.fetchActiveSpecializationForDropDown());
     }
 
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchSpecializationForDropDown() {
+        return ok(specializationService.fetchSpecializationForDropDown());
+    }
+
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
@@ -83,11 +89,23 @@ public class SpecializationResource {
 
     @GetMapping(DOCTOR_WISE + DOCTOR_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_BY_DOCTOR_ID)
+    public ResponseEntity<?> fetchActiveSpecializationByDoctorId(@PathVariable("doctorId") Long doctorId) {
+        return ok(specializationService.fetchActiveSpecializationByDoctorId(doctorId));
+    }
+
+    @GetMapping(DOCTOR_WISE + MIN + DOCTOR_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_BY_DOCTOR_ID)
     public ResponseEntity<?> fetchSpecializationByDoctorId(@PathVariable("doctorId") Long doctorId) {
         return ok(specializationService.fetchSpecializationByDoctorId(doctorId));
     }
 
     @GetMapping(HOSPITAL_WISE + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_BY_HOSPITAL_ID)
+    public ResponseEntity<?> fetchActiveSpecializationByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(specializationService.fetchActiveSpecializationByHospitalId(hospitalId));
+    }
+
+    @GetMapping(HOSPITAL_WISE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchSpecializationByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(specializationService.fetchSpecializationByHospitalId(hospitalId));

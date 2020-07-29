@@ -32,6 +32,7 @@ public class CommonResource {
         this.commonService = commonService;
     }
 
+//    eSewa
     @GetMapping(DOCTOR_SPECIALIZATION + INFO + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DOCTOR_SPECIALIZATION_INFO)
     public ResponseEntity<?> fetchDoctorSpecializationInfo(@PathVariable("hospitalId") Long hospitalId) {

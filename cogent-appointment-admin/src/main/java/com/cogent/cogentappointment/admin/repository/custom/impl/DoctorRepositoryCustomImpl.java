@@ -133,6 +133,19 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
+    public List<DoctorDropdownDTO> fetchActiveDoctorByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_DOCTOR_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
+
+        if (results.isEmpty()) {
+            error();
+            throw DOCTOR_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
     public List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, hospitalId)
@@ -159,6 +172,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         else return results;
     }
+
 
     @Override
     public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId) {

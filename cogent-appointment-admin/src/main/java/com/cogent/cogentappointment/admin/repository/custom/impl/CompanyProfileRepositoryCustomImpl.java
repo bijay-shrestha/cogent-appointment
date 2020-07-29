@@ -110,6 +110,16 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchMinCompanyProfile() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_PROFILES_FOR_DROPDOWN);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw COMPANY_PROFILES_NOT_FOUND.get();
+        else return results;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchMinActiveCompanyProfileByCompanyId(Long companyId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COMPANY_PROFILES_BY_COMPANY_ID)
                 .setParameter(COMPANY_ID, companyId);
@@ -119,6 +129,18 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
         if (results.isEmpty()) throw COMPANY_PROFILES_NOT_FOUND.get();
         else return results;
     }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinCompanyProfileByCompanyId(Long companyId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_PROFILES_BY_COMPANY_ID)
+                .setParameter(COMPANY_ID, companyId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw COMPANY_PROFILES_NOT_FOUND.get();
+        else return results;
+    }
+
 
     private Supplier<NoContentFoundException> COMPANY_PROFILES_NOT_FOUND =
             () -> new NoContentFoundException(Profile.class);

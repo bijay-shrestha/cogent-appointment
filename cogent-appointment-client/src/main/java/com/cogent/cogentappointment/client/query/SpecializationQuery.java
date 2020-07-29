@@ -99,7 +99,7 @@ public class SpecializationQuery {
                     " AND s.hospital.id=:hospitalId"+
                     " ORDER BY label ASC";
 
-    public static final String QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID =
+    public static final String QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_BY_HOSPITAL_ID =
             " SELECT" +
                     " s.id as value," +                                      //[0]
                     " s.name as label" +                                     //[1]
@@ -110,6 +110,19 @@ public class SpecializationQuery {
                     " AND h.status = 'Y'" +
                     " AND h.id =:hospitalId" +
                     " ORDER BY s.name";
+
+    public static final String QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID =
+            " SELECT" +
+                    " s.id as value," +                                      //[0]
+                    " s.name as label" +                                     //[1]
+                    " FROM" +
+                    " Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
+                    " WHERE s.status !='D'" +
+                    " AND h.status = 'Y'" +
+                    " AND h.id =:hospitalId" +
+                    " ORDER BY s.name";
+
 
     public static String SPECIALIZATION_AUDITABLE_QUERY() {
         return " s.createdBy as createdBy," +

@@ -72,8 +72,14 @@ public class AppointmentModeResource {
     }
 
     @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_ACTIVE_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActiveAppointmentMode() {
         return ok(service.fetchActiveMinAppointmentMode());
+    }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchAppointmentMode() {
+        return ok(service.fetchMinAppointmentMode());
     }
 }

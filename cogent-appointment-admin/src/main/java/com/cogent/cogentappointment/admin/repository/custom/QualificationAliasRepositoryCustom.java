@@ -19,6 +19,8 @@ import java.util.List;
 public interface QualificationAliasRepositoryCustom {
     List<DropDownResponseDTO> fetchActiveQualificationAlias();
 
+    List<DropDownResponseDTO> fetchQualificationAlias();
+
     Long validateDuplicity(String name);
 
     Long validateDuplicity(QualificationAliasUpdateRequestDTO requestDTO);

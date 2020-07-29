@@ -122,6 +122,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Appointment Mode according to given request parameters";
         String DETAILS_OPERATION = "Fetch Appointment Mode details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Mode details for dropdown";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active Appointment Mode details for dropdown";
     }
 
     public interface AppointmentServiceTypeConstant {
@@ -175,6 +176,7 @@ public class SwaggerConstants {
     public interface CountryConstant {
         String BASE_API_VALUE = "This is Country Resource.";
         String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";
+        String FETCH_COUNTRY = "Fetch country for dropdown.";
     }
 
     public interface CompanyConstant {
@@ -195,7 +197,11 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search company profile according to given request parameters";
         String DETAILS_OPERATION = "Fetch company profile details by id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal company profile details (id and name) for dropdown";
-        String FETCH_MIN_DETAILS_BY_COMPANY_ID = "Fetch minimal company profile details (id and name) for dropdown by company id";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal company profile details (id and name) for dropdown";
+        String FETCH_ACTIVE_MIN_DETAILS_BY_COMPANY_ID = "Fetch minimal active company profile details " +
+                "(id and name) for dropdown by company id";
+        String FETCH_MIN_DETAILS_BY_COMPANY_ID = "Fetch minimal company profile details" +
+                " (id and name) for dropdown by company id";
     }
 
     //D
@@ -223,6 +229,8 @@ public class SwaggerConstants {
         String FETCH_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal department details (id and name) for dropdown";
         String FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active department details (id and name)" +
                 " for dropdown";
+        String FETCH_ACTIVE_DEPARTMENT_BY_HOSPITAL_OPERATION = "Fetch active department by hospital id";
+
         String FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION = "Fetch department by hospital id";
     }
 
@@ -409,7 +417,12 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search profile according to given request parameters";
         String DETAILS_OPERATION = "Fetch profile details by its id. Group profile-menu response by parent-id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal profile details (id and name) for dropdown";
-        String FETCH_PROFILE_BY_DEPARTMENT_ID = "Fetch active profiles by department id";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active profile details (id and name) for dropdown";
+        String FETCH_ACTIVE_PROFILE_BY_DEPARTMENT_ID = "Fetch active profiles by department id";
+        String FETCH_PROFILE_BY_DEPARTMENT_ID = "Fetch  profiles by department id";
+        String FETCH_ACTIVE_PROFILE_BY_HOSPITAL_ID = "Fetch active profiles by hospital id";
+        String FETCH_PROFILE_BY_HOSPITAL_ID = "Fetch  profiles by hospital id";
+
     }
 
 
@@ -431,6 +444,7 @@ public class SwaggerConstants {
         String DELETE_OPERATION = "Set Qualification Alias Resource status as 'D' when deleted";
         String SEARCH_OPERATION = "Search Qualification Alias Resource according to given request parameters";
         String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
+        String FETCH_QUALIFICATION_ALIAS = "Fetch Qualification Alias like M.D.,M.B.B.S, etc";
     }
 
     //R
@@ -498,6 +512,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search University according to given request parameters";
         String DETAILS_OPERATION = "Fetch University details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal University details for dropdown";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active University details for dropdown";
     }
 
 

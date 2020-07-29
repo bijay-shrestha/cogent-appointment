@@ -73,14 +73,26 @@ public class CompanyProfileResource {
     }
 
     @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_ACTIVE_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchMinActiveCompanyProfile() {
         return ok(companyProfileService.fetchMinActiveCompanyProfile());
     }
 
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchMinCompanyProfile() {
+        return ok(companyProfileService.fetchMinCompanyProfile());
+    }
+
     @GetMapping(ACTIVE + MIN + COMPANY_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_MIN_DETAILS_BY_COMPANY_ID)
+    @ApiOperation(FETCH_ACTIVE_MIN_DETAILS_BY_COMPANY_ID)
     public ResponseEntity<?> fetchMinActiveCompanyProfile(@PathVariable("companyId") Long companyId) {
         return ok(companyProfileService.fetchMinActiveCompanyProfileByCompanyId(companyId));
+    }
+
+    @GetMapping(MIN + COMPANY_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_MIN_DETAILS_BY_COMPANY_ID)
+    public ResponseEntity<?> fetchMinCompanyProfile(@PathVariable("companyId") Long companyId) {
+        return ok(companyProfileService.fetchMinCompanyProfileByCompanyId(companyId));
     }
 }

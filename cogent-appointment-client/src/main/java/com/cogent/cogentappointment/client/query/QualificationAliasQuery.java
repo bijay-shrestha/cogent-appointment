@@ -35,6 +35,14 @@ public class QualificationAliasQuery {
                     " WHERE qa.status = 'Y'" +
                     " ORDER BY label ASC";
 
+    public static final String QUERY_TO_FETCH_QUALIFICATION_ALIAS =
+            "SELECT" +
+                    " qa.id as value," +
+                    " qa.name as label" +
+                    " FROM QualificationAlias qa" +
+                    " WHERE qa.status != 'D'" +
+                    " ORDER BY label ASC";
+
     private static String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION_ALIAS =
             "SELECT qa.id as id," +                                                //[0]
                     " qa.name as name," +                                          //[1]

@@ -128,9 +128,22 @@ public class UniversityServiceImpl implements UniversityService {
     public List<DropDownResponseDTO> fetchActiveUniversity() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, UNIVERSITY);
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, UNIVERSITY);
 
         List<DropDownResponseDTO> responseDTOS = universityRepository.fetchActiveUniversity();
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, UNIVERSITY, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchUniversity() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, UNIVERSITY);
+
+        List<DropDownResponseDTO> responseDTOS = universityRepository.fetchUniversity();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, UNIVERSITY, getDifferenceBetweenTwoTime(startTime));
 

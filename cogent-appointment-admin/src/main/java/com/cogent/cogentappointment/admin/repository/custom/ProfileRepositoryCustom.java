@@ -29,7 +29,15 @@ public interface ProfileRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveProfilesForDropDown();
 
+    List<DropDownResponseDTO> fetchProfilesForDropDown();
+
     List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId);
 
+    List<DropDownResponseDTO> fetchAllProfileByDepartmentId(Long departmentId);
+
     AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO profileMenuSearchRequestDTO);
+
+    List<DropDownResponseDTO> fetchActiveProfileByHospitalId(Long hospitalId);
+
+    List<DropDownResponseDTO> fetchProfileByHospitalId(Long hospitalId);
 }

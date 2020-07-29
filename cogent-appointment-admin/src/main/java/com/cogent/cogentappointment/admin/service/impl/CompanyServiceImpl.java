@@ -168,6 +168,19 @@ public class CompanyServiceImpl implements CompanyService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COMPANY);
 
+        List<CompanyDropdownResponseDTO> responseDTOS = hospitalRepository.fetchCompanyForDropDown();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<CompanyDropdownResponseDTO> fetchActiveCompanyForDropDown() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COMPANY);
+
         List<CompanyDropdownResponseDTO> responseDTOS = hospitalRepository.fetchActiveCompanyForDropDown();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));

@@ -139,6 +139,19 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchMinUniversity() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, UNIVERSITY);
+
+        List<DropDownResponseDTO> minInfo = universityRepository.fetchMinUniversity();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, UNIVERSITY, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
     public University findActiveUniversityById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

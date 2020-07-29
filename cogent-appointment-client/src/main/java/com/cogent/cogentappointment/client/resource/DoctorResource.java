@@ -104,4 +104,6 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorByHospitalId());
     }
 
+
+
 }

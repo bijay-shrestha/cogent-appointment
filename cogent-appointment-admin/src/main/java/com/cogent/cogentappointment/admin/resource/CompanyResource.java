@@ -66,7 +66,13 @@ public class CompanyResource {
 
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchHospitalForDropDown() {
+    public ResponseEntity<?> fetchActiveCompanyForDropDown() {
+        return ok(companyService.fetchActiveCompanyForDropDown());
+    }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchCompanyForDropDown() {
         return ok(companyService.fetchCompanyForDropDown());
     }
 

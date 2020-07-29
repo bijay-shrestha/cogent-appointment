@@ -1,3 +1,4 @@
+
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
@@ -35,6 +36,12 @@ public class HospitalDepartmentBillingModeInfo extends Auditable<String> impleme
     @Column(name = "appointment_charge")
     private Double appointmentCharge;
 
+    @Column(name = "new_patient_appointment_charge")
+    private Double newPatientAppointmentCharge;
+
+    @Column(name = "registered_patient_appointment_charge")
+    private Double registeredPatientAppointmentCharge;
+
     @Column(name = "appointment_follow_up_charge")
     private Double appointmentFollowUpCharge;
 
@@ -54,6 +61,8 @@ public class HospitalDepartmentBillingModeInfo extends Auditable<String> impleme
                 "id=" + id +
                 ", hospitalDepartment=" + hospitalDepartment.getName() +
                 ", appointmentCharge=" + appointmentCharge +
+                ", newPatientAppointmentCharge=" + newPatientAppointmentCharge +
+                ", registeredPatientAppointmentCharge=" + registeredPatientAppointmentCharge +
                 ", appointmentFollowUpCharge=" + appointmentFollowUpCharge +
                 ", billingMode=" + billingMode.getName() +
                 ", remarks='" + remarks + '\'' +

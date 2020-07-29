@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
 import com.cogent.cogentappointment.commons.repository.AddressRepository;
+import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.esewa.exception.BadRequestException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
+import com.cogent.cogentappointment.esewa.repository.HospitalDepartmentBillingModeInfoRepository;
 import com.cogent.cogentappointment.esewa.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.esewa.service.HospitalPatientInfoService;
 import com.cogent.cogentappointment.persistence.model.Address;
@@ -40,10 +42,15 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
 
     private final AddressRepository addressRepository;
 
-    public HospitalPatientInfoServiceImpl(HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                          AddressRepository addressRepository) {
+    private final HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository;
+
+    public HospitalPatientInfoServiceImpl(
+            HospitalPatientInfoRepository hospitalPatientInfoRepository,
+            AddressRepository addressRepository,
+            HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository) {
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.addressRepository = addressRepository;
+        this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
     }
 
     /*PATIENT INFORMATION IS SAVED IRRESPECTIVE OF APPOINTMENT SERVICE TYPE
@@ -53,8 +60,10 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
     * hasAddress = 'Y' AND OTHER ADDRESS DETAILS
     */
     @Override
-    public void saveHospitalPatientInfoForSelf(Hospital hospital, Patient patient,
-                                               PatientRequestByDTO patientRequestByDTO, Character hasAddress) {
+    public void saveHospitalPatientInfoForSelf(Hospital hospital,
+                                               Patient patient,
+                                               PatientRequestByDTO patientRequestByDTO,
+                                               Character hasAddress) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -133,6 +142,31 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_PATIENT_INFO, getDifferenceBetweenTwoTime(startTime));
     }
 
+    @Override
+    public Double fetchPatientAppointmentCharge(Long patientId,
+                                                Long hospitalId,
+                                                Long hospitalDepartmentId,
+                                                Long hospitalDepartmentBillingModeId) {
+
+        Double appointmentCharge;
+
+        if (Objects.isNull(patientId)) {
+            appointmentCharge = fetchNewPatientAppointmentCharge(
+                    hospitalDepartmentBillingModeId, hospitalDepartmentId);
+        } else {
+
+            Character patientRegisteredStatus = hospitalPatientInfoRepository.fetchPatientRegisteredStatus(
+                    patientId, hospitalId
+            );
+
+            appointmentCharge = (patientRegisteredStatus.equals(YES))
+                    ? fetchRegisteredPatientAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId)
+                    : fetchNewPatientAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId);
+        }
+
+        return appointmentCharge;
+    }
+
     private void saveHospitalPatientInfo(Hospital hospital, Patient patient,
                                          String email, String address,
                                          Character hasAddress,
@@ -188,5 +222,19 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
         Address district = fetchAddress(districtId);
 
         parsePatientAddressDetails(province, vdcOrMunicipality, district, wardNumber, hospitalPatientInfo);
+    }
+
+    private Double fetchNewPatientAppointmentCharge(Long hospitalDepartmentBillingModeId,
+                                                    Long hospitalDepartmentId) {
+
+        return hospitalDepartmentBillingModeInfoRepository.fetchNewPatientAppointmentCharge(
+                hospitalDepartmentBillingModeId, hospitalDepartmentId);
+    }
+
+    private Double fetchRegisteredPatientAppointmentCharge(Long hospitalDepartmentBillingModeId,
+                                                           Long hospitalDepartmentId) {
+
+        return hospitalDepartmentBillingModeInfoRepository.fetchRegisteredPatientAppointmentCharge(
+                hospitalDepartmentBillingModeId, hospitalDepartmentId);
     }
 }

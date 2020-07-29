@@ -49,10 +49,25 @@ public class HospitalDepartmentBillingModeInfoRepositoryCustomImpl implements Ho
     }
 
     @Override
-    public Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId,
-                                                     Long hospitalDepartmentId) {
+    public Double fetchNewPatientAppointmentCharge(Long hospitalDepartmentBillingModeId,
+                                                   Long hospitalDepartmentId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_NEW_PATIENT_APPOINTMENT_CHARGE)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(HOSPITAL_DEPARTMENT_BILLING_MODE_ID, hospitalDepartmentBillingModeId);
+
+        try {
+            return (Double) query.getSingleResult();
+        } catch (NoResultException e) {
+            throw HOSPITAL_DEPARTMENT_BILLING_MODE_INFO_NOT_FOUND.get();
+        }
+    }
+
+    @Override
+    public Double fetchRegisteredPatientAppointmentCharge(Long hospitalDepartmentBillingModeId,
+                                                          Long hospitalDepartmentId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REGISTERED_PATIENT_APPOINTMENT_CHARGE)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(HOSPITAL_DEPARTMENT_BILLING_MODE_ID, hospitalDepartmentBillingModeId);
 

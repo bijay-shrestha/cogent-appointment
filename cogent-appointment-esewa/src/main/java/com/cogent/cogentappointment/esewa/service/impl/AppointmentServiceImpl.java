@@ -982,14 +982,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    private void validateAppointmentAmountDeptWise(Long hospitalDepartmentId,
+    private void validateAppointmentAmountDeptWise(Long hospitalId,
+                                                   Long hospitalDepartmentId,
                                                    Long hospitalDepartmentBillingModeId,
+                                                   Long patientId,
                                                    Character isFollowUp,
                                                    Double appointmentAmount) {
 
         Double actualAppointmentCharge = isFollowUp.equals(YES)
                 ? fetchHospitalDeptAppointmentFollowUpCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId)
-                : fetchHospitalDeptAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId);
+                : fetchHospitalDeptAppointmentCharge(
+                hospitalId, hospitalDepartmentId, hospitalDepartmentBillingModeId, patientId
+        );
 
         if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
             log.error(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE, appointmentAmount);
@@ -1271,8 +1275,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         validateIfParentAppointmentExistsDeptWise(appointmentReservationLog);
 
-        validateAppointmentAmountDeptWise(appointmentReservationLog.getHospitalDepartment().getId(),
+        validateAppointmentAmountDeptWise(
+                appointmentReservationLog.getHospital().getId(),
+                appointmentReservationLog.getHospitalDepartment().getId(),
                 appointmentReservationLog.getHospitalDepartmentBillingModeInfo().getId(),
+                appointmentInfo.getPatientId(),
                 appointmentInfo.getIsFollowUp(),
                 transactionInfo.getAppointmentAmount()
         );
@@ -1280,11 +1287,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentReservationLog;
     }
 
-    private Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId,
-                                                      Long hospitalDepartmentId) {
+    private Double fetchHospitalDeptAppointmentCharge(Long hospitalId,
+                                                      Long hospitalDepartmentId,
+                                                      Long hospitalDepartmentBillingModeId,
+                                                      Long patientId) {
 
-        return hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentCharge(
-                hospitalDepartmentBillingModeId, hospitalDepartmentId);
+        return hospitalPatientInfoService.fetchPatientAppointmentCharge(
+                patientId,
+                hospitalId,
+                hospitalDepartmentId,
+                hospitalDepartmentBillingModeId
+        );
     }
 
     private Double fetchHospitalDeptAppointmentFollowUpCharge(Long hospitalDepartmentBillingModeId,

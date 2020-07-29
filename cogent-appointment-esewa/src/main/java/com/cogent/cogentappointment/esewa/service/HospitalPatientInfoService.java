@@ -17,4 +17,9 @@ public interface HospitalPatientInfoService {
     void saveHospitalPatientInfoForOthers(Hospital hospital, Patient patient,
                                           PatientRequestForDTO patientRequestForDTO,
                                           Character hasAddress);
+
+    Double fetchPatientAppointmentCharge(Long patientId,
+                                         Long hospitalId,
+                                         Long hospitalDepartmentId,
+                                         Long hospitalDepartmentBillingModeId);
 }

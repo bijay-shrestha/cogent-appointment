@@ -1,4 +1,4 @@
-# cogent-appointment
+# eappointments-be
 
 #For development: application.yml->
 spring:

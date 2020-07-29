@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.cogent</groupId>
-    <artifactId>cogent-appointment</artifactId>
+    <artifactId>eappointments-be</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <dependencies>
         <dependency>
@@ -13,21 +13,19 @@
             <version>5.2.3.RELEASE</version>
         </dependency>
     </dependencies>
-    <name>cogent-appointment</name>
+    <name>eappointments-be</name>
     <description>Cogent Appointment System with eSewa Integration</description>
     <packaging>pom</packaging>
 
     <modules>
-        <module>cogent-appointment-persistence</module>
-        <module>cogent-thirdparty-connector</module>
-        <module>cogent-appointment-commons</module>
-        <module>cogent-appointment-admin</module>
-        <module>cogent-appointment-client</module>
-        <module>e-appointment-thirdparty</module>
-        <module>cogent-appointment-scheduler</module>
-        <module>cogent-appointment-logging</module>
-        <module>cogent-appointment-esewa</module>
-
+        <module>eappointments-be-persistence</module>
+        <module>eappointments-be-thirdparty-connector</module>
+        <module>eappointments-be-commons</module>
+        <module>eappointments-be-admin</module>
+        <module>eappointments-be-client</module>
+        <module>eappointments-be-thirdparty-tester</module>
+        <module>eappointments-be-logging</module>
+        <module>eappointments-be-esewa</module>
     </modules>
 
 </project>

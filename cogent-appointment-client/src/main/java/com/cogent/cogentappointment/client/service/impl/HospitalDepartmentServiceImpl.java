@@ -34,6 +34,7 @@ import static com.cogent.cogentappointment.client.utils.HospitalDepartmentUtils.
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
+import static com.cogent.cogentappointment.client.utils.commons.NameAndCodeValidationUtils.validateNepaliNameDuplicity;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static java.lang.reflect.Array.get;
 
@@ -94,6 +95,9 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         validateDuplicity(hospitalDepartments, requestDTO.getName(), requestDTO.getCode(),
                 HospitalDepartment.class.getSimpleName());
 
+        validateNepaliNameDuplicity(hospitalDepartments, requestDTO.getDepartmentNameInNepali(),
+                HospitalDepartment.class.getSimpleName());
+
         validateRoomNumber(requestDTO);
 
         Hospital hospital = fetchHospitalById(hospitalId);
@@ -121,6 +125,14 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         Long hospitalId = getLoggedInHospitalId();
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId(), hospitalId);
+
+        List<Object[]> hospitalDepartments = hospitalDepartmentRepository.validateDuplicity(requestDTO, hospitalId);
+
+        validateDuplicity(hospitalDepartments, requestDTO.getName(), requestDTO.getCode(),
+                HospitalDepartment.class.getSimpleName());
+
+        validateNepaliNameDuplicity(hospitalDepartments, requestDTO.getDepartmentNameInNepali(),
+                HospitalDepartment.class.getSimpleName());
 
         saveHospitalDepartment(parseToUpdateHospitalDepartment(hospitalDepartment, requestDTO));
 

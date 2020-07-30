@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.esewa.query;
 
+import static com.cogent.cogentappointment.esewa.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
+
 /**
  * @author smriti on 10/06/20
  */
@@ -13,12 +15,7 @@ public class HospitalDepartmentWeekDaysDutyRosterDoctorInfoQuery {
                     " ELSE" +
                     " CONCAT_WS(' ',d.salutation, d.name)" +
                     " END as doctorName," +
-                    " CASE WHEN" +
-                    " (da.status IS NULL OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " FROM HospitalDepartmentDutyRoster h" +
                     " LEFT JOIN HospitalDepartmentWeekDaysDutyRoster hw ON h.id = hw.hospitalDepartmentDutyRoster.id" +
                     " LEFT JOIN HospitalDepartmentWeekDaysDutyRosterDoctorInfo hwd ON hw.id = hwd.hospitalDepartmentWeekDaysDutyRoster.id" +

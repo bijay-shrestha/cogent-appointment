@@ -27,4 +27,6 @@ public interface UniversityRepositoryCustom {
     UniversityResponseDTO fetchDetailsById(Long id);
 
     List<DropDownResponseDTO> fetchActiveUniversity();
+
+    List<DropDownResponseDTO> fetchUniversity();
 }

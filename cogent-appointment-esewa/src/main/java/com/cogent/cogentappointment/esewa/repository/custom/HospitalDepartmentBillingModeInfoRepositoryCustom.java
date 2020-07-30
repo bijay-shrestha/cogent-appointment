@@ -15,7 +15,11 @@ public interface HospitalDepartmentBillingModeInfoRepositoryCustom {
 
     List<DropDownResponseDTO> fetchBillingModeByDepartmentId(Long hospitalDepartmentId);
 
-    Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId, Long hospitalDepartmentId);
+    Double fetchNewPatientAppointmentCharge(Long hospitalDepartmentBillingModeId,
+                                            Long hospitalDepartmentId);
+
+    Double fetchRegisteredPatientAppointmentCharge(Long hospitalDepartmentBillingModeId,
+                                                   Long hospitalDepartmentId);
 
     Double fetchHospitalDeptAppointmentFollowUpCharge(Long hospitalDepartmentBillingModeId,
                                                       Long hospitalDepartmentId);

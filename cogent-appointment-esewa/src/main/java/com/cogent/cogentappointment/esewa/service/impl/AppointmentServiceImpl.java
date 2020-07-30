@@ -32,6 +32,7 @@ import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -521,24 +522,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentMinResponseWithStatusDTO(appointmentHistory);
     }
 
-    //    todo: serviceType Code must be dynamic
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointments(@Valid AppointmentSearchDTO searchDTO) {
+    public AppointmentResponseWithStatusDTO searchAppointments(@Valid AppointmentSearchDTO searchDTO,
+                                                               Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
 
         validateConstraintViolation(validator.validate(searchDTO));
 
-//        AppointmentServiceType appointmentServiceType =
-//                fetchAppointmentServiceType(searchDTO.getAppointmentServiceTypeId());
-
-        if (Objects.isNull(searchDTO.getAppointmentServiceTypeCode()))
-            searchDTO.setAppointmentServiceTypeCode(DOCTOR_CONSULTATION_CODE);
-
         AppointmentResponseWithStatusDTO appointments = searchDTO.getIsSelf().equals(YES)
-                ? appointmentRepository.searchAppointmentsForSelf(searchDTO)
-                : appointmentRepository.searchAppointmentsForOthers(searchDTO);
+                ? appointmentRepository.searchAppointmentsForSelf(searchDTO, pageable)
+                : appointmentRepository.searchAppointmentsForOthers(searchDTO, pageable);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -986,14 +982,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    private void validateAppointmentAmountDeptWise(Long hospitalDepartmentId,
+    private void validateAppointmentAmountDeptWise(Long hospitalId,
+                                                   Long hospitalDepartmentId,
                                                    Long hospitalDepartmentBillingModeId,
+                                                   Long patientId,
                                                    Character isFollowUp,
                                                    Double appointmentAmount) {
 
         Double actualAppointmentCharge = isFollowUp.equals(YES)
                 ? fetchHospitalDeptAppointmentFollowUpCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId)
-                : fetchHospitalDeptAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId);
+                : fetchHospitalDeptAppointmentCharge(
+                hospitalId, hospitalDepartmentId, hospitalDepartmentBillingModeId, patientId
+        );
 
         if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
             log.error(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE, appointmentAmount);
@@ -1275,8 +1275,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         validateIfParentAppointmentExistsDeptWise(appointmentReservationLog);
 
-        validateAppointmentAmountDeptWise(appointmentReservationLog.getHospitalDepartment().getId(),
+        validateAppointmentAmountDeptWise(
+                appointmentReservationLog.getHospital().getId(),
+                appointmentReservationLog.getHospitalDepartment().getId(),
                 appointmentReservationLog.getHospitalDepartmentBillingModeInfo().getId(),
+                appointmentInfo.getPatientId(),
                 appointmentInfo.getIsFollowUp(),
                 transactionInfo.getAppointmentAmount()
         );
@@ -1284,11 +1287,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentReservationLog;
     }
 
-    private Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId,
-                                                      Long hospitalDepartmentId) {
+    private Double fetchHospitalDeptAppointmentCharge(Long hospitalId,
+                                                      Long hospitalDepartmentId,
+                                                      Long hospitalDepartmentBillingModeId,
+                                                      Long patientId) {
 
-        return hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentCharge(
-                hospitalDepartmentBillingModeId, hospitalDepartmentId);
+        return hospitalPatientInfoService.fetchPatientAppointmentCharge(
+                patientId,
+                hospitalId,
+                hospitalDepartmentId,
+                hospitalDepartmentBillingModeId
+        );
     }
 
     private Double fetchHospitalDeptAppointmentFollowUpCharge(Long hospitalDepartmentBillingModeId,

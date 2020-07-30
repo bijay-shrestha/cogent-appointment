@@ -31,5 +31,7 @@ public interface UniversityService {
 
     List<DropDownResponseDTO> fetchActiveUniversity();
 
+    List<DropDownResponseDTO> fetchUniversity();
+
     University fetchUniversityById(Long id);
 }

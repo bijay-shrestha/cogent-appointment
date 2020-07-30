@@ -381,10 +381,12 @@ public class AppointmentUtils {
     }
 
     public static AppointmentResponseWithStatusDTO parseToAppointmentHistory(
-            List<AppointmentResponseDTO> appointmentHistory) {
+            List<AppointmentResponseDTO> appointmentHistory,
+            int totalItems) {
 
         return AppointmentResponseWithStatusDTO.builder()
                 .appointments(appointmentHistory)
+                .totalItems(totalItems)
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();

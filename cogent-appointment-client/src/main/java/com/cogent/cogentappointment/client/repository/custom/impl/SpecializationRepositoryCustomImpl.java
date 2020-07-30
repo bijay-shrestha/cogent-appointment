@@ -100,6 +100,20 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchMinSpecialization(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()){
+            error();
+            throw SPECIALIZATION_NOT_FOUND.get();
+        }
+        else return results;
+    }
+
+    @Override
     public SpecializationResponseDTO fetchDetailsById(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_DETAILS)
                 .setParameter(ID, id)
@@ -127,8 +141,8 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID)
+    public List<DropDownResponseDTO> fetchActiveSpecializationByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
@@ -139,6 +153,8 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
         }
         else return results;
     }
+
+
 
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID,SPECIALIZATION,id);

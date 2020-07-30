@@ -38,6 +38,8 @@ public class AppointmentRefundDetailResponseDTO implements Serializable {
 
     private String doctorName;
 
+    private Character isDoctorActive;
+
     private String fileUri;
 
     private String specializationName;

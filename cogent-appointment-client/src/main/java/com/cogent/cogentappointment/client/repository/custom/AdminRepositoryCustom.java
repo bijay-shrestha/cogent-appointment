@@ -29,7 +29,9 @@ public interface AdminRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveMinAdmin(Long hospitalId);
 
-    List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Long hospitalId, Pageable pageable);
+    List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO,
+                                         Long hospitalId,
+                                         Pageable pageable);
 
     AdminDetailResponseDTO fetchDetailsById(Long id, Long hospitalId);
 

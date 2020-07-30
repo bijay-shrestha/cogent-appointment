@@ -28,5 +28,9 @@ public interface CompanyProfileRepositoryCustom {
 
     List<DropDownResponseDTO> fetchMinActiveCompanyProfile();
 
+    List<DropDownResponseDTO> fetchMinCompanyProfile();
+
     List<DropDownResponseDTO> fetchMinActiveCompanyProfileByCompanyId(Long companyId);
+
+    List<DropDownResponseDTO> fetchMinCompanyProfileByCompanyId(Long companyId);
 }

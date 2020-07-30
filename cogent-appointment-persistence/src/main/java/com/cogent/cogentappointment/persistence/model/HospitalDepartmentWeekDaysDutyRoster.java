@@ -47,6 +47,9 @@ public class HospitalDepartmentWeekDaysDutyRoster extends Auditable<String> impl
     @JoinColumn(name = "week_days_id")
     private WeekDays weekDays;
 
+    @Column(name = "is_doctor_available")
+    private Character isDoctorAvailable;
+
     @Override
     public String toString() {
         return "HospitalDepartmentWeekDaysDutyRoster{" +

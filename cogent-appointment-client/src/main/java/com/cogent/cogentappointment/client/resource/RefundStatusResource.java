@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DETAIL;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RefundStatusConstants.BASE_REFUND_STATUS;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RefundStatusConstants.CHECK;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SEARCH;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RoomConstants.HOSPITAL_DEPARTMENT_WISE;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -45,6 +44,15 @@ public class RefundStatusResource {
         return ok().body(refundStatusService.searchRefundAppointments(searchDTO, pageable));
     }
 
+    @PutMapping(HOSPITAL_DEPARTMENT_WISE + SEARCH)
+    @ApiOperation(FETCH_APPOINTMENT_REFUND_DETAIL_LIST)
+    public ResponseEntity<?> fetchHospitalDepartmentRefundAppointments(@RequestBody RefundStatusSearchRequestDTO searchDTO,
+                                                     @RequestParam("page") int page,
+                                                     @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(refundStatusService.searchHospitalDepartmentRefundAppointments(searchDTO, pageable));
+    }
+
     @PutMapping(CHECK)
     @ApiOperation(FETCH_REFUND_DETAILS_TO_APPROVE)
     public ResponseEntity<?> checkRefundStatus(@Valid @RequestBody RefundStatusRequestDTO requestDTO) {
@@ -56,6 +64,12 @@ public class RefundStatusResource {
     @ApiOperation(FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL)
     public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(refundStatusService.fetchRefundDetailsById(appointmentId));
+    }
+
+    @GetMapping(HOSPITAL_DEPARTMENT_WISE + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL)
+    public ResponseEntity<?> fetchHospitalDepartmentRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(refundStatusService.fetchHospitalDepartmentRefundDetailsById(appointmentId));
     }
 
 }

@@ -149,12 +149,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyMinimalResponseDTO> search(CompanySearchRequestDTO hospitalSearchRequestDTO, Pageable pageable) {
+    public List<CompanyMinimalResponseDTO> search(CompanySearchRequestDTO searchRequestDTO,
+                                                  Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, COMPANY);
 
-        List<CompanyMinimalResponseDTO> responseDTOS = hospitalRepository.searchCompany(hospitalSearchRequestDTO, pageable);
+        List<CompanyMinimalResponseDTO> responseDTOS = hospitalRepository.searchCompany(searchRequestDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));
 
@@ -163,6 +164,19 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyDropdownResponseDTO> fetchCompanyForDropDown() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COMPANY);
+
+        List<CompanyDropdownResponseDTO> responseDTOS = hospitalRepository.fetchCompanyForDropDown();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<CompanyDropdownResponseDTO> fetchActiveCompanyForDropDown() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COMPANY);

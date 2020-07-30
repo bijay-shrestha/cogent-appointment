@@ -43,6 +43,15 @@ public class SpecializationQuery {
                     " WHERE s.status ='Y'" +
                     " ORDER BY label ASC";
 
+    public static final String QUERY_TO_FETCH_SPECIALIZATION_FOR_DROPDOWN =
+            " SELECT" +
+                    " s.id as value," +                                      //[0]
+                    " s.name as label" +                                     //[1]
+                    " FROM" +
+                    " Specialization s" +
+                    " WHERE s.status !='D'" +
+                    " ORDER BY label ASC";
+
     public static final String QUERY_TO_FETCH_SPECIALIZATION_DETAILS =
             " SELECT s.name as name," +                                     //[0]
                     " s.code as code," +                                     //[1]
@@ -91,7 +100,7 @@ public class SpecializationQuery {
         return whereClause;
     };
 
-    public static String QUERY_TO_FETCH_SPECIALIZATION_BY_DOCTOR_ID =
+    public static String QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_BY_DOCTOR_ID =
             "SELECT" +
                     " s.id as value," +                                                   //[0]
                     " s.name as label" +                                                 //[1]
@@ -103,7 +112,19 @@ public class SpecializationQuery {
                     " AND s.status = 'Y'" +
                     " ORDER BY label ASC";
 
-    public static final String QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID =
+    public static String QUERY_TO_FETCH_SPECIALIZATION_BY_DOCTOR_ID =
+            "SELECT" +
+                    " s.id as value," +                                                   //[0]
+                    " s.name as label" +                                                 //[1]
+                    " FROM DoctorSpecialization cs" +
+                    " LEFT JOIN Specialization s ON s.id = cs.specializationId" +
+                    " WHERE" +
+                    " cs.doctorId =:id" +
+                    " AND cs.status = 'Y'" +
+                    " AND s.status != 'D'" +
+                    " ORDER BY label ASC";
+
+    public static final String QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_BY_HOSPITAL_ID =
             " SELECT" +
                     " s.id as value," +                                      //[0]
                     " s.name as label" +                                     //[1]
@@ -114,6 +135,19 @@ public class SpecializationQuery {
                     " AND h.status = 'Y'" +
                     " AND h.id =:hospitalId" +
                     " ORDER BY label ASC";
+
+    public static final String QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID =
+            " SELECT" +
+                    " s.id as value," +                                      //[0]
+                    " s.name as label" +                                     //[1]
+                    " FROM" +
+                    " Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
+                    " WHERE s.status !='D'" +
+                    " AND h.status = 'Y'" +
+                    " AND h.id =:hospitalId" +
+                    " ORDER BY label ASC";
+
 
     public static String SPECIALIZATION_AUDITABLE_QUERY() {
         return " s.createdBy as createdBy," +

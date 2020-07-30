@@ -308,7 +308,9 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id);
 
-        List<DoctorSalutationResponseDTO> salutationResponseDTOList = doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
+        List<DoctorSalutationResponseDTO> salutationResponseDTOList =
+                doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
+
         responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));

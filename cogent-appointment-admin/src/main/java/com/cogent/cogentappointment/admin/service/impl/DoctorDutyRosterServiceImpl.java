@@ -280,6 +280,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id);
 
+
+
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;

@@ -166,6 +166,20 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchMinCompanyProfile() {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COMPANY_PROFILE);
+
+        List<DropDownResponseDTO> minInfo = companyProfileRepository.fetchMinCompanyProfile();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COMPANY_PROFILE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchMinActiveCompanyProfileByCompanyId(Long companyId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -174,6 +188,21 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
         List<DropDownResponseDTO> minInfo =
                 companyProfileRepository.fetchMinActiveCompanyProfileByCompanyId(companyId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COMPANY_PROFILE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinCompanyProfileByCompanyId(Long companyId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COMPANY_PROFILE);
+
+        List<DropDownResponseDTO> minInfo =
+                companyProfileRepository.fetchMinCompanyProfileByCompanyId(companyId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COMPANY_PROFILE, getDifferenceBetweenTwoTime(startTime));
 

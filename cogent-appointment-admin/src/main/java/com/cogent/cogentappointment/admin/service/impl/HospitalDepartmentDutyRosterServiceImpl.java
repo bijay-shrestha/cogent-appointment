@@ -48,6 +48,7 @@ import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.Ho
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterRoomUtils.updateRoomDetails;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.*;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.isDoctorAvailable;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseToHospitalDeptWeekDaysDutyRoster;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseUpdatedWeekDaysDetails;
 import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
@@ -588,7 +589,12 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
             HospitalDepartmentWeekDaysDutyRoster weekDaysDutyRoster =
                     fetchHospitalDeptWeekDaysRoster(requestDTO.getRosterWeekDaysId());
 
-            saveWeekDaysDutyRoster(parseUpdatedWeekDaysDetails(requestDTO, weekDaysDutyRoster));
+            HospitalDepartmentWeekDaysDutyRoster updatedWeekDaysDutyRoster = parseUpdatedWeekDaysDetails
+                    (requestDTO, weekDaysDutyRoster);
+
+            updatedWeekDaysDutyRoster.setIsDoctorAvailable(isDoctorAvailable(weekDaysDutyRoster, requestDTO));
+
+            saveWeekDaysDutyRoster(updatedWeekDaysDutyRoster);
 
             if (requestDTO.getWeekDaysDoctorInfo().size() > 0)
                 updateHospitalDepartmentWeekDaysDutyRosterDoctorInfo(weekDaysDutyRoster,

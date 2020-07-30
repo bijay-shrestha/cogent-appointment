@@ -100,6 +100,16 @@ public class AppointmentModeRepositoryCustomImpl implements AppointmentModeRepos
         else return results;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchMinAppointmentMode() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_MODE);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw APPOINTMENT_MODE_NOT_FOUND.get();
+        else return results;
+    }
+
     private Supplier<NoContentFoundException> APPOINTMENT_MODE_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, APPOINTMENT_MODE);
         throw new NoContentFoundException(AppointmentMode.class);

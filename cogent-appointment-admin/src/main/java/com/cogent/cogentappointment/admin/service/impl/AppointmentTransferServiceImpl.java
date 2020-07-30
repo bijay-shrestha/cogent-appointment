@@ -333,7 +333,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        AppointmentTransferPreviewResponseDTO response = appointmentTransferRepository.fetchAppointmentTransferDetailById(appointmentTransferId);
+        AppointmentTransferPreviewResponseDTO response =
+                appointmentTransferRepository.fetchAppointmentTransferDetailById(appointmentTransferId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));

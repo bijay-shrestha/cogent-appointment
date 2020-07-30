@@ -28,6 +28,8 @@ public interface CompanyService {
 
     List<CompanyDropdownResponseDTO> fetchCompanyForDropDown();
 
+    List<CompanyDropdownResponseDTO> fetchActiveCompanyForDropDown();
+
     CompanyResponseDTO fetchDetailsById(Long companyId);
 
     String fetchAliasById(Long companyId);

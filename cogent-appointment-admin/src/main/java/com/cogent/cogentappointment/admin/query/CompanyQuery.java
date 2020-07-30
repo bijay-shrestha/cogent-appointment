@@ -32,7 +32,7 @@ public class CompanyQuery {
                     " AND h.status != 'D'" +
                     " AND h.isCompany='Y'";
 
-    public static final String QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN =
+    public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]
                     " h.name as label," +                   //[1]
@@ -44,35 +44,50 @@ public class CompanyQuery {
                     " AND h.isCompany='Y'" +
                     " ORDER by h.name ASC";
 
+    public static final String QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN =
+            " SELECT" +
+                    " h.id as value," +                     //[0]
+                    " h.name as label," +
+                    " h.isCompany as isCompany" +                    //[1]
+                    " FROM" +
+                    " Hospital h" +
+                    " WHERE h.status !='D'" +
+                    " AND h.isCompany='Y'" +
+                    " ORDER by h.name ASC";
+
     public static String QUERY_TO_SEARCH_COMPANY(CompanySearchRequestDTO searchRequestDTO) {
         return "SELECT" +
                 " h.id as id," +                                //[0]
                 " h.name as name," +                            //[1]
                 " h.status as status," +                        //[2]
                 " h.address as address," +                      //[3]
-                " tbl.file_uri as fileUri," +                  //[4]
-                " h.code as companyCode" +                     //[5]
+                " h.code as companyCode," +                     //[4]
+                " CASE" +
+                " WHEN" +
+                " (hl.status is null OR hl.status = 'N')" +
+                " THEN null" +
+                " WHEN" +
+                " hl.file_uri LIKE 'public%'" +
+                " THEN" +
+                " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.file_uri, 'public', -1))" +
+                " ELSE" +
+                " hl.file_uri" +
+                " END as fileUri" +                             //[5]
                 " FROM" +
                 " hospital h" +
-                " LEFT JOIN" +
-                " (" +
-                " SELECT" +
-                " hl.hospital_id as hospitalId," +
-                " hl.file_uri FROM hospital_logo hl" +
-                " WHERE hl.status = 'Y'" +
-                " )tbl ON tbl.hospitalId= h.id" +
-                GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL.apply(searchRequestDTO);
+                " LEFT JOIN hospital_logo hl ON h.id = hl.hospital_id" +
+                GET_WHERE_CLAUSE_FOR_SEARCHING_COMPANY.apply(searchRequestDTO);
     }
 
-    private static Function<CompanySearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL =
+    private static Function<CompanySearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCHING_COMPANY =
             (searchRequestDTO) -> {
                 String whereClause = " WHERE h.is_company='Y' AND h.status!='D'";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND h.status='" + searchRequestDTO.getStatus() + "'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-                    whereClause += " AND h.name LIKE '%" + searchRequestDTO.getName() + "%'";
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getCompanyId()))
+                    whereClause += " AND h.id =" + searchRequestDTO.getCompanyId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getCompanyCode()))
                     whereClause += " AND h.code LIKE '%" + searchRequestDTO.getCompanyCode() + "%'";
@@ -90,12 +105,17 @@ public class CompanyQuery {
                     " h.address as address," +                                  //[3]
                     " h.pan_number as panNumber," +                             //[4]
                     " h.remarks as remarks," +                                  //[5]
-                    " CASE WHEN" +
-                    " (hl.status IS NULL OR hl.status = 'N')" +
+                    " CASE" +
+                    " WHEN" +
+                    " (hl.status is null OR hl.status = 'N')" +
                     " THEN null" +
+                    " WHEN" +
+                    " hl.file_uri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(hl.file_uri, 'public', -1))" +
                     " ELSE" +
                     " hl.file_uri" +
-                    " END as companyLogo," +                                //[6]
+                    " END as companyLogo," +                                      //[6]
                     " h.code as companyCode," +                                //[7]
                     " tbl1.contact_details as contact_details," +               //[8]
                     " h.is_company as isCompany," +                             //[9]

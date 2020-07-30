@@ -31,9 +31,17 @@ public interface ProfileService {
 
     List<DropDownResponseDTO> fetchActiveProfilesForDropdown();
 
+    List<DropDownResponseDTO> fetchProfilesForDropdown();
+
     Profile fetchActiveProfileById(Long id);
 
     List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId);
 
+    List<DropDownResponseDTO> fetchAllProfileByDepartmentId(Long departmentId);
+
     AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO profileMenuSearchRequestDTO);
+
+    List<DropDownResponseDTO> fetchActiveProfileByHospitalId(Long hospitalId);
+
+    List<DropDownResponseDTO> fetchProfileByHospitalId(Long hospitalId);
 }

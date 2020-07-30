@@ -5,6 +5,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
+
 /**
  * @author Sauravi Thapa ON 5/20/20
  */
@@ -12,23 +14,25 @@ public class HospitalDepartmentQuery {
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
             " SELECT hd.name," +
-                    " hd.code" +
+                    " hd.code," +
+                    " hd.departmentNameInNepali" +
                     " FROM  HospitalDepartment hd" +
                     " WHERE" +
                     " hd.status !='D'" +
                     " AND hd.hospital.status !='D'" +
-                    " AND (hd.name=:name OR hd.code=:code)" +
+                    " AND (hd.name=:name OR hd.code=:code OR hd.departmentNameInNepali=:nepaliName)" +
                     " AND hd.hospital.id =:hospitalId";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT hd.name," +
-                    " hd.code" +
+                    " hd.code," +
+                    " hd.departmentNameInNepali" +
                     " FROM  HospitalDepartment hd" +
                     " WHERE" +
                     " hd.status !='D'" +
                     " AND hd.hospital.status !='D'" +
                     " AND hd.id!=:id" +
-                    " AND (hd.name=:name OR hd.code=:code)" +
+                    " AND (hd.name=:name OR hd.code=:code OR hd.departmentNameInNepali=:nepaliName)" +
                     " AND hd.hospital.id =:hospitalId";
 
     public static final String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_FOR_DROPDOWN =
@@ -150,18 +154,13 @@ public class HospitalDepartmentQuery {
     public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
                     " hddi.doctor.id as value," +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR+
                     " CASE WHEN" +
                     " (hddi.doctor.salutation is null)" +
                     " THEN hddi.doctor.name" +
                     " ELSE" +
                     " CONCAT_WS(' ',hddi.doctor.salutation, hddi.doctor.name)" +
-                    " END as label," +
-                    " CASE WHEN" +
-                    " (da.status is null OR da.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " da.fileUri" +
-                    " END as fileUri" +
+                    " END as label" +
                     " FROM" +
                     " HospitalDepartmentDoctorInfo hddi" +
                     " LEFT JOIN DoctorAvatar da ON da.doctorId=hddi.doctor.id" +

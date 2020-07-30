@@ -162,8 +162,30 @@ public class AppointmentTransferQuery {
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
                     "  hpi.isRegistered as patientType," +
-                    "  pda.fileUri as transferredFromFileUri," +
-                    "  cda.fileUri as transferredToFileUri," +
+                    " CASE" +
+                    " WHEN" +
+                    " (pda.status is null OR pda.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " pda.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(pda.fileUri, 'public', -1))" +
+                    " ELSE" +
+                    " pda.fileUri" +
+                    " END as transferredFromFileUri," +
+                    " CASE" +
+                    " WHEN" +
+                    " (cda.status is null OR cda.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " cda.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(cda.fileUri, 'public', -1))" +
+                    " ELSE" +
+                    " cda.fileUri" +
+                    " END as transferredToFileUri," +
+                    " apt.previousDoctor.status as isTransferredFromDoctorActive,"+
+                    " apt.currentDoctor.status as isTransferredToDoctorActive,"+
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +
@@ -246,9 +268,31 @@ public class AppointmentTransferQuery {
                     " atd.transactionNumber as transactionNumber," +
                     " a.isFollowUp as isFollowUp," +
                     "  hpi.isRegistered as patientType," +
-                    "  pda.fileUri as transferredFromFileUri," +
-                    "  cda.fileUri as transferredToFileUri," +
+                    " CASE" +
+                    " WHEN" +
+                    " (pda.status is null OR pda.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " pda.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(pda.fileUri, 'public', -1))" +
+                    " ELSE" +
+                    " pda.fileUri" +
+                    " END as transferredFromFileUri," +
+                    " CASE" +
+                    " WHEN" +
+                    " (cda.status is null OR cda.status = 'N')" +
+                    " THEN null" +
+                    " WHEN" +
+                    " cda.fileUri LIKE 'public%'" +
+                    " THEN" +
+                    " CONCAT(:cdnUrl,SUBSTRING_INDEX(cda.fileUri, 'public', -1))" +
+                    " ELSE" +
+                    " cda.fileUri" +
+                    " END as transferredToFileUri," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    " apt.previousDoctor.status as isTransferredFromDoctorActive,"+
+                    " apt.currentDoctor.status as isTransferredToDoctorActive,"+
                     APPOINTMENT_TRANSFER_AUDITABLE_QUERY() +
                     " FROM" +
                     " AppointmentTransfer apt" +
@@ -260,7 +304,8 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN DoctorAvatar pda ON pda.doctorId.id=apt.previousDoctor.id " +
                     " LEFT JOIN DoctorAvatar cda ON cda.doctorId.id=apt.currentDoctor.id " +
-                    " WHERE apt.id=:appointmentTransferId";
+                    " WHERE apt.id=:appointmentTransferId" +
+                    " GROUP BY a.id";
 
     public static String APPOINTMENT_TRANSFER_AUDITABLE_QUERY() {
         return " apt.createdBy as createdBy," +
@@ -278,7 +323,7 @@ public class AppointmentTransferQuery {
                 " LEFT JOIN AppointmentDoctorInfo adi ON adi.appointment.id=a.id" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=a.patientId.id" +
                 " WHERE a.hasTransferred='Y'" +
-                " AND a.hospitalId.id=:hospitalId" ;
+                " AND a.hospitalId.id=:hospitalId";
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
                 && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))

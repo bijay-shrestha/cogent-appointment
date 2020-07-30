@@ -7,7 +7,7 @@ import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResp
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DoctorRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import com.cogent.cogentappointment.persistence.model.DoctorAppointmentCharge;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,7 @@ import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR_APPOINTMENT_CHARGE;
 import static com.cogent.cogentappointment.client.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.client.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -42,6 +43,12 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public DoctorRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
 
     @Override
     public Long validateDoctorDuplicity(String name, String mobileNumber, Long hospitalId) {
@@ -70,11 +77,12 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
                                                  Pageable pageable) {
 
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_DOCTOR(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         List<DoctorMinimalResponseDTO> results = transformNativeQueryToResultList(
                 query, DoctorMinimalResponseDTO.class);
@@ -90,7 +98,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     @Override
     public List<DoctorDropdownDTO> fetchActiveMinDoctor(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -103,7 +112,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public DoctorDetailResponseDTO fetchDetailsById(Long doctorId, Long hospitalId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS)
                 .setParameter(ID, doctorId)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
         try {
             return transformNativeQueryToSingleResult(query, DoctorDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -115,7 +125,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public List<DoctorDropdownDTO> fetchDoctorBySpecializationAndHospitalId(Long specializationId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID)
                 .setParameter(ID, specializationId)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -125,9 +136,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId) {
+    public List<DoctorDropdownDTO> fetchActiveDoctorByHospitalId(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_DOCTOR_BY_HOSPITAL_ID)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -139,7 +151,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     @Override
     public List<DoctorDropdownDTO> fetchMinDoctorByHospitalId(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -152,7 +165,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId, Long hospitalId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS_FOR_UPDATE)
                 .setParameter(ID, doctorId)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<Object[]> results = query.getResultList();
 
@@ -189,13 +203,16 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     @Override
     public List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(doctorId))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
-        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
+        List<DoctorDropdownDTO> doctorAvatars = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty())
+        if (doctorAvatars.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        else return results;
+
+        else
+            return doctorAvatars;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () -> {

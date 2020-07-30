@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentServiceTypeConstant.DOCTOR_CONSULTATION_CODE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.ALL;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
@@ -227,7 +228,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private AppointmentStatusDTO searchAppointmentByApptNumber(String appointmentNumber) {
         AppointmentDetailsForStatus appointmentDetailsForStatus =
-                fetchAppointmentByApptNumber(appointmentNumber, "DOC");
+                fetchAppointmentByApptNumber(appointmentNumber, DOCTOR_CONSULTATION_CODE);
 
         RosterDetailsForStatus rosterDetailsForStatus = fetchDoctorDutyRosterDetails
                 (appointmentDetailsForStatus);
@@ -262,10 +263,12 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private HospitalDeptAppointmentStatusDTO searchByAppointmentNumber(String appointmentNumber) {
 
-        HospitalDeptAppointmentDetailsForStatus hospitalDeptAppointmentDetailsForStatus = fetchHospitalDeptAppointmentByApptNumber(appointmentNumber);
+        HospitalDeptAppointmentDetailsForStatus hospitalDeptAppointmentDetailsForStatus =
+                fetchHospitalDeptAppointmentByApptNumber(appointmentNumber);
 
-        RosterDetailsForStatus rosterDetailsForStatus = deptDutyRosterRepository
-                .fetchHospitalDepartmentDutyRosterDetailsByDeptId(hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentId(),
+        RosterDetailsForStatus rosterDetailsForStatus =
+                deptDutyRosterRepository.fetchHospitalDepartmentDutyRosterDetailsByDeptId(
+                        hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentId(),
                         hospitalDeptAppointmentDetailsForStatus.getHospitalDepartmentRoomInfoId(),
                         hospitalDeptAppointmentDetailsForStatus.getAppointmentDate());
 
@@ -324,6 +327,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         deptAndWeekdaysDTOS.forEach(hospitalDeptAndWeekdaysDTO -> {
             HospitalDeptAndDoctorDTO hospitalDeptAndDoctorDTO = hospitalDepartmentWeekDaysDutyRosterDoctorInfoRepository
                     .fetchHospitalDeptAndDoctorInfo(hospitalDeptAndWeekdaysDTO);
+
             hospitalDeptAndDoctorDTOS.add(hospitalDeptAndDoctorDTO);
         });
 

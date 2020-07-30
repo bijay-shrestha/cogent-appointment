@@ -132,7 +132,6 @@ public class AppointmentHospitalDepartmentQuery {
                             " hpi.registrationNumber" +
                             " END as registrationNumber," +                                             //[10]
                             " hpi.hospitalNumber as hospitalNumber," +                                  //[11]
-                            " hpi.address as address," +                                                //[12]
                             " hd.name as hospitalDepartmentName," +                                     //[13]
                             " case when hr.id is null then null" +
                             " when hr.id is not null then r.roomNumber" +
@@ -217,7 +216,6 @@ public class AppointmentHospitalDepartmentQuery {
                     " hpi.registrationNumber" +
                     " END as registrationNumber," +                                             //[10]
                     " hpi.hospitalNumber as hospitalNumber," +                                  //[11]
-                    " hpi.address as address," +                                                //[12]
                     " hd.name as hospitalDepartmentName," +                                     //[13]
                     " case when hr.id is null then null" +
                     " when hr.id is not null then r.roomNumber" +
@@ -226,7 +224,14 @@ public class AppointmentHospitalDepartmentQuery {
                     " d.value as district," +                                                   //[16]
                     " vm.value as vdcOrMunicipality," +                                         //[17]
                     " hpi.wardNumber as wardNumber," +                                          //[18]
-                    " hpi.address AS address," +                                                //[19]
+                    " CASE WHEN" +
+                    " hpi.hasAddress  = 'Y'" +
+                    " THEN" +
+                    " CONCAT_WS(', ',COALESCE(pr.value, ' ')," +
+                    " COALESCE(d.value,','),COALESCE(vm.value,','),COALESCE(hpi.wardNumber,''))" +
+                    " ELSE" +
+                    " hpi.address" +
+                    " end as address," +                                                        //[19]
                     QUERY_TO_CALCULATE_PATIENT_AGE_YEAR + "," +                                 //[20]
                     QUERY_TO_CALCULATE_PATIENT_AGE_MONTH + "," +                                //[21]
                     QUERY_TO_CALCULATE_PATIENT_AGE_DAY + "," +                                  //[22]
@@ -320,9 +325,9 @@ public class AppointmentHospitalDepartmentQuery {
                             " THEN" +
                             " atd.appointmentAmount" +
                             " ELSE" +
-                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +        //[20]
-                            " END AS revenueAmount," +
-                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                                //[19]
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount ,0)) " +
+                            " END AS revenueAmount," +                                                           //[18]
+                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                              //[19]
                             " hd.name as hospitalDepartmentName," +                                             //[20]
                             " hb.billingMode.name as billingModeName," +                                        //[21]
                             " case when hr.id is null then null" +
@@ -364,7 +369,7 @@ public class AppointmentHospitalDepartmentQuery {
             whereClause += " AND h.id = " + appointmentLogSearchDTO.getHospitalId();
 
         if (!Objects.isNull(appointmentLogSearchDTO.getPatientMetaInfoId()))
-            whereClause += " AND pmi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
+            whereClause += " AND pi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
 
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
@@ -374,6 +379,9 @@ public class AppointmentHospitalDepartmentQuery {
 
         if (!Objects.isNull(appointmentLogSearchDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id = " + appointmentLogSearchDTO.getHospitalDepartmentId();
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getHospitalDepartmentRoomInfoId()))
+            whereClause += " AND hr.id = " + appointmentLogSearchDTO.getHospitalDepartmentRoomInfoId();
 
         whereClause += " ORDER BY a.appointmentDate DESC ";
 
@@ -451,6 +459,9 @@ public class AppointmentHospitalDepartmentQuery {
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getHospitalDepartmentId()))
             whereClause += " AND hd.id = " + appointmentRescheduleLogSearchDTO.getHospitalDepartmentId();
 
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getHospitalDepartmentRoomInfoId()))
+            whereClause += " AND hr.id = " + appointmentRescheduleLogSearchDTO.getHospitalDepartmentRoomInfoId();
+
         whereClause += " ORDER BY arl.rescheduleDate";
 
         return whereClause;
@@ -465,6 +476,7 @@ public class AppointmentHospitalDepartmentQuery {
                         " LEFT JOIN HospitalAppointmentServiceType has ON has.id=a.hospitalAppointmentServiceType.id " +
                         " LEFT JOIN AppointmentHospitalDepartmentInfo ahd ON ahd.appointment.id = a.id" +
                         " LEFT JOIN HospitalDepartment hd ON hd.id = ahd.hospitalDepartment.id" +
+                        " LEFT OUTER JOIN HospitalDepartmentRoomInfo hr ON hr.id = ahd.hospitalDepartmentRoomInfo.id" +
                         " LEFT JOIN Patient p ON p.id=a.patientId" +
                         " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                         " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

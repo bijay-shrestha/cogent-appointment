@@ -8,6 +8,11 @@ public class ErrorMessageConstants {
     //A
     public static  final  String APPOINTMENT_MODE_NOT_VALID="APPOINTMENT MODE NOT VALID";
 
+    public static  final  String APPOINTMENT_HAS_BEEN_REJECTED="Appointment Has Been Rejected." +
+            " Please Contact System Administrator.";
+
+    public static final String PLEASE_CONTACT_ESEWA="The request cannot be processed. Please contact eSewa";
+
     public interface AppointmentServiceMessage {
         String APPOINTMENT_EXISTS = "Appointment already exists for the selected time: '%s'";
 
@@ -191,6 +196,7 @@ public class ErrorMessageConstants {
 
     //N
     public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s'";
+    public static final String NEPALI_NAME_DUPLICATION_MESSAGE = "%s already exists with nepali name '%s'";
     public static final String NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and mobile number '%s'";
 

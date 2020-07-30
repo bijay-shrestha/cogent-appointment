@@ -29,7 +29,7 @@ public interface DoctorRepositoryCustom {
 
     List<DoctorDropdownDTO> fetchDoctorBySpecializationAndHospitalId(Long specializationId, Long hospitalId);
 
-    List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
+    List<DoctorDropdownDTO> fetchActiveDoctorByHospitalId(Long hospitalId);
 
     List<DoctorDropdownDTO> fetchMinDoctorByHospitalId(Long hospitalId);
 

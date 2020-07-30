@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationAliasConstant.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.QualificationAliasConstants.BASE_QUALIFICATION_ALIAS;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SEARCH;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -70,5 +69,11 @@ public class QualificationAliasResource {
     @ApiOperation(FETCH_ACTIVE_QUALIFICATION_ALIAS)
     public ResponseEntity<?> fetchActiveQualificationAlias() {
         return ok(qualificationAliasService.fetchActiveQualificationAlias());
+    }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_QUALIFICATION_ALIAS)
+    public ResponseEntity<?> fetchQualificationAlias() {
+        return ok(qualificationAliasService.fetchQualificationAlias());
     }
 }

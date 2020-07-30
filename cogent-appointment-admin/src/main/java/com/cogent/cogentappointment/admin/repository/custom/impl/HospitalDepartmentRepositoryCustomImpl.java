@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.Hospit
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalDepartmentRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -45,11 +46,18 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
     @PersistenceContext
     EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public HospitalDepartmentRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
     @Override
     public List<Object[]> validateDuplicity(HospitalDepartmentRequestDTO requestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getCode())
+                .setParameter(NEPALI_NAME,requestDTO.getDepartmentNameInNepali())
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();
@@ -61,6 +69,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
                 .setParameter(ID, requestDTO.getId())
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getCode())
+                .setParameter(NEPALI_NAME,requestDTO.getDepartmentNameInNepali())
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();
@@ -132,7 +141,8 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
 
         Query doctorListQuery = createQuery.apply(entityManager, QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID)
-                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(CDN_URL,minIOProperties.getCDN_URL());
 
         Query roomListQuery = createQuery.apply(entityManager, QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);

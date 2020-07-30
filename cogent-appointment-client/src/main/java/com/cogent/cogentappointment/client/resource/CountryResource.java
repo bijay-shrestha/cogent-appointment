@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.CountryConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.CountryConstant.FETCH_ACTIVE_COUNTRY;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.CountryConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.CountryConstants.BASE_COUNTRY;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.MIN;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -32,5 +32,11 @@ public class CountryResource {
     @ApiOperation(FETCH_ACTIVE_COUNTRY)
     public ResponseEntity<?> fetchActiveCountry() {
         return ok(countryService.fetchActiveCountry());
+    }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_COUNTRY)
+    public ResponseEntity<?> fetchCountry() {
+        return ok(countryService.fetchCountry());
     }
 }

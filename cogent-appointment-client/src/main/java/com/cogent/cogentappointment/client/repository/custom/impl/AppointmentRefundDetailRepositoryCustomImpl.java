@@ -5,10 +5,10 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountReq
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusDTO;
-import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRefundDetailRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +22,10 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.TRANSACTION_NUMBER;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -51,6 +49,12 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
     @PersistenceContext
     EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public AppointmentRefundDetailRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
     @Override
     public Double getTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_AMOUNT(refundAmountRequestDTO.getDoctorId(),
@@ -70,7 +74,8 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
         RefundStatusResponseDTO refundStatusResponseDTO = new RefundStatusResponseDTO();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(requestDTO))
-                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId())
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         refundStatusResponseDTO.setTotalItems(query.getResultList().size());
 
@@ -83,11 +88,41 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
             throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
         }
 
-        Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT)
+        Query getTotalRefundAmount = createQuery.apply(entityManager,
+                QUERY_TO_GET_TOTAL_REFUND_AMOUNT.apply(requestDTO))
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         refundStatusResponseDTO.setRefundAppointments(response);
         refundStatusResponseDTO.setTotalRefundAmount((Double) getTotalRefundAmount.getSingleResult());
+
+        return refundStatusResponseDTO;
+    }
+
+    @Override
+    public HospitalDepartmentRefundStatusResponseDTO searchHospitalDepartmentRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+
+        HospitalDepartmentRefundStatusResponseDTO refundStatusResponseDTO = new HospitalDepartmentRefundStatusResponseDTO();
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_REFUND_APPOINTMENTS(requestDTO))
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        addPagination.accept(pageable, query);
+
+        List<HospitalDepartmentRefundStatusDTO> response = transformQueryToResultList(query,
+                HospitalDepartmentRefundStatusDTO.class);
+
+        if (response.size() == 0 || response.size() < 0) {
+            log.error(CONTENT_NOT_FOUND, APPOINTMENT_REFUND_DETAIL);
+            throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
+        }
+
+        Query getTotalRefundAmount = createQuery.apply(entityManager,
+                QUERY_TO_GET_TOTAL_HOSPITAL_DEPARTMENT__REFUND_AMOUNT.apply(requestDTO))
+                .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
+
+        refundStatusResponseDTO.setRefundAppointments(response);
+        refundStatusResponseDTO.setTotalRefundAmount((Double) getTotalRefundAmount.getSingleResult());
+        refundStatusResponseDTO.setTotalItems(query.getResultList().size());
 
         return refundStatusResponseDTO;
     }
@@ -110,10 +145,25 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
     @Override
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_REFUNDED_DETAIL_BY_ID)
-                .setParameter(APPOINTMENT_ID, appointmentId);
+                .setParameter(APPOINTMENT_ID, appointmentId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         try {
             return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw APPOINTMENT_DETAILS_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    @Override
+    public HospitalDepartmentAppointmentRefundDetailResponseDTO fetchHospitalDepartmentRefundDetailsById
+            (Long appointmentId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_HOSPITAL_DEPARTMENT_REFUNDED_DETAIL_BY_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+
+        try {
+            return transformQueryToSingleResult(query, HospitalDepartmentAppointmentRefundDetailResponseDTO.class);
         } catch (NoResultException e) {
             throw APPOINTMENT_DETAILS_NOT_FOUND.apply(appointmentId);
         }

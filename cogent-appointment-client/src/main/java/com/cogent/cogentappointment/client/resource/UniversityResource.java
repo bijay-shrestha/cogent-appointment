@@ -76,4 +76,10 @@ public class UniversityResource {
     public ResponseEntity<?> fetchActiveUniversity() {
         return ok(universityService.fetchActiveMinUniversity());
     }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchUniversity() {
+        return ok(universityService.fetchMinUniversity());
+    }
 }

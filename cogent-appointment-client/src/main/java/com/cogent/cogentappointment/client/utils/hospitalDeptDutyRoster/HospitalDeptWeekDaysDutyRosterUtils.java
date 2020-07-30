@@ -1,9 +1,15 @@
 package com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster;
 
-import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptWeekDaysDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptWeekDaysDutyRosterUpdateRequestDTO;
-import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentWeekDaysDutyRoster;
+import com.cogent.cogentappointment.persistence.model.WeekDays;
+
+import java.util.List;
+
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 
 /**
  * @author smriti on 20/05/20
@@ -21,7 +27,13 @@ public class HospitalDeptWeekDaysDutyRosterUtils {
         weekDaysDutyRoster.setDayOffStatus(requestDTO.getDayOffStatus());
         weekDaysDutyRoster.setHospitalDepartmentDutyRoster(hospitalDepartmentDutyRoster);
         weekDaysDutyRoster.setWeekDays(weekDays);
+        weekDaysDutyRoster.setIsDoctorAvailable(isDoctorAvailable(requestDTO.getHospitalDepartmentDoctorInfoIds()));
+
         return weekDaysDutyRoster;
+    }
+
+    public static Character isDoctorAvailable(List<Long> doctorIdList) {
+        return doctorIdList.size() > 0 ? YES : NO;
     }
 
     public static HospitalDepartmentWeekDaysDutyRoster parseUpdatedWeekDaysDetails(
@@ -32,5 +44,17 @@ public class HospitalDeptWeekDaysDutyRosterUtils {
         weekDaysDutyRoster.setEndTime(updateRequestDTO.getEndTime());
         weekDaysDutyRoster.setDayOffStatus(updateRequestDTO.getDayOffStatus());
         return weekDaysDutyRoster;
+    }
+
+    public static Character isDoctorAvailable(HospitalDepartmentWeekDaysDutyRoster weekDaysDutyRoster,
+                                              HospitalDeptWeekDaysDutyRosterUpdateRequestDTO requestDTO) {
+
+        if (weekDaysDutyRoster.getIsDoctorAvailable().equals(NO) && requestDTO.getWeekDaysDoctorInfo().size() > 0) {
+            return YES;
+        } else if (requestDTO.getDeleteAllDoctors().equals(YES)) {
+            return NO;
+        } else {
+            return weekDaysDutyRoster.getIsDoctorAvailable();
+        }
     }
 }

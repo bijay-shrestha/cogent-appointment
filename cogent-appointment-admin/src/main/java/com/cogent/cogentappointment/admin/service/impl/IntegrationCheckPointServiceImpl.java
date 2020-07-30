@@ -586,6 +586,7 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                         .integrationChannelCode("BACK")
                         .appointmentId(appointment.getId())
                         .appointmentModeId(appointment.getAppointmentModeId().getId())
+                        .hospitalId(appointment.getHospitalId().getId())
                         .build();
 
                 apiIntegrationCheckpointForRefundAppointment(appointment,
@@ -595,11 +596,14 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             case AMBIGIOUS:
-                throw new BadRequestException("Communicate with Esewa");
+                throw new BadRequestException(PLEASE_CONTACT_ESEWA);
 
 
             case PENDING:
-                throw new BadRequestException("Communicate with Esewa");
+                throw new BadRequestException(PLEASE_CONTACT_ESEWA);
+
+            default:
+                throw new BadRequestException(PLEASE_CONTACT_ESEWA);
 
         }
     }

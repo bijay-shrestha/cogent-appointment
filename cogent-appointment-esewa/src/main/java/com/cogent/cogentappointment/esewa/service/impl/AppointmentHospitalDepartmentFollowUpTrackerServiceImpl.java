@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.esewa.repository.HospitalRepository;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentFollowUpTrackerService;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDepartmentReservationLogService;
+import com.cogent.cogentappointment.esewa.service.HospitalPatientInfoService;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.Hospital;
@@ -52,19 +53,23 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
 
     private final Validator validator;
 
+    private final HospitalPatientInfoService hospitalPatientInfoService;
+
     public AppointmentHospitalDepartmentFollowUpTrackerServiceImpl(
             AppointmentHospitalDepartmentFollowUpTrackerRepository appointmentHospitalDepartmentFollowUpTrackerRepository,
             HospitalRepository hospitalRepository,
             HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
             AppointmentHospitalDepartmentReservationLogService appointmentHospitalDepartmentReservationLogService,
             AppointmentHospitalDepartmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
-            Validator validator) {
+            Validator validator,
+            HospitalPatientInfoService hospitalPatientInfoService) {
         this.appointmentHospitalDepartmentFollowUpTrackerRepository = appointmentHospitalDepartmentFollowUpTrackerRepository;
         this.hospitalRepository = hospitalRepository;
         this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
         this.appointmentHospitalDepartmentReservationLogService = appointmentHospitalDepartmentReservationLogService;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.validator = validator;
+        this.hospitalPatientInfoService = hospitalPatientInfoService;
     }
 
     @Override
@@ -98,8 +103,7 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
 
             /*THIS IS NORMAL APPOINTMENT AND APPOINTMENT CHARGE = HOSPITAL DEPARTMENT APPOINTMENT CHARGE*/
             responseDTO = parseHospitalDeptAppointmentCharge(
-                    requestDTO.getHospitalDepartmentBillingModeId(),
-                    requestDTO.getHospitalDepartmentId(),
+                    requestDTO,
                     savedAppointmentReservationId,
                     hospitalRefundPercentage
             );
@@ -156,8 +160,8 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
         if (appointmentFollowUpTracker.getRemainingNumberOfFollowUps() <= 0)
             /*NORMAL APPOINTMENT*/
             return parseHospitalDeptAppointmentCharge(
-                    requestDTO.getHospitalDepartmentBillingModeId(),
-                    requestDTO.getHospitalDepartmentId(), savedAppointmentReservationId,
+                    requestDTO,
+                    savedAppointmentReservationId,
                     hospitalRefundPercentage
             );
 
@@ -187,28 +191,32 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
             else
                  /*NORMAL APPOINTMENT*/
                 return parseHospitalDeptAppointmentCharge(
-                        requestDTO.getHospitalDepartmentBillingModeId(),
-                        requestDTO.getHospitalDepartmentId(), savedAppointmentReservationId,
+                        requestDTO,
+                        savedAppointmentReservationId,
                         hospitalRefundPercentage
                 );
 
         } else {
              /*NORMAL APPOINTMENT*/
             return parseHospitalDeptAppointmentCharge(
-                    requestDTO.getHospitalDepartmentBillingModeId(),
-                    requestDTO.getHospitalDepartmentId(), savedAppointmentReservationId,
+                    requestDTO,
+                    savedAppointmentReservationId,
                     hospitalRefundPercentage
             );
         }
     }
 
     private AppointmentHospitalDeptFollowUpResponseDTO parseHospitalDeptAppointmentCharge(
-            Long hospitalDepartmentBillingModeId, Long hospitalDepartmentId,
+            AppointmentHospitalDeptFollowUpRequestDTO requestDTO,
             Long savedAppointmentReservationId,
             Double hospitalRefundPercentage) {
 
-        Double appointmentCharge = hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentCharge(
-                hospitalDepartmentBillingModeId, hospitalDepartmentId);
+        Double appointmentCharge = hospitalPatientInfoService.fetchPatientAppointmentCharge(
+                requestDTO.getPatientId(),
+                requestDTO.getHospitalId(),
+                requestDTO.getHospitalDepartmentId(),
+                requestDTO.getHospitalDepartmentBillingModeId()
+        );
 
         return parseAppointmentHospitalDeptFollowUpResponseDTO(
                 NO, appointmentCharge, null, savedAppointmentReservationId, hospitalRefundPercentage
@@ -241,5 +249,6 @@ public class AppointmentHospitalDepartmentFollowUpTrackerServiceImpl implements 
         return hospitalRepository.fetchHospitalRefundPercentage(hospitalId)
                 .orElseThrow(() -> new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString()));
     }
+
 
 }

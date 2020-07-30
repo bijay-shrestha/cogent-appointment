@@ -11,5 +11,7 @@ import java.util.List;
 public interface CountryService {
     List<DropDownResponseDTO> fetchActiveCountry();
 
+    List<DropDownResponseDTO> fetchCountry();
+
     Country fetchCountryById(Long id);
 }

@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDT
 import com.cogent.cogentappointment.admin.dto.response.hospital.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.HospitalAppointmentServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +49,13 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final MinIOProperties minIOProperties;
+
+    public HospitalRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
 
     @Override
     public List<Object[]> validateHospitalDuplicity(String name, String esewaMerchantCode, String alias) {
@@ -93,7 +101,9 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO,
                                                    Pageable pageable) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO));
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO))
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -110,8 +120,11 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public List<CompanyMinimalResponseDTO> searchCompany(CompanySearchRequestDTO searchRequestDTO, Pageable pageable) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY(searchRequestDTO));
+    public List<CompanyMinimalResponseDTO> searchCompany(CompanySearchRequestDTO searchRequestDTO,
+                                                         Pageable pageable) {
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY(searchRequestDTO))
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -129,7 +142,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public HospitalResponseDTO fetchDetailsById(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         Query billingModeQuery = createQuery.apply(entityManager, QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, id);
@@ -153,7 +167,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public CompanyResponseDTO fetchCompanyDetailsById(Long id) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_DETAILS)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         List<Object[]> results = query.getResultList();
 
@@ -218,6 +233,17 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public List<CompanyDropdownResponseDTO> fetchActiveCompanyForDropDown() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COMPANY_FOR_DROPDOWN);
+
+        List<CompanyDropdownResponseDTO> results = transformQueryToResultList(query, CompanyDropdownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            throw HOSPITAL_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
+    public List<CompanyDropdownResponseDTO> fetchCompanyForDropDown() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN);
 
         List<CompanyDropdownResponseDTO> results = transformQueryToResultList(query, CompanyDropdownResponseDTO.class);

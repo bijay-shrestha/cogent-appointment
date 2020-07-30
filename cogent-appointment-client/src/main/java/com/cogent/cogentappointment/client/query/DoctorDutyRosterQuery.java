@@ -6,6 +6,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.client.query.CdnFileQuery.QUERY_TO_FETCH_DOCTOR_AVATAR;
+
 /**
  * @author smriti on 26/11/2019
  */
@@ -30,8 +32,9 @@ public class DoctorDutyRosterQuery {
                 " ddr.fromDate as fromDate," +                                          //[4]
                 " ddr.toDate as toDate," +                                              //[5]
                 " ddr.status as status," +                                              //[6]
-                " da.fileUri as fileUri," +                                              //[7]
-                " d.salutation as doctorSalutation" +                                    //[8]
+                " d.salutation as doctorSalutation," +
+                " d.status as isDoctorActive," +                                  //[7]
+                QUERY_TO_FETCH_DOCTOR_AVATAR +                                          //[8]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                 " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
@@ -67,12 +70,13 @@ public class DoctorDutyRosterQuery {
                     " ddr.status as status," +                                          //[8]
                     " ddr.remarks as remarks," +                                        //[9]
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +             //[10]
-                    " dv.fileUri as fileUri," +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR + "," +
                     DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() + "," +
-                    " d.salutation as doctorSalutation" +
+                    " d.salutation as doctorSalutation," +
+                    " d.status as isDoctorActive" +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
-                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                     " WHERE ddr.status !='D'" +
                     " AND ddr.id = :id" +
@@ -125,7 +129,7 @@ public class DoctorDutyRosterQuery {
                 " s.id as specializationId," +                            //[5]
                 " s.name as specializationName," +                        //[6]
                 " d.roster_gap_duration as rosterGapDuration," +           //[7]
-                " dr.salutation as doctorSalutation"+                      //[8]
+                " dr.salutation as doctorSalutation" +                      //[8]
                 " FROM doctor_duty_roster d" +
                 " LEFT JOIN doctor_week_days_duty_roster dw ON d.id = dw.doctor_duty_roster_id" +
                 " LEFT JOIN week_days w ON w.id = dw.week_days_id" +
@@ -193,7 +197,7 @@ public class DoctorDutyRosterQuery {
                     " AND d.fromDate <=:date " +
                     " AND d.doctorId.id = :doctorId" +
                     " AND d.specializationId.id = :specializationId" +
-                    " AND w.name =DATE_FORMAT(:date,'%W') "+
+                    " AND w.name =DATE_FORMAT(:date,'%W') " +
                     " GROUP BY d.id";
 
 }

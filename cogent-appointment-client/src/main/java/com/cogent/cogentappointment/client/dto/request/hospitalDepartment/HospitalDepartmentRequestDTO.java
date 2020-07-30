@@ -25,6 +25,11 @@ public class HospitalDepartmentRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     @NotBlank
+    private String departmentNameInNepali;
+
+    @NotNull
+    @NotEmpty
+    @NotBlank
     private String code;
 
     @NotNull

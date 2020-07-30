@@ -33,12 +33,12 @@ public class EmailScheduler {
     @Scheduled(fixedDelayString = EMAIL_SCHEDULER_TIME)
     public void sendEmail() {
 
-        System.out.println("HOST --------" + emailProperties.getHost());
-        System.out.println("USERNAME---------" + emailProperties.getUsername());
-        System.out.println("PASSWORD-------------" + emailProperties.getPassword());
-        System.out.println("PORT------------" + emailProperties.getPort());
-        System.out.println("PROTOCOL---------------" + emailProperties.getProtocol());
-        System.out.println("ENABLED----------" + emailProperties.getEnabled());
+//        System.out.println("HOST --------" + emailProperties.getHost());
+//        System.out.println("USERNAME---------" + emailProperties.getUsername());
+//        System.out.println("PASSWORD-------------" + emailProperties.getPassword());
+//        System.out.println("PORT------------" + emailProperties.getPort());
+//        System.out.println("PROTOCOL---------------" + emailProperties.getProtocol());
+//        System.out.println("ENABLED----------" + emailProperties.getEnabled());
 
         if (emailProperties.getEnabled().equals(YES)) {
             log.info(SCHEDULER_RUNNING, EMAIL);

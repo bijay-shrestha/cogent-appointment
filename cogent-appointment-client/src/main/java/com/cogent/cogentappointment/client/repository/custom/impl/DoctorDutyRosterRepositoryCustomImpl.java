@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentStatus.depart
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.commons.configuration.MinIOProperties;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,12 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final MinIOProperties minIOProperties;
+
+    public DoctorDutyRosterRepositoryCustomImpl(MinIOProperties minIOProperties) {
+        this.minIOProperties = minIOProperties;
+    }
+
     @Override
     public Long validateDoctorDutyRosterCount(Long doctorId,
                                               Long specializationId,
@@ -74,7 +81,8 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_DOCTOR_DUTY_ROSTER(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
 
         int totalItems = query.getResultList().size();
 
@@ -201,10 +209,10 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
     @Override
     public RosterDetailsForStatus fetchRosterDetailsToSearchByApptNumber(Long doctorId, Long specializationId, Date date) {
-        Query query=createQuery.apply(entityManager,QUERY_TO_FETCH_ROSTER_DETAILS)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROSTER_DETAILS)
                 .setParameter(DATE, utilDateToSqlDate(date))
-                .setParameter(DOCTOR_ID,doctorId)
-                .setParameter(SPECIALIZATION_ID,specializationId);
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
 
         try {
             RosterDetailsForStatus response = transformQueryToSingleResult(query, RosterDetailsForStatus.class);
@@ -213,15 +221,15 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
             error();
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
         }
-
-
     }
 
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS)
                 .setParameter(ID, doctorDutyRosterId)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(CDN_URL, minIOProperties.getCDN_URL());
+
         try {
             return transformQueryToSingleResult(query, DoctorDutyRosterResponseDTO.class);
         } catch (NoResultException e) {

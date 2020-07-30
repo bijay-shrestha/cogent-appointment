@@ -4,10 +4,7 @@ import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.*;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.*;
 import com.cogent.cogentappointment.client.dto.response.appointmentServiceType.AppointmentServiceTypeDropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
@@ -54,6 +51,7 @@ import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderB
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.commons.utils.MinIOUtils.fileUrlCheckPoint;
 import static java.lang.reflect.Array.get;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;
@@ -275,7 +273,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateAvatar(AdminAvatarUpdateRequestDTO requestDTO) {
+    public AdminAvatarUpdateResponse updateAvatar(AdminAvatarUpdateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR);
@@ -284,7 +282,12 @@ public class AdminServiceImpl implements AdminService {
 
         updateAvatar(admin, requestDTO.getAvatar());
 
+        AdminAvatarUpdateResponse adminAvatarUpdateResponse = new AdminAvatarUpdateResponse();
+        adminAvatarUpdateResponse.setAvatar(fileUrlCheckPoint(requestDTO.getAvatar()));
+
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR, getDifferenceBetweenTwoTime(startTime));
+
+        return adminAvatarUpdateResponse;
     }
 
     @Override

@@ -10,4 +10,11 @@ public class CountryQuery {
                     " c.name as label" +
                     " FROM Country c" +
                     " WHERE c.status = 'Y'";
+
+    public static final String QUERY_TO_FETCH_COUNTRY =
+            "SELECT" +
+                    " c.id as value," +
+                    " c.name as label" +
+                    " FROM Country c" +
+                    " WHERE c.status != 'D'";
 }

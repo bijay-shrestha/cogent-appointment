@@ -25,6 +25,7 @@ public class HospitalDepartmentUtils {
         hospitalDepartment.setDescription(requestDTO.getDescription());
         hospitalDepartment.setStatus(requestDTO.getStatus());
         hospitalDepartment.setHospital(hospital);
+        hospitalDepartment.setDepartmentNameInNepali(requestDTO.getDepartmentNameInNepali());
 
         return hospitalDepartment;
     }

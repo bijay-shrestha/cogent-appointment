@@ -6,4 +6,8 @@ package com.cogent.cogentappointment.admin.log.constants;
 public class RefundStatusLog {
 
     public static final String REFUND_STATUS = "REFUND STATUS";
+
+    public static final String DOCTOR_REFUND_STATUS = "DOCTOR REFUND STATUS";
+
+    public static final String HOSPITAL_DEPARTMENT_REFUND_STATUS = "HOSPITAL DEPARTMENT REFUND STATUS";
 }

@@ -31,6 +31,11 @@ public class HospitalDepartmentUpdateRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     @NotBlank
+    private String departmentNameInNepali;
+
+    @NotNull
+    @NotEmpty
+    @NotBlank
     private String code;
 
     @NotNull

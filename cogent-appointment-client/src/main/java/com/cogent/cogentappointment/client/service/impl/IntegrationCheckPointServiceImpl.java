@@ -469,10 +469,13 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 break;
 
             case AMBIGIOUS:
-                throw new BadRequestException("Communicate with Esewa");
+                throw new BadRequestException(PLEASE_CONTACT_ESEWA);
 
             case PENDING:
-                throw new BadRequestException("Communicate with Esewa");
+                throw new BadRequestException(PLEASE_CONTACT_ESEWA);
+
+            default:
+                throw new BadRequestException(PLEASE_CONTACT_ESEWA);
         }
     }
 
@@ -506,13 +509,15 @@ public class IntegrationCheckPointServiceImpl implements IntegrationCheckPointSe
                 defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment,
                         refundAppointmentDetail,
                         response);
-                break;
+
+                throw new BadRequestException(response, response);
 
             default:
                 defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment,
                         refundAppointmentDetail,
                         response);
-                break;
+
+                throw new BadRequestException(response, response);
 
         }
     }

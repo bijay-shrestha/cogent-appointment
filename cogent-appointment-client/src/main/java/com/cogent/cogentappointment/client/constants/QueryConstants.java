@@ -37,6 +37,8 @@ public class QueryConstants {
     public static final String CODE = "code";
     public static final String CONFIRMATION_TOKEN = "confirmationToken";
 
+    public static final String CDN_URL = "cdnUrl";
+
 
     //D
 
@@ -92,7 +94,7 @@ public class QueryConstants {
 
     //N
     public static final String NAME = "name";
-
+    public static final String NEPALI_NAME = "nepaliName";
 
     //O
 

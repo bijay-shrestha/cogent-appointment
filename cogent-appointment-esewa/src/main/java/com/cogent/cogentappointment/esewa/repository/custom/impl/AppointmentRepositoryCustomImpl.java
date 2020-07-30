@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.esewa.repository.custom.AppointmentRepositor
 import com.cogent.cogentappointment.esewa.utils.AppointmentUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +25,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ROOM_INFO_ID;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_SEPARATED;
@@ -44,6 +44,7 @@ import static com.cogent.cogentappointment.esewa.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.esewa.query.HospitalDepartmentRoomInfoQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_NUMBER;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.parseToAppointmentHistory;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.esewa.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
 
 /**
@@ -91,9 +92,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     /*eg. 2076-10-10 lies in between 2076-04-01 to 2077-03-31 Fiscal Year ie. 2076/2077*/
     @Override
-    public String generateAppointmentNumber(String nepaliCreatedDate,
-                                            Long hospitalId,
-                                            String hospitalCode) {
+    public synchronized String generateAppointmentNumber(String nepaliCreatedDate,
+                                                         Long hospitalId,
+                                                         String hospitalCode) {
 
         int year = getYearFromNepaliDate(nepaliCreatedDate);
         int month = getMonthFromNepaliDate(nepaliCreatedDate);
@@ -194,7 +195,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO) {
+    public AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO,
+                                                                      Pageable pageable) {
 
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_SELF(searchDTO))
@@ -202,8 +204,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
                 .setParameter(NAME, searchDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchDTO.getDateOfBirth()))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, searchDTO.getAppointmentServiceTypeCode());
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchDTO.getDateOfBirth()));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
 
         List<AppointmentResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentResponseDTO.class);
@@ -211,18 +216,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
-        appointmentHistory.forEach(appointment -> {
-            if (!Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
-                String roomNumber = fetchRoomNumber(appointment.getHospitalDepartmentRoomInfoId());
-                appointment.setRoomNumber(roomNumber);
-            }
-        });
-
-        return parseToAppointmentHistory(appointmentHistory);
+        return parseToAppointmentHistory(appointmentHistory, totalItems);
     }
 
     @Override
-    public AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO) {
+    public AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO,
+                                                                        Pageable pageable) {
 
         List<PatientRelationInfoResponseDTO> patientRelationInfo =
                 patientRepository.fetchPatientRelationInfoHospitalWise(
@@ -239,8 +238,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_OTHERS(searchDTO, childPatientIds))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
-                .setParameter(APPOINTMENT_SERVICE_TYPE_CODE, searchDTO.getAppointmentServiceTypeCode());
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
 
         List<AppointmentResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentResponseDTO.class);
@@ -248,14 +250,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
 
-        appointmentHistory.forEach(appointment -> {
-            if (!Objects.isNull(appointment.getHospitalDepartmentRoomInfoId())) {
-                String roomNumber = fetchRoomNumber(appointment.getHospitalDepartmentRoomInfoId());
-                appointment.setRoomNumber(roomNumber);
-            }
-        });
-
-        return parseToAppointmentHistory(appointmentHistory);
+        return parseToAppointmentHistory(appointmentHistory, totalItems);
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

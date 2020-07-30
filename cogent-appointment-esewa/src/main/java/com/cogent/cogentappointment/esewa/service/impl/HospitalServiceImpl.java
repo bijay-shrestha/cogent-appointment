@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-import com.cogent.cogentappointment.commons.dto.request.file.FileURLRequestDTO;
-import com.cogent.cogentappointment.commons.service.MinIOService;
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalAppointmentServiceTypeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalMinResponseDTO;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
@@ -24,7 +21,6 @@ import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPI
 import static com.cogent.cogentappointment.esewa.utils.HospitalUtils.parseToHospitalMinResponseDTOWithStatus;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * @author smriti ON 12/01/2020
@@ -34,12 +30,9 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Slf4j
 public class HospitalServiceImpl implements HospitalService {
 
-    private final MinIOService minIOService;
-
     private final HospitalRepository hospitalRepository;
 
-    public HospitalServiceImpl(MinIOService minIOService, HospitalRepository hospitalRepository) {
-        this.minIOService = minIOService;
+    public HospitalServiceImpl(HospitalRepository hospitalRepository) {
         this.hospitalRepository = hospitalRepository;
     }
 
@@ -65,21 +58,6 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
-
-        responseDTO.forEach((HospitalMinResponseDTO hospital) -> {
-
-            if (!isEmpty(hospital.getHospitalLogo()) && !Objects.isNull(hospital.getHospitalLogo())) {
-                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
-                fileRequestDTO.setFileName(hospital.getHospitalLogo());
-                hospital.setHospitalLogo(minIOService.getPresignedObjectURL(fileRequestDTO));
-            }
-
-            if (!isEmpty(hospital.getHospitalBanner()) && !Objects.isNull(hospital.getHospitalBanner())) {
-                FileURLRequestDTO fileRequestDTO = new FileURLRequestDTO();
-                fileRequestDTO.setFileName(hospital.getHospitalBanner());
-                hospital.setHospitalBanner(minIOService.getPresignedObjectURL(fileRequestDTO));
-            }
-        });
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

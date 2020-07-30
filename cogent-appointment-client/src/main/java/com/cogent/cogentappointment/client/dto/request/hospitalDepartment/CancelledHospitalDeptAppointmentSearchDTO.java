@@ -19,6 +19,8 @@ public class CancelledHospitalDeptAppointmentSearchDTO implements Serializable {
 
     private Long hospitalDepartmentId;
 
+    private Long hospitalDepartmentRoomInfoId;
+
     private Long roomId;
 
     private Long patientMetaInfoId;

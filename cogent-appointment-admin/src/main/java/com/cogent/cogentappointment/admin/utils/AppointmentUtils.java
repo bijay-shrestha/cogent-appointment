@@ -33,6 +33,7 @@ public class AppointmentUtils {
                                                                    AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(refundRequestDTO.getRemarks());
+        refundDetail.setRefundedDate(new Date());
 
         return refundDetail;
     }

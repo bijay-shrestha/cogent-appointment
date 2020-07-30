@@ -47,8 +47,7 @@ import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.H
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterRoomUtils.updateRoomDetails;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.*;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseToHospitalDeptWeekDaysDutyRoster;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseUpdatedWeekDaysDetails;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.*;
 import static com.cogent.cogentappointment.commons.utils.NepaliDateUtility.formatToDateString;
 
 /**
@@ -435,7 +434,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                             hospitalDepartmentDutyRoster.getIsRoomEnabled().equals(YES)
                                     ? fetchHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfoId,
                                     hospitalDepartmentDutyRoster.getHospitalDepartment().getId()) : null;
-                    HospitalDepartmentDutyRosterOverride hospitalDepartmentDutyRosterOverride=parseOverrideDetails(
+                    HospitalDepartmentDutyRosterOverride hospitalDepartmentDutyRosterOverride = parseOverrideDetails(
                             requestDTO, hospitalDepartmentDutyRoster, hospitalDepartmentRoomInfo);
 
                     hospitalDepartmentDutyRosterOverride.setFromDateInNepali(getNepaliDate(requestDTO.getFromDate()));
@@ -601,7 +600,12 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
             HospitalDepartmentWeekDaysDutyRoster weekDaysDutyRoster =
                     fetchHospitalDeptWeekDaysRoster(requestDTO.getRosterWeekDaysId());
 
-            saveWeekDaysDutyRoster(parseUpdatedWeekDaysDetails(requestDTO, weekDaysDutyRoster));
+            HospitalDepartmentWeekDaysDutyRoster updatedWeekDaysDutyRoster = parseUpdatedWeekDaysDetails
+                    (requestDTO, weekDaysDutyRoster);
+
+            updatedWeekDaysDutyRoster.setIsDoctorAvailable(isDoctorAvailable(weekDaysDutyRoster, requestDTO));
+
+            saveWeekDaysDutyRoster(updatedWeekDaysDutyRoster);
 
             if (requestDTO.getWeekDaysDoctorInfo().size() > 0)
                 updateHospitalDepartmentWeekDaysDutyRosterDoctorInfo(weekDaysDutyRoster,
@@ -888,11 +892,11 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                     hospitalDepartmentDutyRoster.getFromDate(), hospitalDepartmentDutyRoster.getToDate());
     }
 
-    private String getNepaliDate(Date date){
+    private String getNepaliDate(Date date) {
 
-        String nepaliDate= nepaliDateUtility.getNepaliDateFromDate(date);
+        String nepaliDate = nepaliDateUtility.getNepaliDateFromDate(date);
 
-        return  formatToDateString(nepaliDate);
+        return formatToDateString(nepaliDate);
     }
 }
 

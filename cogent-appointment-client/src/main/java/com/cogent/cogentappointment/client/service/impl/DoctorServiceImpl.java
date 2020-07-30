@@ -324,9 +324,10 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id, getLoggedInHospitalId());
 
-        List<DoctorSalutationResponseDTO> salutationResponseDTOList = doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
-        responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
+        List<DoctorSalutationResponseDTO> salutationResponseDTOList =
+                doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
 
+        responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -371,6 +372,7 @@ public class DoctorServiceImpl implements DoctorService {
         return responseDTOS;
     }
 
+//    todo: check repository
     @Override
     public List<DoctorDropdownDTO> fetchDoctorByHospitalId() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -378,7 +380,7 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS =
-                doctorRepository.fetchDoctorByHospitalId(getLoggedInHospitalId());
+                doctorRepository.fetchActiveDoctorByHospitalId(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

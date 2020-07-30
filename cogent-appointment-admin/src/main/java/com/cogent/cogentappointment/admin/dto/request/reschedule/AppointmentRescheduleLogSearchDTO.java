@@ -41,4 +41,6 @@ public class AppointmentRescheduleLogSearchDTO {
     private String appointmentServiceTypeCode;
 
     private Long hospitalDepartmentId;
+
+    private Long hospitalDepartmentRoomInfoId;
 }
